@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 11302
 ## Title: ClassicCastbars
 ## Notes: Adds castbars to target frame and nameplates.
 ## Author: Wardz
