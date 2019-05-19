@@ -1,0 +1,34 @@
+# Project specifics
+.release/
+release.sh
+
+# luarocks build files
+*.src.rock
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Ignore OS generated files
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon\r\r
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
