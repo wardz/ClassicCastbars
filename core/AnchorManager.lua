@@ -4,19 +4,18 @@ namespace.AnchorManager = AnchorManager
 
 local anchors = {
     target = {
-        "SUFUnitplayer",
-        "XPerl_PlayerportraitFrame",
-        "ElvUF_Player",
-        "oUF_TukuiPlayer",
-        "bplayerUnitFrame",
-        "DUF_PlayerFrame",
-        "GwPlayerHealthGlobe",
-        "PitBull4_Frames_Player",
-        "oUF_Player",
-        "SUI_playerFrame",
-        "gUI4_UnitPlayer",
-        "oUF_Adirelle_Player",
-        "Stuf.units.player",
+        "SUFUnittarget",
+        "XPerl_TargetportraitFrame",
+        "ElvUF_Target",
+        "oUF_TukuiTarget",
+        "btargetUnitFrame",
+        "DUF_TargetFrame",
+        "GwTargetUnitFrame",
+        "PitBull4_Frames_Target",
+        "oUF_Target",
+        "SUI_targetFrame",
+        "gUI4_UnitTarget",
+        "oUF_Adirelle_Target",
         "TargetFrame", -- Blizzard frame should always be last
     },
 
