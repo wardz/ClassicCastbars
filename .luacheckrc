@@ -9,6 +9,9 @@ ignore = {
 }
 
 globals = {
+    "ClassicCastbarsDB",
+
+    "SlashCmdList",
     "STANDARD_TEXT_FONT",
     "CreateFramePool",
     "CreateFrame",
@@ -16,4 +19,5 @@ globals = {
     "format",
     "GetTime",
     "UIParent",
+    "strsplit",
 }

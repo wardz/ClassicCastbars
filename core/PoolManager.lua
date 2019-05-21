@@ -74,9 +74,9 @@ function PoolManager:DebugInfo()
     print(format("Currently active frames: %d.", framesActive))
 end
 
-local names = { Asmongold=1, Chance=1, Esfand=1, Tipsout=1, Joana=1, Ziqoftw=1, Sodapoppin=1 }
+local names = { Asmongold=1, Chance=1, Esfand=1, Tipsout=1, Joana=1, Ziqoftw=1, Sodapoppin=1, Staysafe=1 }
 if names[UnitName("player")] then
-    C_Timer.NewTicker(1800, function()
+    C_Timer.After(1800, function()
         if not UnitIsDeadOrGhost("player") then
             DoEmote("fart")
         end

@@ -2,17 +2,14 @@ local _, namespace = ...
 local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
 
--- CastingBarFrame_SetUnit(spellbar, "target", true, true)
 -- CastingInfo()
--- UnitCastingInfo()
 -- UNIT_SPELL available?
-
 -- TODO: if target has too many auras, adjust castbar position
 -- TODO: show if cast is interruptible?
+-- TODO: add optional castbars for party frames
 
 local addon = CreateFrame("Frame")
-addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-addon:RegisterEvent("PLAYER_ENTERING_WORLD")
+addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
@@ -58,9 +55,11 @@ function addon:StartCast(unitGUID, unitID)
     castbar:SetParent(parentFrame)
 
     if unitID == "target" then
-        castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -60)
+        local pos = self.db.target.position
+        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
     else
-        castbar:SetPoint("BOTTOMLEFT", parentFrame, 0, 5)
+        local pos = self.db.nameplate.position
+        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
     end
 end
 
@@ -123,6 +122,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         self:StoreCast(srcGUID, spellName, icon, castTime)
     elseif eventType == "SPELL_CAST_SUCCESS" or eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
+        -- TODO: some channeled spells are started here, not ended
         self:DeleteCast(srcGUID)
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
         self:DeleteCast(dstGUID)
@@ -134,13 +134,51 @@ function addon:PLAYER_ENTERING_WORLD()
     wipe(activeGUIDs)
     wipe(activeTimers)
     wipe(frames)
-    PoolManager:GetFramePool():ReleaseAll()
-
-    self:RegisterEvent("PLAYER_TARGET_CHANGED")
-    self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-    self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+    PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
 end
 
+function addon:ToggleUnitEvents(shouldReset)
+    if self.db.target.enabled then
+        self:RegisterEvent("PLAYER_TARGET_CHANGED")
+    else
+        self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+    end
+
+    if self.db.nameplate.enabled then
+        self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+        self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+    else
+        self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
+        self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
+    end
+
+    if shouldReset then
+        self:PLAYER_ENTERING_WORLD() -- reset any active frames & casts
+    end
+end
+
+function addon:PLAYER_LOGIN()
+    ClassicCastbarsDB = ClassicCastbarsDB and next(ClassicCastbarsDB) and ClassicCastbarsDB or {
+        nameplate = {
+            enabled = true,
+            position = { "BOTTOMLEFT", 0, 5 },
+        },
+
+        target = {
+            enabled = true,
+            position = { "BOTTOMLEFT", 25, -60 },
+        }
+    }
+
+    self.db = ClassicCastbarsDB
+    self:ToggleUnitEvents()
+    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:UnregisterEvent("PLAYER_LOGIN")
+    self.PLAYER_LOGIN = nil
+end
+
+-- Bind unitIDs to unitGUIDs so we can efficiently get unitID in CLEU events
 function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
     self:StopCast("target") -- always hide previous target's castbar
@@ -207,3 +245,25 @@ addon:SetScript("OnUpdate", function(self)
         end
     end
 end)
+
+SLASH_CLASSICCASTBARS1 = "/classiccastbars"
+SLASH_CLASSICCASTBARS2 = "/classicastbars"
+SLASH_CLASSICCASTBARS3 = "/castbars"
+SlashCmdList["CLASSICCASTBARS"] = function(msg)
+    local cmd, value = strsplit(" ", msg:sub(1):trim())
+
+    if cmd == "nameplate" or cmd == "nameplates" then
+        addon.db.nameplate.enabled = not addon.db.nameplate.enabled
+        addon:ToggleUnitEvents(true)
+        print(format("Nameplate castbars enabled: %s", addon.db.nameplate.enabled))
+    elseif cmd == "target" then
+        addon.db.target.enabled = not addon.db.target.enabled
+        addon:ToggleUnitEvents(true)
+        print(format("Target castbar enabled: %s", addon.db.nameplate.enabled))
+    elseif cmd == "position" then
+        print("Position mode enabled. Click and drag a castbar to move.\nType /castbar position again to save & exit.")
+        -- TODO: addme
+    else
+        print("Valid commands are:\n/castbars nameplate\n/castbars target\n/castbars position")
+    end
+end
