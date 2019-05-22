@@ -1,5 +1,5 @@
 ## ClassicCastbars
-Adds castbars for Target Frame and Nameplates in Classic World of Warcraft 1.13.x.  
+Adds castbars to TargetFrame and nameplates in Classic World of Warcraft 1.13.x.  
 You may toggle which unitframes you want to see castbars for. See configuration below.  
 
 ## Install
@@ -8,10 +8,12 @@ You may toggle which unitframes you want to see castbars for. See configuration 
 
 ## Configuration
 You may configure this addon using chat commands:
-- `/castbar target enable` - Toggles castbar for Target Frame.
+- `/castbar target enable` - Toggles castbar for Target Frame. You might need to retarget an unit for it to update.
 - `/castbar nameplate enable` - Toggles castbar for Nameplates.
+- `/castbar target pos dynamic` - Toggles automatic positioning for Target castbar. Default on.
 - `/castbar target pos xValue yValue` - Set X and Y offset position for Target castbar.
-  Negative X value will move bar left, positive right. Negative Y value will move bar down, and positive up.
+  Negative X value will move bar left, positive right. Y value is same thing but moves up and down.
+  Using this will automatically disable dynamic positioning.
   Replace xValue and yValue with your values, for example:
   `/castbar target pos 20 -40`
 - `/castbar nameplate pos xValue yValue` - Same as above but for nameplate castbars.
