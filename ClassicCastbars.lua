@@ -24,7 +24,6 @@ local UnitGUID = _G.UnitGUID
 local GetSpellInfo = _G.GetSpellInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
-local mod = _G.mod
 local next = _G.next
 
 function addon:GetCastbarFrame(unitID)
@@ -51,7 +50,6 @@ function addon:StartCast(unitGUID, unitID)
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end -- sanity check
 
-    -- Position frame, the OnUpdate script will handle the rest
     castbar._data = activeTimers[unitGUID] -- set ref to current cast data
     castbar:SetParent(parentFrame)
 
@@ -62,6 +60,15 @@ function addon:StartCast(unitGUID, unitID)
         local pos = self.db.nameplate.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
     end
+
+    local cast = castbar._data
+    if castbar.Text:GetText() ~= cast.spellName then
+        castbar.Text:SetText(cast.spellName)
+        castbar.Icon:SetTexture(cast.icon)
+    end
+
+    castbar:SetMinMaxValues(0, cast.maxValue)
+    castbar:Show() -- The OnUpdate script will handle the rest
 end
 
 function addon:StopCast(unitID)
@@ -92,15 +99,17 @@ function addon:StopAllCasts(unitGUID)
     end
 end
 
-function addon:StoreCast(unitGUID, spellName, icon, castTime)
+function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime)
+    local currTime = GetTime()
+
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
     -- since nameplate frames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
-        icon = icon,
-        castTime = castTime,
-        timeStart = GetTime(),
-        endTime = GetTime() + (castTime / 1000),
+        icon = iconTexturePath,
+        maxValue = castTime / 1000,
+        timeStart = currTime,
+        endTime = currTime + (castTime / 1000),
         unitGUID = unitGUID,
     }
 
@@ -209,40 +218,36 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     end
 end
 
+-- TODO: we should make this dynamic incase user changes width ingame
+local CASTBAR_WIDTH = 150
+
 addon:SetScript("OnUpdate", function(self)
     if not next(activeTimers) then return end
     local currTime = GetTime()
 
     -- Update all active castbars in a single OnUpdate call
-    -- If anyone know a more efficient way, please do tell
     for unit, castbar in pairs(frames) do
         local cast = castbar._data
 
         if cast then
-            local maxValue = cast.castTime / 1000
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then
-                local value = mod((currTime - cast.timeStart), cast.endTime - cast.timeStart)
-                castbar:SetMinMaxValues(0, maxValue)
+                local value = currTime - cast.timeStart
                 castbar:SetValue(value)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
 
-                if castbar.Text:GetText() ~= cast.spellName then
-                    castbar.Text:SetText(cast.spellName)
-                    castbar.Icon:SetTexture(cast.icon)
-                end
-
-                local sparkPosition = (value / maxValue) * castbar:GetWidth()
+                local sparkPosition = (value / cast.maxValue) * CASTBAR_WIDTH
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
-                castbar:Show()
             else
+                -- Delete cast incase it wasn't detected in CLEU (i.e unit out of range)
                 self:DeleteCast(cast.unitGUID)
             end
         end
     end
 end)
 
+-- Options Slash Commands
 SLASH_CLASSICCASTBARS1 = "/castbars"
 SLASH_CLASSICCASTBARS2 = "/castbar"
 SLASH_CLASSICCASTBARS3 = "/classiccastbars"
