@@ -20,6 +20,15 @@ local anchors = {
     },
 
     --[[party = {
+        "SUFHeaderpartyUnitButton%d",
+        "XPerl_party%d",
+        "ElvUF_PartyGroup1UnitButton%d",
+        "TukuiPartyUnitButton%d",
+        "DUF_PartyFrame%d",
+        "PitBull4_Groups_PartyUnitButton%d",
+        "oUF_Raid%d",
+        "GwPartyFrame%d",
+        "gUI4_GroupFramesGroup5UnitButton%d",
         "PartyMemberFrame%d",
     },]]
 }
