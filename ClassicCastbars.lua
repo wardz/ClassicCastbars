@@ -34,7 +34,9 @@ function addon:GetCastbarFrame(unitID)
         return frames[unitID]
     end
 
-    -- cache reference, refs are deleted on frame recycled
+    -- store reference, refs are deleted on frame recycled.
+    -- This allows us to not have to Release & Acquire a frame everytime a
+    -- castbar is shown/hidden for the *same* unit
     frames[unitID] = PoolManager:AcquireFrame()
 
     return frames[unitID]
@@ -47,7 +49,7 @@ function addon:StartCast(unitGUID, unitID)
     if not castbar then return end
 
     local parentFrame = AnchorManager:GetAnchor(unitID)
-    if not parentFrame then return end
+    if not parentFrame then return end -- sanity check
 
     -- Position frame, the OnUpdate script will handle the rest
     castbar._data = activeTimers[unitGUID] -- set ref to current cast data
@@ -91,7 +93,7 @@ function addon:StopAllCasts(unitGUID)
 end
 
 function addon:StoreCast(unitGUID, spellName, icon, castTime)
-    -- Store cast data from CLEU in an object, we can't bind this to the frame itself
+    -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
     -- since nameplate frames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
@@ -115,7 +117,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
-        -- local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(unit)
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
 
@@ -152,12 +153,14 @@ function addon:ToggleUnitEvents(shouldReset)
     end
 
     if shouldReset then
-        self:PLAYER_ENTERING_WORLD() -- reset any active frames & casts
+        self:PLAYER_ENTERING_WORLD() -- reset all data
     end
 end
 
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB and next(ClassicCastbarsDB) and ClassicCastbarsDB or {
+        version = "1", -- config version, not same as addon version
+
         nameplate = {
             enabled = true,
             position = { "BOTTOMLEFT", 0, 5 },
@@ -177,7 +180,7 @@ function addon:PLAYER_LOGIN()
     self.PLAYER_LOGIN = nil
 end
 
--- Bind unitIDs to unitGUIDs so we can efficiently get unitID in CLEU events
+-- Bind unitIDs to unitGUIDs so we can efficiently get unitIDs in CLEU events
 function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
     self:StopCast("target") -- always hide previous target's castbar
@@ -210,6 +213,8 @@ addon:SetScript("OnUpdate", function(self)
     if not next(activeTimers) then return end
     local currTime = GetTime()
 
+    -- Update all active castbars in a single OnUpdate call
+    -- If anyone know a more efficient way, please do tell
     for unit, castbar in pairs(frames) do
         local cast = castbar._data
 
@@ -238,24 +243,30 @@ addon:SetScript("OnUpdate", function(self)
     end
 end)
 
-SLASH_CLASSICCASTBARS1 = "/classiccastbars"
-SLASH_CLASSICCASTBARS2 = "/classicastbars"
-SLASH_CLASSICCASTBARS3 = "/castbars"
+SLASH_CLASSICCASTBARS1 = "/castbars"
+SLASH_CLASSICCASTBARS2 = "/castbar"
+SLASH_CLASSICCASTBARS3 = "/classiccastbars"
+SLASH_CLASSICCASTBARS4 = "/classicastbars"
 SlashCmdList["CLASSICCASTBARS"] = function(msg)
-    local cmd, value = strsplit(" ", msg:sub(1):trim())
+    local cmd, value, value2, value3 = strsplit(" ", msg:sub(1):trim())
 
-    if cmd == "nameplate" or cmd == "nameplates" then
+    if cmd == "nameplate" and value == "pos" and tonumber(value2) and tonumber(value3) then
+        addon.db.nameplate.position[2] = tonumber(value2)
+        addon.db.nameplate.position[3] = tonumber(value3)
+        print(format("Nameplate castbar position set to X=%d, Y=%d.", value2, value3))
+    elseif cmd == "target" and value == "pos" and tonumber(value2) and tonumber(value3) then
+        addon.db.target.position[2] = tonumber(value2)
+        addon.db.target.position[3] = tonumber(value3)
+        print(format("Target castbar position set to X=%d, Y=%d.", value2, value3))
+    elseif cmd == "nameplate"  and value == "enable" then
         addon.db.nameplate.enabled = not addon.db.nameplate.enabled
         addon:ToggleUnitEvents(true)
-        print(format("Nameplate castbars enabled: %s", addon.db.nameplate.enabled))
-    elseif cmd == "target" then
+        print(format("Nameplate castbars enabled: %s", tostring(addon.db.nameplate.enabled)))
+    elseif cmd == "target" and value == "enable" then
         addon.db.target.enabled = not addon.db.target.enabled
         addon:ToggleUnitEvents(true)
-        print(format("Target castbar enabled: %s", addon.db.nameplate.enabled))
-    elseif cmd == "position" then
-        print("Position mode enabled. Click and drag a castbar to move.\nType /castbar position again to save & exit.")
-        -- TODO: addme
+        print(format("Target castbar enabled: %s", tostring(addon.db.target.enabled)))
     else
-        print("Valid commands are:\n/castbars nameplate\n/castbars target\n/castbars position")
+        print("Valid commands are:\n/castbar nameplate enable\n/castbar target enable\n/castbar target pos xValue yValue\n/castbar nameplate pos xValue yValue")
     end
 end
