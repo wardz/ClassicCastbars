@@ -63,9 +63,9 @@ function AnchorManager:GetAnchor(unitID, getDefault)
     local unitType, count = unitID:gsub("%d", "") -- party1 -> party
 
     if unitType == "nameplate" then
-        if unitID == "nameplate-testmode" then
+        --[[if unitID == "nameplate-testmode" then
             unitID = "target"
-        end
+        end]]
 
         return GetNamePlateForUnit(unitID)
     end

@@ -28,8 +28,8 @@ end
 
 function PoolManager:ReleaseFrame(frame)
     if frame then
-        framesActive = framesActive - 1
         framePool:Release(frame)
+        framesActive = framesActive - 1
     end
 end
 
@@ -60,8 +60,8 @@ function PoolManager:ResetterFunc(pool, frame)
     frame:SetParent(nil)
     frame:ClearAllPoints()
 
-    if frame._data and next(frame._data) then
-        wipe(frame._data)
+    if frame._data --[[and next(frame._data)]] then
+        frame._data = nil
     end
 end
 
