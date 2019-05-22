@@ -48,11 +48,11 @@ function PoolManager:InitializeNewFrame(frame)
     frame:SetScript("OnUpdate", nil)
     frame:SetScript("OnShow", nil)
 
-    frame.timer = frame:CreateFontString(nil, "OVERLAY")
-    frame.timer:SetTextColor(1, 1, 1)
-    frame.timer:SetFont(STANDARD_TEXT_FONT, 9)
-    frame.timer:SetFontObject("SystemFont_Shadow_Small")
-    frame.timer:SetPoint("RIGHT", frame, 20, 2)
+    frame.Timer = frame:CreateFontString(nil, "OVERLAY")
+    frame.Timer:SetTextColor(1, 1, 1)
+    frame.Timer:SetFont(STANDARD_TEXT_FONT, 9)
+    frame.Timer:SetFontObject("SystemFont_Shadow_Small")
+    frame.Timer:SetPoint("RIGHT", frame, 20, 2)
 end
 
 function PoolManager:ResetterFunc(pool, frame)

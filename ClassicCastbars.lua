@@ -24,7 +24,6 @@ local UnitGUID = _G.UnitGUID
 local GetSpellInfo = _G.GetSpellInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
-local floor = _G.math.floor
 local mod = _G.mod
 local next = _G.next
 
@@ -207,13 +206,6 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     end
 end
 
-local function Round(num)
-    local idp = num > 3 and 0 or 1
-    local mult = 10^(idp or 0)
-
-    return floor(num * mult + 0.5) / mult
-end
-
 addon:SetScript("OnUpdate", function(self)
     if not next(activeTimers) then return end
     local currTime = GetTime()
@@ -229,7 +221,7 @@ addon:SetScript("OnUpdate", function(self)
                 local value = mod((currTime - cast.timeStart), cast.endTime - cast.timeStart)
                 castbar:SetMinMaxValues(0, maxValue)
                 castbar:SetValue(value)
-                castbar.timer:SetText(Round(castTime, 3))
+                castbar.Timer:SetFormattedText("%.1f", castTime)
 
                 if castbar.Text:GetText() ~= cast.spellName then
                     castbar.Text:SetText(cast.spellName)
