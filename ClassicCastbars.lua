@@ -4,7 +4,6 @@ local PoolManager = namespace.PoolManager
 
 -- CastingInfo()
 -- UNIT_SPELL available?
--- TODO: if target has too many auras, adjust castbar position
 -- TODO: show if cast is interruptible?
 -- TODO: add optional castbars for party frames
 
@@ -41,6 +40,34 @@ function addon:GetCastbarFrame(unitID)
     return frames[unitID]
 end
 
+function addon:AdjustTargetCastbarPosition(castbar, parentFrame)
+    if not self.db.target.dynamicTargetPosition then
+        local pos = self.db.target.position
+        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
+        return
+    end
+
+    if parentFrame.haveToT then
+        if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -15)
+        else
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 20, -60)
+        end
+    elseif parentFrame.haveElite then
+        if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -15)
+        else
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -60)
+        end
+    else
+        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -60)
+        else
+            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -3)
+        end
+    end
+end
+
 function addon:StartCast(unitGUID, unitID)
     if not activeTimers[unitGUID] then return end
 
@@ -54,9 +81,9 @@ function addon:StartCast(unitGUID, unitID)
     castbar:SetParent(parentFrame)
 
     if unitID == "target" then
-        local pos = self.db.target.position
-        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-    else
+        -- TODO: we should call this in OnUpdate/OnEvent aswell
+        self:AdjustTargetCastbarPosition(castbar, parentFrame)
+    else -- nameplates
         local pos = self.db.nameplate.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
     end
@@ -177,6 +204,7 @@ function addon:PLAYER_LOGIN()
 
         target = {
             enabled = true,
+            dynamicTargetPosition = true,
             position = { "BOTTOMLEFT", 25, -60 },
         }
     }
@@ -259,9 +287,13 @@ SlashCmdList["CLASSICCASTBARS"] = function(msg)
         addon.db.nameplate.position[2] = tonumber(value2)
         addon.db.nameplate.position[3] = tonumber(value3)
         print(format("Nameplate castbar position set to X=%d, Y=%d.", value2, value3))
+    elseif cmd == "target" and value == "pos" and value2 == "dynamic" then
+        addon.db.target.dynamicTargetPosition = not addon.db.target.dynamicTargetPosition
+        print(format("Target castbar dynamic position: %s", tostring(addon.db.target.dynamicTargetPosition)))
     elseif cmd == "target" and value == "pos" and tonumber(value2) and tonumber(value3) then
         addon.db.target.position[2] = tonumber(value2)
         addon.db.target.position[3] = tonumber(value3)
+        addon.db.target.dynamicTargetPosition = false
         print(format("Target castbar position set to X=%d, Y=%d.", value2, value3))
     elseif cmd == "nameplate"  and value == "enable" then
         addon.db.nameplate.enabled = not addon.db.nameplate.enabled
@@ -272,6 +304,7 @@ SlashCmdList["CLASSICCASTBARS"] = function(msg)
         addon:ToggleUnitEvents(true)
         print(format("Target castbar enabled: %s", tostring(addon.db.target.enabled)))
     else
-        print("Valid commands are:\n/castbar nameplate enable\n/castbar target enable\n/castbar target pos xValue yValue\n/castbar nameplate pos xValue yValue")
+        print("Valid commands are:\n/castbar nameplate enable\n/castbar target enable\n/castbar target pos dynamic\n/castbar target pos xValue yValue\n/castbar nameplate pos xValue yValue")
+        print("See addon download page for command descriptions.")
     end
 end
