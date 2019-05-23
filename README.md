@@ -2,6 +2,8 @@
 Adds castbars to TargetFrame and nameplates in Classic World of Warcraft 1.13.x.  
 You may toggle which unitframes you want to see castbars for. See configuration below.  
 
+![Imgur](https://i.imgur.com/thxJqi6.jpg)
+
 ## Install
 - Install as any other addon, but make sure that the addon folder is **called just "ClassicCastbars", not "ClassicCastbars-master" or "ClassicCastbars-v1.0.0".**
 - You can also download from WoWInterface instead of Github [here.](https://wowinterface.com/downloads/info24925-ClassicCastbars.html)
