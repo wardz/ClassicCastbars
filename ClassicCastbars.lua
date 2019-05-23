@@ -7,6 +7,7 @@ local channeledSpells = namespace.channeledSpells
 -- UNIT_SPELL available?
 -- TODO: show if cast is interruptible?
 -- TODO: add optional castbars for party frames
+-- TODO: height/width options?
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -86,9 +87,11 @@ function addon:StartCast(unitGUID, unitID)
     if unitID == "target" then
         -- TODO: we should call this in OnUpdate/OnEvent aswell
         self:AdjustTargetCastbarPosition(castbar, parentFrame)
+        castbar:SetScale(1)
     else -- nameplates
         local pos = self.db.nameplate.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
+        castbar:SetScale(0.7)
     end
 
     local cast = castbar._data
@@ -150,9 +153,9 @@ end
 -- Delete cast data for unit, and stop any active castbars
 function addon:DeleteCast(unitGUID)
     if unitGUID then -- sanity check
-    self:StopAllCasts(unitGUID)
-    activeTimers[unitGUID] = nil
-end
+        self:StopAllCasts(unitGUID)
+        activeTimers[unitGUID] = nil
+    end
 end
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
@@ -186,7 +189,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 self:DeleteCast(srcGUID)
             end
         else
-        self:DeleteCast(srcGUID)
+            self:DeleteCast(srcGUID)
         end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
         self:DeleteCast(dstGUID)
@@ -228,7 +231,7 @@ function addon:PLAYER_LOGIN()
 
         nameplate = {
             enabled = true,
-            position = { "BOTTOMLEFT", 0, 5 },
+            position = { "BOTTOMLEFT", 15, -18 },
         },
 
         target = {
