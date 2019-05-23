@@ -52,7 +52,7 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFont(STANDARD_TEXT_FONT, 9)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
-    frame.Timer:SetPoint("RIGHT", frame, 20, 2)
+    frame.Timer:SetPoint("RIGHT", frame, -6, 1)
 end
 
 function PoolManager:ResetterFunc(pool, frame)
