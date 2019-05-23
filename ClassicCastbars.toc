@@ -7,4 +7,5 @@
 
 core/PoolManager.lua
 core/AnchorManager.lua
+core/SpellLists.lua
 ClassicCastbars.lua

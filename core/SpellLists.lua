@@ -22,6 +22,7 @@ namespace.channeledSpells = {
     -- PRIEST
     ['Mind Flay'] = 3,
     ['Mind Vision'] = 30,
+    ['Mind Control'] = 3,
 
     -- WARLOCK
     ['Drain Life'] = 4.5,

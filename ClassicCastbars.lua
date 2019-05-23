@@ -1,6 +1,7 @@
 local _, namespace = ...
 local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
+local channeledSpells = namespace.channeledSpells
 
 -- CastingInfo()
 -- UNIT_SPELL available?
@@ -21,9 +22,11 @@ local activeFrames = {}
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
 local GetSpellInfo = _G.GetSpellInfo
+local GetSpellTexture = _G.GetSpellTexture
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local next = _G.next
+local CastingInfo = _G.CastingInfo
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -153,16 +156,38 @@ end
 end
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName, _, failedType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
 
         self:StoreCast(srcGUID, spellName, icon, castTime)
-    elseif eventType == "SPELL_CAST_SUCCESS" or eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
-        -- TODO: some channeled spells are started here, not ended
+    elseif eventType == "SPELL_CAST_SUCCESS" then
+        -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
+        -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
+        local castTime = channeledSpells[spellName]
+        if castTime then
+            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, true)
+        else
+            -- Normal spell, finish it
+            self:DeleteCast(srcGUID)
+        end
+    elseif eventType == "SPELL_AURA_REMOVED" then
+        -- Channeled spells has no SPELL__CAST_* event for channel stop
+        -- so check if aura is gone instead
+        if channeledSpells[spellName] then
+            self:DeleteCast(srcGUID)
+        end
+    elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
+        if srcGUID == self.PLAYER_GUID then
+            -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
+            if not CastingInfo() then
+                self:DeleteCast(srcGUID)
+            end
+        else
         self:DeleteCast(srcGUID)
+        end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
         self:DeleteCast(dstGUID)
     end
@@ -214,6 +239,7 @@ function addon:PLAYER_LOGIN()
     }
 
     self.db = ClassicCastbarsDB
+    self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -226,10 +252,10 @@ function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
     self:StopCast("target") -- always hide previous target's castbar
 
-    if frames.target then
+    --if activeFrames.target then
         -- Show castbar again if available
         self:StartCast(activeGUIDs.target, "target")
-    end
+    --end
 end
 
 function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
