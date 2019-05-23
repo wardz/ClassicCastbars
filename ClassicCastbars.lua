@@ -15,7 +15,7 @@ end)
 
 local activeGUIDs = {}
 local activeTimers = {}
-local frames = {}
+local activeFrames = {}
 
 -- upvalues
 local pairs = _G.pairs
@@ -28,16 +28,16 @@ local next = _G.next
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
 
-    if frames[unitID] then
-        return frames[unitID]
+    if activeFrames[unitID] then
+        return activeFrames[unitID]
     end
 
     -- store reference, refs are deleted on frame recycled.
     -- This allows us to not have to Release & Acquire a frame everytime a
     -- castbar is shown/hidden for the *same* unit
-    frames[unitID] = PoolManager:AcquireFrame()
+    activeFrames[unitID] = PoolManager:AcquireFrame()
 
-    return frames[unitID]
+    return activeFrames[unitID]
 end
 
 function addon:AdjustTargetCastbarPosition(castbar, parentFrame)
@@ -99,7 +99,7 @@ function addon:StartCast(unitGUID, unitID)
 end
 
 function addon:StopCast(unitID)
-    local castbar = frames[unitID]
+    local castbar = activeFrames[unitID]
     if castbar then
         castbar._data = nil
         castbar:Hide()
@@ -126,11 +126,11 @@ function addon:StopAllCasts(unitGUID)
     end
 end
 
-function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime)
+function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChanneled)
     local currTime = GetTime()
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
-    -- since nameplate frames are constantly recycled between different units.
+    -- since nameplate activeFrames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
         icon = iconTexturePath,
@@ -138,6 +138,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime)
         timeStart = currTime,
         endTime = currTime + (castTime / 1000),
         unitGUID = unitGUID,
+        isChanneled = isChanneled, -- TODO: inverse castbar values if this is true
     }
 
     self:StartAllCasts(unitGUID)
@@ -145,8 +146,10 @@ end
 
 -- Delete cast data for unit, and stop any active castbars
 function addon:DeleteCast(unitGUID)
+    if unitGUID then -- sanity check
     self:StopAllCasts(unitGUID)
     activeTimers[unitGUID] = nil
+end
 end
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
@@ -169,7 +172,8 @@ function addon:PLAYER_ENTERING_WORLD()
     -- Reset all data on loading screens
     wipe(activeGUIDs)
     wipe(activeTimers)
-    wipe(frames)
+    wipe(activeFrames)
+
     PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
 end
 
@@ -239,14 +243,14 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     activeGUIDs[namePlateUnitToken] = nil
 
     -- Release frame, but do not delete cast data
-    local castbar = frames[namePlateUnitToken]
+    local castbar = activeFrames[namePlateUnitToken]
     if castbar then
         PoolManager:ReleaseFrame(castbar)
-        frames[namePlateUnitToken] = nil
+        activeFrames[namePlateUnitToken] = nil
     end
 end
 
--- TODO: we should make this dynamic incase user changes width ingame
+-- FIXME: we should make this dynamic incase user changes width ingame
 local CASTBAR_WIDTH = 150
 
 addon:SetScript("OnUpdate", function(self)
@@ -254,7 +258,7 @@ addon:SetScript("OnUpdate", function(self)
     local currTime = GetTime()
 
     -- Update all active castbars in a single OnUpdate call
-    for unit, castbar in pairs(frames) do
+    for unit, castbar in pairs(activeFrames) do
         local cast = castbar._data
 
         if cast then
