@@ -57,6 +57,7 @@ end
 
 function AnchorManager:GetAnchor(unitID, getDefault)
     if cache[unitID] and not getDefault then
+        -- Returned cached anchor frame
         return cache[unitID]
     end
 

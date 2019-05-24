@@ -6,9 +6,6 @@ local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTe
 local framesCreated = 0
 local framesActive = 0
 
-local next = _G.next
-local wipe = _G.wipe
-
 function PoolManager:AcquireFrame()
     if framesCreated >= 300 then return end -- should never happen
 
