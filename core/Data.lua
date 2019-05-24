@@ -31,3 +31,22 @@ namespace.channeledSpells = {
     ['Rain of Fire'] = 7.5,
     ['Health Funnel'] = 10,
 }
+
+namespace.defaultConfig = {
+    version = "2",
+
+    nameplate = {
+        enabled = true,
+        position = { "BOTTOMLEFT", 15, -18 },
+        width = 150,
+        height = 10,
+    },
+
+    target = {
+        enabled = true,
+        dynamicTargetPosition = true,
+        position = { "BOTTOMLEFT", 25, -60 },
+        width = 150,
+        height = 10,
+    }
+}

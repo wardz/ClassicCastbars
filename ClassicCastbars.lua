@@ -1,13 +1,13 @@
 local _, namespace = ...
-local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
 local channeledSpells = namespace.channeledSpells
 
--- CastingInfo()
--- UNIT_SPELL available?
 -- TODO: show if cast is interruptible?
 -- TODO: add optional castbars for party frames
--- TODO: height/width options?
+-- TODO: show spell rank option
+-- TODO: pushback detection
+-- TODO: show/hide time countdown option
+-- TODO: status colors flash
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -18,6 +18,8 @@ end)
 local activeGUIDs = {}
 local activeTimers = {}
 local activeFrames = {}
+namespace.activeFrames = activeFrames
+namespace.addon = addon
 
 -- upvalues
 local pairs = _G.pairs
@@ -29,79 +31,14 @@ local GetTime = _G.GetTime
 local next = _G.next
 local CastingInfo = _G.CastingInfo
 
-function addon:GetCastbarFrame(unitID)
-    -- PoolManager:DebugInfo()
-
-    if activeFrames[unitID] then
-        return activeFrames[unitID]
-    end
-
-    -- store reference, refs are deleted on frame recycled.
-    -- This allows us to not have to Release & Acquire a frame everytime a
-    -- castbar is shown/hidden for the *same* unit
-    activeFrames[unitID] = PoolManager:AcquireFrame()
-
-    return activeFrames[unitID]
-end
-
-function addon:AdjustTargetCastbarPosition(castbar, parentFrame)
-    if not self.db.target.dynamicTargetPosition then
-        local pos = self.db.target.position
-        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-        return
-    end
-
-    if parentFrame.haveToT then
-        if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -15)
-        else
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 20, -60)
-        end
-    elseif parentFrame.haveElite then
-        if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -15)
-        else
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -60)
-        end
-    else
-        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -60)
-        else
-            castbar:SetPoint("BOTTOMLEFT", parentFrame, 25, -3)
-        end
-    end
-end
-
 function addon:StartCast(unitGUID, unitID)
     if not activeTimers[unitGUID] then return end
 
     local castbar = self:GetCastbarFrame(unitID)
     if not castbar then return end
 
-    local parentFrame = AnchorManager:GetAnchor(unitID)
-    if not parentFrame then return end -- sanity check
-
     castbar._data = activeTimers[unitGUID] -- set ref to current cast data
-    castbar:SetParent(parentFrame)
-
-    if unitID == "target" then
-        -- TODO: we should call this in OnUpdate/OnEvent aswell
-        self:AdjustTargetCastbarPosition(castbar, parentFrame)
-        castbar:SetScale(1)
-    else -- nameplates
-        local pos = self.db.nameplate.position
-        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-        castbar:SetScale(0.7)
-    end
-
-    local cast = castbar._data
-    if castbar.Text:GetText() ~= cast.spellName then
-        castbar.Text:SetText(cast.spellName)
-        castbar.Icon:SetTexture(cast.icon)
-    end
-
-    castbar:SetMinMaxValues(0, cast.maxValue)
-    castbar:Show() -- The OnUpdate script will handle the rest
+    self:DisplayCastbar(castbar, unitID)
 end
 
 function addon:StopCast(unitID)
@@ -136,7 +73,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChann
     local currTime = GetTime()
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
-    -- since nameplate activeFrames are constantly recycled between different units.
+    -- since nameplate frames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
         icon = iconTexturePath,
@@ -156,53 +93,6 @@ function addon:DeleteCast(unitGUID)
         self:StopAllCasts(unitGUID)
         activeTimers[unitGUID] = nil
     end
-end
-
-function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName, _, failedType = CombatLogGetCurrentEventInfo()
-
-    if eventType == "SPELL_CAST_START" then
-        local _, _, icon, castTime = GetSpellInfo(spellID)
-        if not castTime or castTime == 0 then return end
-
-        self:StoreCast(srcGUID, spellName, icon, castTime)
-    elseif eventType == "SPELL_CAST_SUCCESS" then
-        -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
-        -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
-        local castTime = channeledSpells[spellName]
-        if castTime then
-            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, true)
-        else
-            -- Normal spell, finish it
-            self:DeleteCast(srcGUID)
-        end
-    elseif eventType == "SPELL_AURA_REMOVED" then
-        -- Channeled spells has no SPELL__CAST_* event for channel stop
-        -- so check if aura is gone instead
-        if channeledSpells[spellName] then
-            self:DeleteCast(srcGUID)
-        end
-    elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
-        if srcGUID == self.PLAYER_GUID then
-            -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-            if not CastingInfo() then
-                self:DeleteCast(srcGUID)
-            end
-        else
-            self:DeleteCast(srcGUID)
-        end
-    elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
-        self:DeleteCast(dstGUID)
-    end
-end
-
-function addon:PLAYER_ENTERING_WORLD()
-    -- Reset all data on loading screens
-    wipe(activeGUIDs)
-    wipe(activeTimers)
-    wipe(activeFrames)
-
-    PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
 end
 
 function addon:ToggleUnitEvents(shouldReset)
@@ -225,23 +115,38 @@ function addon:ToggleUnitEvents(shouldReset)
     end
 end
 
+function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
+    if isInitialLogin then return end
+
+    -- Reset all data on loading screens
+    wipe(activeGUIDs)
+    wipe(activeTimers)
+    wipe(activeFrames)
+    PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
+end
+
+local function CopyDefaults(src, dst)
+    if type(src) ~= "table" then return {} end
+    if type(dst) ~= "table" then dst = {} end
+
+    for k, v in pairs(src) do
+        if type(v) == "table" then
+            dst[k] = CopyDefaults(v, dst[k])
+        elseif type(v) ~= type(dst[k]) then
+            dst[k] = v
+        end
+    end
+
+    return dst
+end
+
 function addon:PLAYER_LOGIN()
-    ClassicCastbarsDB = ClassicCastbarsDB and next(ClassicCastbarsDB) and ClassicCastbarsDB or {
-        version = "1", -- config version, not same as addon version
+    ClassicCastbarsDB = next(ClassicCastbarsDB or {}) and ClassicCastbarsDB or namespace.defaultConfig
 
-        nameplate = {
-            enabled = true,
-            position = { "BOTTOMLEFT", 15, -18 },
-        },
+    -- Copy any settings from default if they don't exist in current profile
+    -- TODO: try metatable index instead of CopyDefaults
+    self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
 
-        target = {
-            enabled = true,
-            dynamicTargetPosition = true,
-            position = { "BOTTOMLEFT", 25, -60 },
-        }
-    }
-
-    self.db = ClassicCastbarsDB
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -279,8 +184,45 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     end
 end
 
--- FIXME: we should make this dynamic incase user changes width ingame
-local CASTBAR_WIDTH = 150
+function addon:COMBAT_LOG_EVENT_UNFILTERED()
+    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
+
+    if eventType == "SPELL_CAST_START" then
+        local _, _, icon, castTime = GetSpellInfo(spellID)
+        if not castTime or castTime == 0 then return end
+
+        self:StoreCast(srcGUID, spellName, icon, castTime)
+    elseif eventType == "SPELL_CAST_SUCCESS" then
+        -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
+        -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
+        local castTime = channeledSpells[spellName]
+        if castTime then
+            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, true)
+        else
+            -- non-channeled spell, finish it
+            self:DeleteCast(srcGUID)
+        end
+    elseif eventType == "SPELL_AURA_REMOVED" then
+        -- Channeled spells has no SPELL__CAST_* event for channel stop
+        -- so check if aura is gone instead
+        if channeledSpells[spellName] then
+            self:DeleteCast(srcGUID)
+        end
+    elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
+        if srcGUID == self.PLAYER_GUID then
+            -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
+            -- Note: we could also use 'failedType' CLEU arg but it's not unlocalized so easier to use CastingInfo
+            if not CastingInfo() then
+                self:DeleteCast(srcGUID)
+            end
+        else
+            self:DeleteCast(srcGUID)
+        end
+    elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
+        -- no idea if this is needed tbh
+        self:DeleteCast(dstGUID)
+    end
+end
 
 addon:SetScript("OnUpdate", function(self)
     if not next(activeTimers) then return end
@@ -298,10 +240,10 @@ addon:SetScript("OnUpdate", function(self)
                 castbar:SetValue(value)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
 
-                local sparkPosition = (value / cast.maxValue) * CASTBAR_WIDTH
+                local sparkPosition = (value / cast.maxValue) * castbar:GetWidth()
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
-                -- Delete cast incase it wasn't detected in CLEU (i.e unit out of range)
+                -- Delete cast incase stop event wasn't detected in CLEU (i.e unit out of range)
                 self:DeleteCast(cast.unitGUID)
             end
         end
