@@ -2,8 +2,9 @@ local _, namespace = ...
 
 namespace.channeledSpells = {
     -- MISC
-    ['First Aid'] = 7,
+    ['First Aid'] = 7, -- cast time in seconds,
     ['Gnomish Death Ray'] = 4,
+    ['Cannibalize'] = 10,
 
     -- DRUID
     ['Hurricane'] = 9.5,
@@ -12,6 +13,7 @@ namespace.channeledSpells = {
     -- HUNTER
     ['Eagle Eye'] = 60,
     ['Eyes of the Beast'] = 60,
+    ['Aimed Shot'] = 3, -- TODO: verify
 
     -- MAGE
     ['Arcane Missile'] = 2.5,
@@ -33,20 +35,29 @@ namespace.channeledSpells = {
 }
 
 namespace.defaultConfig = {
-    version = "2",
+    version = "2", -- settings version, always bump this after adding new things
 
     nameplate = {
         enabled = true,
-        position = { "BOTTOMLEFT", 15, -18 },
-        width = 150,
-        height = 10,
+        position = { "CENTER", 15, -18 },
+        width = 130,
+        height = 11,
+        showTimer = true,
+        showSpellRank = false,
+        autoPosition = false,
+        simpleStyle = false,
+        iconSize = 16,
     },
 
     target = {
         enabled = true,
-        dynamicTargetPosition = true,
-        position = { "BOTTOMLEFT", 25, -60 },
+        position = { "CENTER", -18, -87 },
         width = 150,
-        height = 10,
-    }
+        height = 14,
+        showTimer = true,
+        showSpellRank = false,
+        autoPosition = true,
+        simpleStyle = false,
+        iconSize = 16,
+    },
 }

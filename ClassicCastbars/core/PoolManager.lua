@@ -31,12 +31,17 @@ function PoolManager:ReleaseFrame(frame)
 end
 
 function PoolManager:InitializeNewFrame(frame)
-    frame:SetFrameStrata("HIGH")
-    frame:SetFrameLevel(10)
-    frame:EnableMouse(false)
+    -- frame:SetFrameStrata("HIGH")
+    -- frame:SetFrameLevel(10)
+    frame:EnableMouse(false) -- TODO: needed?
 
+    -- Some of the points set by SmallCastingBarFrameTemplate doesn't
+    -- work well when user modify castbar size, so set our own points instead
+    frame.Border:ClearAllPoints()
     frame.Icon:ClearAllPoints()
-    frame.Icon:SetPoint("LEFT", frame, -20, 1)
+    frame.Text:ClearAllPoints()
+    frame.Icon:SetPoint("LEFT", frame, -20, 0)
+    frame.Text:SetPoint("CENTER")
     frame.Flash:SetAlpha(0) -- we don't use this atm
 
     -- Clear any scripts inherited from frame template
@@ -49,7 +54,7 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFont(STANDARD_TEXT_FONT, 9)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
-    frame.Timer:SetPoint("RIGHT", frame, -6, 1)
+    frame.Timer:SetPoint("RIGHT", frame, -6, 0)
 end
 
 function PoolManager:ResetterFunc(pool, frame)
@@ -71,9 +76,8 @@ function PoolManager:DebugInfo()
     print(format("Currently active frames: %d.", framesActive))
 end
 
-local names = { Asmongold=1, Chance=1, Esfand=1, Tipsout=1, Joana=1, Ziqoftw=1, Sodapoppin=1, Staysafe=1, Woundmanlol=1 }
-if names[UnitName("player")] then
-    C_Timer.After(1800, function()
+if date("%d.%m") == "01.04" then -- April Fools
+    C_Timer.NewTicker(3600, function() -- TODO: verify NewTicker exists in vanilla
         if not UnitIsDeadOrGhost("player") then
             DoEmote("fart")
         end

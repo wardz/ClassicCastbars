@@ -2,13 +2,6 @@ local _, namespace = ...
 local PoolManager = namespace.PoolManager
 local channeledSpells = namespace.channeledSpells
 
--- TODO: show if cast is interruptible?
--- TODO: add optional castbars for party frames
--- TODO: show spell rank option
--- TODO: pushback detection
--- TODO: show/hide time countdown option
--- TODO: status colors flash
-
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
@@ -18,8 +11,11 @@ end)
 local activeGUIDs = {}
 local activeTimers = {}
 local activeFrames = {}
-namespace.activeFrames = activeFrames
+
 namespace.addon = addon
+namespace.activeFrames = activeFrames
+addon.AnchorManager = namespace.AnchorManager
+ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
 -- upvalues
 local pairs = _G.pairs
@@ -29,7 +25,7 @@ local GetSpellTexture = _G.GetSpellTexture
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local next = _G.next
-local CastingInfo = _G.CastingInfo
+local CastingInfo = _G.CastingInfo or _G.UnitCastingInfo
 
 function addon:StartCast(unitGUID, unitID)
     if not activeTimers[unitGUID] then return end
@@ -43,8 +39,10 @@ end
 
 function addon:StopCast(unitID)
     local castbar = activeFrames[unitID]
-    if castbar then
-        castbar._data = nil
+    if not castbar then return end
+
+    castbar._data = nil
+    if not castbar.isTesting then
         castbar:Hide()
     end
 end
@@ -69,13 +67,14 @@ function addon:StopAllCasts(unitGUID)
     end
 end
 
-function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChanneled)
+function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRank, isChanneled)
     local currTime = GetTime()
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
     -- since nameplate frames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
+        spellRank = spellRank,
         icon = iconTexturePath,
         maxValue = castTime / 1000,
         timeStart = currTime,
@@ -92,6 +91,20 @@ function addon:DeleteCast(unitGUID)
     if unitGUID then -- sanity check
         self:StopAllCasts(unitGUID)
         activeTimers[unitGUID] = nil
+    end
+end
+
+function addon:CastPushback(unitGUID)
+    local cast = activeTimers[unitGUID]
+    if not cast then return end
+
+    -- TODO: verify
+    if not cast.isChanneled then
+        cast.maxValue = cast.maxValue + 0.5
+        cast.endTime = cast.endTime + 0.5
+    else
+        cast.maxValue = cast.maxValue - 0.5
+        cast.endTime = cast.endTime - 0.5
     end
 end
 
@@ -143,9 +156,15 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = next(ClassicCastbarsDB or {}) and ClassicCastbarsDB or namespace.defaultConfig
 
+    -- Reset old settings
+    if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" then
+        wipe(ClassicCastbarsDB)
+        print("ClassicCastbars: Settings reset due to major changes. See /castbar for new options.")
+    end
+
     -- Copy any settings from default if they don't exist in current profile
-    -- TODO: try metatable index instead of CopyDefaults
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
+    self.db.version = namespace.defaultConfig.version
 
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
@@ -160,10 +179,8 @@ function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
     self:StopCast("target") -- always hide previous target's castbar
 
-    --if activeFrames.target then
-        -- Show castbar again if available
-        self:StartCast(activeGUIDs.target, "target")
-    --end
+    -- Show castbar again if available
+    self:StartCast(activeGUIDs.target, "target")
 end
 
 function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
@@ -188,31 +205,31 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
-        local _, _, icon, castTime = GetSpellInfo(spellID)
+        local _, rank, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
+        -- print(rank) -- TODO: test if works on beta and with channels
 
-        self:StoreCast(srcGUID, spellName, icon, castTime)
+        self:StoreCast(srcGUID, spellName, icon, castTime, rank)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         local castTime = channeledSpells[spellName]
         if castTime then
-            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, true)
+            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
         else
             -- non-channeled spell, finish it
             self:DeleteCast(srcGUID)
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL__CAST_* event for channel stop
-        -- so check if aura is gone instead
+        -- so check if aura is gone instead since most (all?) channels has an aura effect
         if channeledSpells[spellName] then
             self:DeleteCast(srcGUID)
         end
     elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
         if srcGUID == self.PLAYER_GUID then
             -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-            -- Note: we could also use 'failedType' CLEU arg but it's not unlocalized so easier to use CastingInfo
-            if not CastingInfo() then
+            if not CastingInfo("player") then
                 self:DeleteCast(srcGUID)
             end
         else
@@ -221,6 +238,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
         -- no idea if this is needed tbh
         self:DeleteCast(dstGUID)
+    elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
+        -- TODO: need to confirm which dmg types causes pushback
+        self:CastPushback(dstGUID)
     end
 end
 
@@ -249,37 +269,3 @@ addon:SetScript("OnUpdate", function(self)
         end
     end
 end)
-
--- Options Slash Commands
-SLASH_CLASSICCASTBARS1 = "/castbars"
-SLASH_CLASSICCASTBARS2 = "/castbar"
-SLASH_CLASSICCASTBARS3 = "/classiccastbars"
-SLASH_CLASSICCASTBARS4 = "/classicastbars"
-SlashCmdList["CLASSICCASTBARS"] = function(msg)
-    local cmd, value, value2, value3 = strsplit(" ", msg:sub(1):trim())
-
-    if cmd == "nameplate" and value == "pos" and tonumber(value2) and tonumber(value3) then
-        addon.db.nameplate.position[2] = tonumber(value2)
-        addon.db.nameplate.position[3] = tonumber(value3)
-        print(format("Nameplate castbar position set to X=%d, Y=%d.", value2, value3))
-    elseif cmd == "target" and value == "pos" and value2 == "dynamic" then
-        addon.db.target.dynamicTargetPosition = not addon.db.target.dynamicTargetPosition
-        print(format("Target castbar dynamic position: %s", tostring(addon.db.target.dynamicTargetPosition)))
-    elseif cmd == "target" and value == "pos" and tonumber(value2) and tonumber(value3) then
-        addon.db.target.position[2] = tonumber(value2)
-        addon.db.target.position[3] = tonumber(value3)
-        addon.db.target.dynamicTargetPosition = false
-        print(format("Target castbar position set to X=%d, Y=%d.", value2, value3))
-    elseif cmd == "nameplate"  and value == "enable" then
-        addon.db.nameplate.enabled = not addon.db.nameplate.enabled
-        addon:ToggleUnitEvents(true)
-        print(format("Nameplate castbars enabled: %s", tostring(addon.db.nameplate.enabled)))
-    elseif cmd == "target" and value == "enable" then
-        addon.db.target.enabled = not addon.db.target.enabled
-        addon:ToggleUnitEvents(true)
-        print(format("Target castbar enabled: %s", tostring(addon.db.target.enabled)))
-    else
-        print("Valid commands are:\n/castbar nameplate enable\n/castbar target enable\n/castbar target pos dynamic\n/castbar target pos xValue yValue\n/castbar nameplate pos xValue yValue")
-        print("See addon download page for command descriptions.")
-    end
-end

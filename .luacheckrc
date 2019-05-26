@@ -9,15 +9,31 @@ ignore = {
 }
 
 globals = {
+    -- Addon globals
+    "ClassicCastbars_TestMode",
     "ClassicCastbarsDB",
+    "ClassicCastbars",
+    "LibStub",
 
+    -- WoW globals
+    "GetSpellTexture",
+    "UnitGUID",
+    "strfind",
+    "C_NamePlate",
+    "C_Timer",
+    "ResetCursor",
+    "SetCursor",
     "SlashCmdList",
     "STANDARD_TEXT_FONT",
+    "UnitIsDeadOrGhost",
     "CreateFramePool",
+    "DoEmote",
+    "date",
     "CreateFrame",
     "wipe",
     "format",
     "GetTime",
     "UIParent",
     "strsplit",
+    "floor",
 }

@@ -1,6 +1,6 @@
-## Interface: 11302
+## Interface: 80000
 ## Title: ClassicCastbars
-## Notes: Adds castbars to Target frame and Nameplates. Type /castbars for options.
+## Notes: Adds castbars to Target frame and Nameplates.
 ## SavedVariables: ClassicCastbarsDB
 ## Author: Wardz
 ## Version: 1.0.0a-next.2
