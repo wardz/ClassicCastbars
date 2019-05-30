@@ -38,14 +38,37 @@ namespace.channeledSpells = {
     [GetSpellInfo(755)] = 10,       -- Health Funnel
 }
 
+-- List of abilities that makes cast time slower.
+-- Spells here have different % reduction based on spell rank,
+-- so list by spellID instead of name here so we can diff between ranks
+namespace.castTimeDecreases = {
     -- WARLOCK
-    ['Drain Life'] = 4.5,
-    ['Drain Mana'] = 4.5,
-    ['Drain Soul'] = 14.5,
-    ['Rain of Fire'] = 7.5,
-    ['Health Funnel'] = 10,
+    [1714] = 50,    -- Curse of Tongues Rank 1
+    [11719] = 60,   -- Curse of Tongues Rank 2
+
+    -- ROGUE
+    [5760] = 40,    -- Mind-Numbing Poison Rank 1
+    [8692] = 50,    -- Mind-Numbing Poison Rank 2
+    [25810] = 50,   -- Mind-Numbing Poison Rank 2 incorrect?
+    [11398] = 60,   -- Mind-Numbing Poison Rank 3
+
+    -- ITEMS
+    [17331] = 10,   -- Fang of the Crystal Spider
 }
 
+--[[
+namespace.castTimeIncreases = {
+    -- HUNTER
+    [GetSpellInfo(3045)] = 45,    -- Rapid Fire
+
+    -- MAGE
+    [GetSpellInfo(23723)] = 33,   -- Mind Quickening
+}
+
+namespace.pushbackImmunities = {
+    -- PRIEST
+    [GetSpellInfo(14743)] = 1, -- Focused Casting
+}]]
 namespace.defaultConfig = {
     version = "2", -- settings version, always bump this after adding new things
 

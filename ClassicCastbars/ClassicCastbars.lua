@@ -1,6 +1,7 @@
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
 local channeledSpells = namespace.channeledSpells
+local castTimeDecreases = namespace.castTimeDecreases
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -94,17 +95,80 @@ function addon:DeleteCast(unitGUID)
     end
 end
 
-function addon:CastPushback(unitGUID)
+-- Spaghetti code inc, you're warned
+function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
+    if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
     if not cast then return end
 
-    -- TODO: verify
+    -- if cast.prevCurrTimeModValue then print("stored total:", #cast.prevCurrTimeModValue) end
+
+    -- Set cast time modifier (i.e Curse of Tongues)
+    if not auraFaded and percentageAmount and percentageAmount > 0 then
+        if not cast.currTimeModValue or cast.currTimeModValue < percentageAmount then -- run only once unless % changed to higher val
+            if cast.currTimeModValue then -- already was reduced
+                -- if existing modifer is e.g 50% and new is 60%, we only want to adjust cast by 10%
+                percentageAmount = percentageAmount - cast.currTimeModValue
+
+                -- Store previous lesser modifier that was active
+                cast.prevCurrTimeModValue = cast.prevCurrTimeModValue or {}
+                cast.prevCurrTimeModValue[#cast.prevCurrTimeModValue + 1] = cast.currTimeModValue
+                -- print("stored lesser modifier")
+            end
+
+            -- print("refreshing timer", percentageAmount)
+            cast.currTimeModValue = (cast.currTimeModValue or 0) + percentageAmount -- highest active modifier
+            cast.maxValue = cast.maxValue + (cast.maxValue * percentageAmount) / 100
+            cast.endTime = cast.endTime + (cast.maxValue * percentageAmount) / 100
+        elseif cast.currTimeModValue == percentageAmount then
+            -- new modifier has same percentage as current active one, just store it for later
+            -- print("same percentage, storing")
+            cast.prevCurrTimeModValue = cast.prevCurrTimeModValue or {}
+            cast.prevCurrTimeModValue[#cast.prevCurrTimeModValue + 1] = percentageAmount
+        end
+    elseif auraFaded and percentageAmount then
+        -- Reset cast time modifier
+        if cast.currTimeModValue == percentageAmount then
+            cast.maxValue = cast.maxValue - (cast.maxValue * percentageAmount) / 100
+            cast.endTime = cast.endTime - (cast.maxValue * percentageAmount) / 100
+            cast.currTimeModValue = nil
+
+            -- Reset to lesser modifier if available
+            if cast.prevCurrTimeModValue then
+                local highest, index = 0
+                for i = 1, #cast.prevCurrTimeModValue do
+                    if cast.prevCurrTimeModValue[i] and cast.prevCurrTimeModValue[i] > highest then
+                        highest, index = cast.prevCurrTimeModValue[i], i
+                    end
+                end
+
+                if index then
+                    cast.prevCurrTimeModValue[index] = nil
+                    -- print("resetting to lesser modifier", highest)
+                    return self:CastPushback(unitGUID, highest)
+                end
+            end
+        end
+
+        if cast.prevCurrTimeModValue then
+            -- Delete 1 old modifier (doesn't matter which one aslong as its the same %)
+            for i = 1, #cast.prevCurrTimeModValue do
+                if cast.prevCurrTimeModValue[i] == percentageAmount then
+                    -- print("deleted lesser modifier, new total:", #cast.prevCurrTimeModValue - 1)
+                    cast.prevCurrTimeModValue[i] = nil
+                    return
+                end
+            end
+        end
+    else -- normal pushback
     if not cast.isChanneled then
         cast.maxValue = cast.maxValue + 0.5
         cast.endTime = cast.endTime + 0.5
     else
-        cast.maxValue = cast.maxValue - 0.5
-        cast.endTime = cast.endTime - 0.5
+            -- channels are reduced by 25%
+            cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
+            cast.endTime = cast.endTime - (cast.maxValue * 25) / 100
+        end
     end
 end
 
@@ -202,51 +266,61 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
 end
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName, _, _, _, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
-        local _, rank, icon, castTime = GetSpellInfo(spellID)
+        local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
-        -- print(rank) -- TODO: test if works on beta and with channels
+        local rank = GetSpellSubtext(116) -- async so won't work on first try but thats okay
 
-        self:StoreCast(srcGUID, spellName, icon, castTime, rank)
+        return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return for tail call optimization and immediately exiting function
     elseif eventType == "SPELL_CAST_SUCCESS" then
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         local castTime = channeledSpells[spellName]
         if castTime then
-            self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
-        else
+            return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
+        end
+
             -- non-channeled spell, finish it
-            self:DeleteCast(srcGUID)
+        return self:DeleteCast(srcGUID)
+    elseif eventType == "SPELL_AURA_APPLIED" then
+        if castTimeDecreases[spellID] then
+            -- Aura that slows casting speed was applied
+            return self:CastPushback(dstGUID, namespace.castTimeDecreases[spellID])
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
-        -- Channeled spells has no SPELL__CAST_* event for channel stop
+        -- Channeled spells has no SPELL_CAST_* event for channel stop,
         -- so check if aura is gone instead since most (all?) channels has an aura effect
         if channeledSpells[spellName] then
-            self:DeleteCast(srcGUID)
+            return self:DeleteCast(srcGUID)
+        elseif castTimeDecreases[spellID] then
+            -- Aura that slows casting speed was removed
+            return self:CastPushback(dstGUID, castTimeDecreases[spellID], true)
         end
     elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
         if srcGUID == self.PLAYER_GUID then
             -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
             if not CastingInfo("player") then
-                self:DeleteCast(srcGUID)
+                return self:DeleteCast(srcGUID)
             end
         else
-            self:DeleteCast(srcGUID)
+            return self:DeleteCast(srcGUID)
         end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
         -- no idea if this is needed tbh
-        self:DeleteCast(dstGUID)
+        return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
-        -- TODO: need to confirm which dmg types causes pushback
-        self:CastPushback(dstGUID)
+        if resisted or blocked or absorbed then return end
+        return self:CastPushback(dstGUID)
     end
 end
 
 addon:SetScript("OnUpdate", function(self)
     if not next(activeTimers) then return end
+
     local currTime = GetTime()
+    local pushbackEnabled = self.db.pushbackDetect
 
     -- Update all active castbars in a single OnUpdate call
     for unit, castbar in pairs(activeFrames) do
@@ -256,7 +330,14 @@ addon:SetScript("OnUpdate", function(self)
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then
-                local value = currTime - cast.timeStart
+                local value = cast.maxValue - castTime
+                if cast.isChanneled then -- inverse
+                    value = cast.maxValue - value
+                end
+
+                if pushbackEnabled then
+                    castbar:SetMinMaxValues(0, cast.maxValue)
+                end
                 castbar:SetValue(value)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
 
