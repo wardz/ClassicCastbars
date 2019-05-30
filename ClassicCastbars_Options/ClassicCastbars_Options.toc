@@ -1,0 +1,10 @@
+## Interface: 11302
+## Title: ClassicCastbars_Options
+## Notes: Configuration for ClassicCastbars. Type /castbars for options.
+## Dependencies: ClassicCastbars
+
+Libs\Embeds.xml
+Locales\Locales.xml
+
+TestMode.lua
+ClassicCastbars_Options.lua
