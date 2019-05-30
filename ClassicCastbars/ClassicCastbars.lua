@@ -281,7 +281,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     if eventType == "SPELL_CAST_START" then
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
-        local rank = GetSpellSubtext(116) -- async so won't work on first try but thats okay
+        local rank = GetSpellSubtext(spellID) -- async so won't work on first try but thats okay
 
         return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return for tail call optimization and immediately exiting function
     elseif eventType == "SPELL_CAST_SUCCESS" then
