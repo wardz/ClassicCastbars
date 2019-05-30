@@ -21,25 +21,25 @@ end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     if not self.db.target.autoPosition then
-        -- Auto position is turned off, set pos from cfg
+        -- Auto position is turned off, set pos from user cfg instead
         local pos = self.db.target.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
         return
     end
 
     -- Set position based on aura amount & targetframe type
+    local auraRows = parentFrame.auraRows or 0
     if parentFrame.haveToT or parentFrame.haveElite then
-        -- We need to check if auraRows exists here incase parentFrame is a third-party unitframe and not blizz unitframe
-        if parentFrame.buffsOnTop or (parentFrame.auraRows and parentFrame.auraRows <= 1) then
-            castbar:SetPoint("CENTER", parentFrame, -18, -60)
+        if parentFrame.buffsOnTop or auraRows <= 1 then
+            castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
-            castbar:SetPoint("CENTER", parentFrame, -18, -90)
+            castbar:SetPoint("CENTER", parentFrame, -18, -100)
         end
     else
-        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows and parentFrame.auraRows > 0) then
-            castbar:SetPoint("CENTER", parentFrame, -18, -90)
+        if not parentFrame.buffsOnTop and auraRows > 0 then
+            castbar:SetPoint("CENTER", parentFrame, -18, -100)
         else
-            castbar:SetPoint("CENTER", parentFrame, -18, -60)
+            castbar:SetPoint("CENTER", parentFrame, -18, -50)
         end
     end
 end
