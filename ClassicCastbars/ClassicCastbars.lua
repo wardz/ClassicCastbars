@@ -6,6 +6,7 @@ local castTimeDecreases = namespace.castTimeDecreases
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
+    -- this will basically trigger addon:EVENT_NAME(arguments)
     return self[event](self, ...)
 end)
 
@@ -13,12 +14,13 @@ local activeGUIDs = {}
 local activeTimers = {}
 local activeFrames = {}
 
-namespace.addon = addon
-namespace.activeFrames = activeFrames
 addon.AnchorManager = namespace.AnchorManager
+addon.defaultConfig = namespace.defaultConfig
+addon.activeFrames = activeFrames
+namespace.addon = addon
 ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
--- upvalues
+-- upvalues for speed
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
 local GetSpellInfo = _G.GetSpellInfo
@@ -26,6 +28,7 @@ local GetSpellTexture = _G.GetSpellTexture
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local next = _G.next
+local GetSpellSubtext = _G.GetSpellSubtext
 local CastingInfo = _G.CastingInfo or _G.UnitCastingInfo
 
 function addon:StartCast(unitGUID, unitID)
@@ -78,10 +81,10 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRa
         spellRank = spellRank,
         icon = iconTexturePath,
         maxValue = castTime / 1000,
-        timeStart = currTime,
+        --timeStart = currTime,
         endTime = currTime + (castTime / 1000),
         unitGUID = unitGUID,
-        isChanneled = isChanneled, -- TODO: inverse castbar values if this is true
+        isChanneled = isChanneled,
     }
 
     self:StartAllCasts(unitGUID)
@@ -161,10 +164,10 @@ function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
             end
         end
     else -- normal pushback
-    if not cast.isChanneled then
-        cast.maxValue = cast.maxValue + 0.5
-        cast.endTime = cast.endTime + 0.5
-    else
+        if not cast.isChanneled then
+            cast.maxValue = cast.maxValue + 0.5
+            cast.endTime = cast.endTime + 0.5
+        else
             -- channels are reduced by 25%
             cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
             cast.endTime = cast.endTime - (cast.maxValue * 25) / 100
@@ -202,6 +205,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
 end
 
+-- Copies table values from src to dst if they don't exist in dst
 local function CopyDefaults(src, dst)
     if type(src) ~= "table" then return {} end
     if type(dst) ~= "table" then dst = {} end
@@ -221,14 +225,21 @@ function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = next(ClassicCastbarsDB or {}) and ClassicCastbarsDB or namespace.defaultConfig
 
     -- Reset old settings
-    if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" then
+    if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" or
+        ClassicCastbarsDB.nameplate and not ClassicCastbarsDB.version then
         wipe(ClassicCastbarsDB)
-        print("ClassicCastbars: Settings reset due to major changes. See /castbar for new options.")
+        print("ClassicCastbars: All settings reset due to major changes. See /castbar for new options.")
     end
 
     -- Copy any settings from default if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
+
+    -- config is not needed anymore if options are not loaded
+    if not IsAddOnLoaded("ClassicCastbars_Options") then
+        self.defaultConfig = nil
+        namespace.defaultConfig = nil
+    end
 
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
@@ -241,10 +252,9 @@ end
 -- Bind unitIDs to unitGUIDs so we can efficiently get unitIDs in CLEU events
 function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
-    self:StopCast("target") -- always hide previous target's castbar
 
-    -- Show castbar again if available
-    self:StartCast(activeGUIDs.target, "target")
+    self:StopCast("target") -- always hide previous target's castbar
+    self:StartCast(activeGUIDs.target, "target") -- Show castbar again if available
 end
 
 function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
@@ -282,7 +292,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
         end
 
-            -- non-channeled spell, finish it
+        -- non-channeled spell, finish it
         return self:DeleteCast(srcGUID)
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeDecreases[spellID] then

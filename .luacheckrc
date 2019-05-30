@@ -16,6 +16,8 @@ globals = {
     "LibStub",
 
     -- WoW globals
+    "IsAddOnLoaded",
+    "GetAddOnMetadata",
     "GetSpellTexture",
     "UnitGUID",
     "strfind",

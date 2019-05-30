@@ -1,8 +1,9 @@
 local _, namespace = ...
 local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
+
 local addon = namespace.addon
-local activeFrames = namespace.activeFrames
+local activeFrames = addon.activeFrames
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -52,7 +53,7 @@ function addon:DisplayCastbar(castbar, unitID)
     if unitID == "nameplate-testmode" then
         db = self.db.nameplate
     else
-        db = self.db[unitID:gsub("%d", "")] -- nameplate1 --> nameplate
+        db = self.db[unitID:gsub("%d", "")] -- nameplate1 -> nameplate
     end
 
     local cast = castbar._data
@@ -62,21 +63,23 @@ function addon:DisplayCastbar(castbar, unitID)
 
     if unitID == "target" then
         self:SetTargetCastbarPosition(castbar, parentFrame)
-        --castbar:SetScale(1)
+        castbar:SetScale(1)
     else -- nameplates
         local pos = db.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-        --castbar:SetScale(0.7) -- TODO: fixme
+        castbar:SetScale(0.7)
     end
 
     if db.simpleStyle then
         castbar.Border:SetAlpha(0)
         castbar.Icon:SetSize(db.height, db.height)
         castbar.Icon:SetPoint("LEFT", castbar, -db.height, 0)
+        castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     else
         castbar.Border:SetAlpha(1)
         castbar.Icon:SetSize(db.iconSize, db.iconSize)
         castbar.Icon:SetPoint("LEFT", castbar, -db.iconSize - 7, 0)
+        castbar.Icon:SetTexCoord(0, 1, 0, 1)
 
         -- Update border to match castbar size
         local width, height = castbar:GetWidth() * 1.16, castbar:GetHeight() * 1.16
@@ -84,18 +87,20 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
     end
 
-    -- Update text + icon if it has changed
-    if castbar.Text:GetText() ~= cast.spellName then
-        castbar.Icon:SetTexture(cast.icon)
+    local spellName
+    if db.showSpellRank and cast.spellRank then
+        spellName = cast.spellName .. " (" .. cast.spellRank .. ")"
+    else
+        spellName = cast.spellName
+    end
 
-        if db.showSpellRank and cast.spellRank then
-            castbar.Text:SetText(cast.spellName .. " (" .. cast.spellRank .. ")")
-        else
-            castbar.Text:SetText(cast.spellName)
-        end
+    -- Update text + icon if it has changed
+    if castbar.Text:GetText() ~= spellName then
+        castbar.Icon:SetTexture(cast.icon)
+        castbar.Text:SetText(spellName)
 
         -- Move timer position depending on spellname length
-        if db.showTimer and (cast.spellName:len() + (cast.spellRank and cast.spellRank:len() or 0)) >= 19 then
+        if db.showTimer and spellName:len() >= 19 then
             castbar.Timer:SetPoint("RIGHT", castbar, 20, 0)
         else
             castbar.Timer:SetPoint("RIGHT", castbar, -6, 0)

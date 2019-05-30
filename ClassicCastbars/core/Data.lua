@@ -69,14 +69,17 @@ namespace.pushbackImmunities = {
     -- PRIEST
     [GetSpellInfo(14743)] = 1, -- Focused Casting
 }]]
+
+-- Savedvariables
 namespace.defaultConfig = {
     version = "2", -- settings version, always bump this after adding new things
+    pushbackDetect = false,
 
     nameplate = {
         enabled = true,
-        position = { "CENTER", 15, -18 },
-        width = 130,
-        height = 11,
+        position = { "CENTER", -5.5, -35 },
+        width = 150,
+        height = 14,
         showTimer = true,
         showSpellRank = false,
         autoPosition = false,
