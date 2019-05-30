@@ -31,16 +31,12 @@ function PoolManager:ReleaseFrame(frame)
 end
 
 function PoolManager:InitializeNewFrame(frame)
-    -- frame:SetFrameStrata("HIGH")
-    -- frame:SetFrameLevel(10)
-    frame:EnableMouse(false) -- TODO: needed?
-
     -- Some of the points set by SmallCastingBarFrameTemplate doesn't
     -- work well when user modify castbar size, so set our own points instead
     frame.Border:ClearAllPoints()
     frame.Icon:ClearAllPoints()
     frame.Text:ClearAllPoints()
-    frame.Icon:SetPoint("LEFT", frame, -20, 0)
+    frame.Icon:SetPoint("LEFT", frame, -15, 0)
     frame.Text:SetPoint("CENTER")
     frame.Flash:SetAlpha(0) -- we don't use this atm
 
@@ -50,6 +46,7 @@ function PoolManager:InitializeNewFrame(frame)
     frame:SetScript("OnUpdate", nil)
     frame:SetScript("OnShow", nil)
 
+    -- Add cast countdown timer
     frame.Timer = frame:CreateFontString(nil, "OVERLAY")
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFont(STANDARD_TEXT_FONT, 9)
@@ -76,8 +73,8 @@ function PoolManager:DebugInfo()
     print(format("Currently active frames: %d.", framesActive))
 end
 
-if date("%d.%m") == "01.04" then -- April Fools
-    C_Timer.NewTicker(3600, function() -- TODO: verify NewTicker exists in vanilla
+if date("%d.%m") == "01.04" then -- April Fools :)
+    C_Timer.After(1800, function()
         if not UnitIsDeadOrGhost("player") then
             DoEmote("fart")
         end
