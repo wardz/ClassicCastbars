@@ -1,30 +1,42 @@
 local _, namespace = ...
+local GetSpellInfo = _G.GetSpellInfo
 
+-- Channeled spells does not return cast time, so we have to build our own list.
+--
+-- We use GetSpellInfo here to get the localized spell name,
+-- that way we don't have to list every spellID for an ability (diff ranks have diff id)
 namespace.channeledSpells = {
     -- MISC
-    ['First Aid'] = 7, -- cast time in seconds,
-    ['Gnomish Death Ray'] = 4,
-    ['Cannibalize'] = 10,
+    [GetSpellInfo(746)] = 7,        -- First Aid
+    [GetSpellInfo(13278)] = 4,      -- Gnomish Death Ray
+    [GetSpellInfo(20577)] = 10,     -- Cannibalize
 
     -- DRUID
-    ['Hurricane'] = 9.5,
-    ['Tranquility'] = 10,
+    [GetSpellInfo(17401)] = 9.5,    -- Hurricane
+    [GetSpellInfo(740)] = 9.5,      -- Tranquility
 
     -- HUNTER
-    ['Eagle Eye'] = 60,
-    ['Eyes of the Beast'] = 60,
-    ['Aimed Shot'] = 3, -- TODO: verify
+    [GetSpellInfo(6197)] = 60,      -- Eagle Eye
+    [GetSpellInfo(1002)] = 60,      -- Eyes of the Beast
+    [GetSpellInfo(20900)] = 3,      -- Aimed Shot TODO: verify
 
     -- MAGE
-    ['Arcane Missile'] = 2.5,
-    ['Arcane Missiles'] = 4.5,
-    ['Blizzard'] = 7.5,
-    ['Evocation'] = 8,
+    [GetSpellInfo(5143)] = 4.5,     -- Arcane Missiles
+    [GetSpellInfo(10)] = 7.5,       -- Blizzard
+    [GetSpellInfo(12051)] = 8,      -- Evocation
 
     -- PRIEST
-    ['Mind Flay'] = 3,
-    ['Mind Vision'] = 30,
-    ['Mind Control'] = 3,
+    [GetSpellInfo(15407)] = 3,      -- Mind Flay
+    [GetSpellInfo(2096)] = 60,      -- Mind Vision
+    [GetSpellInfo(605)] = 3,        -- Mind Control
+
+    -- WARLOCK
+    [GetSpellInfo(689)] = 4.5,      -- Drain Life
+    [GetSpellInfo(5138)] = 4.5,     -- Drain Mana
+    [GetSpellInfo(1120)] = 14.5,    -- Drain Soul
+    [GetSpellInfo(5740)] = 7.5,     -- Rain of Fire
+    [GetSpellInfo(755)] = 10,       -- Health Funnel
+}
 
     -- WARLOCK
     ['Drain Life'] = 4.5,
