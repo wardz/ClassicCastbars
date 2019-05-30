@@ -1,5 +1,5 @@
 ## ClassicCastbars
-Lightweight addon that adds castbars to the target frame and nameplates in Classic World of Warcraft 1.13.x.  
+Lightweight addon that adds castingbars to the target frame and nameplates in Classic World of Warcraft 1.13.x.  
 Castbars have configurable size, positioning and more. See /castbars.
 
 ![Imgur](https://i.imgur.com/thxJqi6.jpg)
@@ -16,7 +16,7 @@ add any major things like retexturing frames, custom animations, alerts and so o
 
 ## Contribute
 - [Submit an issue or feature request](https://github.com/wardz/ClassicCastbars/issues)
-- [Submit a pull request](https://github.com/wardz/ClassicCastbars/pulls)
+- [Submit a pull request](https://github.com/wardz/ClassicCastbars/pulls)  
     When forking the addon you should save the folder somewhere outside your WoW AddOns directory and  
     instead have two symlinks inside the AddOns folder pointing to
     `forkFolder/ClassicCastbars/` and `forkFolder/ClassicCastbars_Options/`.
