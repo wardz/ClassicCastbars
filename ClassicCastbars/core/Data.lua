@@ -56,6 +56,27 @@ namespace.castTimeDecreases = {
     [17331] = 10,   -- Fang of the Crystal Spider
 }
 
+-- Spells that often have cast time reduced by talents
+namespace.castTimeTalentDecreases = {
+    [GetSpellInfo(403)] = 1,        -- Lightning Bolt
+    [GetSpellInfo(421)] = 1,        -- Chain Lightning
+    [GetSpellInfo(6353)] = 2,       -- Soul Fire
+    [GetSpellInfo(116)] = 0.5,      -- Frostbolt
+--  [GetSpellInfo(133)] = 0.5,      -- Fireball
+    [GetSpellInfo(686)] = 0.5,      -- Shadow Bolt
+    [GetSpellInfo(348)] = 0.5,      -- Immolate
+    [GetSpellInfo(331)] = 0.5,      -- Healing Wave
+    [GetSpellInfo(585)] = 0.5,      -- Smite
+    [GetSpellInfo(14914)] = 0.5,    -- Holy Fire
+    [GetSpellInfo(2054)] = 0.5,     -- Heal
+    [GetSpellInfo(25314)] = 0.5,    -- Greater Heal
+    [GetSpellInfo(8129)] = 0.5,     -- Mana Burn
+    [GetSpellInfo(5176)] = 0.5,     -- Wrath
+    [GetSpellInfo(2912)] = 0.5,     -- Starfire
+    [GetSpellInfo(5185)] = 0.5,     -- Healing Touch
+    [GetSpellInfo(2645)] = 2,       -- Ghost Wolf
+}
+
 --[[
 namespace.castTimeIncreases = {
     -- HUNTER

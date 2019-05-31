@@ -1,7 +1,5 @@
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
-local channeledSpells = namespace.channeledSpells
-local castTimeDecreases = namespace.castTimeDecreases
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -275,6 +273,10 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     end
 end
 
+local channeledSpells = namespace.channeledSpells
+local castTimeDecreases = namespace.castTimeDecreases
+local castTimeTalentDecreases = namespace.castTimeTalentDecreases
+
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName, _, _, _, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
 
@@ -282,6 +284,12 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
         local rank = GetSpellSubtext(spellID) -- async so won't work on first try but thats okay
+
+        -- Reduce cast time for certain spells
+        local reducedTime = castTimeTalentDecreases[spellName]
+        if reducedTime then
+            castTime = castTime - reducedTime
+        end
 
         return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return for tail call optimization and immediately exiting function
     elseif eventType == "SPELL_CAST_SUCCESS" then
