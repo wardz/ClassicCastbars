@@ -49,7 +49,6 @@ function PoolManager:InitializeNewFrame(frame)
     -- Add cast countdown timer
     frame.Timer = frame:CreateFontString(nil, "OVERLAY")
     frame.Timer:SetTextColor(1, 1, 1)
-    frame.Timer:SetFont(STANDARD_TEXT_FONT, 9)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
     frame.Timer:SetPoint("RIGHT", frame, -6, 0)
 end
