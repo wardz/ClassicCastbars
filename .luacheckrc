@@ -5,7 +5,8 @@ ignore = {
     "11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
     "213", -- Unused loop variable
     "212/self", -- Unused argument self
-    "212/pool", -- Unused argument pool
+    "212/pool",
+    "212/cast",
 }
 
 globals = {

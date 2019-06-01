@@ -15,8 +15,22 @@ local function CopyTable(src, dest)
 end
 
 local function CreateUnitTabGroup(unitID, localizedUnit, order)
+    local function GetLSMTable(lsmType)
+        local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
+
+        local default
+        if lsmType == "border" then
+            default = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+        --[[elseif lsmType == "font" then
+            default = "SystemFont_Shadow_Small"]]
+        end
+
+        tbl[L.DEFAULT] = default
+        return tbl
+    end
+
     local function GetLSMNameByTexture(lsmType, texturePath)
-        for name, texture in pairs(LSM:HashTable(lsmType)) do
+        for name, texture in pairs(GetLSMTable(lsmType)) do
             if texture == texturePath then
                 return name
             end
@@ -185,7 +199,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         dialogControl = 'LSM30_Font',
                         name = L.CAST_FONT,
                         desc = L.CAST_FONT_TOOLTIP,
-                        values = LSM:HashTable("font"),
+                        values = GetLSMTable("font"),
                         get = function(info)
                             -- We store texture path in savedvariables so ClassicCastbars can still work without
                             -- LibSharedMedia or ClassicCastbars_Options loaded, but since LSM/SharedMediaWidgets
@@ -204,7 +218,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         dialogControl = 'LSM30_Statusbar',
                         name = L.CAST_STATUSBAR,
                         desc = L.CAST_STATUSBAR_TOOLTIP,
-                        values = LSM:HashTable("statusbar"),
+                        values = GetLSMTable("statusbar"),
                         get = function(info)
                             return GetLSMNameByTexture("statusbar", ClassicCastbarsDB[info[1]][info[3]])
                         end,
@@ -220,15 +234,24 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         dialogControl = 'LSM30_Border',
                         name = L.CAST_BORDER,
                         desc = L.CAST_BORDER_TOOLTIP,
-                        values = LSM:HashTable("border"),
+                        values = GetLSMTable("border"),
                         get = function(info)
                             return GetLSMNameByTexture("border", ClassicCastbarsDB[info[1]][info[3]])
                         end,
                         set = function(info, val)
-                            ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("border")[val]
+                            if val == L.DEFAULT then
+                                ClassicCastbarsDB[info[1]][info[3]] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+                            else
+                                ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("border")[val]
+                            end
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
+                    notes = {
+                        order = 4,
+                        type = "description",
+                        name = "Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here.",
+                    }
                 },
            },
         },
