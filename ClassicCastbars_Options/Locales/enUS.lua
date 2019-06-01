@@ -13,7 +13,7 @@ L["AUTO_POS_BAR_TOOLTIP"] = [=[When enabled it will auto position the castbar ba
 Does not work with third-party unit frames.]=]
 L["CASTBAR_SIZING"] = "Castbar Sizing"
 L["GENERAL"] = "General Settings"
-L["HEIGHT"] = "Height"
+L["HEIGHT"] = "Castbar Height"
 L["HEIGHT_TOOLTIP"] = "Sets the castbar height. Default is 14."
 L["ICON_SIZE"] = "Icon Size"
 L["ICON_SIZE_TOOLTIP"] = "Set the size for the castbar spell icon."
@@ -41,5 +41,16 @@ L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can
 |cFFFF0000You need to target someone first to see the castbar.|r]=]
 L["TOGGLE_CASTBAR"] = "Enable Castbar"
 L["TOGGLE_CASTBAR_TOOLTIP"] = "Enables or disables castbar for this specific unit frame."
-L["WIDTH"] = "Width"
+L["WIDTH"] = "Castbar Width"
 L["WIDTH_TOOLTIP"] = "Sets the castbar width. Default is 150."
+
+-- TODO: import to curseforge and export
+L.CASTBAR_TEXTURE_FONT = "Castbar Style"
+L.CAST_FONT = "Select Castbar Font"
+L.CAST_FONT_TOOLTIP = "Select font type used for spell name and timer text."
+L.CAST_STATUSBAR = "Select Castbar Texture"
+L.CAST_STATUSBAR_TOOLTIP = "Select texture type used for the castbar/statusbar."
+L.CAST_BORDER = "Select Border Texture"
+L.CAST_BORDER_TOOLTIP = "Select texture used for castbar border."
+L.FONT_SIZE = "Font Size"
+L.FONT_SIZE_TOOLTIP = "Set font size used for spell name and timer text."

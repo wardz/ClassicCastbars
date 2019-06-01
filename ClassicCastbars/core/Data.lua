@@ -106,6 +106,10 @@ namespace.defaultConfig = {
         autoPosition = false,
         simpleStyle = false,
         iconSize = 16,
+        castFont = "Fonts\\FRIZQT__.TTF",
+        castFontSize = 10,
+        castStatusbar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
     },
 
     target = {
@@ -118,5 +122,9 @@ namespace.defaultConfig = {
         autoPosition = true,
         simpleStyle = false,
         iconSize = 16,
+        castFont = "Fonts\\FRIZQT__.TTF",
+        castFontSize = 10,
+        castStatusbar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
     },
 }

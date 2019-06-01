@@ -70,6 +70,11 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar:SetScale(0.7)
     end
 
+    castbar:SetStatusBarTexture(db.castStatusbar)
+    castbar.Text:SetFont(db.castFont, db.castFontSize) -- TODO: has to certain size for non english clients  <Shadow x="1" y="-1">
+    castbar.Timer:SetFont(db.castFont, db.castFontSize)
+    -- castbar.Border:SetTexture(db.castBorder) -- TODO: has to be backdrop when using LSM
+
     if db.simpleStyle then
         castbar.Border:SetAlpha(0)
         castbar.Icon:SetSize(db.height, db.height)
