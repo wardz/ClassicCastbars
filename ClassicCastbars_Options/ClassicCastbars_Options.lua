@@ -108,12 +108,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                                 func = function()
                                     ClassicCastbars_TestMode:ToggleCastbarMovable(unitID)
                                 end,
-                },
+                            },
                             notes = {
                                 order = 2,
                                 name = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
                                 type = "description",
-            },
+                            },
                         },
                     },
                 },
@@ -167,8 +167,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = 6,
                         max = 30,
                         step = 1,
+                    },
                 },
-            },
             },
 
             sharedMedia = {
@@ -250,6 +250,7 @@ local function GetOptionsTable()
                 order = 3,
                 name = L.RESET_ALL,
                 type = "execute",
+                confirm = true,
                 func = function()
                     -- Reset savedvariables to default
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig, ClassicCastbarsDB)
