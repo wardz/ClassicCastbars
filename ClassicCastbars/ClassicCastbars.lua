@@ -288,7 +288,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Reduce cast time for certain spells
         local reducedTime = castTimeTalentDecreases[spellName]
         if reducedTime then
-            castTime = castTime - reducedTime
+            castTime = castTime - (reducedTime * 1000)
         end
 
         return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return for tail call optimization and immediately exiting function
