@@ -316,7 +316,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             -- Aura that slows casting speed was removed
             return self:CastPushback(dstGUID, castTimeDecreases[spellID], true)
         end
-    elseif eventType == "SPELL_CAST_FAILED" or eventType == "SPELL_INTERRUPT" then
+    elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then
             -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
             if not CastingInfo("player") then
@@ -325,8 +325,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         else
             return self:DeleteCast(srcGUID)
         end
-    elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" then
-        -- no idea if this is needed tbh
+    elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if resisted or blocked or absorbed then return end
