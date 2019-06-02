@@ -7,7 +7,7 @@ local GetSpellInfo = _G.GetSpellInfo
 -- that way we don't have to list every spellID for an ability (diff ranks have diff id)
 namespace.channeledSpells = {
     -- MISC
-    [GetSpellInfo(746)] = 7,        -- First Aid -- TODO: verify
+    [GetSpellInfo(746)] = 7,        -- First Aid
     [GetSpellInfo(13278)] = 4,      -- Gnomish Death Ray
     [GetSpellInfo(20577)] = 10,     -- Cannibalize
 
