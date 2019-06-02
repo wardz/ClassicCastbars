@@ -21,8 +21,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         local default
         if lsmType == "border" then
             default = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
-        --[[elseif lsmType == "font" then
-            default = "SystemFont_Shadow_Small"]]
+        elseif lsmType == "font" then
+            local loc = GetLocale()
+            default = loc == "zhCN" or loc == "zhTW" and "Fonts\\ARHei.ttf" or "Fonts\\2002.ttf"
         end
 
         tbl[L.DEFAULT] = default

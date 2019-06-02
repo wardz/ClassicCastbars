@@ -120,7 +120,8 @@ end
 
 function addon:SetCastbarFonts(castbar, cast, db)
     local fontName, fontHeight = castbar.Text:GetFont()
-    if (db.castFont and fontName ~= db.castFont) or db.castFontSize ~= fontHeight then
+
+    if fontName ~= db.castFont or db.castFontSize ~= fontHeight then
         castbar.Text:SetFont(db.castFont, db.castFontSize)
         castbar.Timer:SetFont(db.castFont, db.castFontSize)
     end
