@@ -75,6 +75,10 @@ namespace.castTimeTalentDecreases = {
     [GetSpellInfo(2912)] = 0.5,     -- Starfire
     [GetSpellInfo(5185)] = 0.5,     -- Healing Touch
     [GetSpellInfo(2645)] = 2,       -- Ghost Wolf
+    [GetSpellInfo(691)] = 4,        -- Summon Felhunter
+    [GetSpellInfo(688)] = 4,        -- Summon Imp
+    [GetSpellInfo(697)] = 4,        -- Summon Voidwalker
+    [GetSpellInfo(712)] = 4,        -- Summon Succubus
 }
 
 --[[
