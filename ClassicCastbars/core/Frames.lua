@@ -87,6 +87,10 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
     end
 
+    if db.textureFile then
+        castbar:SetStatusBarTexture(db.textureFile)
+    end
+
     local spellName
     if db.showSpellRank and cast.spellRank then
         spellName = cast.spellName .. " (" .. cast.spellRank .. ")"

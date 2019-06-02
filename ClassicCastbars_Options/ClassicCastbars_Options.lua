@@ -1,5 +1,23 @@
+local addon, ns = ...;
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 
+local SML = LibStub:GetLibrary("LibSharedMedia-3.0")
+
+local MediaList = {}
+local mediaType = "statusbar"
+
+local function getBarTextures()
+
+    MediaList[mediaType] = MediaList[mediaType] or {}
+
+    for k in pairs(MediaList[mediaType]) do MediaList[mediaType][k] = nil end
+    for _, name in pairs(SML:List(mediaType)) do
+        MediaList[mediaType][name] = SML:Fetch(mediaType,name)
+    end
+    
+    return MediaList[mediaType]
+end
+    
 local function CopyTable(src, dest)
     if type(dest) ~= "table" then dest = {} end
     if type(src) == "table" then
@@ -81,6 +99,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.SIMPLE_STYLE,
                         desc = L.SIMPLE_STYLE_TOOLTIP,
                         type = "toggle",
+                    },
+                    texture = {
+                        order = 7,
+                        type = "select",
+                        name = L.TEXTURE,
+                        desc = L.TEXTURE_TOOLTIP,
+                        dialogControl = "LSM30_Statusbar",
+                        values = getBarTextures,
+                        set = function(_, val)
+                            ClassicCastbarsDB[unitID].texture = val
+                            ClassicCastbarsDB[unitID].textureFile = MediaList[mediaType][val]
+                            ClassicCastbars:ToggleUnitEvents(true)
+                            -- ClassicCastbars_TestMode:OnOptionChanged(unitID)
+                        end,
                     },
                 },
             },

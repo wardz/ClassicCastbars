@@ -93,7 +93,7 @@ namespace.pushbackImmunities = {
 
 -- Savedvariables
 namespace.defaultConfig = {
-    version = "2", -- settings version, always bump this after adding new things
+    version = "3", -- settings version, always bump this after adding new things
     pushbackDetect = false,
 
     nameplate = {
@@ -118,5 +118,7 @@ namespace.defaultConfig = {
         autoPosition = true,
         simpleStyle = false,
         iconSize = 16,
+        texture = nil,
+        textureFile = nil,
     },
 }
