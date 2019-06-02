@@ -7,7 +7,7 @@ local GetSpellInfo = _G.GetSpellInfo
 -- that way we don't have to list every spellID for an ability (diff ranks have diff id)
 namespace.channeledSpells = {
     -- MISC
-    [GetSpellInfo(746)] = 7,        -- First Aid
+    [GetSpellInfo(746)] = 7,        -- First Aid -- TODO: verify
     [GetSpellInfo(13278)] = 4,      -- Gnomish Death Ray
     [GetSpellInfo(20577)] = 10,     -- Cannibalize
 
@@ -93,7 +93,7 @@ namespace.pushbackImmunities = {
 
 -- Savedvariables
 namespace.defaultConfig = {
-    version = "2", -- settings version, always bump this after adding new things
+    version = "3", -- settings version, always bump this after adding new things
     pushbackDetect = false,
 
     nameplate = {
