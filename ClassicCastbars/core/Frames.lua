@@ -82,7 +82,9 @@ function addon:SetCastbarStyle(castbar, cast, db)
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
         castbar.Border:SetAlpha(1)
-       if castbar.BorderFrame then castbar.BorderFrame:SetAlpha(0) end
+        if castbar.BorderFrame then
+            castbar.BorderFrame:SetAlpha(0)
+        end
 
         -- Update border to match castbar size
         local width, height = castbar:GetWidth() * 1.16, castbar:GetHeight() * 1.16
@@ -110,7 +112,6 @@ function addon:SetCastbarStyle(castbar, cast, db)
                 edgeFile = db.castBorder,
                 tile = false, tileSize = 0,
                 edgeSize = castbar:GetHeight(),
-                insets = { left = -1, right = -1, top = -1, bottom = -1 },
             })
             castbar.BorderFrame.currentTexture = db.castBorder
         end
@@ -118,7 +119,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
 end
 
 function addon:SetCastbarFonts(castbar, cast, db)
-    if castbar.Text:GetFont() ~= db.castFont then
+    if db.castFont and castbar.Text:GetFont() ~= db.castFont then
         castbar.Text:SetFont(db.castFont, db.castFontSize)
         castbar.Timer:SetFont(db.castFont, db.castFontSize)
     end
