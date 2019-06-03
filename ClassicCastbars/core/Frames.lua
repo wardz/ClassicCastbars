@@ -103,7 +103,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
         if db.castBorder == "Interface\\CHARACTERFRAME\\UI-Party-Border" or db.castBorder == "Interface\\Tooltips\\ChatBubble-Backdrop" then
             castbar.BorderFrame:SetFrameLevel(1)
         else
-            castbar.BorderFrame:SetFrameLevel(3)
+            castbar.BorderFrame:SetFrameLevel(castbar:GetFrameLevel() + 1)
         end
 
         castbar.BorderFrame:SetAlpha(1)
