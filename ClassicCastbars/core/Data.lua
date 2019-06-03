@@ -114,7 +114,7 @@ namespace.defaultConfig = {
         iconSize = 16,
         castFont = fontName,
         castFontSize = 10,
-        castStatusbar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
     },
 
@@ -130,7 +130,7 @@ namespace.defaultConfig = {
         iconSize = 16,
         castFont = fontName,
         castFontSize = 10,
-        castStatusbar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
     },
 }

@@ -66,7 +66,7 @@ end
 function addon:SetCastbarStyle(castbar, cast, db)
     castbar:SetSize(db.width, db.height)
     castbar.Timer:SetShown(db.showTimer)
-    castbar:SetStatusBarTexture(db.castStatusbar)
+    castbar:SetStatusBarTexture(db.castStatusBar)
 
     if db.simpleStyle then
         castbar.Border:SetAlpha(0)
