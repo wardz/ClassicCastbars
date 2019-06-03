@@ -62,7 +62,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         name = L.TOGGLE_CASTBAR,
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
-                        width = 1.4,
+                        width = "full",
                         type = "toggle",
                         set = function(_, val)
                             ClassicCastbarsDB[unitID].enabled = val
@@ -71,29 +71,31 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     showTimer = {
                         order = 2,
+                        width = "full",
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
                         type = "toggle",
                     },
                     autoPosition = {
                         order = 3,
+                        width = "full",
                         name = L.AUTO_POS_BAR,
                         desc = L.AUTO_POS_BAR_TOOLTIP,
-                        width = 1.4,
                         type = "toggle",
                         hidden = unitID == "nameplate"
                     },
                     showSpellRank = {
                         order = unitID == "target" and 4 or 5,
+                        width = "full",
                         name = L.SHOW_RANK,
                         desc = L.SHOW_RANK_TOOLTIP,
                         type = "toggle",
                     },
                     pushbackDetect = {
                         order = unitID == "target" and 5 or 4,
+                        width = "full",
                         name = L.PUSHBACK,
                         desc = L.PUSHBACK_TOOLTIP,
-                        width = 1.4,
                         type = "toggle",
                         set = function(_, val) -- temp, we'll remove this later
                             ClassicCastbarsDB.pushbackDetect = val
@@ -102,6 +104,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     simpleStyle = {
                         order = 6,
+                        width = "full",
                         name = L.SIMPLE_STYLE,
                         desc = L.SIMPLE_STYLE_TOOLTIP,
                         type = "toggle",
@@ -116,7 +119,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             test = {
                                 order = 1,
                                 name = format("%s %s", L.TEST, localizedUnit),
-                                width = 1.4,
                                 desc = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
                                 type = "execute",
                                 disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
@@ -145,7 +147,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         name = L.WIDTH,
                         desc = L.WIDTH_TOOLTIP,
-                        width = 1.3,
                         type = "range",
                         min = 50,
                         max = 300,
@@ -156,7 +157,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         name = L.HEIGHT,
                         desc = L.HEIGHT_TOOLTIP,
-                        width = 1.3,
                         type = "range",
                         min = 4,
                         max = 50,
@@ -167,7 +167,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         name = L.ICON_SIZE,
                         desc = L.ICON_SIZE_TOOLTIP,
-                        width = 1.3,
                         type = "range",
                         min = 10,
                         max = 50,
@@ -177,7 +176,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 3,
                         name = L.FONT_SIZE,
                         desc = L.FONT_SIZE_TOOLTIP,
-                        width = 1.3,
                         type = "range",
                         min = 6,
                         max = 30,
