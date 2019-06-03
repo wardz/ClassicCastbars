@@ -118,6 +118,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         args = {
                             test = {
                                 order = 1,
+                                width = 1.4,
                                 name = format("%s %s", L.TEST, localizedUnit),
                                 desc = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
                                 type = "execute",
