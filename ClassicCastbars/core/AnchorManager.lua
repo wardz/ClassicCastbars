@@ -55,6 +55,7 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
     end
 end
 
+-- TODO: we can simplify this a lot if we don't add party frame support
 function AnchorManager:GetAnchor(unitID, getDefault)
     if cache[unitID] and not getDefault then
         -- Returned cached anchor frame
