@@ -22,8 +22,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         if lsmType == "border" then
             default = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
         elseif lsmType == "font" then
-            local loc = GetLocale()
-            default = loc == "zhCN" or loc == "zhTW" and "Fonts\\ARHei.ttf" or "Fonts\\2002.ttf"
+            default = _G.STANDARD_TEXT_FONT
         end
 
         tbl[L.DEFAULT] = default
@@ -42,7 +41,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         name = format("%s Castbar", localizedUnit),
         order = order,
         type = "group",
-        get = function(info) return ClassicCastbarsDB[info[1]][info[3]] end, -- db.target.height for example
+        get = function(info)
+            -- db.target.height for example
+            return ClassicCastbarsDB[info[1]][info[3]]
+        end,
         set = function(info, value)
             ClassicCastbarsDB[info[1]][info[3]] = value -- db.unit.x = value
             ClassicCastbars_TestMode:OnOptionChanged(unitID)
@@ -207,7 +209,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             return GetLSMNameByTexture("font", ClassicCastbarsDB[info[1]][info[3]])
                         end,
                         set = function(info, val)
-                            ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("font")[val]
+                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("font")[val]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
@@ -239,11 +241,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             return GetLSMNameByTexture("border", ClassicCastbarsDB[info[1]][info[3]])
                         end,
                         set = function(info, val)
-                            if val == L.DEFAULT then
-                                ClassicCastbarsDB[info[1]][info[3]] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
-                            else
-                                ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("border")[val]
-                            end
+                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("border")[val]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },

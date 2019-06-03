@@ -95,12 +95,11 @@ namespace.pushbackImmunities = {
     [GetSpellInfo(14743)] = 1, -- Focused Casting
 }]]
 
-local fontName = GetLocale() == "zhCN" or GetLocale() == "zhTW" and "Fonts\\ARHei.ttf" or "Fonts\\2002.ttf"
-
 -- Savedvariables
 namespace.defaultConfig = {
     version = "3", -- settings version, always bump this after adding new things
     pushbackDetect = false,
+    locale = GetLocale(),
 
     nameplate = {
         enabled = true,
@@ -112,7 +111,7 @@ namespace.defaultConfig = {
         autoPosition = false,
         simpleStyle = false,
         iconSize = 16,
-        castFont = fontName,
+        castFont = _G.STANDARD_TEXT_FONT,
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
@@ -128,7 +127,7 @@ namespace.defaultConfig = {
         autoPosition = true,
         simpleStyle = false,
         iconSize = 16,
-        castFont = fontName,
+        castFont = _G.STANDARD_TEXT_FONT,
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",

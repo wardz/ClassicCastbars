@@ -233,6 +233,14 @@ function addon:PLAYER_LOGIN()
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
 
+    -- Reset font used on locale switched
+    -- (fonts only works for certain locales)
+    if self.db.locale ~= GetLocale() then
+        self.db.locale = GetLocale()
+        self.db.target.castFont = _G.STANDARD_TEXT_FONT
+        self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
+    end
+
     -- config is not needed anymore if options are not loaded
     if not IsAddOnLoaded("ClassicCastbars_Options") then
         self.defaultConfig = nil
@@ -353,6 +361,7 @@ addon:SetScript("OnUpdate", function(self)
                 end
 
                 if pushbackEnabled then
+                    -- maxValue is only updated dynamically when pushback detect is enabled
                     castbar:SetMinMaxValues(0, cast.maxValue)
                 end
                 castbar:SetValue(value)
