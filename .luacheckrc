@@ -18,6 +18,8 @@ globals = {
 
     -- WoW globals
     "GetLocale",
+    "GetSpellSubtext",
+    "GetSpellInfo",
     "IsAddOnLoaded",
     "GetAddOnMetadata",
     "GetSpellTexture",

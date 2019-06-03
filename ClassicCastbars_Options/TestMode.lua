@@ -5,8 +5,8 @@ TestMode.isTesting = {}
 ClassicCastbars_TestMode = TestMode -- global ref for use in both addons
 
 local dummySpellData = {
-    spellName = "Polymorph",
-    spellRank = "Rank 1",
+    spellName = GetSpellInfo(118),
+    spellRank = GetSpellSubtext(118),
     icon = GetSpellTexture(118),
     maxValue = 10,
     timeStart = GetTime(),
