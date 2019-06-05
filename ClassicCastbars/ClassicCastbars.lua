@@ -284,9 +284,11 @@ end
 local channeledSpells = namespace.channeledSpells
 local castTimeDecreases = namespace.castTimeDecreases
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
+local bit_band = _G.bit.band
+local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, _, _, spellID, spellName, _, _, _, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, _, _, dstGUID,  _, dstFlags, _, spellID, spellName, _, _, _, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local _, _, icon, castTime = GetSpellInfo(spellID)
@@ -337,7 +339,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if resisted or blocked or absorbed then return end
-        return self:CastPushback(dstGUID)
+        if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
+            return self:CastPushback(dstGUID)
+        end
     end
 end
 
