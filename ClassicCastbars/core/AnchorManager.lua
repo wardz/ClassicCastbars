@@ -16,6 +16,7 @@ local anchors = {
         "SUI_targetFrame",
         "gUI4_UnitTarget",
         "oUF_Adirelle_Target",
+        "oUF_AftermathhTarget",
         "TargetFrame", -- Blizzard frame should always be last
     },
 
@@ -29,6 +30,7 @@ local anchors = {
         "oUF_Raid%d",
         "GwPartyFrame%d",
         "gUI4_GroupFramesGroup5UnitButton%d",
+        "Aftermathh_Party%d",
         "PartyMemberFrame%d",
     },]]
 }
