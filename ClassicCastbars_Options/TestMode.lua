@@ -109,7 +109,13 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.parent = parentFrame
     castbar.unitID = unitID
     castbar.isTesting = true
+
+    castbar:SetMinMaxValues(1, 10)
     castbar:SetValue(5)
+    castbar.Timer:SetText("0.75")
+    local sparkPosition = (5 / 10) * castbar:GetWidth()
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+
     ClassicCastbars:DisplayCastbar(castbar, unitID)
 end
 
