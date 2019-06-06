@@ -35,6 +35,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(5138)] = 4.5,     -- Drain Mana
     [GetSpellInfo(1120)] = 14.5,    -- Drain Soul
     [GetSpellInfo(5740)] = 7.5,     -- Rain of Fire
+    [GetSpellInfo(1949)] = 15,      -- Hellfire
     [GetSpellInfo(755)] = 10,       -- Health Funnel
 }
 
