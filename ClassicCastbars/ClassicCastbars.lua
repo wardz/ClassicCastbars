@@ -362,20 +362,22 @@ addon:SetScript("OnUpdate", function(self)
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then
-                local value = cast.maxValue - castTime
-                if cast.isChanneled then -- inverse
-                    value = cast.maxValue - value
-                end
+                if not cast.showCastInfoOnly then
+                    local value = cast.maxValue - castTime
+                    if cast.isChanneled then -- inverse
+                        value = cast.maxValue - value
+                    end
 
-                if pushbackEnabled then
-                    -- maxValue is only updated dynamically when pushback detect is enabled
-                    castbar:SetMinMaxValues(0, cast.maxValue)
-                end
-                castbar:SetValue(value)
-                castbar.Timer:SetFormattedText("%.1f", castTime)
+                    if pushbackEnabled then
+                        -- maxValue is only updated dynamically when pushback detect is enabled
+                        castbar:SetMinMaxValues(0, cast.maxValue)
+                    end
 
-                local sparkPosition = (value / cast.maxValue) * castbar:GetWidth()
-                castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+                    castbar:SetValue(value)
+                    castbar.Timer:SetFormattedText("%.1f", castTime)
+                    local sparkPosition = (value / cast.maxValue) * castbar:GetWidth()
+                    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+                end
             else
                 -- Delete cast incase stop event wasn't detected in CLEU (i.e unit out of range)
                 self:DeleteCast(cast.unitGUID)

@@ -170,7 +170,7 @@ namespace.pushbackImmunities = {
 
 -- Savedvariables
 namespace.defaultConfig = {
-    version = "3", -- settings version, always bump this after adding new options
+    version = "4", -- settings version, always bump this after adding new options
     pushbackDetect = false,
     locale = GetLocale(),
 
@@ -180,6 +180,7 @@ namespace.defaultConfig = {
         width = 150,
         height = 14,
         showTimer = true,
+        showCastInfoOnly = false,
         showSpellRank = false,
         autoPosition = false,
         simpleStyle = false,
@@ -195,6 +196,7 @@ namespace.defaultConfig = {
         position = { "CENTER", -18, -87 },
         width = 150,
         height = 14,
+        showCastInfoOnly = false,
         showTimer = true,
         showSpellRank = false,
         autoPosition = true,

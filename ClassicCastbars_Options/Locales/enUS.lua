@@ -31,6 +31,8 @@ L["NAMEPLATE"] = "Nameplate"
 L["PUSHBACK"] = "Detect Pushbacks (|cFFFF0000Experimental|r)"
 L["PUSHBACK_TOOLTIP"] = "Enables detection for cast pushback and decreases (i.e Curse of Tongues). This is still work under progress."
 L["RESET_ALL"] = "Reset All Settings"
+L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
+L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = "Enable this to only show the spell being cast. All visible timers will be disabled."
 L["SHOW_RANK"] = "Show Spell Rank"
 L["SHOW_RANK_TOOLTIP"] = [=[Display spell rank for current cast. E.g Frostbolt (Rank 1).
 

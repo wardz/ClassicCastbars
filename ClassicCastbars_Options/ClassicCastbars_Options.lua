@@ -73,7 +73,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     showTimer = {
                         order = 2,
-                        width = "full",
+                        width = "full", -- has to be full to not truncate text in non-english locales
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
                         type = "toggle",
@@ -111,6 +111,21 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.SIMPLE_STYLE_TOOLTIP,
                         type = "toggle",
                     },
+                    showCastInfoOnly = {
+                        order = 7,
+                        width = "full",
+                        name = L.SHOW_CAST_INFO_ONLY,
+                        desc = L.SHOW_CAST_INFO_ONLY_TOOLTIP,
+                        type = "toggle",
+                    },
+
+                    spacer = {
+                        type = "description",
+                        name = "\n\n\n",
+                        order = 8,
+                        width = 10,
+                    },
+
                     testing = {
                         order = -1,
                         name = L.TEST_MODE,

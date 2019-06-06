@@ -68,6 +68,14 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
 
+    if db.showCastInfoOnly then
+        castbar.Timer:SetText("")
+        castbar:SetValue(0)
+        castbar.Spark:SetAlpha(0)
+    else
+        castbar.Spark:SetAlpha(1)
+    end
+
     if db.simpleStyle then
         castbar.Border:SetAlpha(0)
         castbar.Icon:SetSize(db.height, db.height)
@@ -137,6 +145,7 @@ function addon:DisplayCastbar(castbar, unitID)
     end
 
     local cast = castbar._data
+    cast.showCastInfoOnly = db.showCastInfoOnly
     castbar:SetMinMaxValues(0, cast.maxValue)
     castbar:SetParent(parentFrame)
 
