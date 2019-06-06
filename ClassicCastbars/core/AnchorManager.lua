@@ -17,6 +17,7 @@ local anchors = {
         "gUI4_UnitTarget",
         "oUF_Adirelle_Target",
         "oUF_AftermathhTarget",
+        "LUFUnittarget",
         "TargetFrame", -- Blizzard frame should always be last
     },
 
