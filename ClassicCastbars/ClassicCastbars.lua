@@ -284,6 +284,7 @@ end
 local channeledSpells = namespace.channeledSpells
 local castTimeDecreases = namespace.castTimeDecreases
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
+local crowdControls = namespace.crowdControls
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
 
@@ -316,6 +317,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if castTimeDecreases[spellID] then
             -- Aura that slows casting speed was applied
             return self:CastPushback(dstGUID, namespace.castTimeDecreases[spellID])
+        elseif crowdControls[spellName] then
+            return self:DeleteCast(dstGUID)
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL_CAST_* event for channel stop,
@@ -351,7 +354,7 @@ addon:SetScript("OnUpdate", function(self)
     local currTime = GetTime()
     local pushbackEnabled = self.db.pushbackDetect
 
-    -- Update all active castbars in a single OnUpdate call
+    -- Update all shown castbars in a single OnUpdate call
     for unit, castbar in pairs(activeFrames) do
         local cast = castbar._data
 
