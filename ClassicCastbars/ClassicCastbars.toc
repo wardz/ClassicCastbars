@@ -3,7 +3,7 @@
 ## Notes: Adds castbars to the Target frame and Nameplates.
 ## SavedVariables: ClassicCastbarsDB
 ## Author: Wardz
-## Version: 1.0.0b-next.4
+## Version: 1.0.0b-next.5
 
 core/PoolManager.lua
 core/AnchorManager.lua
