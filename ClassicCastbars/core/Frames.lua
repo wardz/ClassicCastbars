@@ -158,6 +158,9 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar:SetScale(0.7)
     end
 
+    -- Note: since frames are recycled and we also allow having different styles
+    -- between castbars for different units, we need to always update the style here
+    -- incase it was modified on last recycle
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)

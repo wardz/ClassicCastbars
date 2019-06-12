@@ -4,7 +4,7 @@ local PoolManager = namespace.PoolManager
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
-    -- this will basically trigger addon:EVENT_NAME(arguments)
+    -- this will basically trigger addon:EVENT_NAME(arguments) on any event happening
     return self[event](self, ...)
 end)
 
@@ -111,7 +111,7 @@ function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
                 -- if existing modifer is e.g 50% and new is 60%, we only want to adjust cast by 10%
                 percentageAmount = percentageAmount - cast.currTimeModValue
 
-                -- Store previous lesser modifier that was active
+                -- Store previous lesser modifier that was active incase new one expires first or gets dispelled
                 cast.prevCurrTimeModValue = cast.prevCurrTimeModValue or {}
                 cast.prevCurrTimeModValue[#cast.prevCurrTimeModValue + 1] = cast.currTimeModValue
                 -- print("stored lesser modifier")
@@ -220,7 +220,7 @@ local function CopyDefaults(src, dst)
 end
 
 function addon:PLAYER_LOGIN()
-    ClassicCastbarsDB = next(ClassicCastbarsDB or {}) and ClassicCastbarsDB or namespace.defaultConfig
+    ClassicCastbarsDB = ClassicCastbarsDB or {}
 
     -- Reset old settings
     if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" or
@@ -229,11 +229,11 @@ function addon:PLAYER_LOGIN()
         print("ClassicCastbars: All settings reset due to major changes. See /castbar for new options.")
     end
 
-    -- Copy any settings from default if they don't exist in current profile
+    -- Copy any settings from defaults if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
 
-    -- Reset font used on locale switched
+    -- Reset fonts on game locale switched
     -- (fonts only works for certain locales)
     if self.db.locale ~= GetLocale() then
         self.db.locale = GetLocale()
@@ -381,7 +381,7 @@ addon:SetScript("OnUpdate", function(self)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
-                -- Delete cast incase stop event wasn't detected in CLEU (i.e unit out of range)
+                -- Delete cast incase stop event wasn't detected in CLEU
                 self:DeleteCast(cast.unitGUID)
             end
         end

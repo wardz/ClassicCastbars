@@ -3,6 +3,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 
 local function CopyTable(src, dest)
     if type(dest) ~= "table" then dest = {} end
+
     if type(src) == "table" then
         for k, v in pairs(src) do
             if type(v) == "table" then
@@ -11,6 +12,7 @@ local function CopyTable(src, dest)
             dest[k] = v
         end
     end
+
     return dest
 end
 
@@ -18,14 +20,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
     local function GetLSMTable(lsmType)
         local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
 
-        local default
+        -- Add custom media to LSM options that'll be used only in our addon.
+        -- These are the default borders/fonts etc for ClassicCastbars
         if lsmType == "border" then
-            default = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+            tbl[L.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
         elseif lsmType == "font" then
-            default = _G.STANDARD_TEXT_FONT
+            tbl[L.DEFAULT] = _G.STANDARD_TEXT_FONT
         end
 
-        tbl[L.DEFAULT] = default
         return tbl
     end
 
@@ -66,8 +68,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
                         width = "full",
                         type = "toggle",
-                        set = function(_, val)
-                            ClassicCastbarsDB[unitID].enabled = val
+                        set = function(_, value)
+                            ClassicCastbarsDB[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
                         end,
                     },
@@ -87,20 +89,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "nameplate"
                     },
                     showSpellRank = {
-                        order = unitID == "target" and 4 or 5,
+                        order = 4,
                         width = "full",
                         name = L.SHOW_RANK,
                         desc = L.SHOW_RANK_TOOLTIP,
                         type = "toggle",
                     },
                     pushbackDetect = {
-                        order = unitID == "target" and 5 or 4,
+                        order = 5,
                         width = "full",
                         name = L.PUSHBACK,
                         desc = L.PUSHBACK_TOOLTIP,
                         type = "toggle",
-                        set = function(_, val) -- temp, we'll remove this later
-                            ClassicCastbarsDB.pushbackDetect = val
+                        set = function(_, value) -- temp, we'll remove this option later
+                            ClassicCastbarsDB.pushbackDetect = value
                         end,
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                     },
@@ -212,51 +214,50 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     castFont = {
                         order = 1,
                         width = "double",
-                        type = 'select',
-                        dialogControl = 'LSM30_Font',
+                        type = "select",
+                        dialogControl = "LSM30_Font",
                         name = L.CAST_FONT,
                         desc = L.CAST_FONT_TOOLTIP,
                         values = GetLSMTable("font"),
                         get = function(info)
-                            -- We store texture path in savedvariables so ClassicCastbars can still work without
-                            -- LibSharedMedia or ClassicCastbars_Options loaded, but since LSM/SharedMediaWidgets
-                            -- uses name instead of texture path internally for tables we have to loop and scan for it
+                            -- We store texture path instead of name in savedvariables so ClassicCastbars can still work
+                            -- without LibSharedMedia or ClassicCastbars_Options loaded
                             return GetLSMNameByTexture("font", ClassicCastbarsDB[info[1]][info[3]])
                         end,
-                        set = function(info, val)
-                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("font")[val]
+                        set = function(info, value)
+                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("font")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
                     castStatusBar = {
                         order = 2,
                         width = "double",
-                        type = 'select',
-                        dialogControl = 'LSM30_Statusbar',
+                        type = "select",
+                        dialogControl = "LSM30_Statusbar",
                         name = L.CAST_STATUSBAR,
                         desc = L.CAST_STATUSBAR_TOOLTIP,
                         values = GetLSMTable("statusbar"),
                         get = function(info)
                             return GetLSMNameByTexture("statusbar", ClassicCastbarsDB[info[1]][info[3]])
                         end,
-                        set = function(info, val)
-                            ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("statusbar")[val]
+                        set = function(info, value)
+                            ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("statusbar")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
                     castBorder = {
                         order = 3,
                         width = "double",
-                        type = 'select',
-                        dialogControl = 'LSM30_Border',
+                        type = "select",
+                        dialogControl = "LSM30_Border",
                         name = L.CAST_BORDER,
                         desc = L.CAST_BORDER_TOOLTIP,
                         values = GetLSMTable("border"),
                         get = function(info)
                             return GetLSMNameByTexture("border", ClassicCastbarsDB[info[1]][info[3]])
                         end,
-                        set = function(info, val)
-                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("border")[val]
+                        set = function(info, value)
+                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("border")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
@@ -280,7 +281,6 @@ local function GetOptionsTable()
         args = {
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
-            -- party = CreateUnitTabGroup("party", 3),
 
             reset = {
                 order = 3,
@@ -289,7 +289,7 @@ local function GetOptionsTable()
                 confirm = true,
                 func = function()
                     -- Reset savedvariables to default
-                    ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig, ClassicCastbarsDB)
+                    ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
                     ClassicCastbars_TestMode:OnOptionChanged("target")
                     ClassicCastbars_TestMode:OnOptionChanged("nameplate")

@@ -2,7 +2,6 @@ local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
 -- Channeled spells does not return cast time, so we have to build our own list.
---
 -- We use GetSpellInfo here to get the localized spell name,
 -- that way we don't have to list every spellID for an ability (diff ranks have diff id)
 namespace.channeledSpells = {
@@ -18,7 +17,7 @@ namespace.channeledSpells = {
     -- HUNTER
     [GetSpellInfo(6197)] = 60,      -- Eagle Eye
     [GetSpellInfo(1002)] = 60,      -- Eyes of the Beast
-    [GetSpellInfo(20900)] = 3,      -- Aimed Shot TODO: verify
+    [GetSpellInfo(20900)] = 3,      -- Aimed Shot
 
     -- MAGE
     [GetSpellInfo(5143)] = 4.5,     -- Arcane Missiles
@@ -57,7 +56,7 @@ namespace.castTimeDecreases = {
     [17331] = 10,   -- Fang of the Crystal Spider
 }
 
--- Spells that often have cast time reduced by talents
+-- Spells that often have cast time reduced by talents.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 1,        -- Lightning Bolt
     [GetSpellInfo(421)] = 1,        -- Chain Lightning
@@ -82,7 +81,7 @@ namespace.castTimeTalentDecreases = {
     [GetSpellInfo(712)] = 4,        -- Summon Succubus
 }
 
--- List of player crowd controls
+-- List of player crowd controls.
 -- We want to stop the castbar when these auras are detected
 -- as SPELL_CAST_FAILED is not triggered when a player gets CC'ed.
 namespace.crowdControls = {

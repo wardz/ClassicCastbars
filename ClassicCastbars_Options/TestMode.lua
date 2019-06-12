@@ -6,7 +6,7 @@ ClassicCastbars_TestMode = TestMode -- global ref for use in both addons
 
 local dummySpellData = {
     spellName = GetSpellInfo(118),
-    spellRank = GetSpellSubtext(118),
+    spellRank = GetSpellSubtext(118), -- TODO: if this is still async in Classic we should use ContinueOnSpellLoad() here
     icon = GetSpellTexture(118),
     maxValue = 10,
     timeStart = GetTime(),
@@ -14,9 +14,9 @@ local dummySpellData = {
     isChanneled = false,
 }
 
--- Credits to stako/zork for this
+-- Credits to stako & zork for this
 -- https://www.wowinterface.com/forums/showthread.php?t=41819
-local function CalcGetPoint(frame)
+local function CalcScreenGetPoint(frame)
     local parentX, parentY = frame:GetParent():GetCenter()
     local frameX, frameY = frame:GetCenter()
     local scale = frame:GetScale()
@@ -41,8 +41,8 @@ local function OnDragStop(self)
 
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
-    local x, y = CalcGetPoint(self)
-    ClassicCastbarsDB[unit].position[1] = "CENTER" -- has to be center for CalcGetPoint to work
+    local x, y = CalcScreenGetPoint(self)
+    ClassicCastbarsDB[unit].position[1] = "CENTER" -- has to be center for CalcScreenGetPoint to work
     ClassicCastbarsDB[unit].position[2] = x
     ClassicCastbarsDB[unit].position[3] = y
     ClassicCastbarsDB[unit].autoPosition = false
@@ -130,16 +130,17 @@ function TestMode:SetCastbarImmovable(unitID)
     castbar:EnableMouse(false)
 end
 
-function TestMode:ReanchorForNameplate()
+function TestMode:ReanchorOnNameplateTargetSwitch()
     if not ClassicCastbarsDB.nameplate.enabled then return end
 
-    -- Reanchor castbar when we target a new nameplate/unit
+    -- Reanchor castbar when we target a new nameplate/unit.
     -- We only want to show castbar for 1 nameplate at a time
     local anchor = C_NamePlate.GetNamePlateForUnit("target")
     if anchor then
         return TestMode:SetCastbarMovable("nameplate-testmode", anchor)
     end
 
+    -- No nameplate available or player has no target
     TestMode:SetCastbarImmovable("nameplate-testmode")
 end
 
@@ -147,6 +148,6 @@ TestMode:SetScript("OnEvent", function(self)
     -- Delay function call because GetNamePlateForUnit() is not
     -- ready immediately after PLAYER_TARGET_CHANGED is triggered
     if self.isTesting["nameplate-testmode"] then
-        C_Timer.After(0.2, TestMode.ReanchorForNameplate)
+        C_Timer.After(0.2, TestMode.ReanchorOnNameplateTargetSwitch)
     end
 end)
