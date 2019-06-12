@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Make sure you're using the latest version of ClassicCastbars before reporting a bug.
+<!-- Make sure you're using the latest version of ClassicCastbars before reporting a bug. -->
 
 
 **What is the problem? Is there any Lua errors?**
