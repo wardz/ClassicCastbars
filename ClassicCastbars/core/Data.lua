@@ -9,6 +9,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(746)] = 7,        -- First Aid
     [GetSpellInfo(13278)] = 4,      -- Gnomish Death Ray
     [GetSpellInfo(20577)] = 10,     -- Cannibalize
+    [GetSpellInfo(10797)] = 6,      -- Starshards
 
     -- DRUID
     [GetSpellInfo(17401)] = 9.5,    -- Hurricane
@@ -18,6 +19,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(6197)] = 60,      -- Eagle Eye
     [GetSpellInfo(1002)] = 60,      -- Eyes of the Beast
     [GetSpellInfo(20900)] = 3,      -- Aimed Shot
+    [GetSpellInfo(1510)] = 6,       -- Volley
 
     -- MAGE
     [GetSpellInfo(5143)] = 4.5,     -- Arcane Missiles
@@ -30,6 +32,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(605)] = 3,        -- Mind Control
 
     -- WARLOCK
+    [GetSpellInfo(126)] = 45,       -- Eye of Kilrogg
     [GetSpellInfo(689)] = 4.5,      -- Drain Life
     [GetSpellInfo(5138)] = 4.5,     -- Drain Mana
     [GetSpellInfo(1120)] = 14.5,    -- Drain Soul
