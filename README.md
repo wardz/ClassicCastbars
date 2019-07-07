@@ -4,11 +4,13 @@ Lightweight addon that adds castingbars to the target frame and nameplates in Cl
 
 ![Imgur](https://i.imgur.com/thxJqi6.jpg)
 
-## Install (--- IMPORTANT ---)
+## Install
 
-- When installing from Github, you need to unzip & extract `ClassicCastbars-master/ClassicCastbars` and `ClassicCastbars-master/ClassicCastbars_Options` into your AddOns folder, as two seperate    folders/addons.
-  **Do not put the root `ClassicCastbars-master` folder into your AddOns directory.**
-- You can also download a packaged version from WoWInterface [here.](https://wowinterface.com/downloads/info24925-ClassicCastbars.html)
+Installing directly from source is not guaranteed to work. You should download a packaged version here instead:
+
+- [CurseForge Download.](https://www.curseforge.com/wow/addons/classiccastbars)
+- [WoWInterface Download.](https://wowinterface.com/downloads/info24925-ClassicCastbars.html)
+- [Github Download](https://github.com/wardz/classiccastbars/releases) (Choose binary instead of source code)
 
 ## Configuration
 

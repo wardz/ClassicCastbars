@@ -1,0 +1,35 @@
+language: minimal
+sudo: true
+
+addons:
+  apt:
+    packages:
+      - luarocks
+
+install:
+  - luarocks install --local luacheck
+  - sudo luarocks install luafilesystem
+  - sudo luarocks install penlight
+
+script:
+  - |
+    if [ "$TRAVIS_BRANCH" == "master" -o -n "$TRAVIS_TAG" ]; then
+      /home/travis/.luarocks/bin/luacheck .
+    fi
+  - |
+    if [ "$TRAVIS_PULL_REQUEST" == "false" -a -n "$TRAVIS_TAG" ]; then
+      cd ClassicCastbars
+      curl -L -s -o release.sh https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh
+      chmod +x ./release.sh
+      ./release.sh -g 1.13.2 -m ../.pkgmeta.yml
+    fi
+
+branches:
+  only:
+    - master
+    - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/ # v1.0.0 or 1.0.0 etc
+
+notifications:
+  email:
+    on_failure: always
+    on_success: never

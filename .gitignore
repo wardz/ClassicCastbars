@@ -1,6 +1,7 @@
 # Project specifics
 .release/
 release.sh
+ClassicCastbars_Options/Libs/
 
 # luarocks build files
 *.src.rock
