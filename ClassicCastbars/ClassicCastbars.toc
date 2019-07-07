@@ -4,6 +4,8 @@
 ## SavedVariables: ClassicCastbarsDB
 ## Author: Wardz
 ## Version: 1.0.0b-next.5
+## X-Curse-Project-ID: 322865
+## X-WoWI-ID: 24925
 
 core/PoolManager.lua
 core/AnchorManager.lua
