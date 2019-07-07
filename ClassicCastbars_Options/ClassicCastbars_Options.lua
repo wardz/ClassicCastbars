@@ -16,35 +16,34 @@ local function CopyTable(src, dest)
     return dest
 end
 
+local function GetLSMTable(lsmType)
+    local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
+
+    -- Add custom media to LSM options that'll be used only in our addon.
+    -- These are the default borders/fonts etc for ClassicCastbars
+    if lsmType == "border" then
+        tbl[L.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+    elseif lsmType == "font" then
+        tbl[L.DEFAULT] = _G.STANDARD_TEXT_FONT
+    end
+
+    return tbl
+end
+
+local function GetLSMNameByTexture(lsmType, texturePath)
+    for name, texture in pairs(GetLSMTable(lsmType)) do
+        if texture == texturePath then
+            return name
+        end
+    end
+end
+
 local function CreateUnitTabGroup(unitID, localizedUnit, order)
-    local function GetLSMTable(lsmType)
-        local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
-
-        -- Add custom media to LSM options that'll be used only in our addon.
-        -- These are the default borders/fonts etc for ClassicCastbars
-        if lsmType == "border" then
-            tbl[L.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
-        elseif lsmType == "font" then
-            tbl[L.DEFAULT] = _G.STANDARD_TEXT_FONT
-        end
-
-        return tbl
-    end
-
-    local function GetLSMNameByTexture(lsmType, texturePath)
-        for name, texture in pairs(GetLSMTable(lsmType)) do
-            if texture == texturePath then
-                return name
-            end
-        end
-    end
-
     return {
         name = format("%s Castbar", localizedUnit),
         order = order,
         type = "group",
         get = function(info)
-            -- db.target.height for example
             return ClassicCastbarsDB[info[1]][info[3]]
         end,
         set = function(info, value)
@@ -156,6 +155,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 },
             },
 
+            ----------------------------------------------------
+
             sizing = {
                 order = 2,
                 name = L.CASTBAR_SIZING,
@@ -203,6 +204,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                 },
             },
+
+            ----------------------------------------------------
 
             sharedMedia = {
                 order = 3,
@@ -282,7 +285,7 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
 
-            reset = {
+            resetAllSettings = {
                 order = 3,
                 name = L.RESET_ALL,
                 type = "execute",

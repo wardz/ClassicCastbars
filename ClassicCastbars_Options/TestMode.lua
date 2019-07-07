@@ -47,7 +47,7 @@ local function OnDragStop(self)
     ClassicCastbarsDB[unit].position[3] = y
     ClassicCastbarsDB[unit].autoPosition = false
 
-    -- Reanchor back to frame
+    -- Reanchor from UIParent back to parent frame
     self:SetParent(self.parent)
     self:ClearAllPoints()
     self:SetPoint("CENTER", self.parent, x, y)
@@ -100,12 +100,10 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar:SetScript("OnMouseDown", castbar.StartMoving)
     castbar:SetScript("OnMouseUp", OnDragStop)
 
-    -- Set test data for :DisplayCastbar()
-    castbar._data = dummySpellData
-
     local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end -- sanity check
 
+    castbar._data = dummySpellData -- Set test data for :DisplayCastbar()
     castbar.parent = parentFrame
     castbar.unitID = unitID
     castbar.isTesting = true
@@ -113,8 +111,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar:SetMinMaxValues(1, 10)
     castbar:SetValue(5)
     castbar.Timer:SetText("0.75")
-    local sparkPosition = (5 / 10) * castbar:GetWidth()
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
 
     ClassicCastbars:DisplayCastbar(castbar, unitID)
 end

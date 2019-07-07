@@ -304,7 +304,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
 
-        return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return for tail call optimization and immediately exiting function
+        return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return here for tail call optimization and immediately exiting function
     elseif eventType == "SPELL_CAST_SUCCESS" then
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
@@ -320,6 +320,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             -- Aura that slows casting speed was applied
             return self:CastPushback(dstGUID, namespace.castTimeDecreases[spellID])
         elseif crowdControls[spellName] then
+            -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
@@ -344,6 +345,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if resisted or blocked or absorbed then return end
+
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
             return self:CastPushback(dstGUID)
         end
