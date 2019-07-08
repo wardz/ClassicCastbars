@@ -24,7 +24,7 @@ add any major things like custom animations, alerts, latency indicator and so on
 - [Submit a pull request.](https://github.com/wardz/ClassicCastbars/pulls)  
   When forking the addon you should save the folder somewhere outside your WoW AddOns directory and  
   instead have two symlinks inside the AddOns folder pointing to
-  `forkFolder/ClassicCastbars/` and `forkFolder/ClassicCastbars_Options/`.
+  `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.
 
 ## License
 
