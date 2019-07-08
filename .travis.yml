@@ -8,8 +8,6 @@ addons:
 
 install:
   - luarocks install --local luacheck
-  - sudo luarocks install luafilesystem
-  - sudo luarocks install penlight
 
 script:
   - |
