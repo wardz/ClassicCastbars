@@ -27,6 +27,10 @@ add any major things like custom animations, alerts, latency indicator and so on
   instead have two symlinks inside the AddOns folder pointing to
   `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.
 
+## External Usage
+
+Looking at using cast related APIs for your custom addon? Checkout [LibClassicCast](https://github.com/joev/LibClassicCast) by joev.
+
 ## License
 
 Copyright (C) 2019 Wardz | [MIT License](https://opensource.org/licenses/MIT)
