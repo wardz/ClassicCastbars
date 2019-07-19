@@ -1,1 +1,54 @@
-https://www.wowinterface.com/downloads/info24925-ClassicCastbars.html#changelog
+v1.0.0b-next.4:
+- Fix incorrect cast times for certain NPC casted abilities that shares name with player abilities.
+- Minor update to localizations.
+
+
+v1.0.0b-next.3:
+- Fix castbar not being stopped on crowd controls.
+- Fix castbar timer & spark not always being updated while in test mode.
+- Fix target anchor not working with Aftermathh & Luna unit frames.
+- Add missing RU translations (Thanks Hubbotu)
+- Add option to only show cast info without any timers.
+- Pushbacks are now ignored for mobs if cast pushback option is enabled. (Most or all mobs have zero pushback).
+
+
+v1.0.0b-next.2:
+- Fix castbar not being stopped on interrupts. (Crowd Controls still won't stop it, I'll try to add a feature for it later)
+- Reduced cast time for certain spells that have talented cast reductions.
+- Added Russian translations to options. (Thanks to Hubbotu!)
+- Added LibSharedMedia support, you can now change border/statusbar texture and text font in the options panel. (still WIP)
+- Added option for setting font size.
+- Castbar option groups are now listed in a tree view to make navigating easier.
+- Reset all settings button now have a confirmation popup.
+
+
+v1.0.0b-next.1:
+- Fixed a typo/oversight that caused spells to always return rank 1.
+- Fix addon not loading due to incorrect folder structure in previous uploaded zip file.
+
+
+v1.0.0 beta:
+- Channeled casts are now inversed on the castbar like on retail.
+- Channeled casts should now work with non-english game clients.
+- Removed slash command options, there's now a GUI for all options (type /castbars to open it)
+PS: custom settings from old version will be reset on upgrade due to major changes.
+- Added option to show spell rank.
+- Added option to hide spell timer text.
+- Added option to set castbar spell icon size.
+- Added option to hide castbar borders.
+- Added option to set castbar width and height.
+- Added option to detect spell pushback & cast decreases. (WIP/Experimental. Default off)
+- Misc minor improvements & fixes.
+
+
+v1.0.0 alpha:
+- Add detection for channeled casts (WIP).
+- Fix castbar position and scale for nameplates.
+- Castbar countdown text is now placed inside the castbar frame instead of outside.
+- Target castbar is now dynamically placed based on how many auras are visible. (WIP)
+- Add options for setting castbar position by XY values. Using this will turn off automatic positioning.
+- Add options for toggling castbars for target frame and nameplates.
+- Optimizations for cast refreshing.
+
+v1.0.0 pre-alpha:
+- initial release.
