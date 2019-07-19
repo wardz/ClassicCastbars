@@ -20,6 +20,7 @@ add any major things like custom animations, alerts, latency indicator and so on
 
 ## Contribute
 
+- [Help translate.](https://www.curseforge.com/wow/addons/classiccastbars/localization)
 - [Submit an issue or feature request.](https://github.com/wardz/ClassicCastbars/issues)
 - [Submit a pull request.](https://github.com/wardz/ClassicCastbars/pulls)  
   When forking the addon you should save the folder somewhere outside your WoW AddOns directory and  
