@@ -19,7 +19,7 @@ script:
       cd ClassicCastbars
       curl -L -s -o release.sh https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh
       chmod +x ./release.sh
-      ./release.sh -g 1.13.2 -m ../.pkgmeta
+      ./release.sh -g 1.13.2
     fi
 
 branches:
