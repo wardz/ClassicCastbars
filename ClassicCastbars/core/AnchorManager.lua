@@ -20,59 +20,37 @@ local anchors = {
         "LUFUnittarget",
         "TargetFrame", -- Blizzard frame should always be last
     },
-
-    --[[party = {
-        "SUFHeaderpartyUnitButton%d",
-        "XPerl_party%d",
-        "ElvUF_PartyGroup1UnitButton%d",
-        "TukuiPartyUnitButton%d",
-        "DUF_PartyFrame%d",
-        "PitBull4_Groups_PartyUnitButton%d",
-        "oUF_Raid%d",
-        "GwPartyFrame%d",
-        "gUI4_GroupFramesGroup5UnitButton%d",
-        "Aftermathh_Party%d",
-        "PartyMemberFrame%d",
-    },]]
 }
 
--- upvalues
 local cache = {}
 local _G = _G
-local strmatch = _G.string.match
-local format = _G.string.format
+local strfind = _G.string.find
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 
-local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
+local function GetUnitFrameForUnit(unitType)
     local anchorNames = anchors[unitType]
     if not anchorNames then return end
 
     for i = 1, #anchorNames do
         local name = anchorNames[i]
-        if hasNumberIndex then
-            name = format(name, strmatch(unitID, "%d+")) -- add unit index to unitframe name
-        end
-
-        local frame = _G[name]
-        if frame then return frame end
+        if _G[name] then return _G[name] end
     end
 end
 
--- TODO: we can simplify this a lot if we don't add party frame support
 function AnchorManager:GetAnchor(unitID, getDefault)
     if cache[unitID] and not getDefault then
         return cache[unitID]
     end
 
-    local unitType, count = unitID:gsub("%d", "") -- party1 -> party
-
-    if unitType == "nameplate-testmode" or unitID == "nameplate-testmode" then
+    -- Get nameplate
+    if unitID == "nameplate-testmode" then
         return GetNamePlateForUnit("target")
-    elseif unitType == "nameplate" then
+    elseif strfind(unitID, "nameplate") then
         return GetNamePlateForUnit(unitID)
     end
 
-    local frame = GetUnitFrameForUnit(unitType, unitID, count > 0)
+    -- Get unit frame
+    local frame = GetUnitFrameForUnit(unitID)
     if frame and not getDefault then
         cache[unitID] = frame
     end

@@ -2,8 +2,8 @@ local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
 -- Channeled spells does not return cast time, so we have to build our own list.
--- We use GetSpellInfo here to get the localized spell name,
--- that way we don't have to list every spellID for an ability (diff ranks have diff id)
+-- We use GetSpellInfo here to get the localized spell name, that way we don't
+-- have to list every spellID for an ability (diff ranks have diff id)
 namespace.channeledSpells = {
     -- MISC
     [GetSpellInfo(746)] = 7,        -- First Aid
@@ -42,8 +42,8 @@ namespace.channeledSpells = {
 }
 
 -- List of abilities that makes cast time slower.
--- Spells here have different % reduction based on spell rank,
--- so list by spellID instead of name here so we can diff between ranks
+-- Spells here have different percentage reduction based on spell rank,
+-- so list by spellID instead of name here so we can difference between ranks
 namespace.castTimeDecreases = {
     -- WARLOCK
     [1714] = 50,    -- Curse of Tongues Rank 1
@@ -60,12 +60,14 @@ namespace.castTimeDecreases = {
 }
 
 -- Spells that often have cast time reduced by talents.
+-- Note: value here is not the actual cast time, but instead
+-- how many seconds a talent reduces the cast time.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 1,        -- Lightning Bolt
     [GetSpellInfo(421)] = 1,        -- Chain Lightning
     [GetSpellInfo(6353)] = 2,       -- Soul Fire
     [GetSpellInfo(116)] = 0.5,      -- Frostbolt
---  [GetSpellInfo(133)] = 0.5,      -- Fireball
+--  [GetSpellInfo(133)] = 0.5,      -- Fireball (many people skip this talent)
     [GetSpellInfo(686)] = 0.5,      -- Shadow Bolt
     [GetSpellInfo(348)] = 0.5,      -- Immolate
     [GetSpellInfo(331)] = 0.5,      -- Healing Wave
@@ -164,11 +166,6 @@ namespace.castTimeIncreases = {
 
     -- MAGE
     [GetSpellInfo(23723)] = 33,   -- Mind Quickening
-}
-
-namespace.pushbackImmunities = {
-    -- PRIEST
-    [GetSpellInfo(14743)] = 1, -- Focused Casting
 }]]
 
 -- Savedvariables

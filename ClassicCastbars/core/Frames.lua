@@ -4,17 +4,14 @@ local PoolManager = namespace.PoolManager
 
 local addon = namespace.addon
 local activeFrames = addon.activeFrames
+local gsub = _G.string.gsub
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
-
     if activeFrames[unitID] then
         return activeFrames[unitID]
     end
 
-    -- store reference, refs are deleted on frame recycled.
-    -- This allows us to not have to Release & Acquire a frame everytime a
-    -- castbar is shown/hidden for the *same* unit
     activeFrames[unitID] = PoolManager:AcquireFrame()
 
     return activeFrames[unitID]
@@ -88,9 +85,10 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Icon:SetPoint("LEFT", castbar, -db.iconSize - 7, 0)
     castbar.Icon:SetTexCoord(0, 1, 0, 1)
 
-    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
+    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then -- default border
         castbar.Border:SetAlpha(1)
         if castbar.BorderFrame then
+            -- Hide LSM border frame if it exists
             castbar.BorderFrame:SetAlpha(0)
         end
 
@@ -99,30 +97,41 @@ function addon:SetCastbarStyle(castbar, cast, db)
         castbar.Border:SetPoint("TOPLEFT", width, height)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
     else
-        -- LSM uses backdrop for borders instead of normal textures.
-        castbar.Border:SetAlpha(0)
-        if not castbar.BorderFrame then
-            castbar.BorderFrame = CreateFrame("Frame", nil, castbar)
-            castbar.BorderFrame:SetPoint("TOPLEFT", castbar, -2, 2)
-            castbar.BorderFrame:SetPoint("BOTTOMRIGHT", castbar, 2, -2)
-        end
+        -- Using border sat by LibSharedMedia
+        self:SetLSMBorders(castbar, cast, db)
+    end
+end
 
-        -- TODO: should be a better way to handle this
-        if db.castBorder == "Interface\\CHARACTERFRAME\\UI-Party-Border" or db.castBorder == "Interface\\Tooltips\\ChatBubble-Backdrop" then
-            castbar.BorderFrame:SetFrameLevel(1)
-        else
-            castbar.BorderFrame:SetFrameLevel(castbar:GetFrameLevel() + 1)
-        end
+-- LSM uses backdrop for borders instead of normal textures
+function addon:SetLSMBorders(castbar, cast, db)
+    -- Create new frame to contain our backdrop
+    -- (castbar.Border is a texture object and not a frame so we can't reuse that)
+    if not castbar.BorderFrame then
+        castbar.BorderFrame = CreateFrame("Frame", nil, castbar)
+        castbar.BorderFrame:SetPoint("TOPLEFT", castbar, -2, 2)
+        castbar.BorderFrame:SetPoint("BOTTOMRIGHT", castbar, 2, -2)
+    end
 
-        castbar.BorderFrame:SetAlpha(1)
-        if castbar.BorderFrame.currentTexture ~= db.castBorder then
-            castbar.BorderFrame:SetBackdrop({
-                edgeFile = db.castBorder,
-                tile = false, tileSize = 0,
-                edgeSize = castbar:GetHeight(),
-            })
-            castbar.BorderFrame.currentTexture = db.castBorder
-        end
+    castbar.Border:SetAlpha(0) -- hide default border
+    castbar.BorderFrame:SetAlpha(1)
+
+    -- TODO: should be a better way to handle this.
+    -- Certain borders with transparent textures requires frame level 1 to show correctly.
+    -- Meanwhile non-transparent textures requires the frame level to be higher than the castbar frame level
+    if db.castBorder == "Interface\\CHARACTERFRAME\\UI-Party-Border" or db.castBorder == "Interface\\Tooltips\\ChatBubble-Backdrop" then
+        castbar.BorderFrame:SetFrameLevel(1)
+    else
+        castbar.BorderFrame:SetFrameLevel(castbar:GetFrameLevel() + 1)
+    end
+
+    -- Apply backdrop if it isn't already active
+    if castbar.BorderFrame.currentTexture ~= db.castBorder then
+        castbar.BorderFrame:SetBackdrop({
+            edgeFile = db.castBorder,
+            tile = false, tileSize = 0,
+            edgeSize = castbar:GetHeight(),
+        })
+        castbar.BorderFrame.currentTexture = db.castBorder
     end
 end
 
@@ -139,7 +148,7 @@ function addon:DisplayCastbar(castbar, unitID)
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end -- sanity check
 
-    local db = self.db[unitID:gsub("%d", "")] -- nameplate1 -> nameplate
+    local db = self.db[gsub(unitID, "%d", "")] -- nameplate1 -> nameplate
     if unitID == "nameplate-testmode" then
         db = self.db.nameplate
     end
@@ -159,8 +168,8 @@ function addon:DisplayCastbar(castbar, unitID)
     end
 
     -- Note: since frames are recycled and we also allow having different styles
-    -- between castbars for different units, we need to always update the style here
-    -- incase it was modified on last recycle
+    -- between castbars for target frame & nameplates, we need to always update the style here
+    -- incase it was modified to something else on last recycle
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
