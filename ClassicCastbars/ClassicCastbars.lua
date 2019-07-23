@@ -97,7 +97,7 @@ function addon:DeleteCast(unitGUID)
 end
 
 -- Spaghetti code inc, you're warned
-function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
+function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
     if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
     if not cast then return end
@@ -146,7 +146,7 @@ function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
                 if index then
                     cast.prevCurrTimeModValue[index] = nil
                     -- print("resetting to lesser modifier", highest)
-                    return self:CastPushback(unitGUID, highest)
+                    return self:SetCastDelay(unitGUID, highest)
                 end
             end
         end
@@ -162,14 +162,22 @@ function addon:CastPushback(unitGUID, percentageAmount, auraFaded)
             end
         end
     else -- normal pushback
-        if not cast.isChanneled then
-            cast.maxValue = cast.maxValue + 0.5
-            cast.endTime = cast.endTime + 0.5
-        else
-            -- channels are reduced by 25%
-            cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
-            cast.endTime = cast.endTime - (cast.maxValue * 25) / 100
-        end
+        self:CastPushback(cast)
+    end
+end
+
+local max = _G.math.max
+function addon:CastPushback(cast)
+    if not cast.isChanneled then
+        -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
+        cast.pushbackValue = cast.pushbackValue or 1.0
+        cast.maxValue = cast.maxValue + cast.pushbackValue
+        cast.endTime = cast.endTime + cast.pushbackValue
+        cast.pushbackValue = max(cast.pushbackValue - 0.2, 0.2)
+    else
+        -- channels are reduced by 25% per hit afaik
+        cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
+        cast.endTime = cast.endTime - (cast.maxValue * 25) / 100
     end
 end
 
@@ -318,7 +326,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeDecreases[spellID] then
             -- Aura that slows casting speed was applied
-            return self:CastPushback(dstGUID, namespace.castTimeDecreases[spellID])
+            return self:SetCastDelay(dstGUID, namespace.castTimeDecreases[spellID])
         elseif crowdControls[spellName] then
             -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
@@ -330,7 +338,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:DeleteCast(srcGUID)
         elseif castTimeDecreases[spellID] then
             -- Aura that slows casting speed was removed
-            return self:CastPushback(dstGUID, castTimeDecreases[spellID], true)
+            return self:SetCastDelay(dstGUID, castTimeDecreases[spellID], true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then
@@ -347,7 +355,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if resisted or blocked or absorbed then return end
 
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
-            return self:CastPushback(dstGUID)
+            return self:SetCastDelay(dstGUID)
         end
     end
 end
