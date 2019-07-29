@@ -312,7 +312,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
 
-        return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return here for tail call optimization and immediately exiting function
+        -- using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
+        return self:StoreCast(srcGUID, spellName, icon, castTime, rank)
     elseif eventType == "SPELL_CAST_SUCCESS" then -- spell finished
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
@@ -393,9 +394,7 @@ addon:SetScript("OnUpdate", function(self)
                 end
             else
                 -- Delete cast incase stop event wasn't detected in CLEU
-                --if castTime < -1 then
                     self:DeleteCast(cast.unitGUID)
-                --end
             end
         end
     end
