@@ -44,10 +44,14 @@ namespace.channeledSpells = {
 -- List of abilities that makes cast time slower.
 -- Spells here have different percentage reduction based on spell rank,
 -- so list by spellID instead of name here so we can difference between ranks
+-- TODO: check if these also affect Aimed Shot/Volley + bosses
 namespace.castTimeDecreases = {
     -- WARLOCK
     [1714] = 50,    -- Curse of Tongues Rank 1
     [11719] = 60,   -- Curse of Tongues Rank 2
+    [1098] = 30,    -- Enslave Demon Rank 1
+    [11725] = 30,   -- Enslave Demon Rank 2
+    [11726] = 30,   -- Enslave Demon Rank 3
 
     -- ROGUE
     [5760] = 40,    -- Mind-Numbing Poison Rank 1
@@ -57,6 +61,28 @@ namespace.castTimeDecreases = {
 
     -- ITEMS
     [17331] = 10,   -- Fang of the Crystal Spider
+
+    -- NPCS
+    [7127] = 20,    -- Wavering Will
+    [7102] = 25,    -- Contagion of Rot
+    [7103] = 25,    -- Contagion of Rot 2
+    [3603] = 35,    -- Distracting Pain
+    [8140] = 50,    -- Befuddlement
+    [8272] = 20,    -- Mind Tremor
+    [12255] = 15,   -- Curse of Tuten'kash
+    [10651] = 20,   -- Curse of the Eye
+    [14538] = 35,   -- Aural Shock
+    [22247] = 80,   -- Suppression Aura
+    [22642] = 50,   -- Brood Power: Bronze
+    [23153] = 50,   -- Brood Power: Blue
+    [24415] = 50,   -- Slow
+    [19365] = 50,   -- Ancient Dread
+    [28732] = 25,   -- Widow's Embrace
+    [22909] = 50,   -- Eye of Immol'thar
+    [13338] = 50,   -- Curse of Tongues
+    [12889] = 50,   -- Curse of Tongues
+    [15470] = 50,   -- Curse of Tongues
+    [25195] = 75,   -- Curse of Tongues
 }
 
 -- Spells that often have cast time reduced by talents.
@@ -86,9 +112,9 @@ namespace.castTimeTalentDecreases = {
     [GetSpellInfo(712)] = 4,        -- Summon Succubus
 }
 
--- List of player crowd controls.
+-- List of crowd controls.
 -- We want to stop the castbar when these auras are detected
--- as SPELL_CAST_FAILED is not triggered when a player gets CC'ed.
+-- as SPELL_CAST_FAILED is not triggered when an unit gets CC'ed.
 namespace.crowdControls = {
     [GetSpellInfo(5211)] = 1,       -- Bash
     [GetSpellInfo(24394)] = 1,      -- Intimidation
@@ -164,8 +190,12 @@ namespace.castTimeIncreases = {
     -- HUNTER
     [GetSpellInfo(3045)] = 45,    -- Rapid Fire
 
-    -- MAGE
-    [GetSpellInfo(23723)] = 33,   -- Mind Quickening
+    -- RACIALS
+    [GetSpellInfo(26635)] = 30,    -- Berserking
+
+    -- ITEMS
+    [GetSpellInfo(23723)] = 33,   -- Mind Quickening (Mage)
+    [GetSpellInfo(23733)] = 33,   -- Blinding Light (Paladin)
 }]]
 
 -- Savedvariables

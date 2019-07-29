@@ -302,7 +302,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     if eventType == "SPELL_CAST_START" then
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
-        local rank = GetSpellSubtext(spellID) -- async so won't work on first try but thats okay
+        local rank = GetSpellSubtext(spellID) -- queries async from server unless cached, so won't work first try but thats okay
 
         -- Reduce cast time for certain spells
         local reducedTime = castTimeTalentDecreases[spellName]
@@ -313,7 +313,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         return self:StoreCast(srcGUID, spellName, icon, castTime, rank) -- return here for tail call optimization and immediately exiting function
-    elseif eventType == "SPELL_CAST_SUCCESS" then
+    elseif eventType == "SPELL_CAST_SUCCESS" then -- spell finished
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         local castTime = channeledSpells[spellName]
@@ -321,7 +321,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
         end
 
-        -- non-channeled spell, finish it
+        -- non-channeled spell, finish it.
+        -- (We also check the expiration timer in OnUpdate script just incase this doesn't trigger when i.e out of range)
         return self:DeleteCast(srcGUID)
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeDecreases[spellID] then
@@ -333,11 +334,11 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL_CAST_* event for channel stop,
-        -- so check if aura is gone instead since most (all?) channels has an aura effect
+        -- so check if aura is gone instead since most (all?) channels has an aura effect.
         if channeledSpells[spellName] then
             return self:DeleteCast(srcGUID)
         elseif castTimeDecreases[spellID] then
-            -- Aura that slows casting speed was removed
+            -- Aura that slows casting speed was removed.
             return self:SetCastDelay(dstGUID, castTimeDecreases[spellID], true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
@@ -392,7 +393,9 @@ addon:SetScript("OnUpdate", function(self)
                 end
             else
                 -- Delete cast incase stop event wasn't detected in CLEU
-                self:DeleteCast(cast.unitGUID)
+                --if castTime < -1 then
+                    self:DeleteCast(cast.unitGUID)
+                --end
             end
         end
     end
