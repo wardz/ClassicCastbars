@@ -17,6 +17,7 @@ globals = {
     "LibStub",
 
     -- WoW globals
+    "CopyTable",
     "GetLocale",
     "GetSpellSubtext",
     "GetSpellInfo",

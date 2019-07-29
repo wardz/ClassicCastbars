@@ -1,21 +1,6 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local function CopyTable(src, dest)
-    if type(dest) ~= "table" then dest = {} end
-
-    if type(src) == "table" then
-        for k, v in pairs(src) do
-            if type(v) == "table" then
-                v = CopyTable(v, dest[k])
-            end
-            dest[k] = v
-        end
-    end
-
-    return dest
-end
-
 local function GetLSMTable(lsmType)
     local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
 
