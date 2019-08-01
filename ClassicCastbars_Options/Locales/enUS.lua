@@ -21,25 +21,27 @@ L["CASTBAR_SIZING"] = "Castbar Sizing"
 L["CASTBAR_TEXTURE_FONT"] = "Castbar Style"
 L["DEFAULT"] = "Default"
 L["FONT_SIZE"] = "Font Size"
-L["FONT_SIZE_TOOLTIP"] = "Set font size used for spell name and timer text."
+L["FONT_SIZE_TOOLTIP"] = "Sets font size used for spell name and timer text."
 L["GENERAL"] = "General Settings"
 L["HEIGHT"] = "Castbar Height"
-L["HEIGHT_TOOLTIP"] = "Sets the castbar height. Default is 14."
+L["HEIGHT_TOOLTIP"] = "Sets the castbar height."
 L["ICON_SIZE"] = "Icon Size"
-L["ICON_SIZE_TOOLTIP"] = "Set the size for the castbar spell icon."
+L["ICON_SIZE_TOOLTIP"] = "Sets the size for the castbar spell icon."
 L["NAMEPLATE"] = "Nameplate"
 L["PUSHBACK"] = "Detect Cast Pushbacks"
 L["PUSHBACK_TOOLTIP"] = [=[Enables detection for cast pushback and decreases (i.e Curse of Tongues).
 
-This detection is not fully accurate as Concentration Aura & some talents gives a chance to ignore pushback, which sadly can't be tracked.
+This detection is not fully accurate as certain spells & talents gives a chance to ignore pushback, which sadly can't be tracked.
 ]=]
 L["RESET_ALL"] = "Reset All Settings"
 L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
 L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers but still show the cast information.
 
-You might want to enable this if you find that timers are too inaccurate when players are fakecasting.]=]
+You might want to enable this if you find that the timers are too inaccurate when players are fakecasting or getting pushbacked.
+
+You can also set the castbar height & icon size to zero and border to none if you want to only show the spell name text instead of the whole bar.]=]
 L["SHOW_RANK"] = "Show Spell Rank"
-L["SHOW_RANK_TOOLTIP"] = [=[Display spell rank for current cast. E.g Frostbolt (Rank 1).
+L["SHOW_RANK_TOOLTIP"] = [=[Display spell rank for current cast.
 
 Only works when spells are cached, so the first time you see a new spell it won't show up until the second cast.]=]
 L["SHOW_TIMER"] = "Show Cast Timer"
@@ -50,13 +52,17 @@ L["SIMPLE_STYLE_TOOLTIP"] = [=[Hides the castbar border and moves the spell icon
 Using a large castbar height is recommended with this setting.]=]
 L["TARGET"] = "Target"
 L["TEST"] = "Toggle Testing"
-L["TEST_MODE"] = "Test Mode & Positioning"
 L["TEST_MODE_DRAG"] = "Test Mode - Drag To Move"
 L["TEST_PLATE_TOOLTIP"] = [=[Show the nameplate castbar for testing. You can drag the castbar to move it.
-|cFFFF0000You need to target someone and have the nameplate be visible to see the castbar.|r]=]
-L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can drag the castbar to move it, this will disable auto positioning.
-|cFFFF0000You need to target someone first to see the castbar.|r]=]
+You'll need to target someone and have the nameplate be visible to see the castbar.
+]=]
+L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can drag the castbar to move it.
+You'll need to target someone first to see the test castbar.
+]=]
 L["TOGGLE_CASTBAR"] = "Enable Castbar"
 L["TOGGLE_CASTBAR_TOOLTIP"] = "Enables or disables castbar for this specific unit frame."
 L["WIDTH"] = "Castbar Width"
-L["WIDTH_TOOLTIP"] = "Sets the castbar width. Default is 150."
+L["WIDTH_TOOLTIP"] = "Sets the castbar width."
+L["LSM_TEXTURE_NOTE"] = [=[
+
+Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here for the addon to continue working.]=]

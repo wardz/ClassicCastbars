@@ -57,20 +57,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars:ToggleUnitEvents(true)
                         end,
                     },
-                    showTimer = {
-                        order = 2,
-                        width = "full", -- has to be full to not truncate text in non-english locales
-                        name = L.SHOW_TIMER,
-                        desc = L.SHOW_TIMER_TOOLTIP,
-                        type = "toggle",
-                    },
                     autoPosition = {
-                        order = 3,
+                        order = 2,
                         width = "full",
                         name = L.AUTO_POS_BAR,
                         desc = L.AUTO_POS_BAR_TOOLTIP,
                         type = "toggle",
                         hidden = unitID == "nameplate"
+                    },
+                    showTimer = {
+                        order = 3,
+                        width = "full", -- has to be full to not truncate text in non-english locales
+                        name = L.SHOW_TIMER,
+                        desc = L.SHOW_TIMER_TOOLTIP,
+                        type = "toggle",
                     },
                     showSpellRank = {
                         order = 4,
@@ -79,8 +79,15 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.SHOW_RANK_TOOLTIP,
                         type = "toggle",
                     },
-                    pushbackDetect = {
+                    showCastInfoOnly = {
                         order = 5,
+                        width = "full",
+                        name = L.SHOW_CAST_INFO_ONLY,
+                        desc = L.SHOW_CAST_INFO_ONLY_TOOLTIP,
+                        type = "toggle",
+                    },
+                    pushbackDetect = {
+                        order = 6,
                         width = "full",
                         name = L.PUSHBACK,
                         desc = L.PUSHBACK_TOOLTIP,
@@ -91,51 +98,11 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                     },
                     simpleStyle = {
-                        order = 6,
+                        order = 7,
                         width = "full",
                         name = L.SIMPLE_STYLE,
                         desc = L.SIMPLE_STYLE_TOOLTIP,
                         type = "toggle",
-                    },
-                    showCastInfoOnly = {
-                        order = 7,
-                        width = "full",
-                        name = L.SHOW_CAST_INFO_ONLY,
-                        desc = L.SHOW_CAST_INFO_ONLY_TOOLTIP,
-                        type = "toggle",
-                    },
-
-                    spacer = {
-                        type = "description",
-                        name = "\n\n\n",
-                        order = 8,
-                        width = 10,
-                    },
-
-                    testing = {
-                        order = -1,
-                        name = L.TEST_MODE,
-                        inline = true,
-                        type = "group",
-
-                        args = {
-                            test = {
-                                order = 1,
-                                width = 1.4,
-                                name = format("%s %s", L.TEST, localizedUnit),
-                                desc = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
-                                type = "execute",
-                                disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
-                                func = function()
-                                    ClassicCastbars_TestMode:ToggleCastbarMovable(unitID)
-                                end,
-                            },
-                            notes = {
-                                order = 2,
-                                name = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
-                                type = "description",
-                            },
-                        },
                     },
                 },
             },
@@ -154,7 +121,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.WIDTH,
                         desc = L.WIDTH_TOOLTIP,
                         type = "range",
-                        min = 50,
+                        min = 1,
                         max = 300,
                         step = 1,
                         bigStep = 10,
@@ -164,8 +131,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.HEIGHT,
                         desc = L.HEIGHT_TOOLTIP,
                         type = "range",
-                        min = 4,
-                        max = 50,
+                        min = 1,
+                        max = 60,
                         step = 1,
                         bigStep = 10,
                     },
@@ -174,9 +141,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.ICON_SIZE,
                         desc = L.ICON_SIZE_TOOLTIP,
                         type = "range",
-                        min = 10,
-                        max = 50,
-                        step = 1,
+                        min = 1,
+                        max = 60,
+                        bigStep = 1,
                     },
                     castFontSize = {
                         order = 3,
@@ -185,7 +152,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "range",
                         min = 6,
                         max = 30,
-                        step = 1,
+                        bigStep = 1,
                     },
                 },
             },
@@ -252,10 +219,36 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     notes = {
                         order = 4,
                         type = "description",
-                        name = "Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here.",
+                        name = L.LSM_TEXTURE_NOTE,
                     }
                 },
            },
+
+           testing = {
+                order = -1,
+                name = "",
+                inline = true,
+                type = "group",
+
+                args = {
+                    test = {
+                        order = 1,
+                        width = 1.4,
+                        name = format("%s %s", L.TEST, localizedUnit),
+                        desc = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
+                        type = "execute",
+                        disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
+                        func = function()
+                            ClassicCastbars_TestMode:ToggleCastbarMovable(unitID)
+                        end,
+                    },
+                    notes = {
+                        order = 2,
+                        name = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
+                        type = "description",
+                    },
+                },
+            },
         },
     }
 end
