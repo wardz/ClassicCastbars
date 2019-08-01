@@ -87,7 +87,8 @@ namespace.castTimeDecreases = {
 
 -- Spells that often have cast time reduced by talents.
 -- Note: value here is not the actual cast time, but instead
--- how many seconds a talent reduces the cast time.
+-- how many seconds a talent reduces the cast time. We'll
+-- calculate the new cast time later on in CLEU.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 1,        -- Lightning Bolt
     [GetSpellInfo(421)] = 1,        -- Chain Lightning
@@ -198,43 +199,32 @@ namespace.castTimeIncreases = {
     [GetSpellInfo(23733)] = 33,   -- Blinding Light (Paladin)
 }]]
 
--- Savedvariables
-namespace.defaultConfig = {
-    version = "4", -- settings version, always bump this after adding new options
-    pushbackDetect = false,
-    locale = GetLocale(),
-
-    nameplate = {
+-- Addon Savedvariables
+do
+    local castbarUnitConfig = {
         enabled = true,
-        position = { "CENTER", -5.5, -35 },
         width = 150,
-        height = 14,
-        showTimer = true,
-        showCastInfoOnly = false,
-        showSpellRank = false,
-        autoPosition = false,
-        simpleStyle = false,
+        height = 15,
         iconSize = 16,
-        castFont = _G.STANDARD_TEXT_FONT,
-        castFontSize = 10,
-        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
-        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
-    },
-
-    target = {
-        enabled = true,
-        position = { "CENTER", -18, -87 },
-        width = 150,
-        height = 14,
         showCastInfoOnly = false,
         showTimer = true,
         showSpellRank = false,
         autoPosition = true,
         simpleStyle = false,
-        iconSize = 16,
         castFont = _G.STANDARD_TEXT_FONT,
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
-    },
+    }
+
+    namespace.defaultConfig = {
+        version = "4", -- settings version
+        pushbackDetect = false,
+        locale = GetLocale(),
+        nameplate = CopyTable(castbarUnitConfig),
+        target = CopyTable(castbarUnitConfig),
 }
+
+    namespace.defaultConfig.nameplate.position = { "CENTER", -5.5, -35 }
+    namespace.defaultConfig.target.position = { "CENTER", -18, -87 }
+end

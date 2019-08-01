@@ -25,6 +25,7 @@ local GetSpellInfo = _G.GetSpellInfo
 local GetSpellTexture = _G.GetSpellTexture
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
+local max = _G.math.max
 local next = _G.next
 local GetSpellSubtext = _G.GetSpellSubtext
 local CastingInfo = _G.CastingInfo or _G.UnitCastingInfo
@@ -52,19 +53,17 @@ end
 function addon:StartAllCasts(unitGUID)
     if not activeTimers[unitGUID] then return end
 
-    -- partyX, nameplateX and target might be the same guid, so we need to loop through them all
-    -- and start the castbar for each frame found
-    for unit, guid in pairs(activeGUIDs) do
+    for unitID, guid in pairs(activeGUIDs) do
         if guid == unitGUID then
-            self:StartCast(guid, unit)
+            self:StartCast(guid, unitID)
         end
     end
 end
 
 function addon:StopAllCasts(unitGUID)
-    for unit, guid in pairs(activeGUIDs) do
+    for unitID, guid in pairs(activeGUIDs) do
         if guid == unitGUID then
-            self:StopCast(unit)
+            self:StopCast(unitID)
         end
     end
 end
@@ -73,7 +72,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRa
     local currTime = GetTime()
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
-    -- since nameplate frames are constantly recycled between different units.
+    -- since frames are constantly recycled between different units.
     activeTimers[unitGUID] = {
         spellName = spellName,
         spellRank = spellRank,
@@ -166,7 +165,6 @@ function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
     end
 end
 
-local max = _G.math.max
 function addon:CastPushback(cast)
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
@@ -213,9 +211,6 @@ end
 
 -- Copies table values from src to dst if they don't exist in dst
 local function CopyDefaults(src, dst)
-    if type(src) ~= "table" then return {} end
-    if type(dst) ~= "table" then dst = {} end
-
     for k, v in pairs(src) do
         if type(v) == "table" then
             dst[k] = CopyDefaults(v, dst[k])
@@ -230,7 +225,8 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
-    -- Reset old settings
+    -- Reset very old settings
+    -- TODO: remove this in v1.0.1
     if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" or
         ClassicCastbarsDB.nameplate and not ClassicCastbarsDB.version then
         wipe(ClassicCastbarsDB)
@@ -241,8 +237,7 @@ function addon:PLAYER_LOGIN()
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
 
-    -- Reset fonts on game locale switched
-    -- (fonts only works for certain locales)
+    -- Reset fonts on game locale switched (fonts only works for certain locales)
     if self.db.locale ~= GetLocale() then
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT
@@ -323,7 +318,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- non-channeled spell, finish it.
-        -- (We also check the expiration timer in OnUpdate script just incase this doesn't trigger when i.e out of range)
+        -- We also check the expiration timer in OnUpdate script just incase this event doesn't trigger when i.e unit is no longer in range.
+        -- Note: It's still possible to get a memory leak here since OnUpdate is only ran for active frames, but adding extra
+        -- timer checks just to save a few kb extra memory in extremly rare situations is not really worth the performance hit.
+        -- All data is cleared on loading screens anyways.
         return self:DeleteCast(srcGUID)
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeDecreases[spellID] then
@@ -394,7 +392,7 @@ addon:SetScript("OnUpdate", function(self)
                 end
             else
                 -- Delete cast incase stop event wasn't detected in CLEU
-                    self:DeleteCast(cast.unitGUID)
+                self:DeleteCast(cast.unitGUID)
             end
         end
     end

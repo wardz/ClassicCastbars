@@ -13,11 +13,8 @@ function PoolManager:AcquireFrame()
     framesActive = framesActive + 1
 
     if isNew then
-        frame:Hide() -- new frames are always shown, hide it while we're updating it
-        self:InitializeNewFrame(frame)
-
         framesCreated = framesCreated + 1
-        -- frame._data = {}
+        self:InitializeNewFrame(frame)
     end
 
     return frame, isNew, framesCreated
@@ -31,6 +28,9 @@ function PoolManager:ReleaseFrame(frame)
 end
 
 function PoolManager:InitializeNewFrame(frame)
+    frame:Hide() -- New frames are always shown, hide it while we're updating it
+    frame.Flash:SetAlpha(0) -- we don't use this atm
+
     -- Some of the points set by SmallCastingBarFrameTemplate doesn't
     -- work well when user modify castbar size, so set our own points instead
     frame.Border:ClearAllPoints()
@@ -38,7 +38,6 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Text:ClearAllPoints()
     frame.Icon:SetPoint("LEFT", frame, -15, 0)
     frame.Text:SetPoint("CENTER")
-    frame.Flash:SetAlpha(0) -- we don't use this atm
 
     -- Clear any scripts inherited from frame template
     frame:SetScript("OnLoad", nil)
@@ -46,7 +45,6 @@ function PoolManager:InitializeNewFrame(frame)
     frame:SetScript("OnUpdate", nil)
     frame:SetScript("OnShow", nil)
 
-    -- Add cast countdown timer
     frame.Timer = frame:CreateFontString(nil, "OVERLAY")
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
@@ -58,7 +56,7 @@ function PoolManager:ResetterFunc(pool, frame)
     frame:SetParent(nil)
     frame:ClearAllPoints()
 
-    if frame._data --[[and next(frame._data)]] then
+    if frame._data then
         frame._data = nil
     end
 end
@@ -68,7 +66,7 @@ function PoolManager:GetFramePool()
 end
 
 function PoolManager:DebugInfo()
-    print(format("Created %d frames.", framesCreated))
+    print(format("Created %d frames in total.", framesCreated))
     print(format("Currently active frames: %d.", framesActive))
 end
 

@@ -28,8 +28,8 @@ local _G = _G
 local strfind = _G.string.find
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 
-local function GetUnitFrameForUnit(unitType)
-    local anchorNames = anchors[unitType]
+local function GetUnitFrameForUnit(unitID)
+    local anchorNames = anchors[unitID]
     if not anchorNames then return end
 
     for i = 1, #anchorNames do
@@ -38,8 +38,8 @@ local function GetUnitFrameForUnit(unitType)
     end
 end
 
-function AnchorManager:GetAnchor(unitID, getDefault)
-    if cache[unitID] and not getDefault then
+function AnchorManager:GetAnchor(unitID)
+    if cache[unitID] then
         return cache[unitID]
     end
 
@@ -52,7 +52,8 @@ function AnchorManager:GetAnchor(unitID, getDefault)
 
     -- Get unit frame
     local frame = GetUnitFrameForUnit(unitID)
-    if frame and not getDefault then
+    if frame then
+        anchors[unitID] = nil
         cache[unitID] = frame
     end
 

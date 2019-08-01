@@ -170,8 +170,8 @@ function addon:DisplayCastbar(castbar, unitID)
     -- Note: since frames are recycled and we also allow having different styles
     -- between castbars for target frame & nameplates, we need to always update the style here
     -- incase it was modified to something else on last recycle
-    self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db)
+    self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
     castbar:Show()
 end
