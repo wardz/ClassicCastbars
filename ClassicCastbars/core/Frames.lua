@@ -75,6 +75,9 @@ function addon:SetCastbarStyle(castbar, cast, db)
 
     if db.simpleStyle then
         castbar.Border:SetAlpha(0)
+        if castbar.BorderFrame then
+            castbar.BorderFrame:SetAlpha(0)
+        end
         castbar.Icon:SetSize(db.height, db.height)
         castbar.Icon:SetPoint("LEFT", castbar, -db.height, 0)
         castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
