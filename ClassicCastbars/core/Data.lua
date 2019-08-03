@@ -207,7 +207,7 @@ do
         height = 15,
         iconSize = 16,
         showCastInfoOnly = false,
-        showTimer = true,
+        showTimer = false,
         showSpellRank = false,
         autoPosition = true,
         simpleStyle = false,
