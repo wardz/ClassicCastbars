@@ -1,3 +1,12 @@
+v1.0.0:
+- Fix custom borders not being hidden when using simple style option.
+- Improvements to pushback detection. (Note that this detection is default turned off, see /castbars)
+- Minor improvements to options panel & updated embedded libs.
+- Castbar default height is now 15px instead of 14px.
+- Castbar will now truncate long spell names that exceeds the castbar's width.
+- Cast timer text is now default turned off. See /castbars to enable again.
+
+
 v1.0.0b-next.4:
 - Fix incorrect cast times for certain NPC casted abilities that shares name with player abilities.
 - Minor update to localizations.
