@@ -55,7 +55,7 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
 
         -- Move timer position depending on spellname length
         if db.showTimer then
-            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 20 or -6, 0)
+            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, 0)
         end
     end
 end
@@ -160,6 +160,7 @@ function addon:DisplayCastbar(castbar, unitID)
     cast.showCastInfoOnly = db.showCastInfoOnly
     castbar:SetMinMaxValues(0, cast.maxValue)
     castbar:SetParent(parentFrame)
+    castbar.Text:SetWidth(db.width - 10) -- ensure text gets truncated
 
     if unitID == "target" then
         self:SetTargetCastbarPosition(castbar, parentFrame)
