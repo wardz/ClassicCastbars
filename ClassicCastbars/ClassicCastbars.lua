@@ -73,6 +73,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRa
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
     -- since frames are constantly recycled between different units.
+    -- TODO: we can prob reuse objects here
     activeTimers[unitGUID] = {
         spellName = spellName,
         spellRank = spellRank,
@@ -285,7 +286,7 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
 end
 
 local channeledSpells = namespace.channeledSpells
-local castTimeDecreases = namespace.castTimeDecreases
+local castTimeIncreases = namespace.castTimeIncreases
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
 local bit_band = _G.bit.band
@@ -324,9 +325,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- All data is cleared on loading screens anyways.
         return self:DeleteCast(srcGUID)
     elseif eventType == "SPELL_AURA_APPLIED" then
-        if castTimeDecreases[spellID] then
+        if castTimeIncreases[spellID] then
             -- Aura that slows casting speed was applied
-            return self:SetCastDelay(dstGUID, namespace.castTimeDecreases[spellID])
+            return self:SetCastDelay(dstGUID, namespace.castTimeIncreases[spellID])
         elseif crowdControls[spellName] then
             -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
@@ -336,9 +337,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- so check if aura is gone instead since most (all?) channels has an aura effect.
         if channeledSpells[spellName] then
             return self:DeleteCast(srcGUID)
-        elseif castTimeDecreases[spellID] then
+        elseif castTimeIncreases[spellID] then
             -- Aura that slows casting speed was removed.
-            return self:SetCastDelay(dstGUID, castTimeDecreases[spellID], true)
+            return self:SetCastDelay(dstGUID, castTimeIncreases[spellID], true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then

@@ -45,7 +45,7 @@ namespace.channeledSpells = {
 -- Spells here have different percentage reduction based on spell rank,
 -- so list by spellID instead of name here so we can difference between ranks
 -- TODO: check if these also affect Aimed Shot/Volley + bosses
-namespace.castTimeDecreases = {
+namespace.castTimeIncreases = {
     -- WARLOCK
     [1714] = 50,    -- Curse of Tongues Rank 1
     [11719] = 60,   -- Curse of Tongues Rank 2
@@ -84,6 +84,19 @@ namespace.castTimeDecreases = {
     [15470] = 50,   -- Curse of Tongues
     [25195] = 75,   -- Curse of Tongues
 }
+
+--[[
+namespace.castTimeDecreases = {
+    -- HUNTER
+    [GetSpellInfo(3045)] = 45,    -- Rapid Fire
+
+    -- RACIALS
+    [GetSpellInfo(26635)] = 30,    -- Berserking
+
+    -- ITEMS
+    [GetSpellInfo(23723)] = 33,   -- Mind Quickening (Mage)
+    [GetSpellInfo(23733)] = 33,   -- Blinding Light (Paladin)
+}]]
 
 -- Spells that often have cast time reduced by talents.
 -- Note: value here is not the actual cast time, but instead
@@ -185,19 +198,6 @@ namespace.crowdControls = {
     [GetSpellInfo(56)] = 1,         -- Stun (Weapon Proc)
     [GetSpellInfo(26108)] = 1,      -- Glimpse of Madness
 }
-
---[[
-namespace.castTimeIncreases = {
-    -- HUNTER
-    [GetSpellInfo(3045)] = 45,    -- Rapid Fire
-
-    -- RACIALS
-    [GetSpellInfo(26635)] = 30,    -- Berserking
-
-    -- ITEMS
-    [GetSpellInfo(23723)] = 33,   -- Mind Quickening (Mage)
-    [GetSpellInfo(23733)] = 33,   -- Blinding Light (Paladin)
-}]]
 
 -- Addon Savedvariables
 do
