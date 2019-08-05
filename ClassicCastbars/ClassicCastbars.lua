@@ -46,7 +46,12 @@ function addon:StopCast(unitID)
 
     castbar._data = nil
     if not castbar.isTesting then
-        castbar:Hide()
+        --[[if not noFadeOut then
+            -- TODO: verify this doesn't cause side effects or performance issues
+            UIFrameFadeOut(castbar, 0.1, 1, 0)
+        else]]
+            castbar:Hide()
+        --end
     end
 end
 
@@ -266,7 +271,7 @@ end
 function addon:PLAYER_TARGET_CHANGED()
     activeGUIDs.target = UnitGUID("target") or nil
 
-    self:StopCast("target") -- always hide previous target's castbar
+    self:StopCast("target", true) -- always hide previous target's castbar
     self:StartCast(activeGUIDs.target, "target") -- Show castbar again if available
 end
 

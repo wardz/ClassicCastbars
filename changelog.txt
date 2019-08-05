@@ -5,6 +5,7 @@ v1.0.0:
 - Castbar default height is now 15px instead of 14px.
 - Castbar will now truncate long spell names that exceeds the castbar's width.
 - Cast timer text is now default turned off. See /castbars to enable again.
+- Channeled spells now have a green statusbar color like on retail.
 
 
 v1.0.0b-next.4:
