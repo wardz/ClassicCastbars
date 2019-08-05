@@ -50,7 +50,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         name = L.TOGGLE_CASTBAR,
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
-                        width = "full",
+                        width = "full", -- these have to be full to not truncate text in non-english locales
                         type = "toggle",
                         set = function(_, value)
                             ClassicCastbarsDB[unitID].enabled = value
@@ -67,7 +67,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     showTimer = {
                         order = 3,
-                        width = "full", -- has to be full to not truncate text in non-english locales
+                        width = "full",
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
                         type = "toggle",
@@ -220,7 +220,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 4,
                         type = "description",
                         name = L.LSM_TEXTURE_NOTE,
-                    }
+                    },
                 },
            },
 

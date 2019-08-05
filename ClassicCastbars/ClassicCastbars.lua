@@ -212,6 +212,9 @@ end
 
 -- Copies table values from src to dst if they don't exist in dst
 local function CopyDefaults(src, dst)
+    if type(src) ~= "table" then return {} end
+    if type(dst) ~= "table" then dst = {} end
+
     for k, v in pairs(src) do
         if type(v) == "table" then
             dst[k] = CopyDefaults(v, dst[k])

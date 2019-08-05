@@ -1,6 +1,6 @@
 # ClassicCastbars
 
-Lightweight addon that adds castingbars to the target frame and nameplates in Classic World of Warcraft 1.13.x.  
+Lightweight addon that adds casting bars to the target frame and nameplates in Classic World of Warcraft 1.13.x.  
 
 ![Imgur](https://i.imgur.com/thxJqi6.jpg)
 
@@ -29,7 +29,7 @@ add any major things like custom animations, alerts, latency indicator and so on
 
 ## External Usage
 
-Looking at using cast related APIs for your custom addon? Checkout [LibClassicCast](https://github.com/joev/LibClassicCast) by joev.
+Looking at using cast related APIs for your custom addon? Check out [LibClassicCast](https://github.com/joev/LibClassicCast) by joev.
 
 ## License
 
