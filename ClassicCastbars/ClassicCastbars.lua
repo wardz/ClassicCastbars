@@ -362,7 +362,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if blocked or absorbed then return end
-        if resisted >= damage then return end -- TODO: is fully resisted? need to confirm
+        --if resisted >= damage then return end -- TODO: is fully resisted? need to confirm
 
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
             return self:SetCastDelay(dstGUID)
