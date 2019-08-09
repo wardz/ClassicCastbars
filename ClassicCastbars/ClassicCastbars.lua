@@ -21,14 +21,14 @@ ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 -- upvalues for speed
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
-local GetSpellInfo = _G.GetSpellInfo
 local GetSpellTexture = _G.GetSpellTexture
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
 local next = _G.next
-local GetSpellSubtext = _G.GetSpellSubtext
 local CastingInfo = _G.CastingInfo or _G.UnitCastingInfo
+local bit_band = _G.bit.band
+local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
 
 function addon:StartCast(unitGUID, unitID)
     if not activeTimers[unitGUID] then return end
@@ -95,7 +95,7 @@ end
 
 -- Delete cast data for unit, and stop any active castbars
 function addon:DeleteCast(unitGUID)
-    if unitGUID then -- sanity check
+    if unitGUID and activeTimers[unitGUID] then
         self:StopAllCasts(unitGUID)
         activeTimers[unitGUID] = nil
     end
@@ -297,16 +297,16 @@ local channeledSpells = namespace.channeledSpells
 local castTimeIncreases = namespace.castTimeIncreases
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
-local bit_band = _G.bit.band
-local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
+local castedSpells = namespace.castedSpells
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, spellID, spellName, _, _, _, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName, _, damage, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
-        local _, _, icon, castTime = GetSpellInfo(spellID)
-        if not castTime or castTime == 0 then return end
-        local rank = GetSpellSubtext(spellID) -- queries async from server unless cached, so won't work first try but thats okay
+        local spellData = castedSpells[spellName]
+        if not spellData then return end
+        local castTime = spellData[1]
+        local icon = GetSpellTexture(spellData[2])
 
         -- Reduce cast time for certain spells
         local reducedTime = castTimeTalentDecreases[spellName]
@@ -317,13 +317,13 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, spellName, icon, castTime, rank)
+        return self:StoreCast(srcGUID, spellName, icon, castTime)
     elseif eventType == "SPELL_CAST_SUCCESS" then -- spell finished
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
-        local castTime = channeledSpells[spellName]
-        if castTime then
-            return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), castTime * 1000, nil, true)
+        local channelData = channeledSpells[spellName]
+        if channelData then
+            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, nil, true)
         end
 
         -- non-channeled spell, finish it.
@@ -333,9 +333,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- All data is cleared on loading screens anyways.
         return self:DeleteCast(srcGUID)
     elseif eventType == "SPELL_AURA_APPLIED" then
-        if castTimeIncreases[spellID] then
+        if castTimeIncreases[spellName] then
             -- Aura that slows casting speed was applied
-            return self:SetCastDelay(dstGUID, namespace.castTimeIncreases[spellID])
+            return self:SetCastDelay(dstGUID, namespace.castTimeIncreases[spellName])
         elseif crowdControls[spellName] then
             -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
@@ -345,9 +345,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- so check if aura is gone instead since most (all?) channels has an aura effect.
         if channeledSpells[spellName] then
             return self:DeleteCast(srcGUID)
-        elseif castTimeIncreases[spellID] then
+        elseif castTimeIncreases[spellName] then
             -- Aura that slows casting speed was removed.
-            return self:SetCastDelay(dstGUID, castTimeIncreases[spellID], true)
+            return self:SetCastDelay(dstGUID, castTimeIncreases[spellName], true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then
@@ -361,7 +361,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
-        if resisted or blocked or absorbed then return end
+        if blocked or absorbed then return end
+        if resisted >= damage then return end -- TODO: is fully resisted? need to confirm
 
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
             return self:SetCastDelay(dstGUID)

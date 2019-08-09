@@ -40,13 +40,7 @@ L["RESET_ALL"] = "Reset All Settings"
 L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
 L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show the cast information.
 
-You might want to enable this if you find that the timers are too inaccurate when players are fakecasting or getting pushbacked.
-
 You can also set the castbar height to zero and border to none if you want to only show the spell name instead of the whole bar.]=]
-L["SHOW_RANK"] = "Show Spell Rank"
-L["SHOW_RANK_TOOLTIP"] = [=[Display spell rank for current cast.
-
-Only works when spells are cached, so the first time you see a new spell it won't show up until the second cast.]=]
 L["SHOW_TIMER"] = "Show Timer Text"
 L["SHOW_TIMER_TOOLTIP"] = "Display a timer countdown for the current cast."
 L["SIMPLE_STYLE"] = "Simple Style Castbars"

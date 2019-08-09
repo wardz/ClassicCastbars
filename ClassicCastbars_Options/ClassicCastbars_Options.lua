@@ -25,7 +25,7 @@ end
 
 local function CreateUnitTabGroup(unitID, localizedUnit, order)
     return {
-        name = format("%s Castbar", localizedUnit),
+        name = format("%s Castbar", localizedUnit), -- TODO: localize 'Castbar'
         order = order,
         type = "group",
         get = function(info)
@@ -72,13 +72,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.SHOW_TIMER_TOOLTIP,
                         type = "toggle",
                     },
-                    showSpellRank = {
-                        order = 4,
-                        width = "full",
-                        name = L.SHOW_RANK,
-                        desc = L.SHOW_RANK_TOOLTIP,
-                        type = "toggle",
-                    },
                     showCastInfoOnly = {
                         order = 5,
                         width = "full",
@@ -121,7 +114,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.WIDTH,
                         desc = L.WIDTH_TOOLTIP,
                         type = "range",
-                        min = 1,
+                        min = 0.1,
                         max = 300,
                         step = 1,
                         bigStep = 10,
@@ -131,7 +124,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.HEIGHT,
                         desc = L.HEIGHT_TOOLTIP,
                         type = "range",
-                        min = 1,
+                        min = 0.1,
                         max = 60,
                         step = 1,
                         bigStep = 10,
@@ -141,7 +134,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.ICON_SIZE,
                         desc = L.ICON_SIZE_TOOLTIP,
                         type = "range",
-                        min = 1,
+                        min = 0.1,
                         max = 60,
                         bigStep = 1,
                     },
