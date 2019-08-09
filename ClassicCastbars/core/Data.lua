@@ -200,8 +200,29 @@ namespace.crowdControls = {
 }
 
 -- Addon Savedvariables
-do
-    local castbarUnitConfig = {
+namespace.defaultConfig = {
+    version = "5", -- settings version
+    pushbackDetect = false,
+    locale = GetLocale(),
+
+    nameplate = {
+        enabled = true,
+        width = 120,
+        height = 13,
+        iconSize = 14,
+        showCastInfoOnly = false,
+        showTimer = false,
+        showSpellRank = false,
+        autoPosition = true,
+        simpleStyle = false,
+        castFont = _G.STANDARD_TEXT_FONT,
+        castFontSize = 9,
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
+        position = { "CENTER", 0.2, -23.1 },
+    },
+
+    target = {
         enabled = true,
         width = 150,
         height = 15,
@@ -215,16 +236,6 @@ do
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
-    }
-
-    namespace.defaultConfig = {
-        version = "4", -- settings version
-        pushbackDetect = false,
-        locale = GetLocale(),
-        nameplate = CopyTable(castbarUnitConfig),
-        target = CopyTable(castbarUnitConfig),
+        position = { "CENTER", -18, -87 },
+    },
 }
-
-    namespace.defaultConfig.nameplate.position = { "CENTER", -5.5, -35 }
-    namespace.defaultConfig.target.position = { "CENTER", -18, -87 }
-end

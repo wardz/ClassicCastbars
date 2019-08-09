@@ -235,8 +235,8 @@ function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
     -- Reset very old settings
-    -- TODO: remove this in v1.0.1
-    if ClassicCastbarsDB.version and ClassicCastbarsDB.version == "1" or
+    -- TODO: remove this in v1.0.1 or so
+    if ClassicCastbarsDB.version and tonumber(ClassicCastbarsDB.version) <= 4 or
         ClassicCastbarsDB.nameplate and not ClassicCastbarsDB.version then
         wipe(ClassicCastbarsDB)
         print("ClassicCastbars: All settings reset due to major changes. See /castbar for new options.")

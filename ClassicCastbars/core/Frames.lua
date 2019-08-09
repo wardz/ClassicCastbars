@@ -171,11 +171,9 @@ function addon:DisplayCastbar(castbar, unitID)
 
     if unitID == "target" then
         self:SetTargetCastbarPosition(castbar, parentFrame)
-        castbar:SetScale(1)
     else
         local pos = db.position
         castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-        castbar:SetScale(0.7)
     end
 
     -- Note: since frames are recycled and we also allow having different styles
