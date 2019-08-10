@@ -22,6 +22,7 @@ ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
 local GetSpellTexture = _G.GetSpellTexture
+local GetSpellInfo = _G.GetSpellInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
