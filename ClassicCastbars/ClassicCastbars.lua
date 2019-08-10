@@ -303,10 +303,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName, _, damage, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
-        local spellData = castedSpells[spellName]
-        if not spellData then return end
-        local castTime = spellData[1]
-        local icon = GetSpellTexture(spellData[2])
+        local spellID = castedSpells[spellName]
+        if not spellID then return end
+        local _, _, icon, castTime = GetSpellInfo(spellID)
+        if not castTime or castTime == 0 then return end
 
         -- Reduce cast time for certain spells
         local reducedTime = castTimeTalentDecreases[spellName]
