@@ -85,7 +85,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
     end
 
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
-    castbar.Icon:SetPoint("LEFT", castbar, -db.iconSize - 7, 0)
+    castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Icon:SetTexCoord(0, 1, 0, 1)
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then -- default border

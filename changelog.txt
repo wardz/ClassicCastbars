@@ -1,3 +1,9 @@
+v1.0.0b-next.6:
+- Fixed certain spells like summon warlock pet not being tracked.
+- Added option to change cast icon position.
+- Memory usage improvements.
+- Updated embedded libs.
+
 v1.0.0b-next.5:
 - Blizzard removed the ability to distinguish between spell ranks in the combat log, so now cast times are always based on the highest rank.
   This change also breaks being able to retrieve cast times for other player's spells, so now the addon uses a custom made "database" of all the spells instead.

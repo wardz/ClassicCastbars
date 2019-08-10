@@ -2516,6 +2516,10 @@ namespace.castedSpells = {
     [GetSpellInfo(2402)] = 2402, -- Woolen Cape
 }
 
+-- For channeled spells we need both the spell ID and cast time since
+-- GetSpellInfo doesn't return any cast time for channeled casts.
+-- value[1] is the cast time in seconds, value[2] is the spell ID used to retrive
+-- spell icon later on.
 namespace.channeledSpells = {
     -- MISC
     [GetSpellInfo(746)] = { 7, 746 },         -- First Aid
@@ -2686,7 +2690,7 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "5", -- settings version
+    version = "6", -- settings version
     pushbackDetect = false,
     locale = GetLocale(),
 
@@ -2705,6 +2709,8 @@ namespace.defaultConfig = {
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         position = { "CENTER", 0.2, -23.1 },
+        iconPositionX = -5,
+        iconPositionY = 0,
     },
 
     target = {
@@ -2722,5 +2728,7 @@ namespace.defaultConfig = {
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         position = { "CENTER", -18, -87 },
+        iconPositionX = -5,
+        iconPositionY = 0,
     },
 }

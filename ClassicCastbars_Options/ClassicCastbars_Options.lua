@@ -25,7 +25,7 @@ end
 
 local function CreateUnitTabGroup(unitID, localizedUnit, order)
     return {
-        name = format("%s Castbar", localizedUnit), -- TODO: localize 'Castbar'
+        name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
         type = "group",
         get = function(info)
@@ -129,15 +129,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         step = 1,
                         bigStep = 10,
                     },
-                    iconSize = {
-                        order = 2,
-                        name = L.ICON_SIZE,
-                        desc = L.ICON_SIZE_TOOLTIP,
-                        type = "range",
-                        min = 0.1,
-                        max = 60,
-                        bigStep = 1,
-                    },
                     castFontSize = {
                         order = 3,
                         name = L.FONT_SIZE,
@@ -152,8 +143,47 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
 
             ----------------------------------------------------
 
-            sharedMedia = {
+            castIcon = {
                 order = 3,
+                name = L.CASTBAR_ICON,
+                type = "group",
+                inline = false,
+                args = {
+                    iconSize = {
+                        order = 1,
+                        name = L.ICON_SIZE,
+                        desc = L.ICON_SIZE_TOOLTIP,
+                        type = "range",
+                        width = "double",
+                        min = 0.1,
+                        max = 60,
+                        bigStep = 1,
+                    },
+                    iconPositionX = {
+                        order = 2,
+                        name = L.ICON_POS_X,
+                        desc = L.ICON_POS_TOOLTIP,
+                        type = "range",
+                        min = -1000,
+                        max = 1000,
+                        bigStep = 5,
+                    },
+                    iconPositionY = {
+                        order = 3,
+                        name = L.ICON_POS_Y,
+                        desc = L.ICON_POS_TOOLTIP,
+                        type = "range",
+                        min = -1000,
+                        max = 1000,
+                        bigStep = 5,
+                    },
+                },
+            },
+
+            ----------------------------------------------------
+
+            sharedMedia = {
+                order = 4,
                 name = L.CASTBAR_TEXTURE_FONT,
                 type = "group",
                 inline = false,
