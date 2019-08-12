@@ -301,7 +301,7 @@ local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName, _, damage, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName, _, damage, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo() -- luacheck: ignore 211
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
