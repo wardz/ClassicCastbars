@@ -6,8 +6,7 @@ addons:
     packages:
       - luarocks
 
-install:
-  - luarocks install --local luacheck
+install: luarocks install --local luacheck
 
 script:
   - |
