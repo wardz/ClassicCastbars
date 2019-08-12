@@ -2556,7 +2556,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(755)] = { 10, 755 },        -- Health Funnel
 }
 
--- List of abilities that makes cast time slower.
+-- List of abilities that increases cast time (reduces speed)
 -- Value here is the slow percentage, from highest spell rank.
 -- TODO: check if these also affect Aimed Shot/Volley + bosses
 namespace.castTimeIncreases = {
@@ -2690,15 +2690,15 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "6", -- settings version
+    version = "7", -- settings version
     pushbackDetect = false,
     locale = GetLocale(),
 
     nameplate = {
         enabled = true,
-        width = 120,
+        width = 106,
         height = 11,
-        iconSize = 14,
+        iconSize = 13,
         showCastInfoOnly = false,
         showTimer = false,
         showSpellRank = false,
@@ -2708,9 +2708,13 @@ namespace.defaultConfig = {
         castFontSize = 8,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
-        position = { "CENTER", 0.2, -23.1 },
-        iconPositionX = -5,
+        position = { "CENTER", 7.3, -23.1 },
+        iconPositionX = -3,
         iconPositionY = 0,
+        borderColor = { 1, 0.796078431372549, 0, 1 },
+        statusColor = { 1, 0.7, 0, 1 },
+        statusColorChannel = { 0, 1, 0, 1 },
+        textColor = { 1, 1, 1, 1 },
     },
 
     target = {
@@ -2730,5 +2734,9 @@ namespace.defaultConfig = {
         position = { "CENTER", -18, -87 },
         iconPositionX = -5,
         iconPositionY = 0,
+        borderColor = { 1, 1, 1, 1 },
+        statusColor = { 1, 0.7, 0, 1 },
+        statusColorChannel = { 0, 1, 0, 1 },
+        textColor = { 1, 1, 1, 1 },
     },
 }

@@ -5,6 +5,7 @@ local PoolManager = namespace.PoolManager
 local addon = namespace.addon
 local activeFrames = addon.activeFrames
 local gsub = _G.string.gsub
+local unpack = _G.unpack
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -87,6 +88,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
     castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Icon:SetTexCoord(0, 1, 0, 1)
+    castbar.Border:SetVertexColor(unpack(db.borderColor))
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then -- default border
         castbar.Border:SetAlpha(1)
@@ -145,6 +147,10 @@ function addon:SetCastbarFonts(castbar, cast, db)
         castbar.Text:SetFont(db.castFont, db.castFontSize)
         castbar.Timer:SetFont(db.castFont, db.castFontSize)
     end
+
+    local c = db.textColor
+    castbar.Text:SetTextColor(c[1], c[2], c[3])
+    castbar.Timer:SetTextColor(c[1], c[2], c[3])
 end
 
 function addon:DisplayCastbar(castbar, unitID)
@@ -164,9 +170,9 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar:SetAlpha(1)
 
     if cast.isChanneled then
-        castbar:SetStatusBarColor(0, 1, 0)
+        castbar:SetStatusBarColor(unpack(db.statusColorChannel))
     else
-        castbar:SetStatusBarColor(1, 0.7, 0)
+        castbar:SetStatusBarColor(unpack(db.statusColor))
     end
 
     if unitID == "target" then

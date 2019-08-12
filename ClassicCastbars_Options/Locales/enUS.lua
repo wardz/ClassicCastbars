@@ -11,6 +11,7 @@ L["AUTO_POS_BAR"] = "Auto Position Castbar"
 L["AUTO_POS_BAR_TOOLTIP"] = [=[When enabled it will auto position the castbar based on things like how many buffs are shown on the unit frame and so on.
 
 Does not work with third-party unit frames.]=]
+L["BORDER_COLOR"] = "Select Border Color"
 L["CAST_BORDER"] = "Select Border Texture"
 L["CAST_BORDER_TOOLTIP"] = "Select texture used for castbar border."
 L["CAST_FONT"] = "Select Castbar Font"
@@ -18,6 +19,7 @@ L["CAST_FONT_TOOLTIP"] = "Select font type used for spell name and timer text."
 L["CAST_STATUSBAR"] = "Select Castbar Texture"
 L["CAST_STATUSBAR_TOOLTIP"] = "Select texture type used for the castbar/statusbar."
 L["CASTBAR"] = "Castbar"
+L["CASTBAR_COLORS"] = "Castbar Colors"
 L["CASTBAR_ICON"] = "Castbar Icon"
 L["CASTBAR_SIZING"] = "Castbar Sizing"
 L["CASTBAR_TEXTURE_FONT"] = "Castbar Textures"
@@ -52,6 +54,8 @@ L["SIMPLE_STYLE"] = "Simple Style Castbars"
 L["SIMPLE_STYLE_TOOLTIP"] = [=[Hides the castbar border and moves the spell icon closer to the castingbar. The icon will also use the same height as the castbar.
 
 Using a large castbar height is recommended with this setting.]=]
+L["STATUS_CHANNEL_COLOR"] = "Select Channel Fill Color"
+L["STATUS_COLOR"] = "Select Cast Fill Color"
 L["TARGET"] = "Target"
 L["TEST"] = "Toggle Testing"
 L["TEST_MODE_DRAG"] = "Test Mode - Drag To Move"
@@ -61,6 +65,7 @@ You'll need to target someone and have the nameplate be visible to see the test 
 L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can drag the castbar to move it.
 You'll need to target someone first to see the test castbar.
 ]=]
+L["TEXT_COLOR"] = "Select Text Color"
 L["TOGGLE_CASTBAR"] = "Enable Castbar"
 L["TOGGLE_CASTBAR_TOOLTIP"] = "Enables or disables castbar for this specific unit frame."
 L["WIDTH"] = "Castbar Width"

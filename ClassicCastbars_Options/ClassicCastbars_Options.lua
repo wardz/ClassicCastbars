@@ -182,8 +182,55 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
 
             ----------------------------------------------------
 
-            sharedMedia = {
+            colors = {
                 order = 4,
+                name = L.CASTBAR_COLORS,
+                type = "group",
+                inline = false,
+                get = function(info)
+                    return unpack(ClassicCastbarsDB[info[1]][info[3]])
+                end,
+                set = function(info, r, g, b, a)
+                    local cfg = ClassicCastbarsDB[info[1]][info[3]]
+                    cfg[1] = r -- overwrite values here instead of creating
+                    cfg[2] = g -- a new table, so we can save memory. This function
+                    cfg[3] = b -- is ran very frequently when picking colors
+                    cfg[4] = a
+                    ClassicCastbars_TestMode:OnOptionChanged(unitID)
+                end,
+
+                args = {
+                    borderColor = {
+                        name = L.BORDER_COLOR,
+                        order = 1,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    textColor = {
+                        name = L.TEXT_COLOR,
+                        order = 2,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColor = {
+                        name = L.STATUS_COLOR,
+                        order = 3,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColorChannel = {
+                        name = L.STATUS_CHANNEL_COLOR,
+                        order = 4,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                },
+            },
+
+            ----------------------------------------------------
+
+            sharedMedia = {
+                order = 5,
                 name = L.CASTBAR_TEXTURE_FONT,
                 type = "group",
                 inline = false,

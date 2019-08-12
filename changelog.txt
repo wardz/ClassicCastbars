@@ -1,8 +1,14 @@
+v1.0.0b-next.7:
+- Add support for Tukui & Perl unit frames.
+- Add options for changing castbar colors.
+
+
 v1.0.0b-next.6:
 - Fixed certain spells like summon warlock pet not being tracked.
 - Added option to change cast icon position.
 - Memory usage improvements.
 - Updated embedded libs.
+
 
 v1.0.0b-next.5:
 - Blizzard removed the ability to distinguish between spell ranks in the combat log, so now cast times are always based on the highest rank.
