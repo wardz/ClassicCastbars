@@ -3,8 +3,14 @@
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## Dependencies: ClassicCastbars
 
-Libs\Embeds.xml
-Locales\Locales.xml
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 
+Locales\Locales.xml
 TestMode.lua
 ClassicCastbars_Options.lua
