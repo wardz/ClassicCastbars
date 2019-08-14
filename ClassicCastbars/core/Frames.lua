@@ -146,8 +146,8 @@ function addon:SetCastbarFonts(castbar, cast, db)
     end
 
     local c = db.textColor
-    castbar.Text:SetTextColor(c[1], c[2], c[3])
-    castbar.Timer:SetTextColor(c[1], c[2], c[3])
+    castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
+    castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
 end
 
 function addon:DisplayCastbar(castbar, unitID)
