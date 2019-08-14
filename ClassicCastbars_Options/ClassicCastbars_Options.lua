@@ -90,13 +90,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         end,
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                     },
-                    simpleStyle = {
-                        order = 7,
-                        width = "full",
-                        name = L.SIMPLE_STYLE,
-                        desc = L.SIMPLE_STYLE_TOOLTIP,
-                        type = "toggle",
-                    },
                 },
             },
 
@@ -176,6 +169,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = -1000,
                         max = 1000,
                         bigStep = 5,
+                    },
+                    hideIconBorder = {
+                        order = 4,
+                        width = "full",
+                        name = L.ICON_HIDE_BORDER,
+                        type = "toggle",
                     },
                 },
             },

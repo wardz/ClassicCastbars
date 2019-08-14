@@ -29,6 +29,7 @@ L["FONT_SIZE_TOOLTIP"] = "Sets font size used for spell name and timer text."
 L["GENERAL"] = "General Settings"
 L["HEIGHT"] = "Castbar Height"
 L["HEIGHT_TOOLTIP"] = "Sets the castbar height."
+L["ICON_HIDE_BORDER"] = "Hide Icon Border"
 L["ICON_POS_TOOLTIP"] = "Adjust the XY offset for the spell icon."
 L["ICON_POS_X"] = "Icon Position X"
 L["ICON_POS_Y"] = "Icon Position Y"
@@ -50,10 +51,6 @@ L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show
 You can also set the castbar height to zero and border to none if you want to only show the spell name instead of the whole bar.]=]
 L["SHOW_TIMER"] = "Show Timer Text"
 L["SHOW_TIMER_TOOLTIP"] = "Display a timer countdown for the current cast."
-L["SIMPLE_STYLE"] = "Simple Style Castbars"
-L["SIMPLE_STYLE_TOOLTIP"] = [=[Hides the castbar border and moves the spell icon closer to the castingbar. The icon will also use the same height as the castbar.
-
-Using a large castbar height is recommended with this setting.]=]
 L["STATUS_CHANNEL_COLOR"] = "Select Channel Fill Color"
 L["STATUS_COLOR"] = "Select Cast Fill Color"
 L["TARGET"] = "Target"

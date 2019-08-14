@@ -71,20 +71,14 @@ function addon:SetCastbarStyle(castbar, cast, db)
         castbar.Spark:SetAlpha(1)
     end
 
-    if db.simpleStyle then
-        castbar.Border:SetAlpha(0)
-        if castbar.BorderFrame then
-            castbar.BorderFrame:SetAlpha(0)
-        end
-        castbar.Icon:SetSize(db.height, db.height)
-        castbar.Icon:SetPoint("LEFT", castbar, -db.height, 0)
+    if db.hideIconBorder then
         castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-        return
+    else
+        castbar.Icon:SetTexCoord(0, 1, 0, 1)
     end
 
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
     castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
-    castbar.Icon:SetTexCoord(0, 1, 0, 1)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then -- default border
