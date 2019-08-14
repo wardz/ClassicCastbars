@@ -1,7 +1,7 @@
 local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
--- Blizzard removed spellIDs from the combat log so we use this
+-- Blizzard removed spellIDs from the combat log payload so we use this
 -- list to turn cast spell names into spell IDs. (GetSpellInfo etc only works
 -- for spell IDs unless the player has the ability in their spell book)
 namespace.castedSpells = {
@@ -2701,7 +2701,6 @@ namespace.defaultConfig = {
         iconSize = 13,
         showCastInfoOnly = false,
         showTimer = false,
-        showSpellRank = false,
         autoPosition = true,
         simpleStyle = false,
         castFont = _G.STANDARD_TEXT_FONT,
@@ -2724,7 +2723,6 @@ namespace.defaultConfig = {
         iconSize = 16,
         showCastInfoOnly = false,
         showTimer = false,
-        showSpellRank = false,
         autoPosition = true,
         simpleStyle = false,
         castFont = _G.STANDARD_TEXT_FONT,

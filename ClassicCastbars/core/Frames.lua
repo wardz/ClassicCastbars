@@ -45,9 +45,6 @@ end
 
 function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
-    if db.showSpellRank and cast.spellRank then
-        spellName = spellName .. " (" .. cast.spellRank .. ")"
-    end
 
     -- Update text + icon if it has changed
     if castbar.Text:GetText() ~= spellName then

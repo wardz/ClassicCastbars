@@ -6,7 +6,6 @@ ClassicCastbars_TestMode = TestMode -- global ref for use in both addons
 
 local dummySpellData = {
     spellName = GetSpellInfo(118),
-    spellRank = GetSpellSubtext(118), -- TODO: if this is still async in Classic we should use ContinueOnSpellLoad() here
     icon = GetSpellTexture(118),
     maxValue = 10,
     timeStart = GetTime(),

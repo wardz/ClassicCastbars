@@ -27,7 +27,7 @@ local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
 local next = _G.next
-local CastingInfo = _G.CastingInfo or _G.UnitCastingInfo
+local CastingInfo = _G.CastingInfo
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
 
@@ -74,7 +74,7 @@ function addon:StopAllCasts(unitGUID)
     end
 end
 
-function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRank, isChanneled)
+function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChanneled)
     local currTime = GetTime()
 
     -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
@@ -82,7 +82,6 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, spellRa
     -- TODO: we can prob reuse objects here
     activeTimers[unitGUID] = {
         spellName = spellName,
-        spellRank = spellRank,
         icon = iconTexturePath,
         maxValue = castTime / 1000,
         --timeStart = currTime,
@@ -324,7 +323,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         local channelData = channeledSpells[spellName]
         if channelData then
-            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, nil, true)
+            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, true)
         end
 
         -- non-channeled spell, finish it.
@@ -353,7 +352,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then
             -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-            if not CastingInfo("player") then
+            if not CastingInfo() then
                 return self:DeleteCast(srcGUID)
             end
         else
