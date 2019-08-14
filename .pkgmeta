@@ -1,5 +1,4 @@
 enable-nolib-creation: no
-wowi-create-changelog: no
 manual-changelog: changelog.txt
 package-as: ClassicCastbars
 
@@ -19,3 +18,5 @@ move-folders:
 ignore:
   - README.md
   - release.sh
+  - ClassicCastbars_Options/Libs/LibStub/LibStub.toc
+  - ClassicCastbars_Options/Libs/LibStub/tests
