@@ -59,8 +59,10 @@ function TestMode:ToggleCastbarMovable(unitID)
 
     if self.isTesting[unitID] then
         self:SetCastbarImmovable(unitID)
-        self:UnregisterEvent("PLAYER_TARGET_CHANGED")
         self.isTesting[unitID] = false
+        if unitID == "nameplate-testmode" then
+            self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        end
     else
         self:SetCastbarMovable(unitID)
         self.isTesting[unitID] = true
