@@ -15,8 +15,6 @@ Installing directly from source is not guaranteed to work. You should download a
 ## Configuration
 
 Type `/castbar` or go to `Escape -> Interface Options -> AddOns -> ClassicCastbars` to open the options panel.  
-Feel free to request new options, however, I want this addon to remain as lightweight and blizz-like as possible so I won't
-add any major things like custom animations, alerts, latency indicator and so on.
 
 ## Contribute
 
@@ -26,10 +24,6 @@ add any major things like custom animations, alerts, latency indicator and so on
   When forking the addon you should save the folder somewhere outside your WoW AddOns directory and  
   instead have two symlinks inside the AddOns folder pointing to
   `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.
-
-## External Usage
-
-Looking at using cast related APIs for your custom addon? Check out [LibClassicCast](https://github.com/joev/LibClassicCast) by joev.
 
 ## License
 
