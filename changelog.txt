@@ -1,4 +1,12 @@
-v1.0.0b-next.7:
+v1.0.1:
+- Added option to hide icon border.
+- Removed option for "simple style" castbar. Same look can now be achieved by setting border texture to none and adjusting the icon settings.
+- Fix castbar text ignoring alpha level from color picker option.
+- Memory usage improvements.
+- Added simplified Chinese translations. (Thanks to Asukachikaru)
+
+
+v1.0.0:
 - Add support for Tukui & Perl unit frames.
 - Add options for changing castbar colors.
 
