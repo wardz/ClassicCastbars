@@ -78,6 +78,10 @@ function TestMode:OnOptionChanged(unitID)
         unitID = "nameplate-testmode"
     end
 
+    if unitID == "player" then
+        return ClassicCastbars:SkinPlayerCastbar()
+    end
+
     -- Immediately update castbar display after changing an option
     local castbar = ClassicCastbars.activeFrames[unitID]
     if castbar and castbar.isTesting then
@@ -91,8 +95,8 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar:EnableMouse(true)
     castbar:SetMovable(true)
 
-    if unitID == "target" then
-        -- restricted frames (nameplates) can't be clamped
+    if unitID ~= "nameplate" then
+        -- restricted frames can't be clamped
         castbar:SetClampedToScreen(true)
     end
 
@@ -119,7 +123,12 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
 
     castbar:ClearAllPoints() -- needed here to work with restricted frames
-    ClassicCastbars:DisplayCastbar(castbar, unitID)
+    if unitID == "player" then
+        castbar:Show()
+        castbar:SetAlpha(1)
+    else
+        ClassicCastbars:DisplayCastbar(castbar, unitID)
+    end
 end
 
 function TestMode:SetCastbarImmovable(unitID)

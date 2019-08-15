@@ -1,5 +1,9 @@
 local _, namespace = ...
-local GetSpellInfo = _G.GetSpellInfo
+local GetSpellInfo = function(x)
+    local v = GetSpellInfo(x)
+    if not v then return "" end
+    return v
+end
 
 -- Blizzard removed spellIDs from the combat log payload so we use this
 -- list to turn cast spell names into spell IDs. (GetSpellInfo etc only works
@@ -1454,6 +1458,28 @@ namespace.defaultConfig = {
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
+        hideIconBorder = false,
+        position = { "CENTER", -18, -87 },
+        iconPositionX = -5,
+        iconPositionY = 0,
+        borderColor = { 1, 1, 1, 1 },
+        statusColor = { 1, 0.7, 0, 1 },
+        statusColorChannel = { 0, 1, 0, 1 },
+        textColor = { 1, 1, 1, 1 },
+    },
+
+    player = {
+        enabled = false,
+        width = 190,
+        height = 19,
+        iconSize = 16,
+        showCastInfoOnly = false,
+        showTimer = false,
+        autoPosition = true,
+        castFont = _G.STANDARD_TEXT_FONT,
+        castFontSize = 12,
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border",
         hideIconBorder = false,
         position = { "CENTER", -18, -87 },
         iconPositionX = -5,

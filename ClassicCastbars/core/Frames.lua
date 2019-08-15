@@ -9,6 +9,8 @@ local unpack = _G.unpack
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
+    if unitID == "player" then return CastingBarFrame end
+
     if activeFrames[unitID] then
         return activeFrames[unitID]
     end
@@ -81,7 +83,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
 
-    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then -- default border
+    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" then -- default border
         castbar.Border:SetAlpha(1)
         if castbar.BorderFrame then
             -- Hide LSM border frame if it exists
@@ -180,4 +182,41 @@ function addon:DisplayCastbar(castbar, unitID)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
     castbar:Show()
+end
+
+function addon:SkinPlayerCastbar() -- TODO: gotta be able to reset aswell
+    local db = self.db.player
+
+    if not CastingBarFrame.Timer then
+        -- not yet implemented but we need the frame to avoid lua errors
+        CastingBarFrame.Timer = CastingBarFrame:CreateFontString(nil, "OVERLAY")
+        CastingBarFrame.Timer:SetTextColor(1, 1, 1)
+        CastingBarFrame.Timer:SetFontObject("SystemFont_Shadow_Small")
+        CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, -6, 0)
+    end
+
+    CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
+	CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
+	--[[CastingBarFrame_SetFinishedCastColor(CastingBarFrame, 0.0, 1.0, 0.0)
+	CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, 0.7, 0.7, 0.7)
+	CastingBarFrame_SetFailedCastColor(CastingBarFrame, 1.0, 0.0, 0.0)]]
+
+    CastingBarFrame.Text:ClearAllPoints()
+    CastingBarFrame.Text:SetPoint("CENTER")
+    CastingBarFrame.Icon:ClearAllPoints()
+    CastingBarFrame.Icon:Show()
+
+    if not db.autoPosition then
+        local pos = db.position
+        CastingBarFrame:SetPoint(pos[1], UIParent, pos[2], pos[3])
+        CastingBarFrame.OldSetPoint = CastingBarFrame.SetPoint
+        CastingBarFrame.SetPoint = function() end
+    else
+        if CastingBarFrame.OldSetPoint then
+            CastingBarFrame.SetPoint = CastingBarFrame.OldSetPoint
+        end
+    end
+
+    self:SetCastbarStyle(CastingBarFrame, nil, db)
+    self:SetCastbarFonts(CastingBarFrame, nil, db)
 end

@@ -45,6 +45,10 @@ function AnchorManager:GetAnchor(unitID)
         return cache[unitID]
     end
 
+    if unitID == "player" then
+        return UIParent
+    end
+
     -- Get nameplate
     if unitID == "nameplate-testmode" then
         return GetNamePlateForUnit("target")

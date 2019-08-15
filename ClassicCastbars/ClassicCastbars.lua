@@ -27,7 +27,7 @@ local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
 local next = _G.next
-local CastingInfo = _G.CastingInfo
+local CastingInfo = _G.CastingInfo or function() end
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
 
@@ -257,6 +257,10 @@ function addon:PLAYER_LOGIN()
     if not IsAddOnLoaded("ClassicCastbars_Options") then
         self.defaultConfig = nil
         namespace.defaultConfig = nil
+    end
+
+    if self.db.player.enabled then
+        self:SkinPlayerCastbar()
     end
 
     self.PLAYER_GUID = UnitGUID("player")

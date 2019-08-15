@@ -61,7 +61,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         width = "full",
                         name = L.AUTO_POS_BAR,
-                        desc = L.AUTO_POS_BAR_TOOLTIP,
+                        desc = unitID ~= "player" and L.AUTO_POS_BAR_TOOLTIP or "",
                         type = "toggle",
                         hidden = unitID == "nameplate"
                     },
@@ -71,12 +71,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
                         type = "toggle",
+                        hidden = unitID == "player", -- tmp
                     },
                     showCastInfoOnly = {
                         order = 5,
                         width = "full",
                         name = L.SHOW_CAST_INFO_ONLY,
                         desc = L.SHOW_CAST_INFO_ONLY_TOOLTIP,
+                        hidden = unitID == "player",
                         type = "toggle",
                     },
                     pushbackDetect = {
@@ -85,6 +87,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.PUSHBACK,
                         desc = L.PUSHBACK_TOOLTIP,
                         type = "toggle",
+                        hidden = unitID == "player",
                         set = function(_, value) -- temp, we'll remove this option later
                             ClassicCastbarsDB.pushbackDetect = value
                         end,
@@ -304,7 +307,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         width = 1.4,
                         name = format("%s %s", L.TEST, localizedUnit),
-                        desc = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
                         type = "execute",
                         disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
                         func = function()
@@ -313,7 +315,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     notes = {
                         order = 2,
-                        name = unitID == "target" and L.TEST_TARGET_TOOLTIP or L.TEST_PLATE_TOOLTIP,
+                        name = unitID == "target" and L.TEST_TARGET_TOOLTIP or unitID == "nameplate" and L.TEST_PLATE_TOOLTIP or "",
                         type = "description",
                     },
                 },
@@ -331,6 +333,7 @@ local function GetOptionsTable()
         args = {
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
+            player = CreateUnitTabGroup("player", "Player", 3),
 
             resetAllSettings = {
                 order = 3,
