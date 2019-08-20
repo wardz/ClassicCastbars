@@ -19,13 +19,6 @@ function addon:GetCastbarFrame(unitID)
 end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
-    if not self.db.target.autoPosition then
-        -- Auto position is turned off, set pos from user cfg instead
-        local pos = self.db.target.position
-        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
-        return
-    end
-
     -- Set position based on aura amount & targetframe type
     local auraRows = parentFrame.auraRows or 0
     if parentFrame.haveToT or parentFrame.haveElite then
@@ -166,11 +159,10 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar:SetStatusBarColor(unpack(db.statusColor))
     end
 
-    if unitID == "target" then
+    if unitID == "target" and self.db.target.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
     else
-        local pos = db.position
-        castbar:SetPoint(pos[1], parentFrame, pos[2], pos[3])
+        castbar:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
     end
 
     -- Note: since frames are recycled and we also allow having different styles

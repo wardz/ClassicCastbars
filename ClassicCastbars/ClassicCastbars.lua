@@ -188,8 +188,12 @@ end
 function addon:ToggleUnitEvents(shouldReset)
     if self.db.target.enabled then
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        if self.db.target.autoPosition then
+            self:RegisterUnitEvent("UNIT_AURA", "target")
+        end
     else
         self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        self:UnregisterEvent("UNIT_AURA")
     end
 
     if self.db.nameplate.enabled then
@@ -265,6 +269,17 @@ function addon:PLAYER_LOGIN()
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:UnregisterEvent("PLAYER_LOGIN")
     self.PLAYER_LOGIN = nil
+end
+
+function addon:UNIT_AURA()
+    if not self.db.target.autoPosition then return end
+
+    if activeFrames.target and activeGUIDs.target then
+        local parentFrame = self.AnchorManager:GetAnchor("target")
+        if parentFrame then
+            self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
+        end
+    end
 end
 
 -- Bind unitIDs to unitGUIDs so we can efficiently get unitIDs in CLEU events
