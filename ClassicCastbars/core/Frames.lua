@@ -20,17 +20,16 @@ function addon:GetCastbarFrame(unitID)
 end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
-    -- Set position based on aura amount & targetframe type
     local auraRows = parentFrame.auraRows or 0
     if parentFrame.haveToT or parentFrame.haveElite then
         if parentFrame.buffsOnTop or auraRows <= 1 then
             castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
-            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.3)))
+            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.4)))
         end
     else
         if not parentFrame.buffsOnTop and auraRows > 0 then
-            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.3)))
+            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.4)))
         else
             castbar:SetPoint("CENTER", parentFrame, -18, -50)
         end
@@ -40,7 +39,6 @@ end
 function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
 
-    -- Update text + icon if it has changed
     if castbar.Text:GetText() ~= spellName then
         castbar.Icon:SetTexture(cast.icon)
         castbar.Text:SetText(spellName)
