@@ -1,1251 +1,1279 @@
 local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
--- Blizzard removed spellIDs from the combat log payload so we use this
--- list to turn cast spell names into spell IDs. (GetSpellInfo etc only works
--- for spell IDs unless the player has the ability in their spell book)
-namespace.castedSpells = {
-    [GetSpellInfo(25262)] = 25262, -- Abomination Spit
-    [GetSpellInfo(24334)] = 24334, -- Acid Spit
-    [GetSpellInfo(6306)] = 6306, -- Acid Splash
-    [GetSpellInfo(26419)] = 26419, -- Acid Spray
-    [GetSpellInfo(12280)] = 12280, -- Acid of Hakkar
-    [GetSpellInfo(8352)] = 8352, -- Adjust Attitude
-    [GetSpellInfo(20904)] = 20904, -- Aimed Shot
-    [GetSpellInfo(12248)] = 12248, -- Amplify Damage
-    [GetSpellInfo(9482)] = 9482, -- Amplify Flames
-    [GetSpellInfo(20777)] = 20777, -- Ancestral Spirit
-    [GetSpellInfo(24168)] = 24168, -- Animist's Caress
-    [GetSpellInfo(16991)] = 16991, -- Annihilator
-    [GetSpellInfo(19645)] = 19645, -- Anti-Magic Shield
-    [GetSpellInfo(13901)] = 13901, -- Arcane Bolt
-    [GetSpellInfo(19821)] = 19821, -- Arcane Bomb
-    [GetSpellInfo(11975)] = 11975, -- Arcane Explosion
-    [GetSpellInfo(1450)] = 1450, -- Arcane Spirit II
-    [GetSpellInfo(1451)] = 1451, -- Arcane Spirit III
-    [GetSpellInfo(1452)] = 1452, -- Arcane Spirit IV
-    [GetSpellInfo(1453)] = 1453, -- Arcane Spirit V
-    [GetSpellInfo(25181)] = 25181, -- Arcane Weakness
-    [GetSpellInfo(16081)] = 16081, -- Arctic Wolf
-    [GetSpellInfo(8000)] = 8000, -- Area Burn
-    [GetSpellInfo(10418)] = 10418, -- Arugal spawn-in spell
-    [GetSpellInfo(7124)] = 7124, -- Arugal's Gift
-    [GetSpellInfo(25149)] = 25149, -- Arygos's Vengeance
-    [GetSpellInfo(6422)] = 6422, -- Ashcrombe's Teleport
-    [GetSpellInfo(6421)] = 6421, -- Ashcrombe's Unlock
-    [GetSpellInfo(21332)] = 21332, -- Aspect of Neptulon
-    [GetSpellInfo(556)] = 556, -- Astral Recall
-    [GetSpellInfo(10436)] = 10436, -- Attack
-    [GetSpellInfo(8386)] = 8386, -- Attacking
-    [GetSpellInfo(16629)] = 16629, -- Attuned Dampener
-    [GetSpellInfo(17536)] = 17536, -- Awaken Kerlonian
-    [GetSpellInfo(10258)] = 10258, -- Awaken Vault Warder
-    [GetSpellInfo(12346)] = 12346, -- Awaken the Soulflayer
-    [GetSpellInfo(18375)] = 18375, -- Aynasha's Arrow
-    [GetSpellInfo(6753)] = 6753, -- Backhand
-    [GetSpellInfo(13982)] = 13982, -- Bael'Gar's Fiery Essence
-    [GetSpellInfo(23151)] = 23151, -- Balance of Light and Shadow
-    [GetSpellInfo(5414)] = 5414, -- Balance of Nature
-    [GetSpellInfo(5412)] = 5412, -- Balance of Nature Failure
-    [GetSpellInfo(28299)] = 28299, -- Ball Lightning
-    [GetSpellInfo(18647)] = 18647, -- Banish
-    [GetSpellInfo(4130)] = 4130, -- Banish Burning Exile
-    [GetSpellInfo(4131)] = 4131, -- Banish Cresting Exile
-    [GetSpellInfo(4132)] = 4132, -- Banish Thundering Exile
-    [GetSpellInfo(5884)] = 5884, -- Banshee Curse
-    [GetSpellInfo(16868)] = 16868, -- Banshee Wail
-    [GetSpellInfo(16051)] = 16051, -- Barrier of Light
-    [GetSpellInfo(11759)] = 11759, -- Basilisk Sample
-    [GetSpellInfo(1179)] = 1179, -- Beast Claws
-    [GetSpellInfo(1849)] = 1849, -- Beast Claws II
-    [GetSpellInfo(3133)] = 3133, -- Beast Claws III
-    [GetSpellInfo(23677)] = 23677, -- Beasts Deck
-    [GetSpellInfo(22686)] = 22686, -- Bellowing Roar
-    [GetSpellInfo(8856)] = 8856, -- Bending Shinbone
-    [GetSpellInfo(4067)] = 4067, -- Big Bronze Bomb
-    [GetSpellInfo(7398)] = 7398, -- Birth
-    [GetSpellInfo(23638)] = 23638, -- Black Amnesty
-    [GetSpellInfo(20733)] = 20733, -- Black Arrow
-    [GetSpellInfo(22719)] = 22719, -- Black Battlestrider
-    [GetSpellInfo(27589)] = 27589, -- Black Grasp of the Destroyer
-    [GetSpellInfo(17461)] = 17461, -- Black Ram
-    [GetSpellInfo(7279)] = 7279, -- Black Sludge
-    [GetSpellInfo(470)] = 470, -- Black Stallion
-    [GetSpellInfo(22718)] = 22718, -- Black War Kodo
-    [GetSpellInfo(22720)] = 22720, -- Black War Ram
-    [GetSpellInfo(22721)] = 22721, -- Black War Raptor
-    [GetSpellInfo(22717)] = 22717, -- Black War Steed
-    [GetSpellInfo(22723)] = 22723, -- Black War Tiger
-    [GetSpellInfo(22724)] = 22724, -- Black War Wolf
-    [GetSpellInfo(578)] = 578, -- Black Wolf
-    [GetSpellInfo(23639)] = 23639, -- Blackfury
-    [GetSpellInfo(23652)] = 23652, -- Blackguard
-    [GetSpellInfo(16978)] = 16978, -- Blazing Rapier
-    [GetSpellInfo(16965)] = 16965, -- Bleakwood Hew
-    [GetSpellInfo(16599)] = 16599, -- Blessing of Shahram
-    [GetSpellInfo(6510)] = 6510, -- Blinding Powder
-    [GetSpellInfo(15783)] = 15783, -- Blizzard
-    [GetSpellInfo(3264)] = 3264, -- Blood Howl
-    [GetSpellInfo(16986)] = 16986, -- Blood Talon
-    [GetSpellInfo(10969)] = 10969, -- Blue Mechanostrider
-    [GetSpellInfo(6897)] = 6897, -- Blue Ram
-    [GetSpellInfo(17463)] = 17463, -- Blue Skeletal Horse
-    [GetSpellInfo(11365)] = 11365, -- Bly's Band's Escape
-    [GetSpellInfo(9143)] = 9143, -- Bomb
-    [GetSpellInfo(1980)] = 1980, -- Bombard
-    [GetSpellInfo(3015)] = 3015, -- Bombard II
-    [GetSpellInfo(28280)] = 28280, -- Bombard Slime
-    [GetSpellInfo(17014)] = 17014, -- Bone Shards
-    [GetSpellInfo(23392)] = 23392, -- Boulder
-    [GetSpellInfo(24006)] = 24006, -- Bounty of the Harvest
-    [GetSpellInfo(7962)] = 7962, -- Break Big Stuff
-    [GetSpellInfo(7437)] = 7437, -- Break Stuff
-    [GetSpellInfo(4954)] = 4954, -- Break Tool
-    [GetSpellInfo(18571)] = 18571, -- Breath
-    [GetSpellInfo(28352)] = 28352, -- Breath of Sargeras
-    [GetSpellInfo(8090)] = 8090, -- Bright Baubles
-    [GetSpellInfo(7359)] = 7359, -- Bright Campfire
-    [GetSpellInfo(458)] = 458, -- Brown Horse
-    [GetSpellInfo(18990)] = 18990, -- Brown Kodo
-    [GetSpellInfo(6899)] = 6899, -- Brown Ram
-    [GetSpellInfo(17464)] = 17464, -- Brown Skeletal Horse
-    [GetSpellInfo(6654)] = 6654, -- Brown Wolf
-    [GetSpellInfo(17293)] = 17293, -- Burning Winds
-    [GetSpellInfo(26381)] = 26381, -- Burrow
-    [GetSpellInfo(20364)] = 20364, -- Bury Samuel's Remains
-    [GetSpellInfo(27720)] = 27720, -- Buttermilk Delight
-    [GetSpellInfo(23123)] = 23123, -- Cairne's Hoofprint
-    [GetSpellInfo(23041)] = 23041, -- Call Anathema
-    [GetSpellInfo(25167)] = 25167, -- Call Ancients
-    [GetSpellInfo(23042)] = 23042, -- Call Benediction
-    [GetSpellInfo(7487)] = 7487, -- Call Bleak Worg
-    [GetSpellInfo(25166)] = 25166, -- Call Glyphs of Warding
-    [GetSpellInfo(7489)] = 7489, -- Call Lupine Horror
-    [GetSpellInfo(25159)] = 25159, -- Call Prismatic Barrier
-    [GetSpellInfo(7488)] = 7488, -- Call Slavering Worg
-    [GetSpellInfo(11654)] = 11654, -- Call of Sul'thraze
-    [GetSpellInfo(11024)] = 11024, -- Call of Thund
-    [GetSpellInfo(5137)] = 5137, -- Call of the Grave
-    [GetSpellInfo(21249)] = 21249, -- Call of the Nether
-    [GetSpellInfo(271)] = 271, -- Call of the Void
-    [GetSpellInfo(21648)] = 21648, -- Call to Ivus
-    [GetSpellInfo(17501)] = 17501, -- Cannon Fire
-    [GetSpellInfo(9095)] = 9095, -- Cantation of Manifestation
-    [GetSpellInfo(27571)] = 27571, -- Cascade of Roses
-    [GetSpellInfo(15120)] = 15120, -- Cenarion Beacon
-    [GetSpellInfo(11085)] = 11085, -- Chain Bolt
-    [GetSpellInfo(8211)] = 8211, -- Chain Burn
-    [GetSpellInfo(10623)] = 10623, -- Chain Heal
-    [GetSpellInfo(10605)] = 10605, -- Chain Lightning
-    [GetSpellInfo(15549)] = 15549, -- Chained Bolt
-    [GetSpellInfo(512)] = 512, -- Chains of Ice
-    [GetSpellInfo(11537)] = 11537, -- Charge Stave of Equinex
-    [GetSpellInfo(16570)] = 16570, -- Charged Arcane Bolt
-    [GetSpellInfo(22434)] = 22434, -- Charged Scale of Onyxia
-    [GetSpellInfo(1538)] = 1538, -- Charging
-    [GetSpellInfo(6648)] = 6648, -- Chestnut Mare
-    [GetSpellInfo(3132)] = 3132, -- Chilling Breath
-    [GetSpellInfo(22599)] = 22599, -- Chromatic Mantle of the Dawn
-    [GetSpellInfo(24576)] = 24576, -- Chromatic Mount
-    [GetSpellInfo(24973)] = 24973, -- Clean Up Stink Bomb
-    [GetSpellInfo(27794)] = 27794, -- Cleave
-    [GetSpellInfo(27890)] = 27890, -- Clone
-    [GetSpellInfo(9002)] = 9002, -- Coarse Dynamite
-    [GetSpellInfo(26167)] = 26167, -- Colossal Smash
-    [GetSpellInfo(19720)] = 19720, -- Combine Pendants
-    [GetSpellInfo(16781)] = 16781, -- Combining Charms
-    [GetSpellInfo(21267)] = 21267, -- Conjure Altar of Summoning
-    [GetSpellInfo(21646)] = 21646, -- Conjure Circle of Calling
-    [GetSpellInfo(25813)] = 25813, -- Conjure Dream Rift
-    [GetSpellInfo(21100)] = 21100, -- Conjure Elegant Letter
-    [GetSpellInfo(28612)] = 28612, -- Conjure Food
-    [GetSpellInfo(18831)] = 18831, -- Conjure Lily Root
-    [GetSpellInfo(759)] = 759, -- Conjure Mana Agate
-    [GetSpellInfo(10053)] = 10053, -- Conjure Mana Citrine
-    [GetSpellInfo(3552)] = 3552, -- Conjure Mana Jade
-    [GetSpellInfo(10054)] = 10054, -- Conjure Mana Ruby
-    [GetSpellInfo(19797)] = 19797, -- Conjure Torch of Retribution
-    [GetSpellInfo(10140)] = 10140, -- Conjure Water
-    [GetSpellInfo(28891)] = 28891, -- Consecrated Weapon
-    [GetSpellInfo(5174)] = 5174, -- Cookie's Cooking
-    [GetSpellInfo(23313)] = 23313, -- Corrosive Acid
-    [GetSpellInfo(21047)] = 21047, -- Corrosive Acid Spit
-    [GetSpellInfo(3396)] = 3396, -- Corrosive Poison
-    [GetSpellInfo(20629)] = 20629, -- Corrosive Venom Spit
-    [GetSpellInfo(18666)] = 18666, -- Corrupt Redpath
-    [GetSpellInfo(25311)] = 25311, -- Corruption
-    [GetSpellInfo(6619)] = 6619, -- Cowardly Flight Potion
-    [GetSpellInfo(5403)] = 5403, -- Crash of Waves
-    [GetSpellInfo(17951)] = 17951, -- Create Firestone
-    [GetSpellInfo(17952)] = 17952, -- Create Firestone (Greater)
-    [GetSpellInfo(6366)] = 6366, -- Create Firestone (Lesser)
-    [GetSpellInfo(17953)] = 17953, -- Create Firestone (Major)
-    [GetSpellInfo(28023)] = 28023, -- Create Healthstone
-    [GetSpellInfo(11729)] = 11729, -- Create Healthstone (Greater)
-    [GetSpellInfo(6202)] = 6202, -- Create Healthstone (Lesser)
-    [GetSpellInfo(11730)] = 11730, -- Create Healthstone (Major)
-    [GetSpellInfo(6201)] = 6201, -- Create Healthstone (Minor)
-    [GetSpellInfo(20755)] = 20755, -- Create Soulstone
-    [GetSpellInfo(20756)] = 20756, -- Create Soulstone (Greater)
-    [GetSpellInfo(20752)] = 20752, -- Create Soulstone (Lesser)
-    [GetSpellInfo(20757)] = 20757, -- Create Soulstone (Major)
-    [GetSpellInfo(693)] = 693, -- Create Soulstone (Minor)
-    [GetSpellInfo(2362)] = 2362, -- Create Spellstone
-    [GetSpellInfo(17727)] = 17727, -- Create Spellstone (Greater)
-    [GetSpellInfo(17728)] = 17728, -- Create Spellstone (Major)
-    [GetSpellInfo(14532)] = 14532, -- Creeper Venom
-    [GetSpellInfo(2840)] = 2840, -- Creeping Anguish
-    [GetSpellInfo(6278)] = 6278, -- Creeping Mold
-    [GetSpellInfo(2838)] = 2838, -- Creeping Pain
-    [GetSpellInfo(2841)] = 2841, -- Creeping Torment
-    [GetSpellInfo(17496)] = 17496, -- Crest of Retribution
-    [GetSpellInfo(11443)] = 11443, -- Cripple
-    [GetSpellInfo(11202)] = 11202, -- Crippling Poison
-    [GetSpellInfo(3421)] = 3421, -- Crippling Poison II
-    [GetSpellInfo(3974)] = 3974, -- Crude Scope
-    [GetSpellInfo(16594)] = 16594, -- Crypt Scarabs
-    [GetSpellInfo(5106)] = 5106, -- Crystal Flash
-    [GetSpellInfo(3635)] = 3635, -- Crystal Gaze
-    [GetSpellInfo(30021)] = 30021, -- Crystal Infused Bandage
-    [GetSpellInfo(30047)] = 30047, -- Crystal Throat Lozenge
-    [GetSpellInfo(3636)] = 3636, -- Crystalline Slumber
-    [GetSpellInfo(13399)] = 13399, -- Cultivate Packet of Seeds
-    [GetSpellInfo(27552)] = 27552, -- Cupid's Arrow
-    [GetSpellInfo(28133)] = 28133, -- Cure Disease
-    [GetSpellInfo(8282)] = 8282, -- Curse of Blood
-    [GetSpellInfo(18502)] = 18502, -- Curse of Hakkar
-    [GetSpellInfo(7098)] = 7098, -- Curse of Mending
-    [GetSpellInfo(16597)] = 16597, -- Curse of Shahram
-    [GetSpellInfo(13524)] = 13524, -- Curse of Stalvan
-    [GetSpellInfo(16247)] = 16247, -- Curse of Thorns
-    [GetSpellInfo(3237)] = 3237, -- Curse of Thule
-    [GetSpellInfo(17505)] = 17505, -- Curse of Timmy
-    [GetSpellInfo(8552)] = 8552, -- Curse of Weakness
-    [GetSpellInfo(18702)] = 18702, -- Curse of the Darkmaster
-    [GetSpellInfo(13583)] = 13583, -- Curse of the Deadwood
-    [GetSpellInfo(18159)] = 18159, -- Curse of the Fallen Magram
-    [GetSpellInfo(16071)] = 16071, -- Curse of the Firebrand
-    [GetSpellInfo(17738)] = 17738, -- Curse of the Plague Rat
-    [GetSpellInfo(21048)] = 21048, -- Curse of the Tribes
-    [GetSpellInfo(5267)] = 5267, -- Dalaran Wizard Disguise
-    [GetSpellInfo(27723)] = 27723, -- Dark Desire
-    [GetSpellInfo(19799)] = 19799, -- Dark Iron Bomb
-    [GetSpellInfo(5268)] = 5268, -- Dark Iron Dwarf Disguise
-    [GetSpellInfo(16588)] = 16588, -- Dark Mending
-    [GetSpellInfo(7106)] = 7106, -- Dark Restore
-    [GetSpellInfo(3335)] = 3335, -- Dark Sludge
-    [GetSpellInfo(16587)] = 16587, -- Dark Whispers
-    [GetSpellInfo(5514)] = 5514, -- Darken Vision
-    [GetSpellInfo(23765)] = 23765, -- Darkmoon Faire Fortune
-    [GetSpellInfo(16987)] = 16987, -- Darkspear
-    [GetSpellInfo(3146)] = 3146, -- Daunting Growl
-    [GetSpellInfo(16970)] = 16970, -- Dawn's Edge
-    [GetSpellInfo(17045)] = 17045, -- Dawn's Gambit
-    [GetSpellInfo(2835)] = 2835, -- Deadly Poison
-    [GetSpellInfo(2837)] = 2837, -- Deadly Poison II
-    [GetSpellInfo(11355)] = 11355, -- Deadly Poison III
-    [GetSpellInfo(11356)] = 11356, -- Deadly Poison IV
-    [GetSpellInfo(25347)] = 25347, -- Deadly Poison V
-    [GetSpellInfo(12459)] = 12459, -- Deadly Scope
-    [GetSpellInfo(7395)] = 7395, -- Deadmines Dynamite
-    [GetSpellInfo(11433)] = 11433, -- Death & Decay
-    [GetSpellInfo(6894)] = 6894, -- Death Bed
-    [GetSpellInfo(5395)] = 5395, -- Death Capsule
-    [GetSpellInfo(24161)] = 24161, -- Death's Embrace
-    [GetSpellInfo(17481)] = 17481, -- Deathcharger
-    [GetSpellInfo(7901)] = 7901, -- Decayed Agility
-    [GetSpellInfo(13528)] = 13528, -- Decayed Strength
-    [GetSpellInfo(12890)] = 12890, -- Deep Slumber
-    [GetSpellInfo(5169)] = 5169, -- Defias Disguise
-    [GetSpellInfo(22999)] = 22999, -- Defibrillate
-    [GetSpellInfo(18559)] = 18559, -- Demon Pick
-    [GetSpellInfo(22372)] = 22372, -- Demon Portal
-    [GetSpellInfo(25793)] = 25793, -- Demon Summoning Torch
-    [GetSpellInfo(23063)] = 23063, -- Dense Dynamite
-    [GetSpellInfo(5140)] = 5140, -- Detonate
-    [GetSpellInfo(9435)] = 9435, -- Detonation
-    [GetSpellInfo(6700)] = 6700, -- Dimensional Portal
-    [GetSpellInfo(13692)] = 13692, -- Dire Growl
-    [GetSpellInfo(6653)] = 6653, -- Dire Wolf
-    [GetSpellInfo(1842)] = 1842, -- Disarm Trap
-    [GetSpellInfo(27891)] = 27891, -- Disease Buffet
-    [GetSpellInfo(11397)] = 11397, -- Diseased Shot
-    [GetSpellInfo(6907)] = 6907, -- Diseased Slime
-    [GetSpellInfo(17745)] = 17745, -- Diseased Spit
-    [GetSpellInfo(2641)] = 2641, -- Dismiss Pet
-    [GetSpellInfo(25808)] = 25808, -- Dispel
-    [GetSpellInfo(21954)] = 21954, -- Dispel Poison
-    [GetSpellInfo(16613)] = 16613, -- Displacing Temporal Rift
-    [GetSpellInfo(5099)] = 5099, -- Disruption
-    [GetSpellInfo(15746)] = 15746, -- Disturb Rookery Egg
-    [GetSpellInfo(6310)] = 6310, -- Divining Scroll Spell
-    [GetSpellInfo(5017)] = 5017, -- Divining Trance
-    [GetSpellInfo(20604)] = 20604, -- Dominate Mind
-    [GetSpellInfo(17405)] = 17405, -- Domination
-    [GetSpellInfo(16053)] = 16053, -- Dominion of Soul
-    [GetSpellInfo(6805)] = 6805, -- Dousing
-    [GetSpellInfo(12253)] = 12253, -- Dowse Eternal Flame
-    [GetSpellInfo(11758)] = 11758, -- Dowsing
-    [GetSpellInfo(16007)] = 16007, -- Draco-Incarcinatrix 900
-    [GetSpellInfo(24815)] = 24815, -- Draw Ancient Glyphs
-    [GetSpellInfo(19564)] = 19564, -- Draw Water Sample
-    [GetSpellInfo(5219)] = 5219, -- Draw of Thistlenettle
-    [GetSpellInfo(12304)] = 12304, -- Drawing Kit
-    [GetSpellInfo(3368)] = 3368, -- Drink Minor Potion
-    [GetSpellInfo(3359)] = 3359, -- Drink Potion
-    [GetSpellInfo(8040)] = 8040, -- Druid's Slumber
-    [GetSpellInfo(20436)] = 20436, -- Drunken Pit Crew
-    [GetSpellInfo(26072)] = 26072, -- Dust Cloud
-    [GetSpellInfo(8800)] = 8800, -- Dynamite
-    [GetSpellInfo(513)] = 513, -- Earth Elemental
-    [GetSpellInfo(8376)] = 8376, -- Earthgrab Totem
-    [GetSpellInfo(23650)] = 23650, -- Ebon Hand
-    [GetSpellInfo(29335)] = 29335, -- Elderberry Pie
-    [GetSpellInfo(11820)] = 11820, -- Electrified Net
-    [GetSpellInfo(849)] = 849, -- Elemental Armor
-    [GetSpellInfo(19773)] = 19773, -- Elemental Fire
-    [GetSpellInfo(877)] = 877, -- Elemental Fury
-    [GetSpellInfo(23679)] = 23679, -- Elementals Deck
-    [GetSpellInfo(26636)] = 26636, -- Elune's Candle
-    [GetSpellInfo(16533)] = 16533, -- Emberseer Start
-    [GetSpellInfo(8395)] = 8395, -- Emerald Raptor
-    [GetSpellInfo(22647)] = 22647, -- Empower Pet
-    [GetSpellInfo(7081)] = 7081, -- Encage
-    [GetSpellInfo(4962)] = 4962, -- Encasing Webs
-    [GetSpellInfo(6296)] = 6296, -- Enchant: Fiery Blaze
-    [GetSpellInfo(16973)] = 16973, -- Enchanted Battlehammer
-    [GetSpellInfo(20269)] = 20269, -- Enchanted Gaea Seed
-    [GetSpellInfo(3443)] = 3443, -- Enchanted Quickness
-    [GetSpellInfo(20513)] = 20513, -- Enchanted Resonite Crystal
-    [GetSpellInfo(16798)] = 16798, -- Enchanting Lullaby
-    [GetSpellInfo(27287)] = 27287, -- Energy Siphon
-    [GetSpellInfo(22661)] = 22661, -- Enervate
-    [GetSpellInfo(11963)] = 11963, -- Enfeeble
-    [GetSpellInfo(27860)] = 27860, -- Engulfing Shadows
-    [GetSpellInfo(3112)] = 3112, -- Enhance Blunt Weapon
-    [GetSpellInfo(3113)] = 3113, -- Enhance Blunt Weapon II
-    [GetSpellInfo(3114)] = 3114, -- Enhance Blunt Weapon III
-    [GetSpellInfo(9903)] = 9903, -- Enhance Blunt Weapon IV
-    [GetSpellInfo(16622)] = 16622, -- Enhance Blunt Weapon V
-    [GetSpellInfo(8365)] = 8365, -- Enlarge
-    [GetSpellInfo(12655)] = 12655, -- Enlightenment
-    [GetSpellInfo(11726)] = 11726, -- Enslave Demon
-    [GetSpellInfo(9853)] = 9853, -- Entangling Roots
-    [GetSpellInfo(6728)] = 6728, -- Enveloping Winds
-    [GetSpellInfo(20589)] = 20589, -- Escape Artist
-    [GetSpellInfo(24302)] = 24302, -- Eternium Fishing Line
-    [GetSpellInfo(23442)] = 23442, -- Everlook Transporter
-    [GetSpellInfo(3233)] = 3233, -- Evil Eye
-    [GetSpellInfo(12458)] = 12458, -- Evil God Counterspell
-    [GetSpellInfo(28354)] = 28354, -- Exorcise Atiesh
-    [GetSpellInfo(23208)] = 23208, -- Exorcise Spirits
-    [GetSpellInfo(7896)] = 7896, -- Exploding Shot
-    [GetSpellInfo(12719)] = 12719, -- Explosive Arrow
-    [GetSpellInfo(6441)] = 6441, -- Explosive Shells
-    [GetSpellInfo(15495)] = 15495, -- Explosive Shot
-    [GetSpellInfo(24264)] = 24264, -- Extinguish
-    [GetSpellInfo(26134)] = 26134, -- Eye Beam
-    [GetSpellInfo(22909)] = 22909, -- Eye of Immol'thar
-    [GetSpellInfo(126)] = 126, -- Eye of Kilrogg
-    [GetSpellInfo(21160)] = 21160, -- Eye of Sulfuras
-    [GetSpellInfo(1002)] = 1002, -- Eyes of the Beast
-    [GetSpellInfo(23000)] = 23000, -- Ez-Thro Dynamite
-    [GetSpellInfo(6950)] = 6950, -- Faerie Fire
-    [GetSpellInfo(8682)] = 8682, -- Fake Shot
-    [GetSpellInfo(24162)] = 24162, -- Falcon's Call
-    [GetSpellInfo(5262)] = 5262, -- Fanatic Blade
-    [GetSpellInfo(6196)] = 6196, -- Far Sight
-    [GetSpellInfo(6215)] = 6215, -- Fear
-    [GetSpellInfo(457)] = 457, -- Feeblemind
-    [GetSpellInfo(509)] = 509, -- Feeblemind II
-    [GetSpellInfo(855)] = 855, -- Feeblemind III
-    [GetSpellInfo(12938)] = 12938, -- Fel Curse
-    [GetSpellInfo(26086)] = 26086, -- Felcloth Bag
-    [GetSpellInfo(3488)] = 3488, -- Felstrom Resurrection
-    [GetSpellInfo(555)] = 555, -- Feral Spirit
-    [GetSpellInfo(968)] = 968, -- Feral Spirit II
-    [GetSpellInfo(8139)] = 8139, -- Fevered Fatigue
-    [GetSpellInfo(8600)] = 8600, -- Fevered Plague
-    [GetSpellInfo(22704)] = 22704, -- Field Repair Bot 74A
-    [GetSpellInfo(6297)] = 6297, -- Fiery Blaze
-    [GetSpellInfo(13900)] = 13900, -- Fiery Burst
-    [GetSpellInfo(6250)] = 6250, -- Fire Cannon
-    [GetSpellInfo(895)] = 895, -- Fire Elemental
-    [GetSpellInfo(134)] = 134, -- Fire Shield
-    [GetSpellInfo(184)] = 184, -- Fire Shield II
-    [GetSpellInfo(2601)] = 2601, -- Fire Shield III
-    [GetSpellInfo(2602)] = 2602, -- Fire Shield IV
-    [GetSpellInfo(13899)] = 13899, -- Fire Storm
-    [GetSpellInfo(25177)] = 25177, -- Fire Weakness
-    [GetSpellInfo(29332)] = 29332, -- Fire-toasted Bun
-    [GetSpellInfo(10149)] = 10149, -- Fireball
-    [GetSpellInfo(17203)] = 17203, -- Fireball Volley
-    [GetSpellInfo(11763)] = 11763, -- Firebolt
-    [GetSpellInfo(690)] = 690, -- Firebolt II
-    [GetSpellInfo(1084)] = 1084, -- Firebolt III
-    [GetSpellInfo(1096)] = 1096, -- Firebolt IV
-    [GetSpellInfo(25465)] = 25465, -- Firework
-    [GetSpellInfo(26443)] = 26443, -- Firework Cluster Launcher
-    [GetSpellInfo(7162)] = 7162, -- First Aid
-    [GetSpellInfo(16601)] = 16601, -- Fist of Shahram
-    [GetSpellInfo(23061)] = 23061, -- Fix Ritual Node
-    [GetSpellInfo(7101)] = 7101, -- Flame Blast
-    [GetSpellInfo(16396)] = 16396, -- Flame Breath
-    [GetSpellInfo(16168)] = 16168, -- Flame Buffet
-    [GetSpellInfo(6305)] = 6305, -- Flame Burst
-    [GetSpellInfo(15575)] = 15575, -- Flame Cannon
-    [GetSpellInfo(3356)] = 3356, -- Flame Lash
-    [GetSpellInfo(22593)] = 22593, -- Flame Mantle of the Dawn
-    [GetSpellInfo(6725)] = 6725, -- Flame Spike
-    [GetSpellInfo(10733)] = 10733, -- Flame Spray
-    [GetSpellInfo(15743)] = 15743, -- Flamecrack
-    [GetSpellInfo(10854)] = 10854, -- Flames of Chaos
-    [GetSpellInfo(12534)] = 12534, -- Flames of Retribution
-    [GetSpellInfo(16596)] = 16596, -- Flames of Shahram
-    [GetSpellInfo(11021)] = 11021, -- Flamespit
-    [GetSpellInfo(10216)] = 10216, -- Flamestrike
-    [GetSpellInfo(27608)] = 27608, -- Flash Heal
-    [GetSpellInfo(19943)] = 19943, -- Flash of Light
-    [GetSpellInfo(9092)] = 9092, -- Flesh Eating Worm
-    [GetSpellInfo(14292)] = 14292, -- Fling Torch
-    [GetSpellInfo(17458)] = 17458, -- Fluorescent Green Mechanostrider
-    [GetSpellInfo(3678)] = 3678, -- Focusing
-    [GetSpellInfo(24189)] = 24189, -- Force Punch
-    [GetSpellInfo(22797)] = 22797, -- Force Reactive Disk
-    [GetSpellInfo(8912)] = 8912, -- Forge Verigan's Fist
-    [GetSpellInfo(18711)] = 18711, -- Forging
-    [GetSpellInfo(28697)] = 28697, -- Forgiveness
-    [GetSpellInfo(8435)] = 8435, -- Forked Lightning
-    [GetSpellInfo(10849)] = 10849, -- Form of the Moonstalker (no invis)
-    [GetSpellInfo(28324)] = 28324, -- Forming Frame of Atiesh
-    [GetSpellInfo(23193)] = 23193, -- Forming Lok'delar
-    [GetSpellInfo(23192)] = 23192, -- Forming Rhok'delar
-    [GetSpellInfo(7054)] = 7054, -- Forsaken Skills
-    [GetSpellInfo(29480)] = 29480, -- Fortitude of the Scourge
-    [GetSpellInfo(18763)] = 18763, -- Freeze
-    [GetSpellInfo(15748)] = 15748, -- Freeze Rookery Egg
-    [GetSpellInfo(16028)] = 16028, -- Freeze Rookery Egg - Prototype
-    [GetSpellInfo(11836)] = 11836, -- Freeze Solid
-    [GetSpellInfo(19755)] = 19755, -- Frightalon
-    [GetSpellInfo(3131)] = 3131, -- Frost Breath
-    [GetSpellInfo(23187)] = 23187, -- Frost Burn
-    [GetSpellInfo(22594)] = 22594, -- Frost Mantle of the Dawn
-    [GetSpellInfo(3595)] = 3595, -- Frost Oil
-    [GetSpellInfo(17460)] = 17460, -- Frost Ram
-    [GetSpellInfo(25178)] = 25178, -- Frost Weakness
-    [GetSpellInfo(10180)] = 10180, -- Frostbolt
-    [GetSpellInfo(8398)] = 8398, -- Frostbolt Volley
-    [GetSpellInfo(16992)] = 16992, -- Frostguard
-    [GetSpellInfo(6957)] = 6957, -- Frostmane Strength
-    [GetSpellInfo(16056)] = 16056, -- Frostsaber
-    [GetSpellInfo(23509)] = 23509, -- Frostwolf Howler
-    [GetSpellInfo(25840)] = 25840, -- Full Heal
-    [GetSpellInfo(474)] = 474, -- Fumble
-    [GetSpellInfo(507)] = 507, -- Fumble II
-    [GetSpellInfo(867)] = 867, -- Fumble III
-    [GetSpellInfo(6405)] = 6405, -- Furbolg Form
-    [GetSpellInfo(16997)] = 16997, -- Gargoyle Strike
-    [GetSpellInfo(8901)] = 8901, -- Gas Bomb
-    [GetSpellInfo(19470)] = 19470, -- Gem of the Serpent
-    [GetSpellInfo(2645)] = 2645, -- Ghost Wolf
-    [GetSpellInfo(6925)] = 6925, -- Gift of the Xavian
-    [GetSpellInfo(23632)] = 23632, -- Girdle of the Dawn
-    [GetSpellInfo(3143)] = 3143, -- Glacial Roar
-    [GetSpellInfo(26105)] = 26105, -- Glare
-    [GetSpellInfo(6974)] = 6974, -- Gnome Camera Connection
-    [GetSpellInfo(12904)] = 12904, -- Gnomish Ham Radio
-    [GetSpellInfo(23453)] = 23453, -- Gnomish Transporter
-    [GetSpellInfo(12720)] = 12720, -- Goblin "Boom" Box
-    [GetSpellInfo(7023)] = 7023, -- Goblin Camera Connection
-    [GetSpellInfo(10837)] = 10837, -- Goblin Land Mine
-    [GetSpellInfo(12722)] = 12722, -- Goblin Radio
-    [GetSpellInfo(16060)] = 16060, -- Golden Sabercat
-    [GetSpellInfo(24967)] = 24967, -- Gong
-    [GetSpellInfo(11434)] = 11434, -- Gong Zul'Farrak Gong
-    [GetSpellInfo(22789)] = 22789, -- Gordok Green Grog
-    [GetSpellInfo(22924)] = 22924, -- Grasping Vines
-    [GetSpellInfo(18989)] = 18989, -- Gray Kodo
-    [GetSpellInfo(6777)] = 6777, -- Gray Ram
-    [GetSpellInfo(459)] = 459, -- Gray Wolf
-    [GetSpellInfo(23249)] = 23249, -- Great Brown Kodo
-    [GetSpellInfo(23248)] = 23248, -- Great Gray Kodo
-    [GetSpellInfo(25807)] = 25807, -- Great Heal
-    [GetSpellInfo(23247)] = 23247, -- Great White Kodo
-    [GetSpellInfo(15441)] = 15441, -- Greater Arcane Amalgamation
-    [GetSpellInfo(24997)] = 24997, -- Greater Dispel
-    [GetSpellInfo(25314)] = 25314, -- Greater Heal
-    [GetSpellInfo(10228)] = 10228, -- Greater Invisibility
-    [GetSpellInfo(18991)] = 18991, -- Green Kodo
-    [GetSpellInfo(17453)] = 17453, -- Green Mechanostrider
-    [GetSpellInfo(17465)] = 17465, -- Green Skeletal Warhorse
-    [GetSpellInfo(7636)] = 7636, -- Green Woolen Robe
-    [GetSpellInfo(24195)] = 24195, -- Grom's Tribute
-    [GetSpellInfo(4153)] = 4153, -- Guile of the Raptor
-    [GetSpellInfo(24266)] = 24266, -- Gurubashi Mojo Madness
-    [GetSpellInfo(6982)] = 6982, -- Gust of Wind
-    [GetSpellInfo(24239)] = 24239, -- Hammer of Wrath
-    [GetSpellInfo(16988)] = 16988, -- Hammer of the Titans
-    [GetSpellInfo(18762)] = 18762, -- Hand of Iruxos
-    [GetSpellInfo(5166)] = 5166, -- Harvest Silithid Egg
-    [GetSpellInfo(7277)] = 7277, -- Harvest Swarm
-    [GetSpellInfo(16336)] = 16336, -- Haunting Phantoms
-    [GetSpellInfo(7057)] = 7057, -- Haunting Spirits
-    [GetSpellInfo(8812)] = 8812, -- Heal
-    [GetSpellInfo(21885)] = 21885, -- Heal Vylestem Vine
-    [GetSpellInfo(22458)] = 22458, -- Healing Circle
-    [GetSpellInfo(4209)] = 4209, -- Healing Tongue
-    [GetSpellInfo(4221)] = 4221, -- Healing Tongue II
-    [GetSpellInfo(9888)] = 9888, -- Healing Touch
-    [GetSpellInfo(4971)] = 4971, -- Healing Ward
-    [GetSpellInfo(10396)] = 10396, -- Healing Wave
-    [GetSpellInfo(11895)] = 11895, -- Healing Wave of Antu'sul
-    [GetSpellInfo(8690)] = 8690, -- Hearthstone
-    [GetSpellInfo(16995)] = 16995, -- Heartseeker
-    [GetSpellInfo(4062)] = 4062, -- Heavy Dynamite
-    [GetSpellInfo(30297)] = 30297, -- Heightened Senses
-    [GetSpellInfo(711)] = 711, -- Hellfire
-    [GetSpellInfo(1124)] = 1124, -- Hellfire II
-    [GetSpellInfo(2951)] = 2951, -- Hellfire III
-    [GetSpellInfo(22566)] = 22566, -- Hex
-    [GetSpellInfo(7655)] = 7655, -- Hex of Ravenclaw
-    [GetSpellInfo(12543)] = 12543, -- Hi-Explosive Bomb
-    [GetSpellInfo(18658)] = 18658, -- Hibernate
-    [GetSpellInfo(15261)] = 15261, -- Holy Fire
-    [GetSpellInfo(25292)] = 25292, -- Holy Light
-    [GetSpellInfo(9481)] = 9481, -- Holy Smite
-    [GetSpellInfo(10318)] = 10318, -- Holy Wrath
-    [GetSpellInfo(24165)] = 24165, -- Hoodoo Hex
-    [GetSpellInfo(14030)] = 14030, -- Hooked Net
-    [GetSpellInfo(17928)] = 17928, -- Howl of Terror
-    [GetSpellInfo(7481)] = 7481, -- Howling Rage
-    [GetSpellInfo(23124)] = 23124, -- Human Orphan Whistle
-    [GetSpellInfo(11760)] = 11760, -- Hyena Sample
-    [GetSpellInfo(28163)] = 28163, -- Ice Guard
-    [GetSpellInfo(16869)] = 16869, -- Ice Tomb
-    [GetSpellInfo(28526)] = 28526, -- Icebolt
-    [GetSpellInfo(11131)] = 11131, -- Icicle
-    [GetSpellInfo(17459)] = 17459, -- Icy Blue Mechanostrider
-    [GetSpellInfo(6741)] = 6741, -- Identify Brood
-    [GetSpellInfo(23316)] = 23316, -- Ignite Flesh
-    [GetSpellInfo(23054)] = 23054, -- Igniting Kroshius
-    [GetSpellInfo(6487)] = 6487, -- Ilkrud's Guardians
-    [GetSpellInfo(25309)] = 25309, -- Immolate
-    [GetSpellInfo(10451)] = 10451, -- Implosion
-    [GetSpellInfo(16996)] = 16996, -- Incendia Powder
-    [GetSpellInfo(23308)] = 23308, -- Incinerate
-    [GetSpellInfo(6234)] = 6234, -- Incineration
-    [GetSpellInfo(27290)] = 27290, -- Increase Reputation
-    [GetSpellInfo(4981)] = 4981, -- Inducing Vision
-    [GetSpellInfo(1122)] = 1122, -- Inferno
-    [GetSpellInfo(7739)] = 7739, -- Inferno Shell
-    [GetSpellInfo(9612)] = 9612, -- Ink Spray
-    [GetSpellInfo(16967)] = 16967, -- Inlaid Thorium Hammer
-    [GetSpellInfo(8681)] = 8681, -- Instant Poison
-    [GetSpellInfo(8686)] = 8686, -- Instant Poison II
-    [GetSpellInfo(8688)] = 8688, -- Instant Poison III
-    [GetSpellInfo(11338)] = 11338, -- Instant Poison IV
-    [GetSpellInfo(11339)] = 11339, -- Instant Poison V
-    [GetSpellInfo(11343)] = 11343, -- Instant Poison VI
-    [GetSpellInfo(6651)] = 6651, -- Instant Toxin
-    [GetSpellInfo(22478)] = 22478, -- Intense Pain
-    [GetSpellInfo(6576)] = 6576, -- Intimidating Growl
-    [GetSpellInfo(9478)] = 9478, -- Invis Placing Bear Trap
-    [GetSpellInfo(885)] = 885, -- Invisibility
-    [GetSpellInfo(16746)] = 16746, -- Invulnerable Mail
-    [GetSpellInfo(4068)] = 4068, -- Iron Grenade
-    [GetSpellInfo(10795)] = 10795, -- Ivory Raptor
-    [GetSpellInfo(23140)] = 23140, -- J'eevee summons object
-    [GetSpellInfo(23122)] = 23122, -- Jaina's Autograph
-    [GetSpellInfo(9744)] = 9744, -- Jarkal's Translation
-    [GetSpellInfo(11438)] = 11438, -- Join Map Fragments
-    [GetSpellInfo(8348)] = 8348, -- Julie's Blessing
-    [GetSpellInfo(9654)] = 9654, -- Jumping Lightning
-    [GetSpellInfo(12684)] = 12684, -- Kadrak's Flag
-    [GetSpellInfo(12512)] = 12512, -- Kalaran Conjures Torch
-    [GetSpellInfo(3121)] = 3121, -- Kev
-    [GetSpellInfo(10166)] = 10166, -- Khadgar's Unlocking
-    [GetSpellInfo(22799)] = 22799, -- King of the Gordok
-    [GetSpellInfo(18153)] = 18153, -- Kodo Kombobulator
-    [GetSpellInfo(22790)] = 22790, -- Kreeg's Stout Beatdown
-    [GetSpellInfo(4065)] = 4065, -- Large Copper Bomb
-    [GetSpellInfo(4075)] = 4075, -- Large Seaforium Charge
-    [GetSpellInfo(580)] = 580, -- Large Timber Wolf
-    [GetSpellInfo(27146)] = 27146, -- Left Piece of Lord Valthalak's Amulet
-    [GetSpellInfo(15463)] = 15463, -- Legendary Arcane Amalgamation
-    [GetSpellInfo(10788)] = 10788, -- Leopard
-    [GetSpellInfo(11534)] = 11534, -- Leper Cure!
-    [GetSpellInfo(15402)] = 15402, -- Lesser Arcane Amalgamation
-    [GetSpellInfo(2053)] = 2053, -- Lesser Heal
-    [GetSpellInfo(27624)] = 27624, -- Lesser Healing Wave
-    [GetSpellInfo(66)] = 66, -- Lesser Invisibility
-    [GetSpellInfo(8256)] = 8256, -- Lethal Toxin
-    [GetSpellInfo(3243)] = 3243, -- Life Harvest
-    [GetSpellInfo(9172)] = 9172, -- Lift Seal
-    [GetSpellInfo(7364)] = 7364, -- Light Torch
-    [GetSpellInfo(8598)] = 8598, -- Lightning Blast
-    [GetSpellInfo(15207)] = 15207, -- Lightning Bolt
-    [GetSpellInfo(20627)] = 20627, -- Lightning Breath
-    [GetSpellInfo(6535)] = 6535, -- Lightning Cloud
-    [GetSpellInfo(28297)] = 28297, -- Lightning Totem
-    [GetSpellInfo(27871)] = 27871, -- Lightwell
-    [GetSpellInfo(15712)] = 15712, -- Linken's Boomerang
-    [GetSpellInfo(16729)] = 16729, -- Lionheart Helm
-    [GetSpellInfo(5401)] = 5401, -- Lizard Bolt
-    [GetSpellInfo(28785)] = 28785, -- Locust Swarm
-    [GetSpellInfo(1536)] = 1536, -- Longshot II
-    [GetSpellInfo(3007)] = 3007, -- Longshot III
-    [GetSpellInfo(25247)] = 25247, -- Longsight
-    [GetSpellInfo(26373)] = 26373, -- Lunar Invititation
-    [GetSpellInfo(13808)] = 13808, -- M73 Frag Grenade
-    [GetSpellInfo(10346)] = 10346, -- Machine Gun
-    [GetSpellInfo(17117)] = 17117, -- Magatha Incendia Powder
-    [GetSpellInfo(3659)] = 3659, -- Mage Sight
-    [GetSpellInfo(20565)] = 20565, -- Magma Blast
-    [GetSpellInfo(19484)] = 19484, -- Majordomo Teleport Visual
-    [GetSpellInfo(10876)] = 10876, -- Mana Burn
-    [GetSpellInfo(21097)] = 21097, -- Manastorm
-    [GetSpellInfo(21960)] = 21960, -- Manifest Spirit
-    [GetSpellInfo(18113)] = 18113, -- Manifestation Cleansing
-    [GetSpellInfo(23304)] = 23304, -- Manna-Enriched Horse Feed
-    [GetSpellInfo(15128)] = 15128, -- Mark of Flames
-    [GetSpellInfo(12198)] = 12198, -- Marksman Hit
-    [GetSpellInfo(4526)] = 4526, -- Mass Dispell
-    [GetSpellInfo(25839)] = 25839, -- Mass Healing
-    [GetSpellInfo(22421)] = 22421, -- Massive Geyser
-    [GetSpellInfo(16993)] = 16993, -- Masterwork Stormhammer
-    [GetSpellInfo(19814)] = 19814, -- Masterwork Target Dummy
-    [GetSpellInfo(29134)] = 29134, -- Maypole
-    [GetSpellInfo(7920)] = 7920, -- Mebok Smart Drink
-    [GetSpellInfo(15057)] = 15057, -- Mechanical Patch Kit
-    [GetSpellInfo(4055)] = 4055, -- Mechanical Squirrel
-    [GetSpellInfo(11082)] = 11082, -- Megavolt
-    [GetSpellInfo(21050)] = 21050, -- Melodious Rapture
-    [GetSpellInfo(5159)] = 5159, -- Melt Ore
-    [GetSpellInfo(16032)] = 16032, -- Merging Oozes
-    [GetSpellInfo(25145)] = 25145, -- Merithra's Wake
-    [GetSpellInfo(29333)] = 29333, -- Midsummer Sausage
-    [GetSpellInfo(21154)] = 21154, -- Might of Ragnaros
-    [GetSpellInfo(16600)] = 16600, -- Might of Shahram
-    [GetSpellInfo(29483)] = 29483, -- Might of the Scourge
-    [GetSpellInfo(10947)] = 10947, -- Mind Blast
-    [GetSpellInfo(10912)] = 10912, -- Mind Control
-    [GetSpellInfo(606)] = 606, -- Mind Rot
-    [GetSpellInfo(8272)] = 8272, -- Mind Tremor
-    [GetSpellInfo(5761)] = 5761, -- Mind-numbing Poison
-    [GetSpellInfo(8693)] = 8693, -- Mind-numbing Poison II
-    [GetSpellInfo(11399)] = 11399, -- Mind-numbing Poison III
-    [GetSpellInfo(23675)] = 23675, -- Minigun
-    [GetSpellInfo(3611)] = 3611, -- Minion of Morganth
-    [GetSpellInfo(3537)] = 3537, -- Minions of Malathrom
-    [GetSpellInfo(5567)] = 5567, -- Miring Mud
-    [GetSpellInfo(8138)] = 8138, -- Mirkfallon Fungus
-    [GetSpellInfo(26218)] = 26218, -- Mistletoe
-    [GetSpellInfo(12421)] = 12421, -- Mithril Frag Bomb
-    [GetSpellInfo(12900)] = 12900, -- Mobile Alarm
-    [GetSpellInfo(15095)] = 15095, -- Molten Blast
-    [GetSpellInfo(5213)] = 5213, -- Molten Metal
-    [GetSpellInfo(25150)] = 25150, -- Molten Rain
-    [GetSpellInfo(20528)] = 20528, -- Mor'rogal Enchant
-    [GetSpellInfo(16084)] = 16084, -- Mottled Red Raptor
-    [GetSpellInfo(14928)] = 14928, -- Nagmara's Love Potion
-    [GetSpellInfo(25688)] = 25688, -- Narain!
-    [GetSpellInfo(7967)] = 7967, -- Naralex's Nightmare
-    [GetSpellInfo(25180)] = 25180, -- Nature Weakness
-    [GetSpellInfo(16069)] = 16069, -- Nefarius Attack 001
-    [GetSpellInfo(7673)] = 7673, -- Nether Gem
-    [GetSpellInfo(8088)] = 8088, -- Nightcrawlers
-    [GetSpellInfo(23653)] = 23653, -- Nightfall
-    [GetSpellInfo(16055)] = 16055, -- Nightsaber
-    [GetSpellInfo(6199)] = 6199, -- Nostalgia
-    [GetSpellInfo(7994)] = 7994, -- Nullify Mana
-    [GetSpellInfo(16528)] = 16528, -- Numbing Pain
-    [GetSpellInfo(10798)] = 10798, -- Obsidian Raptor
-    [GetSpellInfo(11437)] = 11437, -- Opening Chest
-    [GetSpellInfo(23125)] = 23125, -- Orcish Orphan Whistle
-    [GetSpellInfo(26063)] = 26063, -- Ouro Submerge Visual
-    [GetSpellInfo(8153)] = 8153, -- Owl Form
-    [GetSpellInfo(16379)] = 16379, -- Ozzie Explodes
-    [GetSpellInfo(471)] = 471, -- Palamino Stallion
-    [GetSpellInfo(16082)] = 16082, -- Palomino Stallion
-    [GetSpellInfo(10787)] = 10787, -- Panther
-    [GetSpellInfo(17176)] = 17176, -- Panther Cage Key
-    [GetSpellInfo(8363)] = 8363, -- Parasite
-    [GetSpellInfo(6758)] = 6758, -- Party Fever
-    [GetSpellInfo(5668)] = 5668, -- Peasant Disguise
-    [GetSpellInfo(5669)] = 5669, -- Peon Disguise
-    [GetSpellInfo(11048)] = 11048, -- Perm. Illusion Bishop Tyriona
-    [GetSpellInfo(11067)] = 11067, -- Perm. Illusion Tyrion
-    [GetSpellInfo(27830)] = 27830, -- Persuader
-    [GetSpellInfo(6461)] = 6461, -- Pick Lock
-    [GetSpellInfo(16429)] = 16429, -- Piercing Shadow
-    [GetSpellInfo(4982)] = 4982, -- Pillar Delving
-    [GetSpellInfo(472)] = 472, -- Pinto Horse
-    [GetSpellInfo(15728)] = 15728, -- Plague Cloud
-    [GetSpellInfo(3429)] = 3429, -- Plague Mind
-    [GetSpellInfo(28614)] = 28614, -- Pointy Spike
-    [GetSpellInfo(21067)] = 21067, -- Poison Bolt
-    [GetSpellInfo(11790)] = 11790, -- Poison Cloud
-    [GetSpellInfo(25748)] = 25748, -- Poison Stinger
-    [GetSpellInfo(5208)] = 5208, -- Poisoned Harpoon
-    [GetSpellInfo(8275)] = 8275, -- Poisoned Shot
-    [GetSpellInfo(4286)] = 4286, -- Poisonous Spit
-    [GetSpellInfo(28089)] = 28089, -- Polarity Shift
-    [GetSpellInfo(28271)] = 28271, -- Polymorph
-    [GetSpellInfo(28270)] = 28270, -- Polymorph: Cow
-    [GetSpellInfo(11419)] = 11419, -- Portal: Darnassus
-    [GetSpellInfo(11416)] = 11416, -- Portal: Ironforge
-    [GetSpellInfo(28148)] = 28148, -- Portal: Karazhan
-    [GetSpellInfo(11417)] = 11417, -- Portal: Orgrimmar
-    [GetSpellInfo(10059)] = 10059, -- Portal: Stormwind
-    [GetSpellInfo(11420)] = 11420, -- Portal: Thunder Bluff
-    [GetSpellInfo(11418)] = 11418, -- Portal: Undercity
-    [GetSpellInfo(23680)] = 23680, -- Portals Deck
-    [GetSpellInfo(7638)] = 7638, -- Potion Toss
-    [GetSpellInfo(29467)] = 29467, -- Power of the Scourge
-    [GetSpellInfo(23008)] = 23008, -- Powerful Seaforium Charge
-    [GetSpellInfo(10850)] = 10850, -- Powerful Smelling Salts
-    [GetSpellInfo(25841)] = 25841, -- Prayer of Elune
-    [GetSpellInfo(25316)] = 25316, -- Prayer of Healing
-    [GetSpellInfo(3109)] = 3109, -- Presence of Death
-    [GetSpellInfo(24149)] = 24149, -- Presence of Might
-    [GetSpellInfo(24164)] = 24164, -- Presence of Sight
-    [GetSpellInfo(16058)] = 16058, -- Primal Leopard
-    [GetSpellInfo(13912)] = 13912, -- Princess Summons Portal
-    [GetSpellInfo(24167)] = 24167, -- Prophetic Aura
-    [GetSpellInfo(7120)] = 7120, -- Proudmoore's Defense
-    [GetSpellInfo(15050)] = 15050, -- Psychometry
-    [GetSpellInfo(16072)] = 16072, -- Purify and Place Food
-    [GetSpellInfo(22313)] = 22313, -- Purple Hands
-    [GetSpellInfo(17455)] = 17455, -- Purple Mechanostrider
-    [GetSpellInfo(23246)] = 23246, -- Purple Skeletal Warhorse
-    [GetSpellInfo(18809)] = 18809, -- Pyroblast
-    [GetSpellInfo(3229)] = 3229, -- Quick Bloodlust
-    [GetSpellInfo(4979)] = 4979, -- Quick Flame Ward
-    [GetSpellInfo(4980)] = 4980, -- Quick Frost Ward
-    [GetSpellInfo(9771)] = 9771, -- Radiation Bolt
-    [GetSpellInfo(3387)] = 3387, -- Rage of Thule
-    [GetSpellInfo(20568)] = 20568, -- Ragnaros Emerge
-    [GetSpellInfo(4629)] = 4629, -- Rain of Fire
-    [GetSpellInfo(28353)] = 28353, -- Raise Dead
-    [GetSpellInfo(17235)] = 17235, -- Raise Undead Scarab
-    [GetSpellInfo(5316)] = 5316, -- Raptor Feather
-    [GetSpellInfo(5280)] = 5280, -- Razor Mane
-    [GetSpellInfo(20748)] = 20748, -- Rebirth
-    [GetSpellInfo(22563)] = 22563, -- Recall
-    [GetSpellInfo(21950)] = 21950, -- Recite Words of Celebras
-    [GetSpellInfo(4093)] = 4093, -- Reconstruction
-    [GetSpellInfo(17456)] = 17456, -- Red & Blue Mechanostrider
-    [GetSpellInfo(10873)] = 10873, -- Red Mechanostrider
-    [GetSpellInfo(17462)] = 17462, -- Red Skeletal Horse
-    [GetSpellInfo(22722)] = 22722, -- Red Skeletal Warhorse
-    [GetSpellInfo(16080)] = 16080, -- Red Wolf
-    [GetSpellInfo(23254)] = 23254, -- Redeeming the Soul
-    [GetSpellInfo(20773)] = 20773, -- Redemption
-    [GetSpellInfo(22430)] = 22430, -- Refined Scale of Onyxia
-    [GetSpellInfo(9858)] = 9858, -- Regrowth
-    [GetSpellInfo(25952)] = 25952, -- Reindeer Dust Effect
-    [GetSpellInfo(23180)] = 23180, -- Release Imp
-    [GetSpellInfo(23136)] = 23136, -- Release J'eevee
-    [GetSpellInfo(10617)] = 10617, -- Release Rageclaw
-    [GetSpellInfo(17166)] = 17166, -- Release Umi's Yeti
-    [GetSpellInfo(16502)] = 16502, -- Release Winna's Kitten
-    [GetSpellInfo(12851)] = 12851, -- Release the Hounds
-    [GetSpellInfo(16031)] = 16031, -- Releasing Corrupt Ooze
-    [GetSpellInfo(6656)] = 6656, -- Remote Detonate
-    [GetSpellInfo(22027)] = 22027, -- Remove Insignia
-    [GetSpellInfo(8362)] = 8362, -- Renew
-    [GetSpellInfo(11923)] = 11923, -- Repair the Blade of Heroes
-    [GetSpellInfo(455)] = 455, -- Replenish Spirit
-    [GetSpellInfo(932)] = 932, -- Replenish Spirit II
-    [GetSpellInfo(29475)] = 29475, -- Resilience of the Scourge
-    [GetSpellInfo(4961)] = 4961, -- Resupply
-    [GetSpellInfo(20770)] = 20770, -- Resurrection
-    [GetSpellInfo(30081)] = 30081, -- Retching Plague
-    [GetSpellInfo(5161)] = 5161, -- Revive Dig Rat
-    [GetSpellInfo(982)] = 982, -- Revive Pet
-    [GetSpellInfo(15591)] = 15591, -- Revive Ringo
-    [GetSpellInfo(18363)] = 18363, -- Riding Kodo
-    [GetSpellInfo(30174)] = 30174, -- Riding Turtle
-    [GetSpellInfo(9614)] = 9614, -- Rift Beacon
-    [GetSpellInfo(27738)] = 27738, -- Right Piece of Lord Valthalak's Amulet
-    [GetSpellInfo(461)] = 461, -- Righteous Flame On
-    [GetSpellInfo(18540)] = 18540, -- Ritual of Doom
-    [GetSpellInfo(18541)] = 18541, -- Ritual of Doom Effect
-    [GetSpellInfo(698)] = 698, -- Ritual of Summoning
-    [GetSpellInfo(7720)] = 7720, -- Ritual of Summoning Effect
-    [GetSpellInfo(1940)] = 1940, -- Rocket Blast
-    [GetSpellInfo(15750)] = 15750, -- Rookery Whelp Spawn-in Spell
-    [GetSpellInfo(26137)] = 26137, -- Rotate Trigger
-    [GetSpellInfo(4064)] = 4064, -- Rough Copper Bomb
-    [GetSpellInfo(20875)] = 20875, -- Rumsey Rum
-    [GetSpellInfo(25804)] = 25804, -- Rumsey Rum Black Label
-    [GetSpellInfo(25722)] = 25722, -- Rumsey Rum Dark
-    [GetSpellInfo(25037)] = 25037, -- Rumsey Rum Light
-    [GetSpellInfo(16980)] = 16980, -- Rune Edge
-    [GetSpellInfo(3407)] = 3407, -- Rune of Opening
-    [GetSpellInfo(20051)] = 20051, -- Runed Arcanite Rod
-    [GetSpellInfo(21403)] = 21403, -- Ryson's All Seeing Eye
-    [GetSpellInfo(21425)] = 21425, -- Ryson's Eye in the Sky
-    [GetSpellInfo(1050)] = 1050, -- Sacrifice
-    [GetSpellInfo(10459)] = 10459, -- Sacrifice Spinneret
-    [GetSpellInfo(27832)] = 27832, -- Sageblade
-    [GetSpellInfo(19566)] = 19566, -- Salt Shaker
-    [GetSpellInfo(26102)] = 26102, -- Sand Blast
-    [GetSpellInfo(20716)] = 20716, -- Sand Breath
-    [GetSpellInfo(3204)] = 3204, -- Sapper Explode
-    [GetSpellInfo(6490)] = 6490, -- Sarilus's Elementals
-    [GetSpellInfo(28161)] = 28161, -- Savage Guard
-    [GetSpellInfo(14327)] = 14327, -- Scare Beast
-    [GetSpellInfo(9232)] = 9232, -- Scarlet Resurrection
-    [GetSpellInfo(15125)] = 15125, -- Scarshield Portal
-    [GetSpellInfo(10207)] = 10207, -- Scorch
-    [GetSpellInfo(11761)] = 11761, -- Scorpid Sample
-    [GetSpellInfo(13630)] = 13630, -- Scraping
-    [GetSpellInfo(7960)] = 7960, -- Scry on Azrethoc
-    [GetSpellInfo(22949)] = 22949, -- Seal Felvine Shard
-    [GetSpellInfo(9552)] = 9552, -- Searing Flames
-    [GetSpellInfo(17923)] = 17923, -- Searing Pain
-    [GetSpellInfo(6358)] = 6358, -- Seduction
-    [GetSpellInfo(17196)] = 17196, -- Seeping Willow
-    [GetSpellInfo(5407)] = 5407, -- Segra Darkthorn Effect
-    [GetSpellInfo(9879)] = 9879, -- Self Destruct
-    [GetSpellInfo(9575)] = 9575, -- Self Detonation
-    [GetSpellInfo(18976)] = 18976, -- Self Resurrection
-    [GetSpellInfo(16983)] = 16983, -- Serenity
-    [GetSpellInfo(6270)] = 6270, -- Serpentine Cleansing
-    [GetSpellInfo(6626)] = 6626, -- Set NG-5 Charge (Blue)
-    [GetSpellInfo(6630)] = 6630, -- Set NG-5 Charge (Red)
-    [GetSpellInfo(10955)] = 10955, -- Shackle Undead
-    [GetSpellInfo(11661)] = 11661, -- Shadow Bolt
-    [GetSpellInfo(14871)] = 14871, -- Shadow Bolt Misfire
-    [GetSpellInfo(14887)] = 14887, -- Shadow Bolt Volley
-    [GetSpellInfo(22979)] = 22979, -- Shadow Flame
-    [GetSpellInfo(28165)] = 28165, -- Shadow Guard
-    [GetSpellInfo(22596)] = 22596, -- Shadow Mantle of the Dawn
-    [GetSpellInfo(1112)] = 1112, -- Shadow Nova II
-    [GetSpellInfo(7136)] = 7136, -- Shadow Port
-    [GetSpellInfo(17950)] = 17950, -- Shadow Portal
-    [GetSpellInfo(9657)] = 9657, -- Shadow Shell
-    [GetSpellInfo(25183)] = 25183, -- Shadow Weakness
-    [GetSpellInfo(22681)] = 22681, -- Shadowblink
-    [GetSpellInfo(7761)] = 7761, -- Shared Bonds
-    [GetSpellInfo(2828)] = 2828, -- Sharpen Blade
-    [GetSpellInfo(2829)] = 2829, -- Sharpen Blade II
-    [GetSpellInfo(2830)] = 2830, -- Sharpen Blade III
-    [GetSpellInfo(9900)] = 9900, -- Sharpen Blade IV
-    [GetSpellInfo(16138)] = 16138, -- Sharpen Blade V
-    [GetSpellInfo(22756)] = 22756, -- Sharpen Weapon - Critical
-    [GetSpellInfo(11402)] = 11402, -- Shay's Bell
-    [GetSpellInfo(3651)] = 3651, -- Shield of Reflection
-    [GetSpellInfo(8087)] = 8087, -- Shiny Bauble
-    [GetSpellInfo(28099)] = 28099, -- Shock
-    [GetSpellInfo(1698)] = 1698, -- Shockwave
-    [GetSpellInfo(2480)] = 2480, -- Shoot Bow
-    [GetSpellInfo(7919)] = 7919, -- Shoot Crossbow
-    [GetSpellInfo(7918)] = 7918, -- Shoot Gun
-    [GetSpellInfo(25031)] = 25031, -- Shoot Missile
-    [GetSpellInfo(25030)] = 25030, -- Shoot Rocket
-    [GetSpellInfo(21559)] = 21559, -- Shredder Armor Melt
-    [GetSpellInfo(10096)] = 10096, -- Shrink
-    [GetSpellInfo(14227)] = 14227, -- Signing
-    [GetSpellInfo(26069)] = 26069, -- Silence
-    [GetSpellInfo(8137)] = 8137, -- Silithid Pox
-    [GetSpellInfo(7077)] = 7077, -- Simple Teleport
-    [GetSpellInfo(7078)] = 7078, -- Simple Teleport Group
-    [GetSpellInfo(7079)] = 7079, -- Simple Teleport Other
-    [GetSpellInfo(8980)] = 8980, -- Skeletal Horse
-    [GetSpellInfo(6469)] = 6469, -- Skeletal Miner Explode
-    [GetSpellInfo(29059)] = 29059, -- Skeletal Steed
-    [GetSpellInfo(11605)] = 11605, -- Slam
-    [GetSpellInfo(8809)] = 8809, -- Slave Drain
-    [GetSpellInfo(1090)] = 1090, -- Sleep
-    [GetSpellInfo(28311)] = 28311, -- Slime Bolt
-    [GetSpellInfo(6530)] = 6530, -- Sling Dirt
-    [GetSpellInfo(3650)] = 3650, -- Sling Mud
-    [GetSpellInfo(3332)] = 3332, -- Slow Poison
-    [GetSpellInfo(1056)] = 1056, -- Slow Poison II
-    [GetSpellInfo(7992)] = 7992, -- Slowing Poison
-    [GetSpellInfo(6814)] = 6814, -- Sludge Toxin
-    [GetSpellInfo(4066)] = 4066, -- Small Bronze Bomb
-    [GetSpellInfo(22967)] = 22967, -- Smelt Elementium
-    [GetSpellInfo(10934)] = 10934, -- Smite
-    [GetSpellInfo(27572)] = 27572, -- Smitten
-    [GetSpellInfo(12460)] = 12460, -- Sniper Scope
-    [GetSpellInfo(21935)] = 21935, -- SnowMaster 9000
-    [GetSpellInfo(21848)] = 21848, -- Snowman
-    [GetSpellInfo(8283)] = 8283, -- Snufflenose Command
-    [GetSpellInfo(3206)] = 3206, -- Sol H
-    [GetSpellInfo(3120)] = 3120, -- Sol L
-    [GetSpellInfo(3205)] = 3205, -- Sol M
-    [GetSpellInfo(3207)] = 3207, -- Sol U
-    [GetSpellInfo(9901)] = 9901, -- Soothe Animal
-    [GetSpellInfo(11016)] = 11016, -- Soul Bite
-    [GetSpellInfo(17506)] = 17506, -- Soul Breaker
-    [GetSpellInfo(17048)] = 17048, -- Soul Claim
-    [GetSpellInfo(12667)] = 12667, -- Soul Consumption
-    [GetSpellInfo(7295)] = 7295, -- Soul Drain
-    [GetSpellInfo(17924)] = 17924, -- Soul Fire
-    [GetSpellInfo(10771)] = 10771, -- Soul Shatter
-    [GetSpellInfo(20762)] = 20762, -- Soulstone Resurrection
-    [GetSpellInfo(5264)] = 5264, -- South Seas Pirate Disguise
-    [GetSpellInfo(6252)] = 6252, -- Southsea Cannon Fire
-    [GetSpellInfo(21027)] = 21027, -- Spark
-    [GetSpellInfo(16447)] = 16447, -- Spawn Challenge to Urok
-    [GetSpellInfo(3644)] = 3644, -- Speak with Heads
-    [GetSpellInfo(31364)] = 31364, -- Spice Mortar
-    [GetSpellInfo(28615)] = 28615, -- Spike Volley
-    [GetSpellInfo(8016)] = 8016, -- Spirit Decay
-    [GetSpellInfo(17680)] = 17680, -- Spirit Spawn-out
-    [GetSpellInfo(3477)] = 3477, -- Spirit Steal
-    [GetSpellInfo(10789)] = 10789, -- Spotted Frostsaber
-    [GetSpellInfo(10792)] = 10792, -- Spotted Panther
-    [GetSpellInfo(17155)] = 17155, -- Sprinkling Purified Water
-    [GetSpellInfo(3975)] = 3975, -- Standard Scope
-    [GetSpellInfo(25298)] = 25298, -- Starfire
-    [GetSpellInfo(15781)] = 15781, -- Steel Mechanostrider
-    [GetSpellInfo(10254)] = 10254, -- Stone Dwarf Awaken Visual
-    [GetSpellInfo(28995)] = 28995, -- Stoneskin
-    [GetSpellInfo(5265)] = 5265, -- Stonesplinter Trogg Disguise
-    [GetSpellInfo(20685)] = 20685, -- Storm Bolt
-    [GetSpellInfo(23510)] = 23510, -- Stormpike Battle Charger
-    [GetSpellInfo(18163)] = 18163, -- Strength of Arko'narin
-    [GetSpellInfo(4539)] = 4539, -- Strength of the Ages
-    [GetSpellInfo(26181)] = 26181, -- Strike
-    [GetSpellInfo(24245)] = 24245, -- String Together Heads
-    [GetSpellInfo(8394)] = 8394, -- Striped Frostsaber
-    [GetSpellInfo(10793)] = 10793, -- Striped Nightsaber
-    [GetSpellInfo(16741)] = 16741, -- Stronghold Gauntlets
-    [GetSpellInfo(7355)] = 7355, -- Stuck
-    [GetSpellInfo(16497)] = 16497, -- Stun Bomb
-    [GetSpellInfo(21188)] = 21188, -- Stun Bomb Attack
-    [GetSpellInfo(26234)] = 26234, -- Submerge Visual
-    [GetSpellInfo(15734)] = 15734, -- Summon
-    [GetSpellInfo(23004)] = 23004, -- Summon Alarm-o-Bot
-    [GetSpellInfo(10713)] = 10713, -- Summon Albino Snake
-    [GetSpellInfo(23428)] = 23428, -- Summon Albino Snapjaw
-    [GetSpellInfo(15033)] = 15033, -- Summon Ancient Spirits
-    [GetSpellInfo(10685)] = 10685, -- Summon Ancona
-    [GetSpellInfo(13978)] = 13978, -- Summon Aquementas
-    [GetSpellInfo(22567)] = 22567, -- Summon Ar'lia
-    [GetSpellInfo(12151)] = 12151, -- Summon Atal'ai Skeleton
-    [GetSpellInfo(10696)] = 10696, -- Summon Azure Whelpling
-    [GetSpellInfo(25849)] = 25849, -- Summon Baby Shark
-    [GetSpellInfo(10714)] = 10714, -- Summon Black Kingsnake
-    [GetSpellInfo(26656)] = 26656, -- Summon Black Qiraji Battle Tank
-    [GetSpellInfo(15794)] = 15794, -- Summon Blackhand Dreadweaver
-    [GetSpellInfo(15792)] = 15792, -- Summon Blackhand Veteran
-    [GetSpellInfo(17567)] = 17567, -- Summon Blood Parrot
-    [GetSpellInfo(13463)] = 13463, -- Summon Bloodpetal Mini Pests
-    [GetSpellInfo(25953)] = 25953, -- Summon Blue Qiraji Battle Tank
-    [GetSpellInfo(10715)] = 10715, -- Summon Blue Racer
-    [GetSpellInfo(8286)] = 8286, -- Summon Boar Spirit
-    [GetSpellInfo(15048)] = 15048, -- Summon Bomb
-    [GetSpellInfo(10673)] = 10673, -- Summon Bombay
-    [GetSpellInfo(10699)] = 10699, -- Summon Bronze Whelpling
-    [GetSpellInfo(10716)] = 10716, -- Summon Brown Snake
-    [GetSpellInfo(17169)] = 17169, -- Summon Carrion Scarab
-    [GetSpellInfo(23214)] = 23214, -- Summon Charger
-    [GetSpellInfo(10680)] = 10680, -- Summon Cockatiel
-    [GetSpellInfo(10681)] = 10681, -- Summon Cockatoo
-    [GetSpellInfo(10688)] = 10688, -- Summon Cockroach
-    [GetSpellInfo(15647)] = 15647, -- Summon Common Kitten
-    [GetSpellInfo(10674)] = 10674, -- Summon Cornish Rex
-    [GetSpellInfo(15648)] = 15648, -- Summon Corrupted Kitten
-    [GetSpellInfo(10710)] = 10710, -- Summon Cottontail Rabbit
-    [GetSpellInfo(10717)] = 10717, -- Summon Crimson Snake
-    [GetSpellInfo(10697)] = 10697, -- Summon Crimson Whelpling
-    [GetSpellInfo(8606)] = 8606, -- Summon Cyclonian
-    [GetSpellInfo(4945)] = 4945, -- Summon Dagun
-    [GetSpellInfo(10695)] = 10695, -- Summon Dark Whelpling
-    [GetSpellInfo(10701)] = 10701, -- Summon Dart Frog
-    [GetSpellInfo(9097)] = 9097, -- Summon Demon of the Orb
-    [GetSpellInfo(17708)] = 17708, -- Summon Diablo
-    [GetSpellInfo(25162)] = 25162, -- Summon Disgusting Oozeling
-    [GetSpellInfo(23161)] = 23161, -- Summon Dreadsteed
-    [GetSpellInfo(10705)] = 10705, -- Summon Eagle Owl
-    [GetSpellInfo(12189)] = 12189, -- Summon Echeyakee
-    [GetSpellInfo(11840)] = 11840, -- Summon Edana Hatetalon
-    [GetSpellInfo(8677)] = 8677, -- Summon Effect
-    [GetSpellInfo(10721)] = 10721, -- Summon Elven Wisp
-    [GetSpellInfo(10869)] = 10869, -- Summon Embers
-    [GetSpellInfo(10698)] = 10698, -- Summon Emerald Whelpling
-    [GetSpellInfo(10700)] = 10700, -- Summon Faeling
-    [GetSpellInfo(13548)] = 13548, -- Summon Farm Chicken
-    [GetSpellInfo(691)] = 691, -- Summon Felhunter
-    [GetSpellInfo(5784)] = 5784, -- Summon Felsteed
-    [GetSpellInfo(16531)] = 16531, -- Summon Frail Skeleton
-    [GetSpellInfo(19561)] = 19561, -- Summon Gnashjaw
-    [GetSpellInfo(13258)] = 13258, -- Summon Goblin Bomb
-    [GetSpellInfo(10707)] = 10707, -- Summon Great Horned Owl
-    [GetSpellInfo(26056)] = 26056, -- Summon Green Qiraji Battle Tank
-    [GetSpellInfo(10718)] = 10718, -- Summon Green Water Snake
-    [GetSpellInfo(10683)] = 10683, -- Summon Green Wing Macaw
-    [GetSpellInfo(7762)] = 7762, -- Summon Gunther's Visage
-    [GetSpellInfo(27241)] = 27241, -- Summon Gurky
-    [GetSpellInfo(10706)] = 10706, -- Summon Hawk Owl
-    [GetSpellInfo(23432)] = 23432, -- Summon Hawksbill Snapjaw
-    [GetSpellInfo(4950)] = 4950, -- Summon Helcular's Puppets
-    [GetSpellInfo(30156)] = 30156, -- Summon Hippogryph Hatchling
-    [GetSpellInfo(10682)] = 10682, -- Summon Hyacinth Macaw
-    [GetSpellInfo(15114)] = 15114, -- Summon Illusionary Dreamwatchers
-    [GetSpellInfo(6905)] = 6905, -- Summon Illusionary Nightmare
-    [GetSpellInfo(8986)] = 8986, -- Summon Illusionary Phantasm
-    [GetSpellInfo(17231)] = 17231, -- Summon Illusory Wraith
-    [GetSpellInfo(688)] = 688, -- Summon Imp
-    [GetSpellInfo(12740)] = 12740, -- Summon Infernal Servant
-    [GetSpellInfo(12199)] = 12199, -- Summon Ishamuhale
-    [GetSpellInfo(10702)] = 10702, -- Summon Island Frog
-    [GetSpellInfo(23811)] = 23811, -- Summon Jubling
-    [GetSpellInfo(20737)] = 20737, -- Summon Karang's Banner
-    [GetSpellInfo(23431)] = 23431, -- Summon Leatherback Snapjaw
-    [GetSpellInfo(19772)] = 19772, -- Summon Lifelike Toad
-    [GetSpellInfo(5110)] = 5110, -- Summon Living Flame
-    [GetSpellInfo(23429)] = 23429, -- Summon Loggerhead Snapjaw
-    [GetSpellInfo(20693)] = 20693, -- Summon Lost Amulet
-    [GetSpellInfo(18974)] = 18974, -- Summon Lunaclaw
-    [GetSpellInfo(7132)] = 7132, -- Summon Lupine Delusions
-    [GetSpellInfo(27291)] = 27291, -- Summon Magic Staff
-    [GetSpellInfo(18166)] = 18166, -- Summon Magram Ravager
-    [GetSpellInfo(10675)] = 10675, -- Summon Maine Coon
-    [GetSpellInfo(12243)] = 12243, -- Summon Mechanical Chicken
-    [GetSpellInfo(18476)] = 18476, -- Summon Minion
-    [GetSpellInfo(28739)] = 28739, -- Summon Mr. Wiggles
-    [GetSpellInfo(25018)] = 25018, -- Summon Murki
-    [GetSpellInfo(24696)] = 24696, -- Summon Murky
-    [GetSpellInfo(4141)] = 4141, -- Summon Myzrael
-    [GetSpellInfo(22876)] = 22876, -- Summon Netherwalker
-    [GetSpellInfo(23430)] = 23430, -- Summon Olive Snapjaw
-    [GetSpellInfo(17646)] = 17646, -- Summon Onyxia Whelp
-    [GetSpellInfo(10676)] = 10676, -- Summon Orange Tabby
-    [GetSpellInfo(23012)] = 23012, -- Summon Orphan
-    [GetSpellInfo(17707)] = 17707, -- Summon Panda
-    [GetSpellInfo(28505)] = 28505, -- Summon Poley
-    [GetSpellInfo(10686)] = 10686, -- Summon Prairie Chicken
-    [GetSpellInfo(10709)] = 10709, -- Summon Prairie Dog
-    [GetSpellInfo(19774)] = 19774, -- Summon Ragnaros
-    [GetSpellInfo(13143)] = 13143, -- Summon Razelikh
-    [GetSpellInfo(26054)] = 26054, -- Summon Red Qiraji Battle Tank
-    [GetSpellInfo(3605)] = 3605, -- Summon Remote-Controlled Golem
-    [GetSpellInfo(10719)] = 10719, -- Summon Ribbon Snake
-    [GetSpellInfo(3363)] = 3363, -- Summon Riding Gryphon
-    [GetSpellInfo(17618)] = 17618, -- Summon Risen Lackey
-    [GetSpellInfo(15049)] = 15049, -- Summon Robot
-    [GetSpellInfo(16381)] = 16381, -- Summon Rockwing Gargoyles
-    [GetSpellInfo(15745)] = 15745, -- Summon Rookery Whelp
-    [GetSpellInfo(10720)] = 10720, -- Summon Scarlet Snake
-    [GetSpellInfo(12699)] = 12699, -- Summon Screecher Spirit
-    [GetSpellInfo(10684)] = 10684, -- Summon Senegal
-    [GetSpellInfo(12258)] = 12258, -- Summon Shadowcaster
-    [GetSpellInfo(21181)] = 21181, -- Summon Shadowstrike
-    [GetSpellInfo(3655)] = 3655, -- Summon Shield Guard
-    [GetSpellInfo(16796)] = 16796, -- Summon Shy-Rotam
-    [GetSpellInfo(10677)] = 10677, -- Summon Siamese
-    [GetSpellInfo(10678)] = 10678, -- Summon Silver Tabby
-    [GetSpellInfo(17204)] = 17204, -- Summon Skeleton
-    [GetSpellInfo(11209)] = 11209, -- Summon Smithing Hammer
-    [GetSpellInfo(16450)] = 16450, -- Summon Smolderweb
-    [GetSpellInfo(10711)] = 10711, -- Summon Snowshoe Rabbit
-    [GetSpellInfo(10708)] = 10708, -- Summon Snowy Owl
-    [GetSpellInfo(6918)] = 6918, -- Summon Snufflenose
-    [GetSpellInfo(13895)] = 13895, -- Summon Spawn of Bael'Gar
-    [GetSpellInfo(28738)] = 28738, -- Summon Speedy
-    [GetSpellInfo(3657)] = 3657, -- Summon Spell Guard
-    [GetSpellInfo(11548)] = 11548, -- Summon Spider God
-    [GetSpellInfo(10712)] = 10712, -- Summon Spotted Rabbit
-    [GetSpellInfo(15067)] = 15067, -- Summon Sprite Darter Hatchling
-    [GetSpellInfo(712)] = 712, -- Summon Succubus
-    [GetSpellInfo(9461)] = 9461, -- Summon Swamp Ooze
-    [GetSpellInfo(9636)] = 9636, -- Summon Swamp Spirit
-    [GetSpellInfo(3722)] = 3722, -- Summon Syndicate Spectre
-    [GetSpellInfo(28487)] = 28487, -- Summon Terky
-    [GetSpellInfo(7076)] = 7076, -- Summon Tervosh's Minion
-    [GetSpellInfo(3658)] = 3658, -- Summon Theurgist
-    [GetSpellInfo(21180)] = 21180, -- Summon Thunderstrike
-    [GetSpellInfo(5666)] = 5666, -- Summon Timberling
-    [GetSpellInfo(23531)] = 23531, -- Summon Tiny Green Dragon
-    [GetSpellInfo(23530)] = 23530, -- Summon Tiny Red Dragon
-    [GetSpellInfo(26010)] = 26010, -- Summon Tranquil Mechanical Yeti
-    [GetSpellInfo(20702)] = 20702, -- Summon Treant Allies
-    [GetSpellInfo(12554)] = 12554, -- Summon Treasure Horde
-    [GetSpellInfo(12564)] = 12564, -- Summon Treasure Horde Visual
-    [GetSpellInfo(10704)] = 10704, -- Summon Tree Frog
-    [GetSpellInfo(7949)] = 7949, -- Summon Viper
-    [GetSpellInfo(697)] = 697, -- Summon Voidwalker
-    [GetSpellInfo(13819)] = 13819, -- Summon Warhorse
-    [GetSpellInfo(17162)] = 17162, -- Summon Water Elemental
-    [GetSpellInfo(28740)] = 28740, -- Summon Whiskers
-    [GetSpellInfo(10679)] = 10679, -- Summon White Kitten
-    [GetSpellInfo(10687)] = 10687, -- Summon White Plymouth Rock
-    [GetSpellInfo(30152)] = 30152, -- Summon White Tiger Cub
-    [GetSpellInfo(11017)] = 11017, -- Summon Witherbark Felhunter
-    [GetSpellInfo(10703)] = 10703, -- Summon Wood Frog
-    [GetSpellInfo(15999)] = 15999, -- Summon Worg Pup
-    [GetSpellInfo(23152)] = 23152, -- Summon Xorothian Dreadsteed
-    [GetSpellInfo(26055)] = 26055, -- Summon Yellow Qiraji Battle Tank
-    [GetSpellInfo(17709)] = 17709, -- Summon Zergling
-    [GetSpellInfo(16590)] = 16590, -- Summon Zombie
-    [GetSpellInfo(16473)] = 16473, -- Summoned Urok
-    [GetSpellInfo(25186)] = 25186, -- Super Crystal
-    [GetSpellInfo(15869)] = 15869, -- Superior Healing Ward
-    [GetSpellInfo(26103)] = 26103, -- Sweep
-    [GetSpellInfo(27722)] = 27722, -- Sweet Surprise
-    [GetSpellInfo(23241)] = 23241, -- Swift Blue Raptor
-    [GetSpellInfo(23238)] = 23238, -- Swift Brown Ram
-    [GetSpellInfo(23229)] = 23229, -- Swift Brown Steed
-    [GetSpellInfo(23250)] = 23250, -- Swift Brown Wolf
-    [GetSpellInfo(23220)] = 23220, -- Swift Dawnsaber
-    [GetSpellInfo(23221)] = 23221, -- Swift Frostsaber
-    [GetSpellInfo(23239)] = 23239, -- Swift Gray Ram
-    [GetSpellInfo(23252)] = 23252, -- Swift Gray Wolf
-    [GetSpellInfo(23225)] = 23225, -- Swift Green Mechanostrider
-    [GetSpellInfo(23219)] = 23219, -- Swift Mistsaber
-    [GetSpellInfo(23242)] = 23242, -- Swift Olive Raptor
-    [GetSpellInfo(23243)] = 23243, -- Swift Orange Raptor
-    [GetSpellInfo(23227)] = 23227, -- Swift Palomino
-    [GetSpellInfo(24242)] = 24242, -- Swift Razzashi Raptor
-    [GetSpellInfo(23338)] = 23338, -- Swift Stormsaber
-    [GetSpellInfo(23251)] = 23251, -- Swift Timber Wolf
-    [GetSpellInfo(23223)] = 23223, -- Swift White Mechanostrider
-    [GetSpellInfo(23240)] = 23240, -- Swift White Ram
-    [GetSpellInfo(23228)] = 23228, -- Swift White Steed
-    [GetSpellInfo(23222)] = 23222, -- Swift Yellow Mechanostrider
-    [GetSpellInfo(24252)] = 24252, -- Swift Zulian Tiger
-    [GetSpellInfo(8593)] = 8593, -- Symbol of Life
-    [GetSpellInfo(24160)] = 24160, -- Syncretist's Sigil
-    [GetSpellInfo(3718)] = 3718, -- Syndicate Bomb
-    [GetSpellInfo(5266)] = 5266, -- Syndicate Disguise
-    [GetSpellInfo(18969)] = 18969, -- Taelan Death
-    [GetSpellInfo(17161)] = 17161, -- Taking Moon Well Sample
-    [GetSpellInfo(9795)] = 9795, -- Talvash's Necklace Repair
-    [GetSpellInfo(20041)] = 20041, -- Tammra Sapling
-    [GetSpellInfo(16059)] = 16059, -- Tawny Sabercat
-    [GetSpellInfo(2817)] = 2817, -- Teach Bark of Doom
-    [GetSpellInfo(18992)] = 18992, -- Teal Kodo
-    [GetSpellInfo(12521)] = 12521, -- Teleport from Azshara Tower
-    [GetSpellInfo(12509)] = 12509, -- Teleport to Azshara Tower
-    [GetSpellInfo(3565)] = 3565, -- Teleport: Darnassus
-    [GetSpellInfo(3562)] = 3562, -- Teleport: Ironforge
-    [GetSpellInfo(18960)] = 18960, -- Teleport: Moonglade
-    [GetSpellInfo(3567)] = 3567, -- Teleport: Orgrimmar
-    [GetSpellInfo(3561)] = 3561, -- Teleport: Stormwind
-    [GetSpellInfo(3566)] = 3566, -- Teleport: Thunder Bluff
-    [GetSpellInfo(3563)] = 3563, -- Teleport: Undercity
-    [GetSpellInfo(6755)] = 6755, -- Tell Joke
-    [GetSpellInfo(16378)] = 16378, -- Temperature Reading
-    [GetSpellInfo(9456)] = 9456, -- Tharnariun Cure 1
-    [GetSpellInfo(9457)] = 9457, -- Tharnariun's Heal
-    [GetSpellInfo(12562)] = 12562, -- The Big One
-    [GetSpellInfo(22989)] = 22989, -- The Breaking
-    [GetSpellInfo(21953)] = 21953, -- The Feast of Winter Veil
-    [GetSpellInfo(22990)] = 22990, -- The Forming
-    [GetSpellInfo(19769)] = 19769, -- Thorium Grenade
-    [GetSpellInfo(24649)] = 24649, -- Thousand Blades
-    [GetSpellInfo(24314)] = 24314, -- Threatening Gaze
-    [GetSpellInfo(5781)] = 5781, -- Threatening Growl
-    [GetSpellInfo(16075)] = 16075, -- Throw Axe
-    [GetSpellInfo(27662)] = 27662, -- Throw Cupid's Dart
-    [GetSpellInfo(14814)] = 14814, -- Throw Dark Iron Ale
-    [GetSpellInfo(7978)] = 7978, -- Throw Dynamite
-    [GetSpellInfo(25004)] = 25004, -- Throw Nightmare Object
-    [GetSpellInfo(4164)] = 4164, -- Throw Rock
-    [GetSpellInfo(4165)] = 4165, -- Throw Rock II
-    [GetSpellInfo(10790)] = 10790, -- Tiger
-    [GetSpellInfo(23312)] = 23312, -- Time Lapse
-    [GetSpellInfo(25158)] = 25158, -- Time Stop
-    [GetSpellInfo(6470)] = 6470, -- Tiny Bronze Key
-    [GetSpellInfo(6471)] = 6471, -- Tiny Iron Key
-    [GetSpellInfo(27829)] = 27829, -- Titanic Leggings
-    [GetSpellInfo(29116)] = 29116, -- Toast Smorc
-    [GetSpellInfo(29334)] = 29334, -- Toasted Smorc
-    [GetSpellInfo(27739)] = 27739, -- Top Piece of Lord Valthalak's Amulet
-    [GetSpellInfo(12511)] = 12511, -- Torch Combine
-    [GetSpellInfo(6257)] = 6257, -- Torch Toss
-    [GetSpellInfo(28806)] = 28806, -- Toss Fuel on Bonfire
-    [GetSpellInfo(24706)] = 24706, -- Toss Stink Bomb
-    [GetSpellInfo(3108)] = 3108, -- Touch of Death
-    [GetSpellInfo(3263)] = 3263, -- Touch of Ravenclaw
-    [GetSpellInfo(16554)] = 16554, -- Toxic Bolt
-    [GetSpellInfo(7125)] = 7125, -- Toxic Saliva
-    [GetSpellInfo(7951)] = 7951, -- Toxic Spit
-    [GetSpellInfo(19877)] = 19877, -- Tranquilizing Shot
-    [GetSpellInfo(7821)] = 7821, -- Transform Victim
-    [GetSpellInfo(25146)] = 25146, -- Transmute: Elemental Fire
-    [GetSpellInfo(4320)] = 4320, -- Trelane's Freezing Touch
-    [GetSpellInfo(20804)] = 20804, -- Triage
-    [GetSpellInfo(785)] = 785, -- True Fulfillment
-    [GetSpellInfo(10348)] = 10348, -- Tune Up
-    [GetSpellInfo(10326)] = 10326, -- Turn Undead
-    [GetSpellInfo(10796)] = 10796, -- Turquoise Raptor
-    [GetSpellInfo(10340)] = 10340, -- Uldaman Boss Agro
-    [GetSpellInfo(9577)] = 9577, -- Uldaman Key Staff
-    [GetSpellInfo(11568)] = 11568, -- Uldaman Sub-Boss Agro
-    [GetSpellInfo(20006)] = 20006, -- Unholy Curse
-    [GetSpellInfo(3670)] = 3670, -- Unlock Maury's Foot
-    [GetSpellInfo(10738)] = 10738, -- Unlocking
-    [GetSpellInfo(17454)] = 17454, -- Unpainted Mechanostrider
-    [GetSpellInfo(24024)] = 24024, -- Unstable Concoction
-    [GetSpellInfo(16562)] = 16562, -- Urok Minions Vanish
-    [GetSpellInfo(19719)] = 19719, -- Use Bauble
-    [GetSpellInfo(24194)] = 24194, -- Uther's Tribute
-    [GetSpellInfo(7068)] = 7068, -- Veil of Shadow
-    [GetSpellInfo(15664)] = 15664, -- Venom Spit
-    [GetSpellInfo(6354)] = 6354, -- Venom's Bane
-    [GetSpellInfo(27721)] = 27721, -- Very Berry Cream
-    [GetSpellInfo(18115)] = 18115, -- Viewing Room Student Transform - Effect
-    [GetSpellInfo(10799)] = 10799, -- Violet Raptor
-    [GetSpellInfo(17529)] = 17529, -- Vitreous Focuser
-    [GetSpellInfo(24163)] = 24163, -- Vodouisant's Vigilant Embrace
-    [GetSpellInfo(21066)] = 21066, -- Void Bolt
-    [GetSpellInfo(5252)] = 5252, -- Voidwalker Guardian
-    [GetSpellInfo(18149)] = 18149, -- Volatile Infection
-    [GetSpellInfo(16984)] = 16984, -- Volcanic Hammer
-    [GetSpellInfo(1540)] = 1540, -- Volley
-    [GetSpellInfo(3013)] = 3013, -- Volley II
-    [GetSpellInfo(17009)] = 17009, -- Voodoo
-    [GetSpellInfo(8277)] = 8277, -- Voodoo Hex
-    [GetSpellInfo(17639)] = 17639, -- Wail of the Banshee
-    [GetSpellInfo(3436)] = 3436, -- Wandering Plague
-    [GetSpellInfo(20549)] = 20549, -- War Stomp
-    [GetSpellInfo(23678)] = 23678, -- Warlord Deck
-    [GetSpellInfo(16801)] = 16801, -- Warosh's Transform
-    [GetSpellInfo(7383)] = 7383, -- Water Bubble
-    [GetSpellInfo(9583)] = 9583, -- Water Sample
-    [GetSpellInfo(6949)] = 6949, -- Weak Frostbolt
-    [GetSpellInfo(7220)] = 7220, -- Weapon Chain
-    [GetSpellInfo(7218)] = 7218, -- Weapon Counterweight
-    [GetSpellInfo(11410)] = 11410, -- Whirling Barrage
-    [GetSpellInfo(15779)] = 15779, -- White Mechanostrider
-    [GetSpellInfo(6898)] = 6898, -- White Ram
-    [GetSpellInfo(468)] = 468, -- White Stallion
-    [GetSpellInfo(16724)] = 16724, -- Whitesoul Helm
-    [GetSpellInfo(4520)] = 4520, -- Wide Sweep
-    [GetSpellInfo(28732)] = 28732, -- Widow's Embrace
-    [GetSpellInfo(9616)] = 9616, -- Wild Regeneration
-    [GetSpellInfo(16598)] = 16598, -- Will of Shahram
-    [GetSpellInfo(23339)] = 23339, -- Wing Buffet
-    [GetSpellInfo(581)] = 581, -- Winter Wolf
-    [GetSpellInfo(21736)] = 21736, -- Winterax Wisdom
-    [GetSpellInfo(17229)] = 17229, -- Winterspring Frostsaber
-    [GetSpellInfo(22662)] = 22662, -- Wither
-    [GetSpellInfo(4974)] = 4974, -- Wither Touch
-    [GetSpellInfo(25121)] = 25121, -- Wizard Oil
-    [GetSpellInfo(28800)] = 28800, -- Word of Thawing
-    [GetSpellInfo(30732)] = 30732, -- Worm Sweep
-    [GetSpellInfo(13227)] = 13227, -- Wound Poison
-    [GetSpellInfo(13228)] = 13228, -- Wound Poison II
-    [GetSpellInfo(13229)] = 13229, -- Wound Poison III
-    [GetSpellInfo(13230)] = 13230, -- Wound Poison IV
-    [GetSpellInfo(9912)] = 9912, -- Wrath
-    [GetSpellInfo(3607)] = 3607, -- Yenniku's Release
-    [GetSpellInfo(24422)] = 24422, -- Zandalar Signet of Might
-    [GetSpellInfo(24421)] = 24421, -- Zandalar Signet of Mojo
-    [GetSpellInfo(24420)] = 24420, -- Zandalar Signet of Serenity
+local castSpellIDs = {
+    25262, -- Abomination Spit
+    24334, -- Acid Spit
+    6306, -- Acid Splash
+    26419, -- Acid Spray
+    12280, -- Acid of Hakkar
+    8352, -- Adjust Attitude
+    20904, -- Aimed Shot
+    12248, -- Amplify Damage
+    9482, -- Amplify Flames
+    20777, -- Ancestral Spirit
+    24168, -- Animist's Caress
+    16991, -- Annihilator
+    19645, -- Anti-Magic Shield
+    13901, -- Arcane Bolt
+    19821, -- Arcane Bomb
+    11975, -- Arcane Explosion
+    1450, -- Arcane Spirit II
+    1451, -- Arcane Spirit III
+    1452, -- Arcane Spirit IV
+    1453, -- Arcane Spirit V
+    25181, -- Arcane Weakness
+    16081, -- Arctic Wolf
+    8000, -- Area Burn
+    10418, -- Arugal spawn-in spell
+    7124, -- Arugal's Gift
+    25149, -- Arygos's Vengeance
+    6422, -- Ashcrombe's Teleport
+    6421, -- Ashcrombe's Unlock
+    21332, -- Aspect of Neptulon
+    556, -- Astral Recall
+    10436, -- Attack
+    8386, -- Attacking
+    16629, -- Attuned Dampener
+    17536, -- Awaken Kerlonian
+    10258, -- Awaken Vault Warder
+    12346, -- Awaken the Soulflayer
+    18375, -- Aynasha's Arrow
+    6753, -- Backhand
+    13982, -- Bael'Gar's Fiery Essence
+    23151, -- Balance of Light and Shadow
+    5414, -- Balance of Nature
+    5412, -- Balance of Nature Failure
+    28299, -- Ball Lightning
+    18647, -- Banish
+    4130, -- Banish Burning Exile
+    4131, -- Banish Cresting Exile
+    4132, -- Banish Thundering Exile
+    5884, -- Banshee Curse
+    16868, -- Banshee Wail
+    16051, -- Barrier of Light
+    11759, -- Basilisk Sample
+    1179, -- Beast Claws
+    1849, -- Beast Claws II
+    3133, -- Beast Claws III
+    23677, -- Beasts Deck
+    22686, -- Bellowing Roar
+    8856, -- Bending Shinbone
+    4067, -- Big Bronze Bomb
+    7398, -- Birth
+    23638, -- Black Amnesty
+    20733, -- Black Arrow
+    22719, -- Black Battlestrider
+    27589, -- Black Grasp of the Destroyer
+    17461, -- Black Ram
+    7279, -- Black Sludge
+    470, -- Black Stallion
+    22718, -- Black War Kodo
+    22720, -- Black War Ram
+    22721, -- Black War Raptor
+    22717, -- Black War Steed
+    22723, -- Black War Tiger
+    22724, -- Black War Wolf
+    578, -- Black Wolf
+    23639, -- Blackfury
+    23652, -- Blackguard
+    16978, -- Blazing Rapier
+    16965, -- Bleakwood Hew
+    16599, -- Blessing of Shahram
+    6510, -- Blinding Powder
+    15783, -- Blizzard
+    3264, -- Blood Howl
+    16986, -- Blood Talon
+    10969, -- Blue Mechanostrider
+    6897, -- Blue Ram
+    17463, -- Blue Skeletal Horse
+    11365, -- Bly's Band's Escape
+    9143, -- Bomb
+    1980, -- Bombard
+    3015, -- Bombard II
+    28280, -- Bombard Slime
+    17014, -- Bone Shards
+    23392, -- Boulder
+    24006, -- Bounty of the Harvest
+    7962, -- Break Big Stuff
+    7437, -- Break Stuff
+    4954, -- Break Tool
+    18571, -- Breath
+    28352, -- Breath of Sargeras
+    8090, -- Bright Baubles
+    7359, -- Bright Campfire
+    458, -- Brown Horse
+    18990, -- Brown Kodo
+    6899, -- Brown Ram
+    17464, -- Brown Skeletal Horse
+    6654, -- Brown Wolf
+    17293, -- Burning Winds
+    26381, -- Burrow
+    20364, -- Bury Samuel's Remains
+    27720, -- Buttermilk Delight
+    23123, -- Cairne's Hoofprint
+    23041, -- Call Anathema
+    25167, -- Call Ancients
+    23042, -- Call Benediction
+    7487, -- Call Bleak Worg
+    25166, -- Call Glyphs of Warding
+    7489, -- Call Lupine Horror
+    25159, -- Call Prismatic Barrier
+    7488, -- Call Slavering Worg
+    11654, -- Call of Sul'thraze
+    11024, -- Call of Thund
+    5137, -- Call of the Grave
+    21249, -- Call of the Nether
+    271, -- Call of the Void
+    21648, -- Call to Ivus
+    17501, -- Cannon Fire
+    9095, -- Cantation of Manifestation
+    27571, -- Cascade of Roses
+    15120, -- Cenarion Beacon
+    11085, -- Chain Bolt
+    8211, -- Chain Burn
+    10623, -- Chain Heal
+    10605, -- Chain Lightning
+    15549, -- Chained Bolt
+    512, -- Chains of Ice
+    11537, -- Charge Stave of Equinex
+    16570, -- Charged Arcane Bolt
+    22434, -- Charged Scale of Onyxia
+    1538, -- Charging
+    6648, -- Chestnut Mare
+    3132, -- Chilling Breath
+    22599, -- Chromatic Mantle of the Dawn
+    24576, -- Chromatic Mount
+    24973, -- Clean Up Stink Bomb
+    27794, -- Cleave
+    27890, -- Clone
+    9002, -- Coarse Dynamite
+    26167, -- Colossal Smash
+    19720, -- Combine Pendants
+    16781, -- Combining Charms
+    21267, -- Conjure Altar of Summoning
+    21646, -- Conjure Circle of Calling
+    25813, -- Conjure Dream Rift
+    21100, -- Conjure Elegant Letter
+    28612, -- Conjure Food
+    18831, -- Conjure Lily Root
+    759, -- Conjure Mana Agate
+    10053, -- Conjure Mana Citrine
+    3552, -- Conjure Mana Jade
+    10054, -- Conjure Mana Ruby
+    19797, -- Conjure Torch of Retribution
+    10140, -- Conjure Water
+    28891, -- Consecrated Weapon
+    5174, -- Cookie's Cooking
+    23313, -- Corrosive Acid
+    21047, -- Corrosive Acid Spit
+    3396, -- Corrosive Poison
+    20629, -- Corrosive Venom Spit
+    18666, -- Corrupt Redpath
+    25311, -- Corruption
+    6619, -- Cowardly Flight Potion
+    5403, -- Crash of Waves
+    17951, -- Create Firestone
+    17952, -- Create Firestone (Greater)
+    6366, -- Create Firestone (Lesser)
+    17953, -- Create Firestone (Major)
+    28023, -- Create Healthstone
+    11729, -- Create Healthstone (Greater)
+    6202, -- Create Healthstone (Lesser)
+    11730, -- Create Healthstone (Major)
+    6201, -- Create Healthstone (Minor)
+    20755, -- Create Soulstone
+    20756, -- Create Soulstone (Greater)
+    20752, -- Create Soulstone (Lesser)
+    20757, -- Create Soulstone (Major)
+    693, -- Create Soulstone (Minor)
+    2362, -- Create Spellstone
+    17727, -- Create Spellstone (Greater)
+    17728, -- Create Spellstone (Major)
+    14532, -- Creeper Venom
+    2840, -- Creeping Anguish
+    6278, -- Creeping Mold
+    2838, -- Creeping Pain
+    2841, -- Creeping Torment
+    17496, -- Crest of Retribution
+    11443, -- Cripple
+    11202, -- Crippling Poison
+    3421, -- Crippling Poison II
+    3974, -- Crude Scope
+    16594, -- Crypt Scarabs
+    5106, -- Crystal Flash
+    3635, -- Crystal Gaze
+    30021, -- Crystal Infused Bandage
+    30047, -- Crystal Throat Lozenge
+    3636, -- Crystalline Slumber
+    13399, -- Cultivate Packet of Seeds
+    27552, -- Cupid's Arrow
+    28133, -- Cure Disease
+    8282, -- Curse of Blood
+    18502, -- Curse of Hakkar
+    7098, -- Curse of Mending
+    16597, -- Curse of Shahram
+    13524, -- Curse of Stalvan
+    16247, -- Curse of Thorns
+    3237, -- Curse of Thule
+    17505, -- Curse of Timmy
+    8552, -- Curse of Weakness
+    18702, -- Curse of the Darkmaster
+    13583, -- Curse of the Deadwood
+    18159, -- Curse of the Fallen Magram
+    16071, -- Curse of the Firebrand
+    17738, -- Curse of the Plague Rat
+    21048, -- Curse of the Tribes
+    5267, -- Dalaran Wizard Disguise
+    27723, -- Dark Desire
+    19799, -- Dark Iron Bomb
+    5268, -- Dark Iron Dwarf Disguise
+    16588, -- Dark Mending
+    7106, -- Dark Restore
+    3335, -- Dark Sludge
+    16587, -- Dark Whispers
+    5514, -- Darken Vision
+    23765, -- Darkmoon Faire Fortune
+    16987, -- Darkspear
+    3146, -- Daunting Growl
+    16970, -- Dawn's Edge
+    17045, -- Dawn's Gambit
+    2835, -- Deadly Poison
+    2837, -- Deadly Poison II
+    11355, -- Deadly Poison III
+    11356, -- Deadly Poison IV
+    25347, -- Deadly Poison V
+    12459, -- Deadly Scope
+    7395, -- Deadmines Dynamite
+    11433, -- Death & Decay
+    6894, -- Death Bed
+    5395, -- Death Capsule
+    24161, -- Death's Embrace
+    17481, -- Deathcharger
+    7901, -- Decayed Agility
+    13528, -- Decayed Strength
+    12890, -- Deep Slumber
+    5169, -- Defias Disguise
+    22999, -- Defibrillate
+    18559, -- Demon Pick
+    22372, -- Demon Portal
+    25793, -- Demon Summoning Torch
+    23063, -- Dense Dynamite
+    5140, -- Detonate
+    9435, -- Detonation
+    6700, -- Dimensional Portal
+    13692, -- Dire Growl
+    6653, -- Dire Wolf
+    1842, -- Disarm Trap
+    27891, -- Disease Buffet
+    11397, -- Diseased Shot
+    6907, -- Diseased Slime
+    17745, -- Diseased Spit
+    2641, -- Dismiss Pet
+    25808, -- Dispel
+    21954, -- Dispel Poison
+    16613, -- Displacing Temporal Rift
+    5099, -- Disruption
+    15746, -- Disturb Rookery Egg
+    6310, -- Divining Scroll Spell
+    5017, -- Divining Trance
+    20604, -- Dominate Mind
+    17405, -- Domination
+    16053, -- Dominion of Soul
+    6805, -- Dousing
+    12253, -- Dowse Eternal Flame
+    11758, -- Dowsing
+    16007, -- Draco-Incarcinatrix 900
+    24815, -- Draw Ancient Glyphs
+    19564, -- Draw Water Sample
+    5219, -- Draw of Thistlenettle
+    12304, -- Drawing Kit
+    3368, -- Drink Minor Potion
+    3359, -- Drink Potion
+    8040, -- Druid's Slumber
+    20436, -- Drunken Pit Crew
+    26072, -- Dust Cloud
+    8800, -- Dynamite
+    513, -- Earth Elemental
+    8376, -- Earthgrab Totem
+    23650, -- Ebon Hand
+    29335, -- Elderberry Pie
+    11820, -- Electrified Net
+    849, -- Elemental Armor
+    19773, -- Elemental Fire
+    877, -- Elemental Fury
+    23679, -- Elementals Deck
+    26636, -- Elune's Candle
+    16533, -- Emberseer Start
+    8395, -- Emerald Raptor
+    22647, -- Empower Pet
+    7081, -- Encage
+    4962, -- Encasing Webs
+    6296, -- Enchant: Fiery Blaze
+    16973, -- Enchanted Battlehammer
+    20269, -- Enchanted Gaea Seed
+    3443, -- Enchanted Quickness
+    20513, -- Enchanted Resonite Crystal
+    16798, -- Enchanting Lullaby
+    27287, -- Energy Siphon
+    22661, -- Enervate
+    11963, -- Enfeeble
+    27860, -- Engulfing Shadows
+    3112, -- Enhance Blunt Weapon
+    3113, -- Enhance Blunt Weapon II
+    3114, -- Enhance Blunt Weapon III
+    9903, -- Enhance Blunt Weapon IV
+    16622, -- Enhance Blunt Weapon V
+    8365, -- Enlarge
+    12655, -- Enlightenment
+    11726, -- Enslave Demon
+    9853, -- Entangling Roots
+    6728, -- Enveloping Winds
+    20589, -- Escape Artist
+    24302, -- Eternium Fishing Line
+    23442, -- Everlook Transporter
+    3233, -- Evil Eye
+    12458, -- Evil God Counterspell
+    28354, -- Exorcise Atiesh
+    23208, -- Exorcise Spirits
+    7896, -- Exploding Shot
+    12719, -- Explosive Arrow
+    6441, -- Explosive Shells
+    15495, -- Explosive Shot
+    24264, -- Extinguish
+    26134, -- Eye Beam
+    22909, -- Eye of Immol'thar
+    126, -- Eye of Kilrogg
+    21160, -- Eye of Sulfuras
+    1002, -- Eyes of the Beast
+    23000, -- Ez-Thro Dynamite
+    6950, -- Faerie Fire
+    8682, -- Fake Shot
+    24162, -- Falcon's Call
+    5262, -- Fanatic Blade
+    6196, -- Far Sight
+    6215, -- Fear
+    457, -- Feeblemind
+    509, -- Feeblemind II
+    855, -- Feeblemind III
+    12938, -- Fel Curse
+    26086, -- Felcloth Bag
+    3488, -- Felstrom Resurrection
+    555, -- Feral Spirit
+    968, -- Feral Spirit II
+    8139, -- Fevered Fatigue
+    8600, -- Fevered Plague
+    22704, -- Field Repair Bot 74A
+    6297, -- Fiery Blaze
+    13900, -- Fiery Burst
+    6250, -- Fire Cannon
+    895, -- Fire Elemental
+    134, -- Fire Shield
+    184, -- Fire Shield II
+    2601, -- Fire Shield III
+    2602, -- Fire Shield IV
+    13899, -- Fire Storm
+    25177, -- Fire Weakness
+    29332, -- Fire-toasted Bun
+    10149, -- Fireball
+    17203, -- Fireball Volley
+    11763, -- Firebolt
+    690, -- Firebolt II
+    1084, -- Firebolt III
+    1096, -- Firebolt IV
+    25465, -- Firework
+    26443, -- Firework Cluster Launcher
+    7162, -- First Aid
+    16601, -- Fist of Shahram
+    23061, -- Fix Ritual Node
+    7101, -- Flame Blast
+    16396, -- Flame Breath
+    16168, -- Flame Buffet
+    6305, -- Flame Burst
+    15575, -- Flame Cannon
+    3356, -- Flame Lash
+    22593, -- Flame Mantle of the Dawn
+    6725, -- Flame Spike
+    10733, -- Flame Spray
+    15743, -- Flamecrack
+    10854, -- Flames of Chaos
+    12534, -- Flames of Retribution
+    16596, -- Flames of Shahram
+    11021, -- Flamespit
+    10216, -- Flamestrike
+    27608, -- Flash Heal
+    19943, -- Flash of Light
+    9092, -- Flesh Eating Worm
+    14292, -- Fling Torch
+    17458, -- Fluorescent Green Mechanostrider
+    3678, -- Focusing
+    24189, -- Force Punch
+    22797, -- Force Reactive Disk
+    8912, -- Forge Verigan's Fist
+    18711, -- Forging
+    28697, -- Forgiveness
+    8435, -- Forked Lightning
+    10849, -- Form of the Moonstalker (no invis)
+    28324, -- Forming Frame of Atiesh
+    23193, -- Forming Lok'delar
+    23192, -- Forming Rhok'delar
+    7054, -- Forsaken Skills
+    29480, -- Fortitude of the Scourge
+    18763, -- Freeze
+    15748, -- Freeze Rookery Egg
+    16028, -- Freeze Rookery Egg - Prototype
+    11836, -- Freeze Solid
+    19755, -- Frightalon
+    3131, -- Frost Breath
+    23187, -- Frost Burn
+    22594, -- Frost Mantle of the Dawn
+    3595, -- Frost Oil
+    17460, -- Frost Ram
+    25178, -- Frost Weakness
+    10180, -- Frostbolt
+    8398, -- Frostbolt Volley
+    16992, -- Frostguard
+    6957, -- Frostmane Strength
+    16056, -- Frostsaber
+    23509, -- Frostwolf Howler
+    25840, -- Full Heal
+    474, -- Fumble
+    507, -- Fumble II
+    867, -- Fumble III
+    6405, -- Furbolg Form
+    16997, -- Gargoyle Strike
+    8901, -- Gas Bomb
+    19470, -- Gem of the Serpent
+    2645, -- Ghost Wolf
+    6925, -- Gift of the Xavian
+    23632, -- Girdle of the Dawn
+    3143, -- Glacial Roar
+    26105, -- Glare
+    6974, -- Gnome Camera Connection
+    12904, -- Gnomish Ham Radio
+    23453, -- Gnomish Transporter
+    12720, -- Goblin "Boom" Box
+    7023, -- Goblin Camera Connection
+    10837, -- Goblin Land Mine
+    12722, -- Goblin Radio
+    16060, -- Golden Sabercat
+    24967, -- Gong
+    11434, -- Gong Zul'Farrak Gong
+    22789, -- Gordok Green Grog
+    22924, -- Grasping Vines
+    18989, -- Gray Kodo
+    6777, -- Gray Ram
+    459, -- Gray Wolf
+    23249, -- Great Brown Kodo
+    23248, -- Great Gray Kodo
+    25807, -- Great Heal
+    23247, -- Great White Kodo
+    15441, -- Greater Arcane Amalgamation
+    24997, -- Greater Dispel
+    25314, -- Greater Heal
+    10228, -- Greater Invisibility
+    18991, -- Green Kodo
+    17453, -- Green Mechanostrider
+    17465, -- Green Skeletal Warhorse
+    7636, -- Green Woolen Robe
+    24195, -- Grom's Tribute
+    4153, -- Guile of the Raptor
+    24266, -- Gurubashi Mojo Madness
+    6982, -- Gust of Wind
+    24239, -- Hammer of Wrath
+    16988, -- Hammer of the Titans
+    18762, -- Hand of Iruxos
+    5166, -- Harvest Silithid Egg
+    7277, -- Harvest Swarm
+    16336, -- Haunting Phantoms
+    7057, -- Haunting Spirits
+    8812, -- Heal
+    21885, -- Heal Vylestem Vine
+    22458, -- Healing Circle
+    4209, -- Healing Tongue
+    4221, -- Healing Tongue II
+    9888, -- Healing Touch
+    4971, -- Healing Ward
+    10396, -- Healing Wave
+    11895, -- Healing Wave of Antu'sul
+    8690, -- Hearthstone
+    16995, -- Heartseeker
+    4062, -- Heavy Dynamite
+    30297, -- Heightened Senses
+    711, -- Hellfire
+    1124, -- Hellfire II
+    2951, -- Hellfire III
+    22566, -- Hex
+    7655, -- Hex of Ravenclaw
+    12543, -- Hi-Explosive Bomb
+    18658, -- Hibernate
+    15261, -- Holy Fire
+    25292, -- Holy Light
+    9481, -- Holy Smite
+    10318, -- Holy Wrath
+    24165, -- Hoodoo Hex
+    14030, -- Hooked Net
+    17928, -- Howl of Terror
+    7481, -- Howling Rage
+    23124, -- Human Orphan Whistle
+    11760, -- Hyena Sample
+    28163, -- Ice Guard
+    16869, -- Ice Tomb
+    28526, -- Icebolt
+    11131, -- Icicle
+    17459, -- Icy Blue Mechanostrider
+    6741, -- Identify Brood
+    23316, -- Ignite Flesh
+    23054, -- Igniting Kroshius
+    6487, -- Ilkrud's Guardians
+    25309, -- Immolate
+    10451, -- Implosion
+    16996, -- Incendia Powder
+    23308, -- Incinerate
+    6234, -- Incineration
+    27290, -- Increase Reputation
+    4981, -- Inducing Vision
+    1122, -- Inferno
+    7739, -- Inferno Shell
+    9612, -- Ink Spray
+    16967, -- Inlaid Thorium Hammer
+    8681, -- Instant Poison
+    8686, -- Instant Poison II
+    8688, -- Instant Poison III
+    11338, -- Instant Poison IV
+    11339, -- Instant Poison V
+    11343, -- Instant Poison VI
+    6651, -- Instant Toxin
+    22478, -- Intense Pain
+    6576, -- Intimidating Growl
+    9478, -- Invis Placing Bear Trap
+    885, -- Invisibility
+    16746, -- Invulnerable Mail
+    4068, -- Iron Grenade
+    10795, -- Ivory Raptor
+    23140, -- J'eevee summons object
+    23122, -- Jaina's Autograph
+    9744, -- Jarkal's Translation
+    11438, -- Join Map Fragments
+    8348, -- Julie's Blessing
+    9654, -- Jumping Lightning
+    12684, -- Kadrak's Flag
+    12512, -- Kalaran Conjures Torch
+    3121, -- Kev
+    10166, -- Khadgar's Unlocking
+    22799, -- King of the Gordok
+    18153, -- Kodo Kombobulator
+    22790, -- Kreeg's Stout Beatdown
+    4065, -- Large Copper Bomb
+    4075, -- Large Seaforium Charge
+    580, -- Large Timber Wolf
+    27146, -- Left Piece of Lord Valthalak's Amulet
+    15463, -- Legendary Arcane Amalgamation
+    10788, -- Leopard
+    11534, -- Leper Cure!
+    15402, -- Lesser Arcane Amalgamation
+    2053, -- Lesser Heal
+    27624, -- Lesser Healing Wave
+    66, -- Lesser Invisibility
+    8256, -- Lethal Toxin
+    3243, -- Life Harvest
+    9172, -- Lift Seal
+    7364, -- Light Torch
+    8598, -- Lightning Blast
+    15207, -- Lightning Bolt
+    20627, -- Lightning Breath
+    6535, -- Lightning Cloud
+    28297, -- Lightning Totem
+    27871, -- Lightwell
+    15712, -- Linken's Boomerang
+    16729, -- Lionheart Helm
+    5401, -- Lizard Bolt
+    28785, -- Locust Swarm
+    1536, -- Longshot II
+    3007, -- Longshot III
+    25247, -- Longsight
+    26373, -- Lunar Invititation
+    13808, -- M73 Frag Grenade
+    10346, -- Machine Gun
+    17117, -- Magatha Incendia Powder
+    3659, -- Mage Sight
+    20565, -- Magma Blast
+    19484, -- Majordomo Teleport Visual
+    10876, -- Mana Burn
+    21097, -- Manastorm
+    21960, -- Manifest Spirit
+    18113, -- Manifestation Cleansing
+    23304, -- Manna-Enriched Horse Feed
+    15128, -- Mark of Flames
+    12198, -- Marksman Hit
+    4526, -- Mass Dispell
+    25839, -- Mass Healing
+    22421, -- Massive Geyser
+    16993, -- Masterwork Stormhammer
+    19814, -- Masterwork Target Dummy
+    29134, -- Maypole
+    7920, -- Mebok Smart Drink
+    15057, -- Mechanical Patch Kit
+    4055, -- Mechanical Squirrel
+    11082, -- Megavolt
+    21050, -- Melodious Rapture
+    5159, -- Melt Ore
+    16032, -- Merging Oozes
+    25145, -- Merithra's Wake
+    29333, -- Midsummer Sausage
+    21154, -- Might of Ragnaros
+    16600, -- Might of Shahram
+    29483, -- Might of the Scourge
+    10947, -- Mind Blast
+    10912, -- Mind Control
+    606, -- Mind Rot
+    8272, -- Mind Tremor
+    5761, -- Mind-numbing Poison
+    8693, -- Mind-numbing Poison II
+    11399, -- Mind-numbing Poison III
+    23675, -- Minigun
+    3611, -- Minion of Morganth
+    3537, -- Minions of Malathrom
+    5567, -- Miring Mud
+    8138, -- Mirkfallon Fungus
+    26218, -- Mistletoe
+    12421, -- Mithril Frag Bomb
+    12900, -- Mobile Alarm
+    15095, -- Molten Blast
+    5213, -- Molten Metal
+    25150, -- Molten Rain
+    20528, -- Mor'rogal Enchant
+    16084, -- Mottled Red Raptor
+    14928, -- Nagmara's Love Potion
+    25688, -- Narain!
+    7967, -- Naralex's Nightmare
+    25180, -- Nature Weakness
+    16069, -- Nefarius Attack 001
+    7673, -- Nether Gem
+    8088, -- Nightcrawlers
+    23653, -- Nightfall
+    16055, -- Nightsaber
+    6199, -- Nostalgia
+    7994, -- Nullify Mana
+    16528, -- Numbing Pain
+    10798, -- Obsidian Raptor
+    11437, -- Opening Chest
+    23125, -- Orcish Orphan Whistle
+    26063, -- Ouro Submerge Visual
+    8153, -- Owl Form
+    16379, -- Ozzie Explodes
+    471, -- Palamino Stallion
+    16082, -- Palomino Stallion
+    10787, -- Panther
+    17176, -- Panther Cage Key
+    8363, -- Parasite
+    6758, -- Party Fever
+    5668, -- Peasant Disguise
+    5669, -- Peon Disguise
+    11048, -- Perm. Illusion Bishop Tyriona
+    11067, -- Perm. Illusion Tyrion
+    27830, -- Persuader
+    6461, -- Pick Lock
+    16429, -- Piercing Shadow
+    4982, -- Pillar Delving
+    472, -- Pinto Horse
+    15728, -- Plague Cloud
+    3429, -- Plague Mind
+    28614, -- Pointy Spike
+    21067, -- Poison Bolt
+    11790, -- Poison Cloud
+    25748, -- Poison Stinger
+    5208, -- Poisoned Harpoon
+    8275, -- Poisoned Shot
+    4286, -- Poisonous Spit
+    28089, -- Polarity Shift
+    28271, -- Polymorph
+    28270, -- Polymorph: Cow
+    11419, -- Portal: Darnassus
+    11416, -- Portal: Ironforge
+    28148, -- Portal: Karazhan
+    11417, -- Portal: Orgrimmar
+    10059, -- Portal: Stormwind
+    11420, -- Portal: Thunder Bluff
+    11418, -- Portal: Undercity
+    23680, -- Portals Deck
+    7638, -- Potion Toss
+    29467, -- Power of the Scourge
+    23008, -- Powerful Seaforium Charge
+    10850, -- Powerful Smelling Salts
+    25841, -- Prayer of Elune
+    25316, -- Prayer of Healing
+    3109, -- Presence of Death
+    24149, -- Presence of Might
+    24164, -- Presence of Sight
+    16058, -- Primal Leopard
+    13912, -- Princess Summons Portal
+    24167, -- Prophetic Aura
+    7120, -- Proudmoore's Defense
+    15050, -- Psychometry
+    16072, -- Purify and Place Food
+    22313, -- Purple Hands
+    17455, -- Purple Mechanostrider
+    23246, -- Purple Skeletal Warhorse
+    18809, -- Pyroblast
+    3229, -- Quick Bloodlust
+    4979, -- Quick Flame Ward
+    4980, -- Quick Frost Ward
+    9771, -- Radiation Bolt
+    3387, -- Rage of Thule
+    20568, -- Ragnaros Emerge
+    4629, -- Rain of Fire
+    28353, -- Raise Dead
+    17235, -- Raise Undead Scarab
+    5316, -- Raptor Feather
+    5280, -- Razor Mane
+    20748, -- Rebirth
+    22563, -- Recall
+    21950, -- Recite Words of Celebras
+    4093, -- Reconstruction
+    17456, -- Red & Blue Mechanostrider
+    10873, -- Red Mechanostrider
+    17462, -- Red Skeletal Horse
+    22722, -- Red Skeletal Warhorse
+    16080, -- Red Wolf
+    23254, -- Redeeming the Soul
+    20773, -- Redemption
+    22430, -- Refined Scale of Onyxia
+    9858, -- Regrowth
+    25952, -- Reindeer Dust Effect
+    23180, -- Release Imp
+    23136, -- Release J'eevee
+    10617, -- Release Rageclaw
+    17166, -- Release Umi's Yeti
+    16502, -- Release Winna's Kitten
+    12851, -- Release the Hounds
+    16031, -- Releasing Corrupt Ooze
+    6656, -- Remote Detonate
+    22027, -- Remove Insignia
+    8362, -- Renew
+    11923, -- Repair the Blade of Heroes
+    455, -- Replenish Spirit
+    932, -- Replenish Spirit II
+    29475, -- Resilience of the Scourge
+    4961, -- Resupply
+    20770, -- Resurrection
+    30081, -- Retching Plague
+    5161, -- Revive Dig Rat
+    982, -- Revive Pet
+    15591, -- Revive Ringo
+    18363, -- Riding Kodo
+    30174, -- Riding Turtle
+    9614, -- Rift Beacon
+    27738, -- Right Piece of Lord Valthalak's Amulet
+    461, -- Righteous Flame On
+    18540, -- Ritual of Doom
+    18541, -- Ritual of Doom Effect
+    698, -- Ritual of Summoning
+    7720, -- Ritual of Summoning Effect
+    1940, -- Rocket Blast
+    15750, -- Rookery Whelp Spawn-in Spell
+    26137, -- Rotate Trigger
+    4064, -- Rough Copper Bomb
+    20875, -- Rumsey Rum
+    25804, -- Rumsey Rum Black Label
+    25722, -- Rumsey Rum Dark
+    25037, -- Rumsey Rum Light
+    16980, -- Rune Edge
+    3407, -- Rune of Opening
+    20051, -- Runed Arcanite Rod
+    21403, -- Ryson's All Seeing Eye
+    21425, -- Ryson's Eye in the Sky
+    1050, -- Sacrifice
+    10459, -- Sacrifice Spinneret
+    27832, -- Sageblade
+    19566, -- Salt Shaker
+    26102, -- Sand Blast
+    20716, -- Sand Breath
+    3204, -- Sapper Explode
+    6490, -- Sarilus's Elementals
+    28161, -- Savage Guard
+    14327, -- Scare Beast
+    9232, -- Scarlet Resurrection
+    15125, -- Scarshield Portal
+    10207, -- Scorch
+    11761, -- Scorpid Sample
+    13630, -- Scraping
+    7960, -- Scry on Azrethoc
+    22949, -- Seal Felvine Shard
+    9552, -- Searing Flames
+    17923, -- Searing Pain
+    6358, -- Seduction
+    17196, -- Seeping Willow
+    5407, -- Segra Darkthorn Effect
+    9879, -- Self Destruct
+    9575, -- Self Detonation
+    18976, -- Self Resurrection
+    16983, -- Serenity
+    6270, -- Serpentine Cleansing
+    6626, -- Set NG-5 Charge (Blue)
+    6630, -- Set NG-5 Charge (Red)
+    10955, -- Shackle Undead
+    11661, -- Shadow Bolt
+    14871, -- Shadow Bolt Misfire
+    14887, -- Shadow Bolt Volley
+    22979, -- Shadow Flame
+    28165, -- Shadow Guard
+    22596, -- Shadow Mantle of the Dawn
+    1112, -- Shadow Nova II
+    7136, -- Shadow Port
+    17950, -- Shadow Portal
+    9657, -- Shadow Shell
+    25183, -- Shadow Weakness
+    22681, -- Shadowblink
+    7761, -- Shared Bonds
+    2828, -- Sharpen Blade
+    2829, -- Sharpen Blade II
+    2830, -- Sharpen Blade III
+    9900, -- Sharpen Blade IV
+    16138, -- Sharpen Blade V
+    22756, -- Sharpen Weapon - Critical
+    11402, -- Shay's Bell
+    3651, -- Shield of Reflection
+    8087, -- Shiny Bauble
+    28099, -- Shock
+    1698, -- Shockwave
+    2480, -- Shoot Bow
+    7919, -- Shoot Crossbow
+    7918, -- Shoot Gun
+    25031, -- Shoot Missile
+    25030, -- Shoot Rocket
+    21559, -- Shredder Armor Melt
+    10096, -- Shrink
+    14227, -- Signing
+    26069, -- Silence
+    8137, -- Silithid Pox
+    7077, -- Simple Teleport
+    7078, -- Simple Teleport Group
+    7079, -- Simple Teleport Other
+    8980, -- Skeletal Horse
+    6469, -- Skeletal Miner Explode
+    29059, -- Skeletal Steed
+    11605, -- Slam
+    8809, -- Slave Drain
+    1090, -- Sleep
+    28311, -- Slime Bolt
+    6530, -- Sling Dirt
+    3650, -- Sling Mud
+    3332, -- Slow Poison
+    1056, -- Slow Poison II
+    7992, -- Slowing Poison
+    6814, -- Sludge Toxin
+    4066, -- Small Bronze Bomb
+    22967, -- Smelt Elementium
+    10934, -- Smite
+    27572, -- Smitten
+    12460, -- Sniper Scope
+    21935, -- SnowMaster 9000
+    21848, -- Snowman
+    8283, -- Snufflenose Command
+    3206, -- Sol H
+    3120, -- Sol L
+    3205, -- Sol M
+    3207, -- Sol U
+    9901, -- Soothe Animal
+    11016, -- Soul Bite
+    17506, -- Soul Breaker
+    17048, -- Soul Claim
+    12667, -- Soul Consumption
+    7295, -- Soul Drain
+    17924, -- Soul Fire
+    10771, -- Soul Shatter
+    20762, -- Soulstone Resurrection
+    5264, -- South Seas Pirate Disguise
+    6252, -- Southsea Cannon Fire
+    21027, -- Spark
+    16447, -- Spawn Challenge to Urok
+    3644, -- Speak with Heads
+    31364, -- Spice Mortar
+    28615, -- Spike Volley
+    8016, -- Spirit Decay
+    17680, -- Spirit Spawn-out
+    3477, -- Spirit Steal
+    10789, -- Spotted Frostsaber
+    10792, -- Spotted Panther
+    17155, -- Sprinkling Purified Water
+    3975, -- Standard Scope
+    25298, -- Starfire
+    15781, -- Steel Mechanostrider
+    10254, -- Stone Dwarf Awaken Visual
+    28995, -- Stoneskin
+    5265, -- Stonesplinter Trogg Disguise
+    20685, -- Storm Bolt
+    23510, -- Stormpike Battle Charger
+    18163, -- Strength of Arko'narin
+    4539, -- Strength of the Ages
+    26181, -- Strike
+    24245, -- String Together Heads
+    8394, -- Striped Frostsaber
+    10793, -- Striped Nightsaber
+    16741, -- Stronghold Gauntlets
+    7355, -- Stuck
+    16497, -- Stun Bomb
+    21188, -- Stun Bomb Attack
+    26234, -- Submerge Visual
+    15734, -- Summon
+    23004, -- Summon Alarm-o-Bot
+    10713, -- Summon Albino Snake
+    23428, -- Summon Albino Snapjaw
+    15033, -- Summon Ancient Spirits
+    10685, -- Summon Ancona
+    13978, -- Summon Aquementas
+    22567, -- Summon Ar'lia
+    12151, -- Summon Atal'ai Skeleton
+    10696, -- Summon Azure Whelpling
+    25849, -- Summon Baby Shark
+    10714, -- Summon Black Kingsnake
+    26656, -- Summon Black Qiraji Battle Tank
+    15794, -- Summon Blackhand Dreadweaver
+    15792, -- Summon Blackhand Veteran
+    17567, -- Summon Blood Parrot
+    13463, -- Summon Bloodpetal Mini Pests
+    25953, -- Summon Blue Qiraji Battle Tank
+    10715, -- Summon Blue Racer
+    8286, -- Summon Boar Spirit
+    15048, -- Summon Bomb
+    10673, -- Summon Bombay
+    10699, -- Summon Bronze Whelpling
+    10716, -- Summon Brown Snake
+    17169, -- Summon Carrion Scarab
+    23214, -- Summon Charger
+    10680, -- Summon Cockatiel
+    10681, -- Summon Cockatoo
+    10688, -- Summon Cockroach
+    15647, -- Summon Common Kitten
+    10674, -- Summon Cornish Rex
+    15648, -- Summon Corrupted Kitten
+    10710, -- Summon Cottontail Rabbit
+    10717, -- Summon Crimson Snake
+    10697, -- Summon Crimson Whelpling
+    8606, -- Summon Cyclonian
+    4945, -- Summon Dagun
+    10695, -- Summon Dark Whelpling
+    10701, -- Summon Dart Frog
+    9097, -- Summon Demon of the Orb
+    17708, -- Summon Diablo
+    25162, -- Summon Disgusting Oozeling
+    23161, -- Summon Dreadsteed
+    10705, -- Summon Eagle Owl
+    12189, -- Summon Echeyakee
+    11840, -- Summon Edana Hatetalon
+    8677, -- Summon Effect
+    10721, -- Summon Elven Wisp
+    10869, -- Summon Embers
+    10698, -- Summon Emerald Whelpling
+    10700, -- Summon Faeling
+    13548, -- Summon Farm Chicken
+    691, -- Summon Felhunter
+    5784, -- Summon Felsteed
+    16531, -- Summon Frail Skeleton
+    19561, -- Summon Gnashjaw
+    13258, -- Summon Goblin Bomb
+    10707, -- Summon Great Horned Owl
+    26056, -- Summon Green Qiraji Battle Tank
+    10718, -- Summon Green Water Snake
+    10683, -- Summon Green Wing Macaw
+    7762, -- Summon Gunther's Visage
+    27241, -- Summon Gurky
+    10706, -- Summon Hawk Owl
+    23432, -- Summon Hawksbill Snapjaw
+    4950, -- Summon Helcular's Puppets
+    30156, -- Summon Hippogryph Hatchling
+    10682, -- Summon Hyacinth Macaw
+    15114, -- Summon Illusionary Dreamwatchers
+    6905, -- Summon Illusionary Nightmare
+    8986, -- Summon Illusionary Phantasm
+    17231, -- Summon Illusory Wraith
+    688, -- Summon Imp
+    12740, -- Summon Infernal Servant
+    12199, -- Summon Ishamuhale
+    10702, -- Summon Island Frog
+    23811, -- Summon Jubling
+    20737, -- Summon Karang's Banner
+    23431, -- Summon Leatherback Snapjaw
+    19772, -- Summon Lifelike Toad
+    5110, -- Summon Living Flame
+    23429, -- Summon Loggerhead Snapjaw
+    20693, -- Summon Lost Amulet
+    18974, -- Summon Lunaclaw
+    7132, -- Summon Lupine Delusions
+    27291, -- Summon Magic Staff
+    18166, -- Summon Magram Ravager
+    10675, -- Summon Maine Coon
+    12243, -- Summon Mechanical Chicken
+    18476, -- Summon Minion
+    28739, -- Summon Mr. Wiggles
+    25018, -- Summon Murki
+    24696, -- Summon Murky
+    4141, -- Summon Myzrael
+    22876, -- Summon Netherwalker
+    23430, -- Summon Olive Snapjaw
+    17646, -- Summon Onyxia Whelp
+    10676, -- Summon Orange Tabby
+    23012, -- Summon Orphan
+    17707, -- Summon Panda
+    28505, -- Summon Poley
+    10686, -- Summon Prairie Chicken
+    10709, -- Summon Prairie Dog
+    19774, -- Summon Ragnaros
+    13143, -- Summon Razelikh
+    26054, -- Summon Red Qiraji Battle Tank
+    3605, -- Summon Remote-Controlled Golem
+    10719, -- Summon Ribbon Snake
+    3363, -- Summon Riding Gryphon
+    17618, -- Summon Risen Lackey
+    15049, -- Summon Robot
+    16381, -- Summon Rockwing Gargoyles
+    15745, -- Summon Rookery Whelp
+    10720, -- Summon Scarlet Snake
+    12699, -- Summon Screecher Spirit
+    10684, -- Summon Senegal
+    12258, -- Summon Shadowcaster
+    21181, -- Summon Shadowstrike
+    3655, -- Summon Shield Guard
+    16796, -- Summon Shy-Rotam
+    10677, -- Summon Siamese
+    10678, -- Summon Silver Tabby
+    17204, -- Summon Skeleton
+    11209, -- Summon Smithing Hammer
+    16450, -- Summon Smolderweb
+    10711, -- Summon Snowshoe Rabbit
+    10708, -- Summon Snowy Owl
+    6918, -- Summon Snufflenose
+    13895, -- Summon Spawn of Bael'Gar
+    28738, -- Summon Speedy
+    3657, -- Summon Spell Guard
+    11548, -- Summon Spider God
+    10712, -- Summon Spotted Rabbit
+    15067, -- Summon Sprite Darter Hatchling
+    712, -- Summon Succubus
+    9461, -- Summon Swamp Ooze
+    9636, -- Summon Swamp Spirit
+    3722, -- Summon Syndicate Spectre
+    28487, -- Summon Terky
+    7076, -- Summon Tervosh's Minion
+    3658, -- Summon Theurgist
+    21180, -- Summon Thunderstrike
+    5666, -- Summon Timberling
+    23531, -- Summon Tiny Green Dragon
+    23530, -- Summon Tiny Red Dragon
+    26010, -- Summon Tranquil Mechanical Yeti
+    20702, -- Summon Treant Allies
+    12554, -- Summon Treasure Horde
+    12564, -- Summon Treasure Horde Visual
+    10704, -- Summon Tree Frog
+    7949, -- Summon Viper
+    697, -- Summon Voidwalker
+    13819, -- Summon Warhorse
+    17162, -- Summon Water Elemental
+    28740, -- Summon Whiskers
+    10679, -- Summon White Kitten
+    10687, -- Summon White Plymouth Rock
+    30152, -- Summon White Tiger Cub
+    11017, -- Summon Witherbark Felhunter
+    10703, -- Summon Wood Frog
+    15999, -- Summon Worg Pup
+    23152, -- Summon Xorothian Dreadsteed
+    26055, -- Summon Yellow Qiraji Battle Tank
+    17709, -- Summon Zergling
+    16590, -- Summon Zombie
+    16473, -- Summoned Urok
+    25186, -- Super Crystal
+    15869, -- Superior Healing Ward
+    26103, -- Sweep
+    27722, -- Sweet Surprise
+    23241, -- Swift Blue Raptor
+    23238, -- Swift Brown Ram
+    23229, -- Swift Brown Steed
+    23250, -- Swift Brown Wolf
+    23220, -- Swift Dawnsaber
+    23221, -- Swift Frostsaber
+    23239, -- Swift Gray Ram
+    23252, -- Swift Gray Wolf
+    23225, -- Swift Green Mechanostrider
+    23219, -- Swift Mistsaber
+    23242, -- Swift Olive Raptor
+    23243, -- Swift Orange Raptor
+    23227, -- Swift Palomino
+    24242, -- Swift Razzashi Raptor
+    23338, -- Swift Stormsaber
+    23251, -- Swift Timber Wolf
+    23223, -- Swift White Mechanostrider
+    23240, -- Swift White Ram
+    23228, -- Swift White Steed
+    23222, -- Swift Yellow Mechanostrider
+    24252, -- Swift Zulian Tiger
+    8593, -- Symbol of Life
+    24160, -- Syncretist's Sigil
+    3718, -- Syndicate Bomb
+    5266, -- Syndicate Disguise
+    18969, -- Taelan Death
+    17161, -- Taking Moon Well Sample
+    9795, -- Talvash's Necklace Repair
+    20041, -- Tammra Sapling
+    16059, -- Tawny Sabercat
+    2817, -- Teach Bark of Doom
+    18992, -- Teal Kodo
+    12521, -- Teleport from Azshara Tower
+    12509, -- Teleport to Azshara Tower
+    3565, -- Teleport: Darnassus
+    3562, -- Teleport: Ironforge
+    18960, -- Teleport: Moonglade
+    3567, -- Teleport: Orgrimmar
+    3561, -- Teleport: Stormwind
+    3566, -- Teleport: Thunder Bluff
+    3563, -- Teleport: Undercity
+    6755, -- Tell Joke
+    16378, -- Temperature Reading
+    9456, -- Tharnariun Cure 1
+    9457, -- Tharnariun's Heal
+    12562, -- The Big One
+    22989, -- The Breaking
+    21953, -- The Feast of Winter Veil
+    22990, -- The Forming
+    19769, -- Thorium Grenade
+    24649, -- Thousand Blades
+    24314, -- Threatening Gaze
+    5781, -- Threatening Growl
+    16075, -- Throw Axe
+    27662, -- Throw Cupid's Dart
+    14814, -- Throw Dark Iron Ale
+    7978, -- Throw Dynamite
+    25004, -- Throw Nightmare Object
+    4164, -- Throw Rock
+    4165, -- Throw Rock II
+    10790, -- Tiger
+    23312, -- Time Lapse
+    25158, -- Time Stop
+    6470, -- Tiny Bronze Key
+    6471, -- Tiny Iron Key
+    27829, -- Titanic Leggings
+    29116, -- Toast Smorc
+    29334, -- Toasted Smorc
+    27739, -- Top Piece of Lord Valthalak's Amulet
+    12511, -- Torch Combine
+    6257, -- Torch Toss
+    28806, -- Toss Fuel on Bonfire
+    24706, -- Toss Stink Bomb
+    3108, -- Touch of Death
+    3263, -- Touch of Ravenclaw
+    16554, -- Toxic Bolt
+    7125, -- Toxic Saliva
+    7951, -- Toxic Spit
+    19877, -- Tranquilizing Shot
+    7821, -- Transform Victim
+    25146, -- Transmute: Elemental Fire
+    4320, -- Trelane's Freezing Touch
+    20804, -- Triage
+    785, -- True Fulfillment
+    10348, -- Tune Up
+    10326, -- Turn Undead
+    10796, -- Turquoise Raptor
+    10340, -- Uldaman Boss Agro
+    9577, -- Uldaman Key Staff
+    11568, -- Uldaman Sub-Boss Agro
+    20006, -- Unholy Curse
+    3670, -- Unlock Maury's Foot
+    10738, -- Unlocking
+    17454, -- Unpainted Mechanostrider
+    24024, -- Unstable Concoction
+    16562, -- Urok Minions Vanish
+    19719, -- Use Bauble
+    24194, -- Uther's Tribute
+    7068, -- Veil of Shadow
+    15664, -- Venom Spit
+    6354, -- Venom's Bane
+    27721, -- Very Berry Cream
+    18115, -- Viewing Room Student Transform - Effect
+    10799, -- Violet Raptor
+    17529, -- Vitreous Focuser
+    24163, -- Vodouisant's Vigilant Embrace
+    21066, -- Void Bolt
+    5252, -- Voidwalker Guardian
+    18149, -- Volatile Infection
+    16984, -- Volcanic Hammer
+    1540, -- Volley
+    3013, -- Volley II
+    17009, -- Voodoo
+    8277, -- Voodoo Hex
+    17639, -- Wail of the Banshee
+    3436, -- Wandering Plague
+    20549, -- War Stomp
+    23678, -- Warlord Deck
+    16801, -- Warosh's Transform
+    7383, -- Water Bubble
+    9583, -- Water Sample
+    6949, -- Weak Frostbolt
+    7220, -- Weapon Chain
+    7218, -- Weapon Counterweight
+    11410, -- Whirling Barrage
+    15779, -- White Mechanostrider
+    6898, -- White Ram
+    468, -- White Stallion
+    16724, -- Whitesoul Helm
+    4520, -- Wide Sweep
+    28732, -- Widow's Embrace
+    9616, -- Wild Regeneration
+    16598, -- Will of Shahram
+    23339, -- Wing Buffet
+    581, -- Winter Wolf
+    21736, -- Winterax Wisdom
+    17229, -- Winterspring Frostsaber
+    22662, -- Wither
+    4974, -- Wither Touch
+    25121, -- Wizard Oil
+    28800, -- Word of Thawing
+    30732, -- Worm Sweep
+    13227, -- Wound Poison
+    13228, -- Wound Poison II
+    13229, -- Wound Poison III
+    13230, -- Wound Poison IV
+    9912, -- Wrath
+    3607, -- Yenniku's Release
+    24422, -- Zandalar Signet of Might
+    24421, -- Zandalar Signet of Mojo
+    24420, -- Zandalar Signet of Serenity
 }
+
+local counter, cursor = 0, 1
+local castedSpells = {}
+namespace.castedSpells = castedSpells
+
+-- temporary, ill clean up this later
+local function BuildSpellNameToSpellIDTable()
+    counter = 0
+
+    for i = cursor, #castSpellIDs do
+        local spellName = GetSpellInfo(castSpellIDs[i])
+        if spellName then
+            castedSpells[spellName] = castSpellIDs[i]
+        end
+
+        cursor = i + 1
+        counter = counter + 1
+        if counter > 200 then
+            break
+        end
+    end
+
+    if cursor < #castSpellIDs then
+        C_Timer.After(2, BuildSpellNameToSpellIDTable)
+    else
+        castSpellIDs = nil
+    end
+end
+
+C_Timer.After(1, BuildSpellNameToSpellIDTable) -- run asap once the current call stack has executed
 
 -- For channeled spells we need both the spell ID and cast time since
 -- GetSpellInfo doesn't return any cast time for channeled casts.
 -- value[1] is the cast time in seconds, value[2] is the spell ID used to retrive
 -- spell icon later on.
+-- TODO: merge with main spell table and just store the cast time here as table value
 namespace.channeledSpells = {
     -- MISC
     [GetSpellInfo(746)] = { 7, 746 },         -- First Aid
@@ -1314,15 +1342,17 @@ namespace.castTimeIncreases = {
     [GetSpellInfo(22909)] = 50,   -- Eye of Immol'thar
 }
 
--- Spells that often have cast time reduced by talents.
+-- Spells that have cast time reduced by talents.
 -- Value here is not the actual cast time, but instead how
--- many seconds a talent reduces the cast time.
+-- many seconds a talent reduces the cast time. We reduct
+-- the cast time in the CLEU event for player guids so we don't
+-- reduce cast time for a NPC spell with the exact same name.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 1,        -- Lightning Bolt
     [GetSpellInfo(421)] = 1,        -- Chain Lightning
     [GetSpellInfo(6353)] = 2,       -- Soul Fire
     [GetSpellInfo(116)] = 0.5,      -- Frostbolt
---  [GetSpellInfo(133)] = 0.5,      -- Fireball (many people skip this talent)
+    [GetSpellInfo(133)] = 0.5,      -- Fireball
     [GetSpellInfo(686)] = 0.5,      -- Shadow Bolt
     [GetSpellInfo(348)] = 0.5,      -- Immolate
     [GetSpellInfo(331)] = 0.5,      -- Healing Wave
