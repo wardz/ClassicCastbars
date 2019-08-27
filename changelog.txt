@@ -1,8 +1,9 @@
 v1.0.1:
-- Added option to hide icon border.
+- Improved auto positioning for target castbar.
+- Added option to hide spell icon border.
 - Removed option for "simple style" castbar. Same look can now be achieved by setting border texture to none and adjusting the icon settings.
 - Fix castbar text ignoring alpha level from color picker option.
-- Memory usage improvements.
+- Memory usage & load time improvements.
 - Added simplified Chinese translations. (Thanks to Asukachikaru)
 
 
