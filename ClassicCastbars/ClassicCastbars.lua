@@ -77,18 +77,21 @@ end
 function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChanneled)
     local currTime = GetTime()
 
-    -- Store cast data from CLEU in an object, we can't store this in the castbar frame itself
-    -- since frames are constantly recycled between different units.
-    -- TODO: we can prob reuse objects here
-    activeTimers[unitGUID] = {
-        spellName = spellName,
-        icon = iconTexturePath,
-        maxValue = castTime / 1000,
-        --timeStart = currTime,
-        endTime = currTime + (castTime / 1000),
-        unitGUID = unitGUID,
-        isChanneled = isChanneled,
-    }
+    if not activeTimers[unitGUID] then
+        activeTimers[unitGUID] = {}
+    end
+
+    local cast = activeTimers[unitGUID]
+    cast.spellName = spellName
+    cast.icon = iconTexturePath
+    cast.maxValue = castTime / 1000
+    cast.endTime = currTime + (castTime / 1000)
+    cast.isChanneled = isChanneled
+    cast.unitGUID = unitGUID
+    cast.prevCurrTimeModValue = nil
+    cast.currTimeModValue = nil
+    cast.pushbackValue = nil
+    cast.showCastInfoOnly = nil
 
     self:StartAllCasts(unitGUID)
 end
@@ -343,7 +346,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         -- non-channeled spell, finish it.
         -- We also check the expiration timer in OnUpdate script just incase this event doesn't trigger when i.e unit is no longer in range.
-        -- Note: It's still possible to get a memory leak here since OnUpdate is only ran for active frames, but adding extra
+        -- Note: It's still possible to get a memory leak here since OnUpdate is only ran for active/shown frames, but adding extra
         -- timer checks just to save a few kb extra memory in extremly rare situations is not really worth the performance hit.
         -- All data is cleared on loading screens anyways.
         return self:DeleteCast(srcGUID)
