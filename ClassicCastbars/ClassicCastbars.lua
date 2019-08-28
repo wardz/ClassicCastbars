@@ -274,8 +274,11 @@ function addon:PLAYER_LOGIN()
     self.PLAYER_LOGIN = nil
 end
 
+local auraRows = 0
 function addon:UNIT_AURA()
     if not self.db.target.autoPosition then return end
+    if auraRows == TargetFrame.auraRows then return end
+    auraRows = TargetFrame.auraRows
 
     if activeFrames.target and activeGUIDs.target then
         local parentFrame = self.AnchorManager:GetAnchor("target")
