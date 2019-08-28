@@ -1276,14 +1276,14 @@ C_Timer.After(1, BuildSpellNameToSpellIDTable) -- run asap once the current call
 -- TODO: merge with main spell table and just store the cast time here as table value
 namespace.channeledSpells = {
     -- MISC
-    [GetSpellInfo(746)] = { 7, 746 },         -- First Aid
+    [GetSpellInfo(746)] = { 6, 746 },         -- First Aid
     [GetSpellInfo(13278)] = { 4, 13278 },     -- Gnomish Death Ray
     [GetSpellInfo(20577)] = { 10, 20577 },    -- Cannibalize
     [GetSpellInfo(10797)] = { 6, 10797 },     -- Starshards
 
     -- DRUID
-    [GetSpellInfo(17401)] = { 9.5, 17401 },   -- Hurricane
-    [GetSpellInfo(740)] = { 9.5, 740 },       -- Tranquility
+    [GetSpellInfo(17401)] = { 10, 17401 },   -- Hurricane
+    [GetSpellInfo(740)] = { 10, 740 },       -- Tranquility
 
     -- HUNTER
     [GetSpellInfo(6197)] = { 60, 6197 },      -- Eagle Eye
@@ -1291,8 +1291,8 @@ namespace.channeledSpells = {
     [GetSpellInfo(1510)] = { 6, 1510 },       -- Volley
 
     -- MAGE
-    [GetSpellInfo(5143)] = { 4.5, 5143, },     -- Arcane Missiles
-    [GetSpellInfo(10)] = { 7.5, 10 },          -- Blizzard
+    [GetSpellInfo(5143)] = { 5, 5143, },       -- Arcane Missiles
+    [GetSpellInfo(10)] = { 8, 10 },            -- Blizzard
     [GetSpellInfo(12051)] = { 8, 12051 },      -- Evocation
 
     -- PRIEST
@@ -1302,10 +1302,10 @@ namespace.channeledSpells = {
 
     -- WARLOCK
     [GetSpellInfo(126)] = { 45, 126 },        -- Eye of Kilrogg
-    [GetSpellInfo(689)] = { 4.5, 689 },       -- Drain Life
-    [GetSpellInfo(5138)] = { 4.5, 5138 },     -- Drain Mana
-    [GetSpellInfo(1120)] = { 14.5, 1120 },    -- Drain Soul
-    [GetSpellInfo(5740)] = { 7.5, 5740 },     -- Rain of Fire
+    [GetSpellInfo(689)] = { 5, 689 },         -- Drain Life
+    [GetSpellInfo(5138)] = { 5, 5138 },       -- Drain Mana
+    [GetSpellInfo(1120)] = { 15, 1120 },      -- Drain Soul
+    [GetSpellInfo(5740)] = { 8, 5740 },       -- Rain of Fire
     [GetSpellInfo(1949)] = { 15, 1949 },      -- Hellfire
     [GetSpellInfo(755)] = { 10, 755 },        -- Health Funnel
 }
