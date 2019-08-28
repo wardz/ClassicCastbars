@@ -193,10 +193,12 @@ function addon:ToggleUnitEvents(shouldReset)
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
         if self.db.target.autoPosition then
             self:RegisterUnitEvent("UNIT_AURA", "target")
+            self:RegisterEvent("UNIT_TARGET")
         end
     else
         self:UnregisterEvent("PLAYER_TARGET_CHANGED")
         self:UnregisterEvent("UNIT_AURA")
+        self:UnregisterEvent("UNIT_TARGET")
     end
 
     if self.db.nameplate.enabled then
@@ -284,6 +286,18 @@ function addon:UNIT_AURA()
         local parentFrame = self.AnchorManager:GetAnchor("target")
         if parentFrame then
             self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
+        end
+    end
+end
+
+function addon:UNIT_TARGET(unitID)
+    -- reanchor castbar when target of target is cleared or shown
+    if unitID == "target" or unitID == "player" then
+        if activeFrames.target and activeGUIDs.target then
+            local parentFrame = self.AnchorManager:GetAnchor("target")
+            if parentFrame then
+                self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
+            end
         end
     end
 end
