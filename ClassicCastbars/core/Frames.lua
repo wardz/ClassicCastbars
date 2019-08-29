@@ -7,6 +7,7 @@ local activeFrames = addon.activeFrames
 local gsub = _G.string.gsub
 local unpack = _G.unpack
 local min = _G.math.min
+local UnitExists = _G.UnitExists
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -21,7 +22,8 @@ end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     local auraRows = parentFrame.auraRows or 0
-    if parentFrame.haveToT or parentFrame.haveElite then
+
+    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then
         if parentFrame.buffsOnTop or auraRows <= 1 then
             castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
