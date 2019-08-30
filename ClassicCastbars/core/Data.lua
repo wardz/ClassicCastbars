@@ -1276,7 +1276,7 @@ C_Timer.After(0.1, BuildSpellNameToSpellIDTable) -- run asap once the current ca
 -- TODO: merge with main spell table and just store the cast time here as table value
 namespace.channeledSpells = {
     -- MISC
-    [GetSpellInfo(746)] = { 6, 746 },         -- First Aid
+    [GetSpellInfo(746)] = { 8, 746 },         -- First Aid
     [GetSpellInfo(13278)] = { 4, 13278 },     -- Gnomish Death Ray
     [GetSpellInfo(20577)] = { 10, 20577 },    -- Cannibalize
     [GetSpellInfo(10797)] = { 6, 10797 },     -- Starshards
