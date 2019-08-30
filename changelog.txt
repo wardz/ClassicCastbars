@@ -1,3 +1,8 @@
+v1.0.2:
+- Improved cast pushback/slow detection.
+- Fix target castbar sometimes still auto positioning when auto position is disabled.
+
+
 v1.0.1:
 - Improved auto positioning for target castbar.
 - Added option to hide spell icon border.
