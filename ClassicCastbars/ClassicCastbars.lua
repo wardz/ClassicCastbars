@@ -292,6 +292,7 @@ end
 
 function addon:UNIT_TARGET(unitID)
     -- reanchor castbar when target of target is cleared or shown
+    if self.db.target.autoPosition then
     if unitID == "target" or unitID == "player" then
         if activeFrames.target and activeGUIDs.target then
             local parentFrame = self.AnchorManager:GetAnchor("target")
@@ -300,6 +301,7 @@ function addon:UNIT_TARGET(unitID)
             end
         end
     end
+end
 end
 
 -- Bind unitIDs to unitGUIDs so we can efficiently get unitIDs in CLEU events
