@@ -21,6 +21,7 @@ ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 -- upvalues for speed
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
+local UnitAura = _G.UnitAura
 local GetSpellTexture = _G.GetSpellTexture
 local GetSpellInfo = _G.GetSpellInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
@@ -30,6 +31,21 @@ local next = _G.next
 local CastingInfo = _G.CastingInfo
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
+local castTimeIncreases = namespace.castTimeIncreases
+
+function addon:CheckCastModifier(unitID, unitGUID)
+    if not self.db.pushbackDetect then return end
+    for i = 1, 16 do
+        local name = UnitAura(unitID, i, "HARMFUL")
+        if not name then return end -- no more debuffs
+
+        local slowPercentage = castTimeIncreases[name]
+        if slowPercentage then
+            self:SetCastDelay(unitGUID, 60, nil, true)
+            break
+        end
+    end
+end
 
 function addon:StartCast(unitGUID, unitID)
     if not activeTimers[unitGUID] then return end
@@ -39,6 +55,7 @@ function addon:StartCast(unitGUID, unitID)
 
     castbar._data = activeTimers[unitGUID] -- set ref to current cast data
     self:DisplayCastbar(castbar, unitID)
+    self:CheckCastModifier(unitID, unitGUID)
 end
 
 function addon:StopCast(unitID)
@@ -88,6 +105,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChann
     cast.endTime = currTime + (castTime / 1000)
     cast.isChanneled = isChanneled
     cast.unitGUID = unitGUID
+    cast.timeStart = currTime
     cast.prevCurrTimeModValue = nil
     cast.currTimeModValue = nil
     cast.pushbackValue = nil
@@ -105,12 +123,12 @@ function addon:DeleteCast(unitGUID)
 end
 
 -- Spaghetti code inc, you're warned
-function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
+function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded, skipStore)
     if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
     if not cast then return end
 
-    -- if cast.prevCurrTimeModValue then print("stored total:", #cast.prevCurrTimeModValue) end
+    --if cast.prevCurrTimeModValue then print("stored total:", #cast.prevCurrTimeModValue) end
 
     -- Set cast time modifier (i.e Curse of Tongues)
     if not auraFaded and percentageAmount and percentageAmount > 0 then
@@ -122,16 +140,16 @@ function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
                 -- Store previous lesser modifier that was active incase new one expires first or gets dispelled
                 cast.prevCurrTimeModValue = cast.prevCurrTimeModValue or {}
                 cast.prevCurrTimeModValue[#cast.prevCurrTimeModValue + 1] = cast.currTimeModValue
-                -- print("stored lesser modifier")
+                --print("stored lesser modifier")
             end
 
-            -- print("refreshing timer", percentageAmount)
+            --print("refreshing timer", percentageAmount)
             cast.currTimeModValue = (cast.currTimeModValue or 0) + percentageAmount -- highest active modifier
             cast.maxValue = cast.maxValue + (cast.maxValue * percentageAmount) / 100
             cast.endTime = cast.endTime + (cast.maxValue * percentageAmount) / 100
-        elseif cast.currTimeModValue == percentageAmount then
+        elseif cast.currTimeModValue == percentageAmount and not skipStore then
             -- new modifier has same percentage as current active one, just store it for later
-            -- print("same percentage, storing")
+            --print("same percentage, storing")
             cast.prevCurrTimeModValue = cast.prevCurrTimeModValue or {}
             cast.prevCurrTimeModValue[#cast.prevCurrTimeModValue + 1] = percentageAmount
         end
@@ -153,7 +171,7 @@ function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
 
                 if index then
                     cast.prevCurrTimeModValue[index] = nil
-                    -- print("resetting to lesser modifier", highest)
+                    --print("resetting to lesser modifier", highest)
                     return self:SetCastDelay(unitGUID, highest)
                 end
             end
@@ -163,18 +181,20 @@ function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded)
             -- Delete 1 old modifier (doesn't matter which one aslong as its the same %)
             for i = 1, #cast.prevCurrTimeModValue do
                 if cast.prevCurrTimeModValue[i] == percentageAmount then
-                    -- print("deleted lesser modifier, new total:", #cast.prevCurrTimeModValue - 1)
+                    --print("deleted lesser modifier, new total:", #cast.prevCurrTimeModValue - 1)
                     cast.prevCurrTimeModValue[i] = nil
                     return
                 end
             end
         end
-    else -- normal pushback
-        self:CastPushback(cast)
     end
 end
 
-function addon:CastPushback(cast)
+function addon:CastPushback(unitGUID)
+    if not self.db.pushbackDetect then return end
+    local cast = activeTimers[unitGUID]
+    if not cast then return end
+
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
         cast.pushbackValue = cast.pushbackValue or 1.0
@@ -243,14 +263,6 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
-    -- Reset very old settings
-    -- TODO: remove this in v1.0.1 or so
-    if ClassicCastbarsDB.version and tonumber(ClassicCastbarsDB.version) <= 4 or
-        ClassicCastbarsDB.nameplate and not ClassicCastbarsDB.version then
-        wipe(ClassicCastbarsDB)
-        print("ClassicCastbars: All settings reset due to major changes. See /castbar for new options.")
-    end
-
     -- Copy any settings from defaults if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
@@ -293,15 +305,15 @@ end
 function addon:UNIT_TARGET(unitID)
     -- reanchor castbar when target of target is cleared or shown
     if self.db.target.autoPosition then
-    if unitID == "target" or unitID == "player" then
-        if activeFrames.target and activeGUIDs.target then
-            local parentFrame = self.AnchorManager:GetAnchor("target")
-            if parentFrame then
-                self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
+        if unitID == "target" or unitID == "player" then
+            if activeFrames.target and activeGUIDs.target then
+                local parentFrame = self.AnchorManager:GetAnchor("target")
+                if parentFrame then
+                    self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
+                end
             end
         end
     end
-end
 end
 
 -- Bind unitIDs to unitGUIDs so we can efficiently get unitIDs in CLEU events
@@ -331,13 +343,12 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
 end
 
 local channeledSpells = namespace.channeledSpells
-local castTimeIncreases = namespace.castTimeIncreases
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName, _, damage, _, resisted, blocked, absorbed = CombatLogGetCurrentEventInfo() -- luacheck: ignore 211
+    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -398,11 +409,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID)
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
-        if blocked or absorbed then return end
-        --if resisted >= damage then return end -- TODO: is fully resisted? need to confirm
 
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
-            return self:SetCastDelay(dstGUID)
+            return self:CastPushback(dstGUID)
         end
     end
 end
@@ -422,19 +431,20 @@ addon:SetScript("OnUpdate", function(self)
 
             if (castTime > 0) then
                 if not cast.showCastInfoOnly then
-                    local value = cast.maxValue - castTime
+                    local maxValue = cast.endTime - cast.timeStart
+                    local value = currTime - cast.timeStart
                     if cast.isChanneled then -- inverse
-                        value = cast.maxValue - value
+                        value = maxValue - value
                     end
 
                     if pushbackEnabled then
                         -- maxValue is only updated dynamically when pushback detect is enabled
-                        castbar:SetMinMaxValues(0, cast.maxValue)
+                        castbar:SetMinMaxValues(0, maxValue)
                     end
 
                     castbar:SetValue(value)
                     castbar.Timer:SetFormattedText("%.1f", castTime)
-                    local sparkPosition = (value / cast.maxValue) * castbar:GetWidth()
+                    local sparkPosition = (value / maxValue) * castbar:GetWidth()
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
