@@ -1267,7 +1267,7 @@ local function BuildSpellNameToSpellIDTable()
     end
 end
 
-C_Timer.After(1, BuildSpellNameToSpellIDTable) -- run asap once the current call stack has executed
+C_Timer.After(0.1, BuildSpellNameToSpellIDTable) -- run asap once the current call stack has executed
 
 -- For channeled spells we need both the spell ID and cast time since
 -- GetSpellInfo doesn't return any cast time for channeled casts.
