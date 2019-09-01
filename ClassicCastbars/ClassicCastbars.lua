@@ -420,13 +420,16 @@ end
 local refresh = 0
 addon:SetScript("OnUpdate", function(self, elapsed)
     if not next(activeTimers) then return end
+
+    local currTime = GetTime()
     refresh = refresh - elapsed
 
     -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
     if refresh < 0 then
         if next(activeGUIDs) then
             for unitID, unitGUID in pairs(activeGUIDs) do
-                if activeTimers[unitGUID] then
+                local cast = activeTimers[unitGUID]
+                if cast and currTime - cast.timeStart > 0.2 then
                     if GetUnitSpeed(unitID) ~= 0 then
                         self:DeleteCast(unitGUID)
                     end
@@ -436,7 +439,6 @@ addon:SetScript("OnUpdate", function(self, elapsed)
         refresh = 0.1
     end
 
-    local currTime = GetTime()
     local pushbackEnabled = self.db.pushbackDetect
 
     -- Update all shown castbars in a single OnUpdate call
