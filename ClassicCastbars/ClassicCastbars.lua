@@ -28,6 +28,7 @@ local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
 local next = _G.next
+local GetUnitSpeed = _G.GetUnitSpeed
 local CastingInfo = _G.CastingInfo
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
@@ -416,8 +417,24 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     end
 end
 
-addon:SetScript("OnUpdate", function(self)
+local refresh = 0
+addon:SetScript("OnUpdate", function(self, elapsed)
     if not next(activeTimers) then return end
+    refresh = refresh - elapsed
+
+    -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
+    if refresh < 0 then
+        if next(activeGUIDs) then
+            for unitID, unitGUID in pairs(activeGUIDs) do
+                if activeTimers[unitGUID] then
+                    if GetUnitSpeed(unitID) ~= 0 then
+                        self:DeleteCast(unitGUID)
+                    end
+                end
+            end
+        end
+        refresh = 0.1
+    end
 
     local currTime = GetTime()
     local pushbackEnabled = self.db.pushbackDetect
