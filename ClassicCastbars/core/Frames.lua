@@ -71,6 +71,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
         castbar.Icon:SetTexCoord(0, 1, 0, 1)
     end
 
+    castbar.Spark:SetHeight(db.height * 2.1)
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
     castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
