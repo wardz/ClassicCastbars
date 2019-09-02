@@ -1048,6 +1048,7 @@ local castSpellIDs = {
     28738, -- Summon Speedy
     3657, -- Summon Spell Guard
     11548, -- Summon Spider God
+    3652, -- Summon Spirit of Old
     10712, -- Summon Spotted Rabbit
     15067, -- Summon Sprite Darter Hatchling
     712, -- Summon Succubus
