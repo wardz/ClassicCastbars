@@ -92,7 +92,7 @@ function addon:StopAllCasts(unitGUID)
     end
 end
 
-function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChanneled)
+function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
     if not activeTimers[unitGUID] then
@@ -107,6 +107,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isChann
     cast.isChanneled = isChanneled
     cast.unitGUID = unitGUID
     cast.timeStart = currTime
+    cast.isPlayer = isPlayer
     cast.prevCurrTimeModValue = nil
     cast.currTimeModValue = nil
     cast.pushbackValue = nil
@@ -357,22 +358,23 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime == 0 then return end
 
+        local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0
+
         -- Reduce cast time for certain spells
         local reducedTime = castTimeTalentDecreases[spellName]
-        if reducedTime then
-            if bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- only reduce cast time for player casted ability
-                castTime = castTime - (reducedTime * 1000)
-            end
+        if reducedTime and isPlayer then
+            castTime = castTime - (reducedTime * 1000)
         end
 
         -- using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, spellName, icon, castTime)
+        return self:StoreCast(srcGUID, spellName, icon, castTime, isPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then -- spell finished
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         local channelData = channeledSpells[spellName]
         if channelData then
-            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, true)
+            local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0
+            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, isPlayer, true)
         end
 
         -- non-channeled spell, finish it.
@@ -429,7 +431,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
         if next(activeGUIDs) then
             for unitID, unitGUID in pairs(activeGUIDs) do
                 local cast = activeTimers[unitGUID]
-                if cast and currTime - cast.timeStart > 0.2 then
+                if cast and cast.isPlayer and currTime - cast.timeStart > 0.2 then
                     if GetUnitSpeed(unitID) ~= 0 then
                         self:DeleteCast(unitGUID)
                     end
