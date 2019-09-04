@@ -199,7 +199,7 @@ function addon:CastPushback(unitGUID)
 
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
-        cast.pushbackValue = cast.pushbackValue or 1.0
+        cast.pushbackValue = cast.pushbackValue or 0.5
         cast.maxValue = cast.maxValue + cast.pushbackValue
         cast.endTime = cast.endTime + cast.pushbackValue
         cast.pushbackValue = max(cast.pushbackValue - 0.2, 0.2)
@@ -431,7 +431,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
         if next(activeGUIDs) then
             for unitID, unitGUID in pairs(activeGUIDs) do
                 local cast = activeTimers[unitGUID]
-                if cast and cast.isPlayer and currTime - cast.timeStart > 0.2 then
+                if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
                     if GetUnitSpeed(unitID) ~= 0 then
                         self:DeleteCast(unitGUID)
                     end
