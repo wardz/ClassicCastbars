@@ -1447,7 +1447,7 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "8", -- settings version
+    version = "9", -- settings version
     pushbackDetect = true,
     locale = GetLocale(),
 
@@ -1471,6 +1471,8 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorChannel = { 0, 1, 0, 1 },
         textColor = { 1, 1, 1, 1 },
+        textPositionX = 0,
+        textPositionY = 0,
     },
 
     target = {
@@ -1493,5 +1495,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorChannel = { 0, 1, 0, 1 },
         textColor = { 1, 1, 1, 1 },
+        textPositionX = 0,
+        textPositionY = 0,
     },
 }
