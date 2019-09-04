@@ -199,7 +199,7 @@ function addon:CastPushback(unitGUID)
 
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
-        cast.pushbackValue = cast.pushbackValue or 0.5
+        cast.pushbackValue = cast.pushbackValue or 1.0
         cast.maxValue = cast.maxValue + cast.pushbackValue
         cast.endTime = cast.endTime + cast.pushbackValue
         cast.pushbackValue = max(cast.pushbackValue - 0.2, 0.2)
