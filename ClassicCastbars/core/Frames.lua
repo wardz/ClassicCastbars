@@ -7,6 +7,7 @@ local activeFrames = addon.activeFrames
 local gsub = _G.string.gsub
 local unpack = _G.unpack
 local min = _G.math.min
+local max = _G.math.max
 local UnitExists = _G.UnitExists
 
 function addon:GetCastbarFrame(unitID)
@@ -27,11 +28,11 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
         if parentFrame.buffsOnTop or auraRows <= 1 then
             castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
-            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.4)))
+            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
         end
     else
         if not parentFrame.buffsOnTop and auraRows > 0 then
-            castbar:SetPoint("CENTER", parentFrame, -18, min(-75, -50 * (auraRows - 0.4)))
+            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
         else
             castbar:SetPoint("CENTER", parentFrame, -18, -50)
         end
