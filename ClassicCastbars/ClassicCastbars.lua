@@ -394,7 +394,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL_CAST_* event for channel stop,
         -- so check if aura is gone instead since most (all?) channels has an aura effect.
-        if channeledSpells[spellName] then
+        if channeledSpells[spellName] and srcGUID == dstGUID then
             return self:DeleteCast(srcGUID)
         elseif castTimeIncreases[spellName] then
             -- Aura that slows casting speed was removed.
