@@ -202,7 +202,7 @@ function addon:CastPushback(unitGUID)
         cast.pushbackValue = cast.pushbackValue or 1.0
         cast.maxValue = cast.maxValue + cast.pushbackValue
         cast.endTime = cast.endTime + cast.pushbackValue
-        cast.pushbackValue = max(cast.pushbackValue - 0.2, 0.2)
+        cast.pushbackValue = max(cast.pushbackValue - 0.5, 0.2)
     else
         -- channels are reduced by 25% per hit afaik
         cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
