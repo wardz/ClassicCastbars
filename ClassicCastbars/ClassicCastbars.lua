@@ -360,10 +360,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0
 
-        -- Reduce cast time for certain spells
+        -- Use talent reduced cast time for certain player spells
         local reducedTime = castTimeTalentDecreases[spellName]
         if reducedTime and isPlayer then
-            castTime = castTime - (reducedTime * 1000)
+            castTime = reducedTime
         end
 
         -- using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
