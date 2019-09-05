@@ -1,8 +1,8 @@
 v1.0.4:
 - Castbar is now stopped when unit is moving for players only since some mobs cast while running.
-- Set correct pushback values.
 - Add option to change text position.
 - Minor improvements to auto positioning of target castbar.
+- Fix some incorrect cast times.
 
 
 v1.0.3:
