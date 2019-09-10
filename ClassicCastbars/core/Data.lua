@@ -1443,8 +1443,9 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "9", -- settings version
+    version = "10", -- settings version
     pushbackDetect = true,
+    movementDetect = true,
     locale = GetLocale(),
 
     nameplate = {

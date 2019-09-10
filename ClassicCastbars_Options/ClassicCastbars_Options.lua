@@ -90,6 +90,17 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         end,
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                     },
+                    movementDetect = {
+                        order = 7,
+                        width = "full",
+                        name = L.MOVEMENT_DETECT,
+                        desc = L.MOVEMENT_DETECT_TOOLTIP,
+                        type = "toggle",
+                        set = function(_, value)
+                            ClassicCastbarsDB.movementDetect = value
+                        end,
+                        get = function() return ClassicCastbarsDB.movementDetect end,
+                    },
                 },
             },
 

@@ -422,8 +422,10 @@ end
 local refresh = 0
 addon:SetScript("OnUpdate", function(self, elapsed)
     if not next(activeTimers) then return end
-
     local currTime = GetTime()
+    local pushbackEnabled = self.db.pushbackDetect
+
+    if self.db.movementDetect then
     refresh = refresh - elapsed
 
     -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
@@ -440,8 +442,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
         end
         refresh = 0.1
     end
-
-    local pushbackEnabled = self.db.pushbackDetect
+    end
 
     -- Update all shown castbars in a single OnUpdate call
     for unit, castbar in pairs(activeFrames) do
