@@ -125,6 +125,7 @@ function addon:SetLSMBorders(castbar, cast, db)
         })
         castbar.BorderFrame.currentTexture = db.castBorder
     end
+    castbar.BorderFrame:SetBackdropBorderColor(unpack(db.borderColor))
 end
 
 function addon:SetCastbarFonts(castbar, cast, db)
