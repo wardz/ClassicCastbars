@@ -59,19 +59,15 @@ function addon:StartCast(unitGUID, unitID)
     self:CheckCastModifier(unitID, unitGUID)
 end
 
-function addon:StopCast(unitID)
+function addon:StopCast(unitID, noFadeOut)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
-    castbar._data = nil
     if not castbar.isTesting then
-        --[[if not noFadeOut then
-            -- TODO: verify this doesn't cause side effects or performance issues
-            UIFrameFadeOut(castbar, 0.1, 1, 0)
-        else]]
-            castbar:Hide()
-        --end
+        self:HideCastbar(castbar, noFadeOut)
     end
+
+    castbar._data = nil
 end
 
 function addon:StartAllCasts(unitGUID)
@@ -112,13 +108,15 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
     cast.currTimeModValue = nil
     cast.pushbackValue = nil
     cast.showCastInfoOnly = nil
+    cast.isInterrupted = nil
 
     self:StartAllCasts(unitGUID)
 end
 
 -- Delete cast data for unit, and stop any active castbars
-function addon:DeleteCast(unitGUID)
+function addon:DeleteCast(unitGUID, isInterrupted)
     if unitGUID and activeTimers[unitGUID] then
+        activeTimers[unitGUID].isInterrupted = isInterrupted -- just so we can avoid passing it as an arg for every function call
         self:StopAllCasts(unitGUID)
         activeTimers[unitGUID] = nil
     end
@@ -410,7 +408,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:DeleteCast(srcGUID)
         end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
-        return self:DeleteCast(dstGUID)
+        return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
 
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
@@ -426,22 +424,22 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     local pushbackEnabled = self.db.pushbackDetect
 
     if self.db.movementDetect then
-    refresh = refresh - elapsed
+        refresh = refresh - elapsed
 
-    -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
-    if refresh < 0 then
-        if next(activeGUIDs) then
-            for unitID, unitGUID in pairs(activeGUIDs) do
-                local cast = activeTimers[unitGUID]
-                if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                    if GetUnitSpeed(unitID) ~= 0 then
-                        self:DeleteCast(unitGUID)
+        -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
+        if refresh < 0 then
+            if next(activeGUIDs) then
+                for unitID, unitGUID in pairs(activeGUIDs) do
+                    local cast = activeTimers[unitGUID]
+                    if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
+                        if GetUnitSpeed(unitID) ~= 0 then
+                            self:DeleteCast(unitGUID)
+                        end
                     end
                 end
             end
+            refresh = 0.1
         end
-        refresh = 0.1
-    end
     end
 
     -- Update all shown castbars in a single OnUpdate call

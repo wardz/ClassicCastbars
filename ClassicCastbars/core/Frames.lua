@@ -9,6 +9,8 @@ local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
 local UnitExists = _G.UnitExists
+local UIFrameFadeOut = _G.UIFrameFadeOut
+local UIFrameFadeRemoveFrame = _G.UIFrameFadeRemoveFrame
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -151,6 +153,12 @@ function addon:DisplayCastbar(castbar, unitID)
         db = self.db.nameplate
     end
 
+    if castbar.fadeInfo then
+        -- need to remove frame if it's currently fading so alpha doesn't get changed after re-displaying castbar
+        UIFrameFadeRemoveFrame(castbar)
+        castbar.fadeInfo.finishedFunc = nil
+    end
+
     local cast = castbar._data
     cast.showCastInfoOnly = db.showCastInfoOnly
     castbar:SetMinMaxValues(0, cast.maxValue)
@@ -177,4 +185,19 @@ function addon:DisplayCastbar(castbar, unitID)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
     castbar:Show()
+end
+
+function addon:HideCastbar(castbar, noFadeOut)
+    local isInterrupted = castbar._data and castbar._data.isInterrupted
+
+    if not noFadeOut then
+        if isInterrupted then
+            castbar.Text:SetText(_G.INTERRUPTED)
+            castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
+        end
+
+        UIFrameFadeOut(castbar, isInterrupted and 1.5 or 0.2, 1, 0)
+    else
+        castbar:Hide()
+    end
 end
