@@ -1,3 +1,11 @@
+v1.0.5:
+- Castbars are now faded out when completed instead of being instantly hidden.
+- Castbars now shows a brief red interrupt message when successfully interrupted.
+- Fix border color option not working when not using default border texture.
+- Stopping castbar on unit movement is now a toggleable option. You might want to disable this feature if you play with high latency
+  since it can sometimes stop a cast incorrectly when the player or enemy lags.
+
+
 v1.0.4:
 - Castbar is now stopped when unit is moving for players only since some mobs cast while running.
 - Add option to change text position.
