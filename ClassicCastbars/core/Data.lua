@@ -1366,6 +1366,7 @@ namespace.castTimeTalentDecreases = {
     [GetSpellInfo(688)] = 6000,      -- Summon Imp
     [GetSpellInfo(697)] = 6000,      -- Summon Voidwalker
     [GetSpellInfo(712)] = 6000,      -- Summon Succubus
+    [GetSpellInfo(982)] = 4000,      -- Revive Pet
 }
 
 -- List of crowd controls.
