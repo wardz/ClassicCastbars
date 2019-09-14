@@ -1,3 +1,9 @@
+v1.0.6:
+- Any incorrect cast timers for mobs now auto correct themselves after being fully casted once.
+- Add Seduction & Consume Shadows to channel cast tracking.
+- Revive Pet now uses talent reduced cast time instead. (10s to 4s)
+- Fixed Arcane Missiles timer being reset every damage tick.
+
 v1.0.5:
 - Castbars are now faded out when completed instead of being instantly hidden.
 - Castbars now shows a brief red interrupt message when successfully interrupted.
