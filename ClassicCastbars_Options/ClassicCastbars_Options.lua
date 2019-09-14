@@ -85,7 +85,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.PUSHBACK,
                         desc = L.PUSHBACK_TOOLTIP,
                         type = "toggle",
-                        set = function(_, value) -- temp, we'll remove this option later
+                        set = function(_, value)
                             ClassicCastbarsDB.pushbackDetect = value
                         end,
                         get = function() return ClassicCastbarsDB.pushbackDetect end,

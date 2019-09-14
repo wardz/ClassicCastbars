@@ -36,14 +36,14 @@ local castTimeIncreases = namespace.castTimeIncreases
 
 function addon:CheckCastModifier(unitID, unitGUID)
     if not self.db.pushbackDetect then return end
+
     for i = 1, 16 do
         local name = UnitAura(unitID, i, "HARMFUL")
         if not name then return end -- no more debuffs
 
         local slowPercentage = castTimeIncreases[name]
         if slowPercentage then
-            self:SetCastDelay(unitGUID, 60, nil, true)
-            break
+            return self:SetCastDelay(unitGUID, 60, nil, true)
         end
     end
 end
@@ -122,7 +122,9 @@ function addon:DeleteCast(unitGUID, isInterrupted)
     end
 end
 
--- Spaghetti code inc, you're warned
+-- Spaghetti code inc, you're warned.
+-- A lot of this complexity is so we can also track modifiers in the combat log without
+-- having to rely on UnitAura that requires a valid unitID.
 function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded, skipStore)
     if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
@@ -197,6 +199,8 @@ function addon:CastPushback(unitGUID)
 
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
+        -- On level 1 it seems like the pushback value starts at 0.5 but at
+        -- higher lvl it is 1.0s. This needs some more testing.
         cast.pushbackValue = cast.pushbackValue or 1.0
         cast.maxValue = cast.maxValue + cast.pushbackValue
         cast.endTime = cast.endTime + cast.pushbackValue
@@ -410,8 +414,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
-
-        if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player
+        if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER_OR_PET) > 0 then -- is player
             return self:CastPushback(dstGUID)
         end
     end
@@ -431,6 +434,8 @@ addon:SetScript("OnUpdate", function(self, elapsed)
             if next(activeGUIDs) then
                 for unitID, unitGUID in pairs(activeGUIDs) do
                     local cast = activeTimers[unitGUID]
+                    -- Only stop cast for players since some mobs runs while casting, also because
+                    -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
                     if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
                         if GetUnitSpeed(unitID) ~= 0 then
                             self:DeleteCast(unitGUID)
