@@ -1309,6 +1309,8 @@ namespace.channeledSpells = {
     [GetSpellInfo(5740)] = { 8, 5740 },       -- Rain of Fire
     [GetSpellInfo(1949)] = { 15, 1949 },      -- Hellfire
     [GetSpellInfo(755)] = { 10, 755 },        -- Health Funnel
+    [GetSpellInfo(17854)] = { 10, 17854 },    -- Consume Shadows
+    [GetSpellInfo(6358)] = { 15, 6358 },      -- Seduction Channel
 }
 
 -- List of abilities that increases cast time (reduces speed)
