@@ -21,6 +21,7 @@ local anchors = {
         "LUFUnittarget",
         "oUF_LumenTarget",
         "TukuiTargetFrame",
+        "CG_UnitFrame_2",
         "TargetFrame", -- Blizzard frame should always be last
     },
 }
