@@ -46,7 +46,7 @@ function addon:CheckCastModifier(unitID, unitGUID)
 
         local slowPercentage = castTimeIncreases[name]
         if slowPercentage then
-            return self:SetCastDelay(unitGUID, 60, nil, true)
+            return self:SetCastDelay(unitGUID, slowPercentage, nil, true)
         end
     end
 end
