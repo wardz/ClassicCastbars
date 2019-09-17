@@ -164,7 +164,6 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar:SetMinMaxValues(0, cast.maxValue)
     castbar:SetParent(parentFrame)
     castbar.Text:SetWidth(db.width - 10) -- ensure text gets truncated
-    castbar:SetAlpha(1)
 
     if cast.isChanneled then
         castbar:SetStatusBarColor(unpack(db.statusColorChannel))
@@ -184,6 +183,9 @@ function addon:DisplayCastbar(castbar, unitID)
     self:SetCastbarStyle(castbar, cast, db)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
+
+    castbar:SetValue(0)
+    castbar:SetAlpha(1)
     castbar:Show()
 end
 
