@@ -18,6 +18,9 @@ globals = {
 
     -- WoW globals
     "TargetFrame",
+    "CastingBarFrame",
+    "CastingBarFrame_SetStartCastColor",
+    "CastingBarFrame_SetStartChannelColor",
     "CopyTable",
     "GetLocale",
     "GetSpellSubtext",

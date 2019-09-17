@@ -299,6 +299,10 @@ function addon:PLAYER_LOGIN()
         namespace.defaultConfig = nil
     end
 
+    if self.db.player.enabled then
+        self:SkinPlayerCastbar()
+    end
+
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
