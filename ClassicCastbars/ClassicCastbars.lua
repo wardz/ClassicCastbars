@@ -246,6 +246,16 @@ function addon:ToggleUnitEvents(shouldReset)
         self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
     end
 
+    if self.db.party.enabled then
+        self:RegisterEvent("GROUP_ROSTER_UPDATE")
+        self:RegisterEvent("GROUP_JOINED")
+        self:RegisterEvent("GROUP_LEFT")
+    else
+        self:UnregisterEvent("GROUP_ROSTER_UPDATE")
+        self:UnregisterEvent("GROUP_JOINED")
+        self:UnregisterEvent("GROUP_LEFT")
+    end
+
     if shouldReset then
         self:PLAYER_ENTERING_WORLD() -- reset all data
     end
@@ -259,6 +269,10 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     wipe(activeTimers)
     wipe(activeFrames)
     PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
+
+    if IsInGroup() then
+        self:GROUP_ROSTER_UPDATE()
+    end
 end
 
 function addon:ZONE_CHANGED_NEW_AREA()
@@ -368,6 +382,25 @@ function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
         activeFrames[namePlateUnitToken] = nil
     end
 end
+
+function addon:GROUP_ROSTER_UPDATE()
+    for i = 1, 5 do
+        local unitID = "party"..i
+        activeGUIDs[unitID] = UnitGUID(unitID) or nil
+
+        if activeGUIDs[unitID] then
+            self:StopCast(unitID, true)
+        else
+            local castbar = activeFrames[unitID]
+            if castbar then
+                PoolManager:ReleaseFrame(castbar)
+                activeFrames[unitID] = nil
+            end
+        end
+    end
+end
+addon.GROUP_LEFT = addon.GROUP_ROSTER_UPDATE
+addon.GROUP_JOINED = addon.GROUP_ROSTER_UPDATE
 
 local channeledSpells = namespace.channeledSpells
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases

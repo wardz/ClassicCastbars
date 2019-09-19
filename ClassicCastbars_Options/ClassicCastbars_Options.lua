@@ -63,7 +63,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.AUTO_POS_BAR,
                         desc = unitID ~= "player" and L.AUTO_POS_BAR_TOOLTIP or "",
                         type = "toggle",
-                        hidden = unitID == "nameplate"
+                        hidden = unitID == "nameplate" or unitID == "party"
                     },
                     showTimer = {
                         order = 3,
@@ -363,7 +363,8 @@ local function GetOptionsTable()
         args = {
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
-            player = CreateUnitTabGroup("player", "Player", 3), -- TODO: localize
+            party = CreateUnitTabGroup("party", "Party", 3),
+            player = CreateUnitTabGroup("player", "Player", 4), -- TODO: localize
 
             resetAllSettings = {
                 order = 3,
@@ -376,6 +377,7 @@ local function GetOptionsTable()
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
                     ClassicCastbars_TestMode:OnOptionChanged("target")
                     ClassicCastbars_TestMode:OnOptionChanged("nameplate")
+                    ClassicCastbars_TestMode:OnOptionChanged("party")
                 end,
             },
         },

@@ -153,6 +153,8 @@ function addon:DisplayCastbar(castbar, unitID)
     local db = self.db[gsub(unitID, "%d", "")] -- nameplate1 -> nameplate
     if unitID == "nameplate-testmode" then
         db = self.db.nameplate
+    elseif unitID == "party-testmode" then
+        db = self.db.party
     end
 
     if castbar.fadeInfo then

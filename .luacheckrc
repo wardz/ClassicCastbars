@@ -22,6 +22,7 @@ globals = {
     "CastingBarFrame_SetStartCastColor",
     "CastingBarFrame_SetStartChannelColor",
     "CopyTable",
+    "IsInGroup",
     "GetLocale",
     "GetSpellSubtext",
     "GetSpellInfo",

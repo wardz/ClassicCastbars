@@ -36,6 +36,8 @@ local function OnDragStop(self)
     local unit = self.unitID
     if strfind(unit, "nameplate") then
         unit = "nameplate" -- make it match our DB key
+    elseif strfind(unit, "party") then
+        unit = "party"
     end
 
     -- Frame loses relativity to parent and is instead relative to UIParent after
@@ -55,6 +57,8 @@ end
 function TestMode:ToggleCastbarMovable(unitID)
     if unitID == "nameplate" then
         unitID = "nameplate-testmode"
+    elseif unitID == "party" then
+        unitID = "party-testmode"
     end
 
     if self.isTesting[unitID] then
@@ -76,6 +80,8 @@ end
 function TestMode:OnOptionChanged(unitID)
     if unitID == "nameplate" then
         unitID = "nameplate-testmode"
+    elseif unitID == "party" then
+        unitID = "party-testmode"
     end
 
     if unitID == "player" then
@@ -121,6 +127,11 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar:SetValue(5)
     castbar.Timer:SetText("0.75")
     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
+
+    if unitID == "party-testmode" then
+        parentFrame:SetAlpha(1)
+        parentFrame:Show()
+    end
 
     castbar:ClearAllPoints() -- needed here to work with restricted frames
     if unitID == "player" then
