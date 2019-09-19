@@ -192,18 +192,24 @@ function addon:DisplayCastbar(castbar, unitID)
 end
 
 function addon:HideCastbar(castbar, noFadeOut)
-    local isInterrupted = castbar._data and castbar._data.isInterrupted
+    if noFadeOut then
+        castbar:SetAlpha(0)
+        castbar:Hide()
+        return
+    end
 
-    if not noFadeOut then
-        if isInterrupted then
+    local cast = castbar._data
+
+    if cast.isInterrupted then
             castbar.Text:SetText(_G.INTERRUPTED)
             castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
         end
 
-        UIFrameFadeOut(castbar, isInterrupted and 1.5 or 0.2, 1, 0)
-    else
-        castbar:Hide()
+    if cast.isCastComplete and not cast.isChanneled then
+        castbar:SetStatusBarColor(0, 1, 0)
     end
+
+    UIFrameFadeOut(castbar, cast.isInterrupted and 1.5 or 0.2, 1, 0)
 end
 
 function addon:SkinPlayerCastbar() -- TODO: gotta be able to reset aswell

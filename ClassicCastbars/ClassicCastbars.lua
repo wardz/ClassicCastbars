@@ -112,16 +112,19 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
     cast.pushbackValue = nil
     cast.showCastInfoOnly = nil
     cast.isInterrupted = nil
+    cast.isCastComplete = nil
 
     self:StartAllCasts(unitGUID)
 end
 
 -- Delete cast data for unit, and stop any active castbars
-function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache)
+function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComplete)
     if not unitGUID then return end
 
-    if activeTimers[unitGUID] then
-        activeTimers[unitGUID].isInterrupted = isInterrupted -- just so we can avoid passing it as an arg for every function call
+    local cast = activeTimers[unitGUID]
+    if cast then
+        cast.isInterrupted = isInterrupted -- just so we can avoid passing it as an arg for every function call
+        cast.isCastComplete = isCastComplete
         self:StopAllCasts(unitGUID)
         activeTimers[unitGUID] = nil
     end
@@ -447,7 +450,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Note: It's still possible to get a memory leak here since OnUpdate is only ran for active/shown frames, but adding extra
         -- timer checks just to save a few kb extra memory in extremly rare situations is not really worth the performance hit.
         -- All data is cleared on loading screens anyways.
-        return self:DeleteCast(srcGUID)
+        return self:DeleteCast(srcGUID, nil, nil, true)
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeIncreases[spellName] then
             -- Aura that slows casting speed was applied
@@ -460,7 +463,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Channeled spells has no SPELL_CAST_* event for channel stop,
         -- so check if aura is gone instead since most (all?) channels has an aura effect.
         if channeledSpells[spellName] and srcGUID == dstGUID then
-            return self:DeleteCast(srcGUID)
+            return self:DeleteCast(srcGUID, nil, nil, true)
         elseif castTimeIncreases[spellName] then
             -- Aura that slows casting speed was removed.
             return self:SetCastDelay(dstGUID, castTimeIncreases[spellName], true)
