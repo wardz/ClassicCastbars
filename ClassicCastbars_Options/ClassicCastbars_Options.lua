@@ -318,8 +318,17 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
-                    notes = {
+                    frameLevel = {
                         order = 4,
+                        name = "Frame Level", -- TODO: localize
+                        desc = "TODO",
+                        type = "range",
+                        min = 0,
+                        max = 99,
+                        bigStep = 5,
+                    },
+                    notes = {
+                        order = 5,
                         type = "description",
                         name = L.LSM_TEXTURE_NOTE,
                     },

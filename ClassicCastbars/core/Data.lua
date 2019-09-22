@@ -1473,6 +1473,7 @@ namespace.defaultConfig = {
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
+        frameLevel = 10,
     },
 
     target = {
@@ -1497,6 +1498,7 @@ namespace.defaultConfig = {
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
+        frameLevel = 10,
     },
 
     party = {
@@ -1521,6 +1523,7 @@ namespace.defaultConfig = {
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
+        frameLevel = 10,
     },
 
     player = {
@@ -1545,5 +1548,6 @@ namespace.defaultConfig = {
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
+        frameLevel = 10,
     },
 }

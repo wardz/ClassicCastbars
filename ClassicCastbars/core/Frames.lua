@@ -61,6 +61,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar:SetSize(db.width, db.height)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
+    castbar:SetFrameLevel(db.frameLevel)
 
     if db.showCastInfoOnly then
         castbar.Timer:SetText("")
