@@ -270,7 +270,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     wipe(activeFrames)
     PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
 
-    if IsInGroup() then
+    if self.db.party.enabled and IsInGroup() then
         self:GROUP_ROSTER_UPDATE()
     end
 end
