@@ -141,7 +141,7 @@ end
 function addon:SetCastDelay(unitGUID, percentageAmount, auraFaded, skipStore)
     if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
-    if not cast then return end
+    if not cast or cast.isChanneled then return end
 
     --if cast.prevCurrTimeModValue then print("stored total:", #cast.prevCurrTimeModValue) end
 
