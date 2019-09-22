@@ -190,6 +190,7 @@ function addon:DisplayCastbar(castbar, unitID)
     self:SetCastbarIconAndText(castbar, cast, db)
 
     castbar:SetValue(0)
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", 0, 0)
     castbar:SetAlpha(1)
     castbar:Show()
 end
@@ -203,23 +204,24 @@ function addon:HideCastbar(castbar, noFadeOut)
 
     local cast = castbar._data
 
-    if cast.isInterrupted then
-            castbar.Text:SetText(_G.INTERRUPTED)
-            castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
-        end
-
-    if cast.isCastComplete and not cast.isChanneled then
-        castbar:SetStatusBarColor(0, 1, 0)
+    if cast and cast.isInterrupted then
+        castbar.Text:SetText(_G.INTERRUPTED)
+        castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
     end
 
-    UIFrameFadeOut(castbar, cast.isInterrupted and 1.5 or 0.2, 1, 0)
+    --[[if cast and cast.isCastComplete and not cast.isChanneled then
+        castbar:SetStatusBarColor(0, 1, 0)
+    end]]
+
+    UIFrameFadeOut(castbar, cast and cast.isInterrupted and 1.5 or 0.2, 1, 0)
 end
 
-function addon:SkinPlayerCastbar() -- TODO: gotta be able to reset aswell
+-- TODO: gotta be able to reset aswell
+function addon:SkinPlayerCastbar()
     local db = self.db.player
 
     if not CastingBarFrame.Timer then
-        -- not yet implemented but we need the frame to avoid lua errors
+        -- TODO: implement me
         CastingBarFrame.Timer = CastingBarFrame:CreateFontString(nil, "OVERLAY")
         CastingBarFrame.Timer:SetTextColor(1, 1, 1)
         CastingBarFrame.Timer:SetFontObject("SystemFont_Shadow_Small")

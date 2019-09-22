@@ -373,7 +373,7 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", "Party", 3),
-            player = CreateUnitTabGroup("player", "Player", 4), -- TODO: localize
+            --player = CreateUnitTabGroup("player", "Player", 4), -- TODO: localize
 
             resetAllSettings = {
                 order = 3,
