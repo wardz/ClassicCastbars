@@ -151,6 +151,11 @@ function TestMode:SetCastbarImmovable(unitID)
     castbar.parent = nil
     castbar.isTesting = nil
     castbar:EnableMouse(false)
+
+    if unitID == "party-testmode" then
+        local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
+        parentFrame:Hide()
+    end
 end
 
 function TestMode:ReanchorOnNameplateTargetSwitch()

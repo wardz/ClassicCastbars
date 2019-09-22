@@ -57,7 +57,7 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
             name = format(name, strmatch(unitID, "%d+")) -- add unit index to unitframe name
         end
 
-        if _G[name] then return _G[name] end
+        if _G[name] then return _G[name], name end
     end
 end
 
@@ -69,12 +69,20 @@ local function GetPartyFrameForUnit(unitID)
     local guid = UnitGUID(unitID)
     if not guid then return end
 
+    local compact = GetCVarBool("useCompactPartyFrames")
+
     -- raid frames are recycled so frame10 might be party2 and so on, so we need
     -- to loop through them all and check if the unit matches
     for i = 1, 40 do
-        local frame = GetUnitFrameForUnit("party", "party"..i, true)
+        local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
         if frame and frame.unit and UnitGUID(frame.unit) == guid then
-            return frame
+            if compact then
+                if not strfind(frameName, "PartyMemberFrame") then
+                    return frame
+                end
+            else
+                return frame
+            end
         end
     end
 end
