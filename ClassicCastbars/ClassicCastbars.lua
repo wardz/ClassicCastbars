@@ -83,10 +83,10 @@ function addon:StartAllCasts(unitGUID)
     end
 end
 
-function addon:StopAllCasts(unitGUID)
+function addon:StopAllCasts(unitGUID, noFadeOut)
     for unitID, guid in pairs(activeGUIDs) do
         if guid == unitGUID then
-            self:StopCast(unitID)
+            self:StopCast(unitID, noFadeOut)
         end
     end
 end
@@ -118,14 +118,14 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
 end
 
 -- Delete cast data for unit, and stop any active castbars
-function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComplete)
+function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComplete, noFadeOut)
     if not unitGUID then return end
 
     local cast = activeTimers[unitGUID]
     if cast then
         cast.isInterrupted = isInterrupted -- just so we can avoid passing it as an arg for every function call
         cast.isCastComplete = isCastComplete
-        self:StopAllCasts(unitGUID)
+        self:StopAllCasts(unitGUID, noFadeOut)
         activeTimers[unitGUID] = nil
     end
 
@@ -573,7 +573,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 end
             else
                 -- Delete cast incase stop event wasn't detected in CLEU
-                self:DeleteCast(cast.unitGUID, false, true)
+                self:DeleteCast(cast.unitGUID, false, true, false, true)
             end
         end
     end
