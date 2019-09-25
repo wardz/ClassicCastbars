@@ -166,7 +166,6 @@ function addon:DisplayCastbar(castbar, unitID)
 
     local cast = castbar._data
     cast.showCastInfoOnly = db.showCastInfoOnly
-    castbar:SetMinMaxValues(0, cast.maxValue)
     castbar:SetParent(parentFrame)
     castbar.Text:SetWidth(db.width - 10) -- ensure text gets truncated
 
@@ -199,8 +198,12 @@ function addon:DisplayCastbar(castbar, unitID)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
 
-    castbar:SetValue(0)
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", 0, 0)
+    if not castbar.isTesting then
+        castbar:SetMinMaxValues(0, cast.maxValue)
+        castbar:SetValue(0)
+        castbar.Spark:SetPoint("CENTER", castbar, "LEFT", 0, 0)
+    end
+
     castbar:SetAlpha(1)
     castbar:Show()
 end
