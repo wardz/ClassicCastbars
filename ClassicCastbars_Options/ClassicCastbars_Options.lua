@@ -256,6 +256,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hasAlpha = true,
                         type = "color",
                     },
+                    statusBackgroundColor = {
+                        name = L.STATUS_BG_COLOR,
+                        order = 5,
+                        hasAlpha = true,
+                        type = "color",
+                    }
                 },
             },
 
@@ -320,8 +326,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     frameLevel = {
                         order = 4,
-                        name = "Frame Level", -- TODO: localize
-                        desc = "TODO",
+                        name = L.FRAME_LEVEL,
+                        desc = L.FRAME_LEVEL_DESC,
                         type = "range",
                         min = 0,
                         max = 99,

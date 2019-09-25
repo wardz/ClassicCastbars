@@ -170,6 +170,16 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar:SetParent(parentFrame)
     castbar.Text:SetWidth(db.width - 10) -- ensure text gets truncated
 
+    if not castbar.Background then
+        for k, v in pairs({ castbar:GetRegions() }) do
+            if v.GetTexture and v:GetTexture() and strfind(v:GetTexture(), "Color-") then
+                castbar.Background = v
+                break
+            end
+        end
+    end
+    castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
+
     if cast.isChanneled then
         castbar:SetStatusBarColor(unpack(db.statusColorChannel))
     else
