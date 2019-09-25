@@ -1,3 +1,9 @@
+v1.0.8:
+- Fix test mode not showing cast fill value properly.
+- Fix incorrect default position for party castbars.
+- Added option for changing castbar background (not fill) color and transparency.
+
+
 v1.0.7:
 - Added option to show castbars for party frames (max 5 units). This feature is still WIP and might not work 100% yet!
 - Added option to change frame level for castbar. You can use this to layer the castbar below or above another frame.
