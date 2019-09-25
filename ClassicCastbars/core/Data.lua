@@ -1446,7 +1446,7 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "11", -- settings version
+    version = "12", -- settings version
     pushbackDetect = true,
     movementDetect = true,
     locale = GetLocale(),
@@ -1514,7 +1514,7 @@ namespace.defaultConfig = {
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border",
         hideIconBorder = false,
-        position = { "CENTER", -143.5, -5 },
+        position = { "CENTER", 141, 6 },
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },

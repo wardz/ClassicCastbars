@@ -299,6 +299,10 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
+    if ClassicCastbarsDB.version == "11" then
+        ClassicCastbarsDB.party.position = nil
+    end
+
     -- Copy any settings from defaults if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
