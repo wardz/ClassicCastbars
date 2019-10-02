@@ -419,7 +419,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local spellID = castedSpells[spellName]
         if not spellID then return end
         local _, _, icon, castTime = GetSpellInfo(spellID)
-        if not castTime or castTime == 0 then return end
+        if not castTime or castTime < 300 then return end
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER_OR_PET) > 0
 
