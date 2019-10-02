@@ -523,6 +523,12 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     end
 end
 
+local castStopBlacklist = {
+    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+}
+
 local refresh = 0
 addon:SetScript("OnUpdate", function(self, elapsed)
     if not next(activeTimers) then return end
@@ -540,7 +546,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     -- Only stop cast for players since some mobs runs while casting, also because
                     -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
                     if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                        if GetUnitSpeed(unitID) ~= 0 then
+                        if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
                             self:DeleteCast(unitGUID)
                         end
                     end
