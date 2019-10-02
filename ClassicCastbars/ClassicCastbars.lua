@@ -4,7 +4,6 @@ local PoolManager = namespace.PoolManager
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
-    -- this will basically trigger addon:EVENT_NAME(arguments) on any event happening
     return self[event](self, ...)
 end)
 
@@ -91,6 +90,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
     end
 end
 
+-- Store new cast data for unit, and start castbar(s)
 function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
@@ -253,7 +253,7 @@ function addon:ToggleUnitEvents(shouldReset)
     else
         self:UnregisterEvent("GROUP_ROSTER_UPDATE")
         self:UnregisterEvent("GROUP_JOINED")
-        self:UnregisterEvent("GROUP_LEFT")
+        self:UnregisterEvent("GROUP_LEFT") -- TODO: check if needed
     end
 
     if shouldReset then
@@ -418,13 +418,14 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
         if not spellID then return end
+
         local _, _, icon, castTime = GetSpellInfo(spellID)
         if not castTime or castTime < 300 then return end
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER_OR_PET) > 0
 
         if isPlayer then
-            -- Use talent reduced cast time for certain player spells if available
+            -- Use talent reduced cast time for certain player spells
             local reducedTime = castTimeTalentDecreases[spellName]
             if reducedTime then
                 castTime = reducedTime
@@ -465,7 +466,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
                     local castTimeDiff = abs(castTime - origCastTime)
                     if castTimeDiff <= 4000 and castTimeDiff > 250 then -- heavy lag might affect this so only store time if the diff isn't too big
-                        --print("Caching: ", srcName, spellName, castTime, origCastTime)
                         npcCastTimeCache[srcName .. spellName] = castTime
                     end
                 end
@@ -476,7 +476,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         if channelData then
             -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
-            -- TODO: might be similar channels that do the same
             if spellName == ARCANE_MISSILES and activeTimers[srcGUID] and activeTimers[srcGUID].spellName == ARCANE_MISSILES then return end
 
             return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, isPlayer, true)
@@ -484,9 +483,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         -- non-channeled spell, finish it.
         -- We also check the expiration timer in OnUpdate script just incase this event doesn't trigger when i.e unit is no longer in range.
-        -- Note: It's still possible to get a memory leak here since OnUpdate is only ran for active/shown frames, but adding extra
-        -- timer checks just to save a few kb extra memory in extremly rare situations is not really worth the performance hit.
-        -- All data is cleared on loading screens anyways.
         return self:DeleteCast(srcGUID, nil, nil, true)
     elseif eventType == "SPELL_AURA_APPLIED" then
         if castTimeIncreases[spellName] then
@@ -538,7 +534,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     if self.db.movementDetect then
         refresh = refresh - elapsed
 
-        -- Check if unit is moving to stop castbar, thanks to LibClassicCasterino for this idea
+        -- Check if unit is moving to stop castbar, thanks to Cordankos for this idea
         if refresh < 0 then
             if next(activeGUIDs) then
                 for unitID, unitGUID in pairs(activeGUIDs) do

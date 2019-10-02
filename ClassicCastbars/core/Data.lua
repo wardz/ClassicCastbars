@@ -1244,7 +1244,7 @@ local counter, cursor = 0, 1
 local castedSpells = {}
 namespace.castedSpells = castedSpells
 
--- temporary, ill clean up this later
+-- TODO: cleanup
 local function BuildSpellNameToSpellIDTable()
     counter = 0
 

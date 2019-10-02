@@ -5,6 +5,7 @@ ignore = {
     "11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
     "213", -- Unused loop variable
     "212/self", -- Unused argument self
+    "113/CastingBarFrame_.*",
     "212/pool",
     "212/cast",
 }
@@ -19,8 +20,6 @@ globals = {
     -- WoW globals
     "TargetFrame",
     "CastingBarFrame",
-    "CastingBarFrame_SetStartCastColor",
-    "CastingBarFrame_SetStartChannelColor",
     "GetCVarBool",
     "CopyTable",
     "IsInGroup",
