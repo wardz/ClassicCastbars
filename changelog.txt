@@ -1,3 +1,12 @@
+v1.0.9:
+- Added options to modify player's own castbar. Let me know if there's any bugs and I'll fix it asap.
+- All options will now be greyed out if the current parent module is disabled.
+- Extremely short cast times (less than 300ms) are now ignored.
+- Grenade casts should no longer be stopped when caster is moving.
+- Hopefully fix Frostbolt using wrong spell icon for Chinese clients.
+- Fix castbar not showing for default Blizzard target frame if certain custom unit frame addons are loaded, but with their target frame module disabled.
+
+
 v1.0.8:
 - Fix test mode not showing cast fill value properly.
 - Fix incorrect default position for party castbars.
