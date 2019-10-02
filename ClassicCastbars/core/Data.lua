@@ -1446,7 +1446,7 @@ namespace.crowdControls = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "12", -- settings version
+    version = "13", -- settings version
     pushbackDetect = true,
     movementDetect = true,
     locale = GetLocale(),
@@ -1531,19 +1531,19 @@ namespace.defaultConfig = {
 
     player = {
         enabled = false,
-        width = 190,
-        height = 19,
-        iconSize = 16,
+        width = 195,
+        height = 20,
+        iconSize = 22,
         showCastInfoOnly = false,
         showTimer = false,
         autoPosition = true,
         castFont = _G.STANDARD_TEXT_FONT,
-        castFontSize = 12,
+        castFontSize = 11,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border",
         hideIconBorder = false,
         position = { "CENTER", -18, -87 },
-        iconPositionX = -5,
+        iconPositionX = -10,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
         statusColor = { 1, 0.7, 0, 1 },

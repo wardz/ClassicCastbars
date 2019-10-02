@@ -18,6 +18,7 @@ globals = {
     "LibStub",
 
     -- WoW globals
+    "ReloadUI",
     "TargetFrame",
     "CastingBarFrame",
     "GetCVarBool",

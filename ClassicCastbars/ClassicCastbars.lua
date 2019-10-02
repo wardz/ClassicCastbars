@@ -301,6 +301,8 @@ function addon:PLAYER_LOGIN()
 
     if ClassicCastbarsDB.version == "11" then
         ClassicCastbarsDB.party.position = nil
+    elseif ClassicCastbarsDB.version == "12" then
+        ClassicCastbarsDB.player = nil
     end
 
     -- Copy any settings from defaults if they don't exist in current profile

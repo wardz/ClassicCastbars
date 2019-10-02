@@ -129,7 +129,6 @@ function TestMode:SetCastbarMovable(unitID, parent)
         parentFrame:Show()
     end
 
-    castbar:ClearAllPoints() -- needed here to work with restricted frames
     if unitID == "player" then
         castbar:Show()
         castbar:SetAlpha(1)

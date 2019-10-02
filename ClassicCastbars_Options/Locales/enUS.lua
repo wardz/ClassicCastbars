@@ -45,12 +45,15 @@ L["MOVEMENT_DETECT_TOOLTIP"] = [=[Enable this to stop the castbar when the unit 
 You might want to disable this if you play with high latency as it can sometimes incorrectly stop the castbar for laggy players.
 ]=]
 L["NAMEPLATE"] = "Nameplate"
+L["PARTY"] = "Party"
+L["PLAYER"] = "Player"
 L["POSXY_TOOLTIP"] = "Adjust the XY offset values to move the frame."
 L["PUSHBACK"] = "Detect Cast Pushbacks"
 L["PUSHBACK_TOOLTIP"] = [=[Enables detection for cast pushback and modifiers (i.e Curse of Tongues).
 
 This detection is not fully accurate as certain spells & talents gives a chance to ignore pushback.
 ]=]
+L["REQUIRES_RESTART"] = "Disabling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
 L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
 L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show the cast information.
