@@ -230,6 +230,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.ICON_HIDE_BORDER,
                         type = "toggle",
                     },
+                    showIcon = {
+                        order = 5,
+                        width = "full",
+                        name = L.ICON_SHOW,
+                        type = "toggle",
+                    },
                 },
             },
 

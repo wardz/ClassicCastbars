@@ -80,3 +80,5 @@ L["TOGGLE_CASTBAR"] = "Enable Castbar"
 L["TOGGLE_CASTBAR_TOOLTIP"] = "Enables or disables castbar for this specific unit frame."
 L["WIDTH"] = "Castbar Width"
 L["WIDTH_TOOLTIP"] = "Sets the castbar width."
+
+L.ICON_SHOW = "Show Spell Icon"

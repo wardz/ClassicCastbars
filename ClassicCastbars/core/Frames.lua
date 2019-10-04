@@ -78,6 +78,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
     end
 
     castbar.Spark:SetHeight(db.height * 2.1)
+    castbar.Icon:SetShown(db.showIcon)
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
     castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
@@ -266,7 +267,7 @@ function addon:SkinPlayerCastbar()
     CastingBarFrame.Text:ClearAllPoints()
     CastingBarFrame.Text:SetPoint("CENTER")
     CastingBarFrame.Icon:ClearAllPoints()
-    CastingBarFrame.Icon:SetShown(db.enabled)
+    CastingBarFrame.Icon:SetShown(db.showIcon)
 
     if not CastingBarFrame.Background then
         for k, v in pairs({ CastingBarFrame:GetRegions() }) do
