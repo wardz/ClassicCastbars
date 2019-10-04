@@ -1290,6 +1290,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(6197)] = { 60, 6197 },      -- Eagle Eye
     [GetSpellInfo(1002)] = { 60, 1002 },      -- Eyes of the Beast
     [GetSpellInfo(1510)] = { 6, 1510 },       -- Volley
+    [GetSpellInfo(136)] = { 5, 136 },         -- Mend Pet
 
     -- MAGE
     [GetSpellInfo(5143)] = { 5, 5143, },       -- Arcane Missiles
