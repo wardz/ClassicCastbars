@@ -196,8 +196,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 disabled = ModuleIsDisabled,
 
                 args = {
-                    iconSize = {
+                    showIcon = {
                         order = 1,
+                        width = "full",
+                        name = L.ICON_SHOW,
+                        type = "toggle",
+                    },
+                    hideIconBorder = {
+                        order = 2,
+                        width = "full",
+                        name = L.ICON_HIDE_BORDER,
+                        type = "toggle",
+                    },
+                    iconSize = {
+                        order = 3,
                         name = L.ICON_SIZE,
                         desc = L.ICON_SIZE_TOOLTIP,
                         type = "range",
@@ -207,7 +219,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 1,
                     },
                     iconPositionX = {
-                        order = 2,
+                        order = 4,
                         name = L.ICON_POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
@@ -216,25 +228,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 5,
                     },
                     iconPositionY = {
-                        order = 3,
+                        order = 5,
                         name = L.ICON_POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -1000,
                         max = 1000,
                         bigStep = 5,
-                    },
-                    hideIconBorder = {
-                        order = 4,
-                        width = "full",
-                        name = L.ICON_HIDE_BORDER,
-                        type = "toggle",
-                    },
-                    showIcon = {
-                        order = 5,
-                        width = "full",
-                        name = L.ICON_SHOW,
-                        type = "toggle",
                     },
                 },
             },
