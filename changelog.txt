@@ -1,3 +1,10 @@
+v1.1.0:
+- Added option to hide spell icon.
+- Resetting all settings will now reload your UI if you have the player castbar module enabled.
+- Improved default settings for player castbar. This will affect fresh installs only unless you reset settings.
+- Fix some issues with player castbar test mode.
+
+
 v1.0.9:
 - Added options to modify player's own castbar. Let me know if there's any bugs and I'll fix it asap.
 - All options will now be greyed out if the current parent module is disabled.
