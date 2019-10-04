@@ -130,8 +130,17 @@ function TestMode:SetCastbarMovable(unitID, parent)
     end
 
     if unitID == "player" then
-        castbar:Show()
+        castbar.Text:SetText(dummySpellData.spellName)
+        castbar.Icon:SetTexture(dummySpellData.icon)
+        castbar.Flash:SetAlpha(0)
+        castbar.casting = nil
+		castbar.channeling = nil
+		castbar.holdTime = 0
+        castbar.fadeOut = nil
+        castbar.flash = nil
+        castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
         castbar:SetAlpha(1)
+        castbar:Show()
     else
         ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
@@ -146,6 +155,7 @@ function TestMode:SetCastbarImmovable(unitID)
     castbar.parent = nil
     castbar.isTesting = nil
     castbar:EnableMouse(false)
+    castbar.holdTime = 0
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)

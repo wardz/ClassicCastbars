@@ -18,6 +18,7 @@ globals = {
     "LibStub",
 
     -- WoW globals
+    "UIPARENT_MANAGED_FRAME_POSITIONS",
     "ReloadUI",
     "TargetFrame",
     "CastingBarFrame",
