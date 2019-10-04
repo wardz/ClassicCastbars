@@ -416,6 +416,7 @@ local function GetOptionsTable()
                 type = "execute",
                 confirm = true,
                 func = function()
+                    local shouldReloadUI = ClassicCastbars.db.player.enabled
                     -- Reset savedvariables to default
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
@@ -423,6 +424,10 @@ local function GetOptionsTable()
                     ClassicCastbars_TestMode:OnOptionChanged("nameplate")
                     ClassicCastbars_TestMode:OnOptionChanged("party")
                     ClassicCastbars_TestMode:OnOptionChanged("player")
+
+                    if shouldReloadUI then
+                        ReloadUI()
+                    end
                 end,
             },
         },
