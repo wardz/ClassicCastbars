@@ -288,7 +288,7 @@ function addon:SkinPlayerCastbar()
     if not db.autoPosition then
         local pos = db.position
         CastingBarFrame:SetAttribute("ignoreFramePositionManager", true)
-        CastingBarFrameManagedPosTable = UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame
+        CastingBarFrameManagedPosTable = CopyTable(UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame)
         UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
         CastingBarFrame:SetPoint(pos[1], UIParent, pos[2], pos[3])
     else
