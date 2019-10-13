@@ -457,18 +457,21 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if not isPlayer and not channelData then
             local cachedTime = npcCastTimeCache[srcName .. spellName]
             if not cachedTime then
-                local restoredStartTime = npcCastTimeCacheStart[srcGUID]
-                if restoredStartTime then
-                    local castTime = (GetTime() - restoredStartTime) * 1000
-                    local origCastTime = 0
-                    if spellID then
-                        local _, _, _, cTime = GetSpellInfo(spellID)
-                        origCastTime = cTime or 0
-                    end
+                local cast = activeTimers[srcGUID]
+                if not cast or (cast and not cast.currTimeModValue) then
+                    local restoredStartTime = npcCastTimeCacheStart[srcGUID]
+                    if restoredStartTime then
+                        local castTime = (GetTime() - restoredStartTime) * 1000
+                        local origCastTime = 0
+                        if spellID then
+                            local _, _, _, cTime = GetSpellInfo(spellID)
+                            origCastTime = cTime or 0
+                        end
 
-                    local castTimeDiff = abs(castTime - origCastTime)
-                    if castTimeDiff <= 4000 and castTimeDiff > 250 then -- heavy lag might affect this so only store time if the diff isn't too big
-                        npcCastTimeCache[srcName .. spellName] = castTime
+                        local castTimeDiff = abs(castTime - origCastTime)
+                        if castTimeDiff <= 4000 and castTimeDiff > 250 then -- heavy lag might affect this so only store time if the diff isn't too big
+                            npcCastTimeCache[srcName .. spellName] = castTime
+                        end
                     end
                 end
             end
