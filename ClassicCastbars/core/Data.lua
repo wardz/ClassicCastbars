@@ -1281,10 +1281,18 @@ namespace.channeledSpells = {
     [GetSpellInfo(13278)] = { 4, 13278 },     -- Gnomish Death Ray
     [GetSpellInfo(20577)] = { 10, 20577 },    -- Cannibalize
     [GetSpellInfo(10797)] = { 6, 10797 },     -- Starshards
+    [GetSpellInfo(16430)] = { 12, 16430 },    -- Soul Tap
+    [GetSpellInfo(24323)] = { 8, 24323 },     -- Blood Siphon
+    [GetSpellInfo(27640)] = { 3, 27640 },     -- Baron Rivendare's Soul Drain
+    [GetSpellInfo(7290)] = { 10, 7290 },      -- Soul Siphon
+    [GetSpellInfo(24322)] = { 8, 24322 },     -- Blood Siphon
+    [GetSpellInfo(27177)] = { 10, 27177 },    -- Defile
+    [GetSpellInfo(16045)] = { 30, 16045 },    -- Encage
 
     -- DRUID
     [GetSpellInfo(17401)] = { 10, 17401 },   -- Hurricane
     [GetSpellInfo(740)] = { 10, 740 },       -- Tranquility
+    [GetSpellInfo(20687)] = { 10, 20687 },   -- Starfall
 
     -- HUNTER
     [GetSpellInfo(6197)] = { 60, 6197 },      -- Eagle Eye
