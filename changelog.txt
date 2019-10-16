@@ -1,3 +1,9 @@
+v1.1.1:
+- Add some missing channeled spells for cast tracking.
+- Fix NPC cast times sometimes being incorrect after having been slowed on first cast detected.
+- Minor fixes to test mode unlock.
+
+
 v1.1.0:
 - Added option to hide spell icon.
 - Resetting all settings will now reload your UI if you have the player castbar module enabled.
