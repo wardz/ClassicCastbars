@@ -97,6 +97,14 @@ function TestMode:OnOptionChanged(unitID)
 end
 
 function TestMode:SetCastbarMovable(unitID, parent)
+    local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
+    if not parentFrame then
+        if unitID == "target" or unitID == "nameplate-testmode" then
+            print(_G.ERR_GENERIC_NO_TARGET)
+        end
+        return
+    end
+
     local castbar = ClassicCastbars:GetCastbarFrame(unitID)
     castbar:EnableMouse(true)
     castbar:SetMovable(true)
@@ -110,9 +118,6 @@ function TestMode:SetCastbarMovable(unitID, parent)
     -- Note: we use OnMouseX instead of OnDragX as it's more accurate
     castbar:SetScript("OnMouseDown", castbar.StartMoving)
     castbar:SetScript("OnMouseUp", OnDragStop)
-
-    local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
-    if not parentFrame then return end -- sanity check
 
     castbar._data = dummySpellData -- Set test data for :DisplayCastbar()
     castbar.parent = parentFrame
@@ -149,7 +154,9 @@ end
 function TestMode:SetCastbarImmovable(unitID)
     local castbar = ClassicCastbars:GetCastbarFrame(unitID)
     castbar:Hide()
-    castbar.tooltip:Hide()
+    if castbar.tooltip then
+        castbar.tooltip:Hide()
+    end
 
     castbar.unitID = nil
     castbar.parent = nil
@@ -159,7 +166,9 @@ function TestMode:SetCastbarImmovable(unitID)
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
-        parentFrame:Hide()
+        if parentFrame then
+            parentFrame:Hide()
+        end
     end
 end
 
