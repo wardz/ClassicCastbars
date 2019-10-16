@@ -60,8 +60,13 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
         end
 
         local frame = _G[name]
-        if frame and frame:IsVisible() then
-            return _G[name], name
+        if frame then
+            if unitType == "party" then
+                return _G[name], name
+            end
+            if frame:IsVisible() then
+                return _G[name], name
+            end
         end
     end
 end
