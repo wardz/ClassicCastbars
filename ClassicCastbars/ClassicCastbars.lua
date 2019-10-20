@@ -426,6 +426,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER_OR_PET) > 0
 
+        if srcGUID ~= self.PLAYER_GUID then
         if isPlayer then
             -- Use talent reduced cast time for certain player spells
             local reducedTime = castTimeTalentDecreases[spellName]
@@ -441,6 +442,12 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 castTime = cachedTime
             else
                 npcCastTimeCacheStart[srcGUID] = GetTime()
+            end
+        end
+        else
+            local _, _, _, startTime, endTime = CastingInfo()
+            if endTime and startTime then
+                castTime = endTime - startTime
             end
         end
 
