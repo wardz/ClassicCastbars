@@ -425,23 +425,23 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER_OR_PET) > 0
 
         if srcGUID ~= self.PLAYER_GUID then
-        if isPlayer then
-            -- Use talent reduced cast time for certain player spells
-            local reducedTime = castTimeTalentDecreases[spellName]
-            if reducedTime then
-                castTime = reducedTime
-            end
-        else
-            local cachedTime = npcCastTimeCache[srcName .. spellName]
-            if cachedTime then
-                -- Use cached time stored from earlier sightings for NPCs.
-                -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
-                -- 3.5 cast time but another lvl 40 mob might have 2.5 cast time instead for Frostbolt.
-                castTime = cachedTime
+            if isPlayer then
+                -- Use talent reduced cast time for certain player spells
+                local reducedTime = castTimeTalentDecreases[spellName]
+                if reducedTime then
+                    castTime = reducedTime
+                end
             else
-                npcCastTimeCacheStart[srcGUID] = GetTime()
+                local cachedTime = npcCastTimeCache[srcName .. spellName]
+                if cachedTime then
+                    -- Use cached time stored from earlier sightings for NPCs.
+                    -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
+                    -- 3.5 cast time but another lvl 40 mob might have 2.5 cast time instead for Frostbolt.
+                    castTime = cachedTime
+                else
+                    npcCastTimeCacheStart[srcGUID] = GetTime()
+                end
             end
-        end
         else
             local _, _, _, startTime, endTime = CastingInfo()
             if endTime and startTime then
@@ -587,8 +587,10 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
-                -- Delete cast incase stop event wasn't detected in CLEU
-                self:DeleteCast(cast.unitGUID, false, true, false, true)
+                if castTime <= -0.1 then -- wait atleast 0.1s before deleting incase CLEU stop event is happening at same time
+                    -- Delete cast incase stop event wasn't detected in CLEU
+                    self:DeleteCast(cast.unitGUID, false, true, false, true)
+                end
             end
         end
     end

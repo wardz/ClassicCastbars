@@ -222,9 +222,19 @@ function addon:HideCastbar(castbar, noFadeOut)
         castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
     end
 
-    --[[if cast and cast.isCastComplete and not cast.isChanneled then
+    if cast and cast.isCastComplete then
+        if castbar.Border:GetAlpha() == 1 then -- not using LSM borders
+            local tex = castbar.Border:GetTexture()
+            if tex == "Interface\\CastingBar\\UI-CastingBar-Border" or tex == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
+                castbar.Flash:SetSize(castbar:GetWidth(), castbar:GetHeight())
+                castbar.Flash:Show()
+            end
+        end
+
+        if not cast.isChanneled then
         castbar:SetStatusBarColor(0, 1, 0)
-    end]]
+        end
+    end
 
     UIFrameFadeOut(castbar, cast and cast.isInterrupted and 1.5 or 0.2, 1, 0)
 end
