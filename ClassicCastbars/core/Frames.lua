@@ -172,7 +172,7 @@ function addon:DisplayCastbar(castbar, unitID)
 
     if not castbar.Background then
         castbar.Background = GetStatusBarBackgroundTexture(castbar)
-        end
+    end
     castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 
     local cast = castbar._data
@@ -220,6 +220,9 @@ function addon:HideCastbar(castbar, noFadeOut)
     if cast and cast.isInterrupted then
         castbar.Text:SetText(_G.INTERRUPTED)
         castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
+        castbar:SetMinMaxValues(0, 1)
+        castbar:SetValue(1)
+        castbar.Spark:SetAlpha(0)
     end
 
     if cast and cast.isCastComplete then
@@ -232,7 +235,7 @@ function addon:HideCastbar(castbar, noFadeOut)
         end
 
         if not cast.isChanneled then
-        castbar:SetStatusBarColor(0, 1, 0)
+            castbar:SetStatusBarColor(0, 1, 0)
         end
     end
 
