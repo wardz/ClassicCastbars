@@ -34,6 +34,7 @@ L["HEIGHT_TOOLTIP"] = "Sets the castbar height."
 L["ICON_HIDE_BORDER"] = "Hide Icon Border"
 L["ICON_POS_X"] = "Icon Position X"
 L["ICON_POS_Y"] = "Icon Position Y"
+L["ICON_SHOW"] = "Show Spell Icon"
 L["ICON_SIZE"] = "Icon Size"
 L["ICON_SIZE_TOOLTIP"] = "Sets the size for the castbar spell icon."
 L["LSM_TEXTURE_NOTE"] = [=[
@@ -80,5 +81,3 @@ L["TOGGLE_CASTBAR"] = "Enable Castbar"
 L["TOGGLE_CASTBAR_TOOLTIP"] = "Enables or disables castbar for this specific unit frame."
 L["WIDTH"] = "Castbar Width"
 L["WIDTH_TOOLTIP"] = "Sets the castbar width."
-
-L.ICON_SHOW = "Show Spell Icon"

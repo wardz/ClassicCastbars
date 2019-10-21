@@ -249,11 +249,9 @@ function addon:ToggleUnitEvents(shouldReset)
     if self.db.party.enabled then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")
         self:RegisterEvent("GROUP_JOINED")
-        self:RegisterEvent("GROUP_LEFT")
     else
         self:UnregisterEvent("GROUP_ROSTER_UPDATE")
         self:UnregisterEvent("GROUP_JOINED")
-        self:UnregisterEvent("GROUP_LEFT") -- TODO: check if needed
     end
 
     if shouldReset then
@@ -567,7 +565,6 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     -- Update all shown castbars in a single OnUpdate call
     for unit, castbar in pairs(activeFrames) do
         local cast = castbar._data
-
         if cast then
             local castTime = cast.endTime - currTime
 
