@@ -264,6 +264,15 @@ function addon:SkinPlayerCastbar()
     end
     CastingBarFrame.Timer:SetShown(db.showTimer)
 
+    if not CastingBarFrame.CC_OnShowHooked then
+        CastingBarFrame:HookScript("OnShow", function(frame)
+            if frame.Icon:GetTexture() == 136235 then
+                frame.Icon:SetTexture(136243)
+            end
+        end)
+        CastingBarFrame.CC_OnShowHooked = true
+    end
+
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
         CastingBarFrame.Flash:SetSize(db.width + 61, db.height + 51)
         CastingBarFrame.Flash:SetPoint("TOP", 0, 26)
