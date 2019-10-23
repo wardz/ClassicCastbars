@@ -1,3 +1,10 @@
+v1.1.2:
+- When targetting yourself the addon will now check for spell rank used to base its cast time.
+- Castbar now has a flash animation on cast successfully completed. (only when using default border textures)
+- Whole castbar will now be red when cast is interrupted instead of just current fill value.
+- Samwise Didier icon replaced with engineering icon.
+
+
 v1.1.1:
 - Add some missing channeled spells for cast tracking.
 - Fix NPC cast times sometimes being incorrect after having been slowed on first cast detected.
