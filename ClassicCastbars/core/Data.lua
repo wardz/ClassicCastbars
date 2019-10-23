@@ -1192,7 +1192,6 @@ namespace.channeledSpells = {
     [GetSpellInfo(7290)] = { 10, 7290 },      -- Soul Siphon
     [GetSpellInfo(24322)] = { 8, 24322 },     -- Blood Siphon
     [GetSpellInfo(27177)] = { 10, 27177 },    -- Defile
-    [GetSpellInfo(16045)] = { 30, 16045 },    -- Encage
 
     -- DRUID
     [GetSpellInfo(17401)] = { 10, 17401 },   -- Hurricane
