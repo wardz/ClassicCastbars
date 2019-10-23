@@ -587,7 +587,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
-                if castTime <= -0.1 then -- wait atleast 0.1s before deleting incase CLEU stop event is happening at same time
+                if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
                     -- Delete cast incase stop event wasn't detected in CLEU
                     self:DeleteCast(cast.unitGUID, false, true, false, true)
                 end
