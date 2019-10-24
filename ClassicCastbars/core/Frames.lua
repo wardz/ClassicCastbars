@@ -93,6 +93,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
 
         -- Update border to match castbar size
         local width, height = castbar:GetWidth() * 1.16, castbar:GetHeight() * 1.16
+        castbar.Border:ClearAllPoints()
         castbar.Border:SetPoint("TOPLEFT", width, height)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
     else
@@ -263,13 +264,21 @@ function addon:SkinPlayerCastbar()
     end
     CastingBarFrame.Timer:SetShown(db.showTimer)
 
-    if not CastingBarFrame.CC_OnShowHooked then
+    if not CastingBarFrame.CC_isHooked then
         CastingBarFrame:HookScript("OnShow", function(frame)
             if frame.Icon:GetTexture() == 136235 then
                 frame.Icon:SetTexture(136243)
             end
         end)
-        CastingBarFrame.CC_OnShowHooked = true
+
+        hooksecurefunc("PlayerFrame_DetachCastBar", function()
+            addon:SkinPlayerCastbar()
+        end)
+
+        hooksecurefunc("PlayerFrame_AttachCastBar", function()
+            addon:SkinPlayerCastbar()
+        end)
+        CastingBarFrame.CC_isHooked = true
     end
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
@@ -292,7 +301,6 @@ function addon:SkinPlayerCastbar()
     CastingBarFrame.Text:SetPoint("CENTER")
     CastingBarFrame.Icon:ClearAllPoints()
     CastingBarFrame.Icon:SetShown(db.showIcon)
-    CastingBarFrame:ClearAllPoints()
 
     if not CastingBarFrame.Background then
         CastingBarFrame.Background = GetStatusBarBackgroundTexture(CastingBarFrame)
@@ -300,6 +308,7 @@ function addon:SkinPlayerCastbar()
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 
     if not db.autoPosition then
+        CastingBarFrame:ClearAllPoints()
         CastingBarFrame:SetAttribute("ignoreFramePositionManager", true)
         CastingBarFrameManagedPosTable = CastingBarFrameManagedPosTable or CopyTable(UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame)
         UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
@@ -307,9 +316,12 @@ function addon:SkinPlayerCastbar()
         local pos = db.position
         CastingBarFrame:SetPoint(pos[1], UIParent, pos[2], pos[3])
     else
-        CastingBarFrame:SetAttribute("ignoreFramePositionManager", false)
-        UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = CastingBarFrameManagedPosTable
-        CastingBarFrame:SetPoint("BOTTOM", UIParent, 0, 150)
+        UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame or CastingBarFrameManagedPosTable
+        if not _G.PLAYER_FRAME_CASTBARS_SHOWN then
+            CastingBarFrame:SetAttribute("ignoreFramePositionManager", false)
+            CastingBarFrame:ClearAllPoints()
+            CastingBarFrame:SetPoint("BOTTOM", UIParent, 0, 150)
+        end
     end
 
     self:SetCastbarStyle(CastingBarFrame, nil, db)

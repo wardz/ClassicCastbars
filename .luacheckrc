@@ -19,6 +19,7 @@ globals = {
 
     -- WoW globals
     "UIPARENT_MANAGED_FRAME_POSITIONS",
+    "hooksecurefunc",
     "ReloadUI",
     "TargetFrame",
     "CastingBarFrame",
