@@ -48,6 +48,9 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
 
     if castbar.Text:GetText() ~= spellName then
+        if cast.icon == 136235 then
+            cast.icon = 136243
+        end
         castbar.Icon:SetTexture(cast.icon)
         castbar.Text:SetText(spellName)
 
