@@ -1,3 +1,8 @@
+v1.1.3:
+- Fix player castbar breaking when using "Cast Bar Underneath" option.
+- Replace Samwise Didier icon with engineering icon for non-player castbar aswell.
+
+
 v1.1.2:
 - When targetting yourself the addon will now check for spell rank used to base its cast time.
 - Castbar now has a flash animation on cast successfully completed. (only when using default border textures)
