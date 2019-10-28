@@ -1,4 +1,5 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("ClassicCastbars", "esMX")
+if not L then return end
 
 --[[
     Want to help translate ClassicCastbars?
