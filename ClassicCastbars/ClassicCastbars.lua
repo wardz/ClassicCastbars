@@ -16,6 +16,7 @@ local npcCastTimeCache = {}
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
+addon.activeTimers = activeTimers
 namespace.addon = addon
 ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
@@ -38,7 +39,7 @@ local castTimeIncreases = namespace.castTimeIncreases
 
 function addon:CheckCastModifier(unitID, cast)
     if not self.db.pushbackDetect then return end
-    if not cast or cast.isChanneled or cast.hasCastModified then return end
+    if not cast or cast.isChanneled or cast.hasCastModified or cast.skipCastModifier then return end
 
     local highestSlow = 0
     for i = 1, 16 do
@@ -46,7 +47,7 @@ function addon:CheckCastModifier(unitID, cast)
         if not spellID then break end -- no more debuffs
 
         local slow = castTimeIncreases[spellID]
-        if slow and slow > highestSlow then
+        if slow and slow > highestSlow then -- might be several slow debuffs
             highestSlow = slow
         end
     end
@@ -116,6 +117,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
     cast.timeStart = currTime
     cast.isPlayer = isPlayer
     cast.hasCastModified = nil
+    cast.skipCastModifier = nil
     cast.pushbackValue = nil
     cast.showCastInfoOnly = nil
     cast.isInterrupted = nil
@@ -435,6 +437,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if crowdControls[spellName] then
             -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
+        elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
+            activeTimers[dstGUID].skipCastModifier = true
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL_CAST_* event for channel stop,

@@ -1230,19 +1230,6 @@ namespace.channeledSpells = {
 -- Value here is the slow percentage.
 -- TODO: check if these also affect Aimed Shot/Volley + bosses
 namespace.castTimeIncreases = {
-    -- WARLOCK
-    [1714] = 50,    -- Curse of Tongues Rank 1
-    [11719] = 60,   -- Curse of Tongues Rank 2
-    [1098] = 30,    -- Enslave Demon Rank 1
-    [11725] = 30,   -- Enslave Demon Rank 2
-    [11726] = 30,   -- Enslave Demon Rank 3
-
-    -- ROGUE
-    [5760] = 40,    -- Mind-Numbing Poison Rank 1
-    [8692] = 50,    -- Mind-Numbing Poison Rank 2
-    [25810] = 50,   -- Mind-Numbing Poison Rank 2 incorrect?
-    [11398] = 60,   -- Mind-Numbing Poison Rank 3
-
     -- ITEMS
     [17331] = 10,   -- Fang of the Crystal Spider
 
@@ -1267,7 +1254,26 @@ namespace.castTimeIncreases = {
     [12889] = 50,   -- Curse of Tongues
     [15470] = 50,   -- Curse of Tongues
     [25195] = 75,   -- Curse of Tongues
+
+    -- WARLOCK
+    [1714] = 50,    -- Curse of Tongues Rank 1
+    [11719] = 60,   -- Curse of Tongues Rank 2
+    [1098] = 30,    -- Enslave Demon Rank 1
+    [11725] = 30,   -- Enslave Demon Rank 2
+    [11726] = 30,   -- Enslave Demon Rank 3
+
+    -- ROGUE
+    [5760] = 40,    -- Mind-Numbing Poison Rank 1
+    [8692] = 50,    -- Mind-Numbing Poison Rank 2
+    [25810] = 50,   -- Mind-Numbing Poison Rank 2 incorrect?
+    [11398] = 60,   -- Mind-Numbing Poison Rank 3
 }
+
+-- Store both spellID and spell name in this table since UnitAura returns spellIDs but combat log doesn't.
+-- Order here is important so we only store highest rank for spell names
+for spellID, slowPercentage in ipairs(namespace.castTimeIncreases) do
+    namespace.castTimeIncreases[GetSpellInfo(spellID)] = slowPercentage
+end
 
 -- Spells that have cast time reduced by talents.
 namespace.castTimeTalentDecreases = {
