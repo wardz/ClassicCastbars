@@ -1179,7 +1179,7 @@ C_Timer.After(0.1, BuildSpellNameToSpellIDTable) -- run asap once the current ca
 -- GetSpellInfo doesn't return any cast time for channeled casts.
 -- value[1] is the cast time in seconds, value[2] is the spell ID used to retrive
 -- spell icon later on.
--- TODO: merge with main spell table and just store the cast time here as table value
+-- TODO: merge with main spell table and just store the cast time here as value
 namespace.channeledSpells = {
     -- MISC
     [GetSpellInfo(746)] = { 8, 746 },         -- First Aid
@@ -1227,35 +1227,46 @@ namespace.channeledSpells = {
 }
 
 -- List of abilities that increases cast time (reduces speed)
--- Value here is the slow percentage, from highest spell rank.
+-- Value here is the slow percentage.
 -- TODO: check if these also affect Aimed Shot/Volley + bosses
 namespace.castTimeIncreases = {
     -- WARLOCK
-    [GetSpellInfo(1714)] = 60,    -- Curse of Tongues
-    [GetSpellInfo(1098)] = 30,    -- Enslave Demon
+    [1714] = 50,    -- Curse of Tongues Rank 1
+    [11719] = 60,   -- Curse of Tongues Rank 2
+    [1098] = 30,    -- Enslave Demon Rank 1
+    [11725] = 30,   -- Enslave Demon Rank 2
+    [11726] = 30,   -- Enslave Demon Rank 3
 
     -- ROGUE
-    [GetSpellInfo(5760)] = 60,    -- Mind-Numbing Poison
+    [5760] = 40,    -- Mind-Numbing Poison Rank 1
+    [8692] = 50,    -- Mind-Numbing Poison Rank 2
+    [25810] = 50,   -- Mind-Numbing Poison Rank 2 incorrect?
+    [11398] = 60,   -- Mind-Numbing Poison Rank 3
 
     -- ITEMS
-    [GetSpellInfo(17331)] = 10,   -- Fang of the Crystal Spider
+    [17331] = 10,   -- Fang of the Crystal Spider
 
     -- NPCS
-    [GetSpellInfo(7127)] = 20,    -- Wavering Will
-    [GetSpellInfo(7102)] = 25,    -- Contagion of Rot
-    [GetSpellInfo(3603)] = 35,    -- Distracting Pain
-    [GetSpellInfo(8140)] = 50,    -- Befuddlement
-    [GetSpellInfo(8272)] = 20,    -- Mind Tremor
-    [GetSpellInfo(12255)] = 15,   -- Curse of Tuten'kash
-    [GetSpellInfo(10651)] = 20,   -- Curse of the Eye
-    [GetSpellInfo(14538)] = 35,   -- Aural Shock
-    [GetSpellInfo(22247)] = 80,   -- Suppression Aura
-    [GetSpellInfo(22642)] = 50,   -- Brood Power: Bronze
-    [GetSpellInfo(23153)] = 50,   -- Brood Power: Blue
-    [GetSpellInfo(24415)] = 50,   -- Slow
-    [GetSpellInfo(19365)] = 50,   -- Ancient Dread
-    [GetSpellInfo(28732)] = 25,   -- Widow's Embrace
-    [GetSpellInfo(22909)] = 50,   -- Eye of Immol'thar
+    [7127] = 20,    -- Wavering Will
+    [7102] = 25,    -- Contagion of Rot
+    [7103] = 25,    -- Contagion of Rot 2
+    [3603] = 35,    -- Distracting Pain
+    [8140] = 50,    -- Befuddlement
+    [8272] = 20,    -- Mind Tremor
+    [12255] = 15,   -- Curse of Tuten'kash
+    [10651] = 20,   -- Curse of the Eye
+    [14538] = 35,   -- Aural Shock
+    [22247] = 80,   -- Suppression Aura
+    [22642] = 50,   -- Brood Power: Bronze
+    [23153] = 50,   -- Brood Power: Blue
+    [24415] = 50,   -- Slow
+    [19365] = 50,   -- Ancient Dread
+    [28732] = 25,   -- Widow's Embrace
+    [22909] = 50,   -- Eye of Immol'thar
+    [13338] = 50,   -- Curse of Tongues
+    [12889] = 50,   -- Curse of Tongues
+    [15470] = 50,   -- Curse of Tongues
+    [25195] = 75,   -- Curse of Tongues
 }
 
 -- Spells that have cast time reduced by talents.
