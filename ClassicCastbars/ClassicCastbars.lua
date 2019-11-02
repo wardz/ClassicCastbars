@@ -52,7 +52,7 @@ function addon:CheckCastModifier(unitID, cast)
     end
 
     if highestSlow > 0 then
-        cast.endTime = cast.startTime + (cast.endTime - cast.startTime) * ((highestSlow / 100) + 1)
+        cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((highestSlow / 100) + 1)
         cast.hasCastModified = true
     end
 end
