@@ -245,7 +245,6 @@ function addon:HideCastbar(castbar, noFadeOut)
     UIFrameFadeOut(castbar, cast and cast.isInterrupted and 1.5 or 0.2, 1, 0)
 end
 
-local CastingBarFrameManagedPosTable
 function addon:SkinPlayerCastbar()
     local db = self.db.player
     if not db.enabled then return end
@@ -312,16 +311,13 @@ function addon:SkinPlayerCastbar()
 
     if not db.autoPosition then
         CastingBarFrame:ClearAllPoints()
-        CastingBarFrame:SetAttribute("ignoreFramePositionManager", true)
-        CastingBarFrameManagedPosTable = CastingBarFrameManagedPosTable or CopyTable(UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame)
-        UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = nil
+        CastingBarFrame.ignoreFramePositionManager = true
 
         local pos = db.position
         CastingBarFrame:SetPoint(pos[1], UIParent, pos[2], pos[3])
     else
-        UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame = UIPARENT_MANAGED_FRAME_POSITIONS.CastingBarFrame or CastingBarFrameManagedPosTable
         if not _G.PLAYER_FRAME_CASTBARS_SHOWN then
-            CastingBarFrame:SetAttribute("ignoreFramePositionManager", false)
+            CastingBarFrame.ignoreFramePositionManager = false
             CastingBarFrame:ClearAllPoints()
             CastingBarFrame:SetPoint("BOTTOM", UIParent, 0, 150)
         end
