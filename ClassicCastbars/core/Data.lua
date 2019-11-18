@@ -1272,9 +1272,10 @@ namespace.castTimeIncreases = {
 }
 
 -- Store both spellID and spell name in this table since UnitAura returns spellIDs but combat log doesn't.
--- Order here is important so we only store highest rank for spell names
-for spellID, slowPercentage in ipairs(namespace.castTimeIncreases) do
+for spellID, slowPercentage in pairs(namespace.castTimeIncreases) do
+    if GetSpellInfo(spellID) then
     namespace.castTimeIncreases[GetSpellInfo(spellID)] = slowPercentage
+end
 end
 
 -- Spells that have cast time reduced by talents.
