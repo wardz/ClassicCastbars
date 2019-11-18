@@ -1254,6 +1254,7 @@ namespace.castTimeIncreases = {
     [12889] = 50,   -- Curse of Tongues
     [15470] = 50,   -- Curse of Tongues
     [25195] = 75,   -- Curse of Tongues
+    [10653] = 20,   -- Curse of the Eye
 
     -- WARLOCK
     [1714] = 50,    -- Curse of Tongues Rank 1
@@ -1261,6 +1262,7 @@ namespace.castTimeIncreases = {
     [1098] = 30,    -- Enslave Demon Rank 1
     [11725] = 30,   -- Enslave Demon Rank 2
     [11726] = 30,   -- Enslave Demon Rank 3
+    [20882] = 30,   -- Enslave Demon (NPC?)
 
     -- ROGUE
     [5760] = 40,    -- Mind-Numbing Poison Rank 1
