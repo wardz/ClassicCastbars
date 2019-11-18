@@ -1497,6 +1497,22 @@ namespace.crowdControls = {
     [GetSpellInfo(16838)] = 1,      -- Banshee Shriek
 }
 
+-- Skip pushback calculation for these spells since they
+-- have 70% chance to ignore pushback when talented
+namespace.pushbackBlacklist = {
+    [GetSpellInfo(1064)] = 1, -- Chain Heal
+    [GetSpellInfo(25357)] = 1, -- Healing Wave
+    [GetSpellInfo(8004)] = 1, -- Lesser Healing Wave
+    [GetSpellInfo(2061)] = 1, -- Flash Heal
+    [GetSpellInfo(2054)] = 1, -- Heal
+    [GetSpellInfo(2050)] = 1, -- Lesser Heal
+    [GetSpellInfo(596)] = 1, -- Prayer of Healing
+    [GetSpellInfo(2060)] = 1, -- Greater Heal
+    [GetSpellInfo(19750)] = 1, -- Flash of Light
+    [GetSpellInfo(635)] = 1, -- Holy Light
+    -- Druid heals are afaik many times not talented so ignoring these
+}
+
 -- Addon Savedvariables
 namespace.defaultConfig = {
     version = "14", -- settings version
