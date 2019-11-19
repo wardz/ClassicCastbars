@@ -1,3 +1,11 @@
+v1.1.5:
+- Fix pushback being registered on pet castbars.
+- Fix incorrect cast time when targetting YOURSELF while under the effect of Curse of Tongues or similar abilities.
+- Fix a typo from previous version that caused cast time auto correction for NPCs being wrong while under the effect of Curse of Tongues, etc.
+- Barkskin, Focused Casting & Saving Grace is now taken into account for cast times/pushback when buffs are visible. (friendly units/Detect Magic)
+- Pushback for Shaman, Priest and Paladin healing spells are now ignored since these are very often talented to avoid pushback.
+
+
 v1.1.4:
 - Improved handling of cast time increases such as Curse of Tongues.
 - Fix taint when using player castbar.
