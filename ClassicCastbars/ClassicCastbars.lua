@@ -42,6 +42,7 @@ local FOCUSED_CASTING = GetSpellInfo(14743)
 local NATURES_GRACE = GetSpellInfo(16886)
 function addon:CheckCastModifier(unitID, cast)
     if not self.db.pushbackDetect or not cast then return end
+    if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified and not cast.skipCastSlowModifier then
@@ -51,6 +52,7 @@ function addon:CheckCastModifier(unitID, cast)
         local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
         if not spellID then break end -- no more debuffs
 
+            -- TODO: cast times reduced in multiplicative manner?
         local slow = castTimeIncreases[spellID]
         if slow and slow > highestSlow then -- might be several slow debuffs
             highestSlow = slow
