@@ -1511,6 +1511,10 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(19750)] = 1, -- Flash of Light
     [GetSpellInfo(635)] = 1, -- Holy Light
     -- Druid heals are afaik many times not talented so ignoring these
+
+    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
 }
 
 -- Addon Savedvariables
