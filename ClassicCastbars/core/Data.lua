@@ -731,7 +731,6 @@ local castSpellIDs = {
     20051, -- Runed Arcanite Rod
     21403, -- Ryson's All Seeing Eye
     21425, -- Ryson's Eye in the Sky
-    1050, -- Sacrifice
     10459, -- Sacrifice Spinneret
     27832, -- Sageblade
     19566, -- Salt Shaker
@@ -1142,6 +1141,7 @@ local castSpellIDs = {
     24422, -- Zandalar Signet of Might
     24421, -- Zandalar Signet of Mojo
     24420, -- Zandalar Signet of Serenity
+    1050, -- Sacrifice (needs to be last for german clients, see issue #26)
     10181, -- Frostbolt (needs to be last for chinese clients, see issue #16)
 }
 
