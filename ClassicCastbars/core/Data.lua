@@ -1515,6 +1515,7 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
     [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(20589)] = 1,      -- Escape Artist
 }
 
 -- Addon Savedvariables
