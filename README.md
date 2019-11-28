@@ -1,6 +1,6 @@
 # ClassicCastbars
 
-Lightweight addon that adds casting bars to the target frame and nameplates in Classic World of Warcraft 1.13.x.  
+Lightweight addon that adds casting bars to nameplates and various unitframes in Classic World of Warcraft.
 
 ![Imgur](https://i.imgur.com/thxJqi6.jpg)
 

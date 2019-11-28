@@ -1228,7 +1228,6 @@ namespace.channeledSpells = {
 
 -- List of abilities that increases cast time (reduces speed)
 -- Value here is the slow percentage.
--- TODO: check if these also affect Aimed Shot/Volley + bosses
 namespace.castTimeIncreases = {
     -- ITEMS
     [17331] = 10,   -- Fang of the Crystal Spider
@@ -1278,7 +1277,7 @@ for spellID, slowPercentage in pairs(namespace.castTimeIncreases) do
 end
 end
 
--- Spells that have cast time reduced by talents.
+-- Spells that often have cast time reduced by talents.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 2000,      -- Lightning Bolt
     [GetSpellInfo(421)] = 1500,      -- Chain Lightning
@@ -1498,19 +1497,19 @@ namespace.crowdControls = {
 }
 
 -- Skip pushback calculation for these spells since they
--- have 70% chance to ignore pushback when talented
+-- have chance to ignore pushback when talented, or is always immune.
 namespace.pushbackBlacklist = {
-    [GetSpellInfo(1064)] = 1, -- Chain Heal
-    [GetSpellInfo(25357)] = 1, -- Healing Wave
-    [GetSpellInfo(8004)] = 1, -- Lesser Healing Wave
-    [GetSpellInfo(2061)] = 1, -- Flash Heal
-    [GetSpellInfo(2054)] = 1, -- Heal
-    [GetSpellInfo(2050)] = 1, -- Lesser Heal
-    [GetSpellInfo(596)] = 1, -- Prayer of Healing
-    [GetSpellInfo(2060)] = 1, -- Greater Heal
-    [GetSpellInfo(19750)] = 1, -- Flash of Light
-    [GetSpellInfo(635)] = 1, -- Holy Light
-    -- Druid heals are afaik many times not talented so ignoring these
+    [GetSpellInfo(1064)] = 1,       -- Chain Heal
+    [GetSpellInfo(25357)] = 1,      -- Healing Wave
+    [GetSpellInfo(8004)] = 1,       -- Lesser Healing Wave
+    [GetSpellInfo(2061)] = 1,       -- Flash Heal
+    [GetSpellInfo(2054)] = 1,       -- Heal
+    [GetSpellInfo(2050)] = 1,       -- Lesser Heal
+    [GetSpellInfo(596)] = 1,        -- Prayer of Healing
+    [GetSpellInfo(2060)] = 1,       -- Greater Heal
+    [GetSpellInfo(19750)] = 1,      -- Flash of Light
+    [GetSpellInfo(635)] = 1,        -- Holy Light
+    -- Druid heals are afaik many times not talented so ignoring them for now
 
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade

@@ -40,6 +40,7 @@ local pushbackBlacklist = namespace.pushbackBlacklist
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
 local NATURES_GRACE = GetSpellInfo(16886)
+
 function addon:CheckCastModifier(unitID, cast)
     if not self.db.pushbackDetect or not cast then return end
     if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
@@ -481,7 +482,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no SPELL_CAST_* event for channel stop,
-        -- so check if aura is gone instead since most (all?) channels has an aura effect.
+        -- so check if aura is gone instead since most channels has an aura effect.
         if channeledSpells[spellName] and srcGUID == dstGUID then
             return self:DeleteCast(srcGUID, nil, nil, true)
         end

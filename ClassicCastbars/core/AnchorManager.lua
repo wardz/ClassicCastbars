@@ -65,7 +65,7 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
                 return _G[name], name
             end
 
-            if frame:IsVisible() then
+            if frame:IsVisible() then -- unit frame exists and also is in use
                 return _G[name], name
             end
         end
