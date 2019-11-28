@@ -398,7 +398,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if not spellID then return end
 
         local _, _, icon, castTime = GetSpellInfo(spellID)
-        if not castTime or castTime < 300 then return end
+        if not castTime then return end
 
         -- is player or player pet or mind controlled
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0
