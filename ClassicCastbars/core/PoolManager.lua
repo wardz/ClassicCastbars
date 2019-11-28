@@ -42,6 +42,7 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Text:SetPoint("CENTER")
 
     -- Clear any scripts inherited from frame template
+    frame:UnregisterAllEvents()
     frame:SetScript("OnLoad", nil)
     frame:SetScript("OnEvent", nil)
     frame:SetScript("OnUpdate", nil)
