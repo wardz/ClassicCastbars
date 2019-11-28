@@ -431,14 +431,14 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
         return self:StoreCast(srcGUID, spellName, icon, castTime, isPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
-        local channelData = channeledSpells[spellName]
+        local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
-        if not channelData and not spellID then return end
+        if not channelCast and not spellID then return end
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0
 
         -- Auto correct cast times for mobs
-        if not isPlayer and not channelData then
+        if not isPlayer and not channelCast then
             if strfind(srcGUID, "Player-") then return end -- incase player is mind controlled by NPC
 
             local cachedTime = npcCastTimeCache[srcName .. spellName]
@@ -465,11 +465,11 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
-        if channelData then
+        if channelCast then
             -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
             if spellName == ARCANE_MISSILES and activeTimers[srcGUID] and activeTimers[srcGUID].spellName == ARCANE_MISSILES then return end
 
-            return self:StoreCast(srcGUID, spellName, GetSpellTexture(channelData[2]), channelData[1] * 1000, isPlayer, true)
+            return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), channelCast, isPlayer, true)
         end
 
         -- non-channeled spell, finish it.
