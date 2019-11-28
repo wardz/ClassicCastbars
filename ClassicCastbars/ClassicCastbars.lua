@@ -439,6 +439,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         -- Auto correct cast times for mobs
         if not isPlayer and not channelData then
+            if strfind(srcGUID, "Player-") then return end -- incase player is mind controlled by NPC
+
             local cachedTime = npcCastTimeCache[srcName .. spellName]
             if not cachedTime then
                 local cast = activeTimers[srcGUID]
