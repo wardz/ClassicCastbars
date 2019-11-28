@@ -439,8 +439,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         -- Auto correct cast times for mobs
         if not isPlayer and not channelCast then
-            if strfind(srcGUID, "Player-") then return end -- incase player is mind controlled by NPC
-
+            if not strfind(srcGUID, "Player-") then -- incase player is mind controlled by NPC
             local cachedTime = npcCastTimeCache[srcName .. spellName]
             if not cachedTime then
                 local cast = activeTimers[srcGUID]
@@ -461,6 +460,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     end
                 end
             end
+        end
         end
 
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
