@@ -1303,11 +1303,11 @@ namespace.castTimeIncreases = {
 
 -- Store both spellID and spell name in this table since UnitAura returns spellIDs but combat log doesn't.
 C_Timer.After(10, function()
-for spellID, slowPercentage in pairs(namespace.castTimeIncreases) do
-    if GetSpellInfo(spellID) then
-    namespace.castTimeIncreases[GetSpellInfo(spellID)] = slowPercentage
-end
-end
+    for spellID, slowPercentage in pairs(namespace.castTimeIncreases) do
+        if GetSpellInfo(spellID) then
+            namespace.castTimeIncreases[GetSpellInfo(spellID)] = slowPercentage
+        end
+    end
 end)
 
 -- Spells that often have cast time reduced by talents.
@@ -1546,7 +1546,7 @@ namespace.pushbackBlacklist = {
 
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
-    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
 }
 
@@ -1599,6 +1599,33 @@ namespace.defaultConfig = {
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         hideIconBorder = false,
         position = { "CENTER", -18, -87 },
+        iconPositionX = -5,
+        iconPositionY = 0,
+        borderColor = { 1, 1, 1, 1 },
+        statusColor = { 1, 0.7, 0, 1 },
+        statusColorChannel = { 0, 1, 0, 1 },
+        textColor = { 1, 1, 1, 1 },
+        textPositionX = 0,
+        textPositionY = 0,
+        frameLevel = 10,
+        statusBackgroundColor = { 0, 0, 0, 0.535 },
+    },
+
+    focus = {
+        enabled = false,
+        width = 150,
+        height = 15,
+        iconSize = 16,
+        showCastInfoOnly = false,
+        showTimer = false,
+        showIcon = true,
+        autoPosition = true,
+        castFont = _G.STANDARD_TEXT_FONT,
+        castFontSize = 10,
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
+        hideIconBorder = false,
+        position = { "CENTER", -30, 90 },
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
