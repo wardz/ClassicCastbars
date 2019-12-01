@@ -9,6 +9,7 @@ local strfind = _G.string.find
 local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
+local ceil = _G.math.ceil
 local UnitExists = _G.UnitExists
 local UIFrameFadeOut = _G.UIFrameFadeOut
 local UIFrameFadeRemoveFrame = _G.UIFrameFadeRemoveFrame
@@ -95,7 +96,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
         end
 
         -- Update border to match castbar size
-        local width, height = castbar:GetWidth() * 1.16, castbar:GetHeight() * 1.16
+        local width, height = ceil(castbar:GetWidth() * 1.17), ceil(castbar:GetHeight() * 1.165)
         castbar.Border:ClearAllPoints()
         castbar.Border:SetPoint("TOPLEFT", width, height)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
