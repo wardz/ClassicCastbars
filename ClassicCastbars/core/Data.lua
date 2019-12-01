@@ -210,7 +210,7 @@ local castSpellIDs = {
     27723, -- Dark Desire
     19799, -- Dark Iron Bomb
     5268, -- Dark Iron Dwarf Disguise
-    16588, -- Dark Mending
+    19775, -- Dark Mending
     7106, -- Dark Restore
     3335, -- Dark Sludge
     16587, -- Dark Whispers
