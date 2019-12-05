@@ -37,8 +37,8 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Text:ClearAllPoints()
     frame.Icon:SetPoint("LEFT", frame, -15, 0)
     frame.Flash:ClearAllPoints()
-    frame.Flash:SetPoint("TOPLEFT", -20, 14)
-    frame.Flash:SetPoint("BOTTOMRIGHT", 20, -14)
+    frame.Flash:SetPoint("TOPLEFT", -24, 14)
+    frame.Flash:SetPoint("BOTTOMRIGHT", 24, -14)
     frame.Text:SetPoint("CENTER")
 
     -- Clear any scripts inherited from frame template
