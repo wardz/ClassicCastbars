@@ -21,6 +21,7 @@ globals = {
     "UIPARENT_MANAGED_FRAME_POSITIONS",
     "hooksecurefunc",
     "ReloadUI",
+    "UnitRace",
     "TargetFrame",
     "CastingBarFrame",
     "GetCVarBool",

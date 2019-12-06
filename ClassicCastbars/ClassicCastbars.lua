@@ -40,6 +40,9 @@ local pushbackBlacklist = namespace.pushbackBlacklist
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
 local NATURES_GRACE = GetSpellInfo(16886)
+local MIND_QUICKENING = GetSpellInfo(23723)
+local BLINDING_LIGHT = GetSpellInfo(23733)
+local BERSERKING = GetSpellInfo(20554)
 
 function addon:CheckCastModifier(unitID, cast)
     if not self.db.pushbackDetect or not cast then return end
@@ -69,9 +72,9 @@ function addon:CheckCastModifier(unitID, cast)
     -- Buffs
     -- These will only work for friendly units or if Detect Magic is on the unit
     -- We could detect buffs in the CLEU aswell but this'll have to do for now.
-    if cast.hasBarkskinModifier or cast.hasFocusedCastingModifier then return end
     local _, className = UnitClass(unitID)
-    if className == "DRUID" or className == "PRIEST" then
+    local _, raceFile = UnitRace(unitID)
+    if className == "DRUID" or className == "PRIEST" or className == "MAGE" or className == "PALADIN" or raceFile == "Troll" then
         for i = 1, 32 do
             local name = UnitAura(unitID, i, "HELPFUL")
             if not name then break end -- no more buffs
@@ -82,9 +85,11 @@ function addon:CheckCastModifier(unitID, cast)
             elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier then
                 cast.endTime = cast.endTime - 0.5
                 cast.hasNaturesGraceModifier = true
+            elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT or name == BERSERKING) and not cast.hasSpeedModifier then
+                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * ((name == BERSERKING and 10 or 33) / 100))
+                cast.hasSpeedModifier = true
             elseif name == FOCUSED_CASTING then
                 cast.hasFocusedCastingModifier = true
-                return
             end
         end
     end
@@ -152,6 +157,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
     cast.hasBarkskinModifier = nil
     cast.hasNaturesGraceModifier = nil
     cast.hasFocusedCastingModifier = nil
+    cast.hasSpeedModifier = nil
     cast.skipCastSlowModifier = nil
     cast.pushbackValue = nil
     cast.showCastInfoOnly = nil
@@ -444,7 +450,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             local cachedTime = npcCastTimeCache[srcName .. spellName]
             if not cachedTime then
                 local cast = activeTimers[srcGUID]
-                    if not cast or (cast and not cast.hasCastSlowModified) then
+                    if not cast or (cast and not cast.hasCastSlowModified and not cast.hasSpeedModifier) then
                     local restoredStartTime = npcCastTimeCacheStart[srcGUID]
                     if restoredStartTime then
                         local castTime = (GetTime() - restoredStartTime) * 1000
