@@ -208,7 +208,7 @@ local castSpellIDs = {
     21048, -- Curse of the Tribes
     5267, -- Dalaran Wizard Disguise
     27723, -- Dark Desire
-    19799, -- Dark Iron Bomb
+    19784, -- Dark Iron Bomb
     5268, -- Dark Iron Dwarf Disguise
     19775, -- Dark Mending
     7106, -- Dark Restore
@@ -1614,33 +1614,6 @@ namespace.defaultConfig = {
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         hideIconBorder = false,
         position = { "CENTER", -18, -87 },
-        iconPositionX = -5,
-        iconPositionY = 0,
-        borderColor = { 1, 1, 1, 1 },
-        statusColor = { 1, 0.7, 0, 1 },
-        statusColorChannel = { 0, 1, 0, 1 },
-        textColor = { 1, 1, 1, 1 },
-        textPositionX = 0,
-        textPositionY = 0,
-        frameLevel = 10,
-        statusBackgroundColor = { 0, 0, 0, 0.535 },
-    },
-
-    focus = {
-        enabled = false,
-        width = 150,
-        height = 15,
-        iconSize = 16,
-        showCastInfoOnly = false,
-        showTimer = false,
-        showIcon = true,
-        autoPosition = true,
-        castFont = _G.STANDARD_TEXT_FONT,
-        castFontSize = 10,
-        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
-        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
-        hideIconBorder = false,
-        position = { "CENTER", -30, 90 },
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
