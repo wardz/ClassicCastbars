@@ -50,21 +50,21 @@ function addon:CheckCastModifier(unitID, cast)
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified and not cast.skipCastSlowModifier then
-    local highestSlow = 0
+        local highestSlow = 0
 
-    for i = 1, 16 do
-        local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
-        if not spellID then break end -- no more debuffs
+        for i = 1, 16 do
+            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
+            if not spellID then break end -- no more debuffs
 
             -- TODO: cast times reduced in multiplicative manner?
-        local slow = castTimeIncreases[spellID]
-        if slow and slow > highestSlow then -- might be several slow debuffs
-            highestSlow = slow
+            local slow = castTimeIncreases[spellID]
+            if slow and slow > highestSlow then -- might be several slow debuffs
+                highestSlow = slow
+            end
         end
-    end
 
-    if highestSlow > 0 then
-        cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((highestSlow / 100) + 1)
+        if highestSlow > 0 then
+            cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((highestSlow / 100) + 1)
             cast.hasCastSlowModified = true
         end
     end
@@ -447,27 +447,27 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Auto correct cast times for mobs
         if not isPlayer and not channelCast then
             if not strfind(srcGUID, "Player-") then -- incase player is mind controlled by NPC
-            local cachedTime = npcCastTimeCache[srcName .. spellName]
-            if not cachedTime then
-                local cast = activeTimers[srcGUID]
+                local cachedTime = npcCastTimeCache[srcName .. spellName]
+                if not cachedTime then
+                    local cast = activeTimers[srcGUID]
                     if not cast or (cast and not cast.hasCastSlowModified and not cast.hasSpeedModifier) then
-                    local restoredStartTime = npcCastTimeCacheStart[srcGUID]
-                    if restoredStartTime then
-                        local castTime = (GetTime() - restoredStartTime) * 1000
-                        local origCastTime = 0
-                        if spellID then
-                            local _, _, _, cTime = GetSpellInfo(spellID)
-                            origCastTime = cTime or 0
-                        end
+                        local restoredStartTime = npcCastTimeCacheStart[srcGUID]
+                        if restoredStartTime then
+                            local castTime = (GetTime() - restoredStartTime) * 1000
+                            local origCastTime = 0
+                            if spellID then
+                                local _, _, _, cTime = GetSpellInfo(spellID)
+                                origCastTime = cTime or 0
+                            end
 
-                        local castTimeDiff = abs(castTime - origCastTime)
-                        if castTimeDiff <= 4000 and castTimeDiff > 250 then -- heavy lag might affect this so only store time if the diff isn't too big
-                            npcCastTimeCache[srcName .. spellName] = castTime
+                            local castTimeDiff = abs(castTime - origCastTime)
+                            if castTimeDiff <= 4000 and castTimeDiff > 250 then -- heavy lag might affect this so only store time if the diff isn't too big
+                                npcCastTimeCache[srcName .. spellName] = castTime
+                            end
                         end
                     end
                 end
             end
-        end
         end
 
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped
@@ -514,10 +514,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     return self:DeleteCast(dstGUID)
                 end
 
-            return self:CastPushback(dstGUID)
+                return self:CastPushback(dstGUID)
+            end
         end
     end
-end
 end
 
 local castStopBlacklist = {
