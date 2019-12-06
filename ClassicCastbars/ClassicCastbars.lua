@@ -82,7 +82,7 @@ function addon:CheckCastModifier(unitID, cast)
             if name == BARKSKIN and not cast.hasBarkskinModifier then
                 cast.endTime = cast.endTime + 1
                 cast.hasBarkskinModifier = true
-            elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier then
+            elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier and not cast.isChanneled then
                 cast.endTime = cast.endTime - 0.5
                 cast.hasNaturesGraceModifier = true
             elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT or name == BERSERKING) and not cast.hasSpeedModifier then
