@@ -238,8 +238,13 @@ function addon:HideCastbar(castbar, noFadeOut)
             end
         end
 
+        castbar.Spark:SetAlpha(0)
+        castbar:SetMinMaxValues(0, 1)
         if not cast.isChanneled then
             castbar:SetStatusBarColor(0, 1, 0)
+            castbar:SetValue(1)
+        else
+            castbar:SetValue(0)
         end
     end
 
