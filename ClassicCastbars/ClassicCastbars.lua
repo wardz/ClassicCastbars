@@ -32,6 +32,7 @@ local GetTime = _G.GetTime
 local max = _G.math.max
 local abs = _G.math.abs
 local next = _G.next
+local floor = _G.math.floor
 local GetUnitSpeed = _G.GetUnitSpeed
 local CastingInfo = _G.CastingInfo
 local castTimeIncreases = namespace.castTimeIncreases
@@ -204,6 +205,23 @@ function addon:CastPushback(unitGUID)
         cast.maxValue = cast.maxValue - (cast.maxValue * 25) / 100
         cast.endTime = cast.endTime - (cast.maxValue * 25) / 100
     end
+end
+
+local IsSpellKnown = _G.IsSpellKnown
+local function GetSpellCastTime(spellID)
+    local _, _, icon, castTime = GetSpellInfo(spellID)
+    if not castTime then return end
+
+    if IsSpellKnown(spellID) then
+        local _, _, _, hCastTime = GetSpellInfo(8690) -- Hearthstone, normal cast time 10s
+        if hCastTime and hCastTime ~= 10000 then -- If current cast time is not 10s it means the player has a casting speed modifier debuff applied on himself.
+            -- Since the return values by GetSpellInfo() from spells that the player has learned in their spellbook are affected by the slow,
+            -- we need to remove so it doesn't give slow modified casttimes for other peoples casts.
+            return floor(castTime * (hCastTime / 10000)), icon
+        end
+    end
+
+    return castTime, icon
 end
 
 function addon:ToggleUnitEvents(shouldReset)
@@ -404,7 +422,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local spellID = castedSpells[spellName]
         if not spellID then return end
 
-        local _, _, icon, castTime = GetSpellInfo(spellID)
+        local castTime, icon = GetSpellCastTime(spellID)
         if not castTime then return end
 
         -- is player or player pet or mind controlled
@@ -456,7 +474,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                             local castTime = (GetTime() - restoredStartTime) * 1000
                             local origCastTime = 0
                             if spellID then
-                                local _, _, _, cTime = GetSpellInfo(spellID)
+                                local cTime = GetSpellCastTime(spellID)
                                 origCastTime = cTime or 0
                             end
 
