@@ -84,9 +84,13 @@ function addon:SetCastbarStyle(castbar, cast, db)
 
     castbar.Spark:SetHeight(db.height * 2.1)
     castbar.Icon:SetShown(db.showIcon)
-    castbar.Icon:SetSize(db.iconSize, db.iconSize)
-    castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
+    castbar.Icon:SetSize(db.iconSize+1, db.iconSize+1)
+    castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize - 2, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
+
+    castbar.Flash:ClearAllPoints()
+    castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height-1)
+    castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height-1)
 
     if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" then -- default border
         castbar.Border:SetAlpha(1)
@@ -96,7 +100,7 @@ function addon:SetCastbarStyle(castbar, cast, db)
         end
 
         -- Update border to match castbar size
-        local width, height = ceil(castbar:GetWidth() * 1.17), ceil(castbar:GetHeight() * 1.165)
+        local width, height = ceil(castbar:GetWidth() * 1.16), ceil(castbar:GetHeight() * 1.16)
         castbar.Border:ClearAllPoints()
         castbar.Border:SetPoint("TOPLEFT", width, height)
         castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
