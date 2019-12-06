@@ -1551,6 +1551,20 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
 }
 
+-- Casts that should be stopped on damage received
+namespace.stopCastOnDamageList = {
+    [GetSpellInfo(8690)] = 1, -- Hearthstone
+    [GetSpellInfo(5784)] = 1, -- Summon Felsteed
+    [GetSpellInfo(23161)] = 1, -- Summon Dreadsteed
+    [GetSpellInfo(13819)] = 1, -- Summon Warhorse
+    [GetSpellInfo(23214)] = 1, -- Summon Charger
+    [GetSpellInfo(2006)] = 1, -- Resurrection
+    [GetSpellInfo(2008)] = 1, -- Ancestral Spirit
+    [GetSpellInfo(7328)] = 1, -- Redemption
+    [GetSpellInfo(22999)] = 1, -- Defibrillate
+    -- First Aid not included here since we track aura removed
+}
+
 -- Addon Savedvariables
 namespace.defaultConfig = {
     version = "14", -- settings version

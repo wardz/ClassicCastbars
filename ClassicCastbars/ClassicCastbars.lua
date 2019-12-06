@@ -388,6 +388,7 @@ local channeledSpells = namespace.channeledSpells
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
+local stopCastOnDamageList = namespace.stopCastOnDamageList
 local ARCANE_MISSILES = GetSpellInfo(5143)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
@@ -443,7 +444,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             local cachedTime = npcCastTimeCache[srcName .. spellName]
             if not cachedTime then
                 local cast = activeTimers[srcGUID]
-                if not cast or (cast and not cast.hasCastSlowModified and not cast.hasBarkskinModifier and not cast.hasFocusedCastingModifier and not cast.hasNaturesGraceModifier) then
+                    if not cast or (cast and not cast.hasCastSlowModified) then
                     local restoredStartTime = npcCastTimeCacheStart[srcGUID]
                     if restoredStartTime then
                         local castTime = (GetTime() - restoredStartTime) * 1000
@@ -501,9 +502,16 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player, and not pet
+            local cast = activeTimers[dstGUID]
+            if cast then
+                if stopCastOnDamageList[cast.spellName] then
+                    return self:DeleteCast(dstGUID)
+                end
+
             return self:CastPushback(dstGUID)
         end
     end
+end
 end
 
 local castStopBlacklist = {
