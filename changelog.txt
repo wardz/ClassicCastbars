@@ -4,6 +4,7 @@ v1.1.7:
   Note that Berserking is set to always use 10% speed as the actual percentage can't really be tracked accurately.
 - Castbar will now be stopped for hearthstone, resurrection and summon mount abilities when the caster receives non-DoT attacks.
 - Adjusted castbar border and flash animation to be more pixel perfect. (Might still be off for certain sizes but should be way better now hopefully)
+- Add War Stomp to pushback ignore list.
 - Fix "Sacrifice" cast not showing up for certain locales like Deutsch.
 - Fix Nature's Grace reducing cast time for channels.
 - Fix incorrect cast time for Dark Iron Bomb.
