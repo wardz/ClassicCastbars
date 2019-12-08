@@ -3,6 +3,7 @@ v1.1.7:
 - Mind Quickening Gem, Berserking and Blinding Light cast speed increases are now taken into account when target buffs are visible. (friendly units/Detect Magic)
   Note that Berserking is set to always use 10% speed as the actual percentage can't really be tracked accurately.
 - Castbar will now be stopped for hearthstone, resurrection and summon mount abilities when the caster receives non-DoT attacks.
+- Castbar will now be stopped on any new ability used if the addon failed to detect a fakecast earlier.
 - Adjusted castbar border and flash animation to be more pixel perfect. (Might still be off for certain sizes but should be way better now hopefully)
 - Add War Stomp to pushback ignore list.
 - Fix "Sacrifice" cast not showing up for certain locales like Deutsch.
