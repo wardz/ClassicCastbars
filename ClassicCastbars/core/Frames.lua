@@ -252,7 +252,9 @@ function addon:HideCastbar(castbar, noFadeOut)
         end
     end
 
-    UIFrameFadeOut(castbar, cast and cast.isInterrupted and 1.5 or 0.2, 1, 0)
+    if castbar:GetAlpha() > 0 then
+        UIFrameFadeOut(castbar, cast and cast.isInterrupted and 1.5 or 0.2, 1, 0)
+    end
 end
 
 function addon:SkinPlayerCastbar()
