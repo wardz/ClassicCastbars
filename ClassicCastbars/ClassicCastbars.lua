@@ -458,7 +458,13 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
-        if not channelCast and not spellID then return end
+        if not channelCast and not spellID then
+            -- Stop cast on new ability used while castbar is shown
+            if activeTimers[srcGUID] and GetTime() - activeTimers[srcGUID].timeStart > 0.2 then
+                return self:StopAllCasts(srcGUID)
+            end
+            return
+        end
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0
 
