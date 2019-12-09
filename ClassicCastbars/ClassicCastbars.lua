@@ -549,6 +549,7 @@ local castStopBlacklist = {
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
     [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(6405)] = 1,       -- Furgbolg Form
 }
 
 local refresh = 0
