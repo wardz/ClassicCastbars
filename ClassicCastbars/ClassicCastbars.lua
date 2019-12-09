@@ -207,12 +207,12 @@ function addon:CastPushback(unitGUID)
     end
 end
 
-local IsSpellKnown = _G.IsSpellKnown
-local function GetSpellCastTime(spellID)
+local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
+local function GetSpellCastInfo(spellID)
     local _, _, icon, castTime = GetSpellInfo(spellID)
     if not castTime then return end
 
-    if IsSpellKnown(spellID) then
+    if not unaffectedCastModsSpells[spellID] then
         local _, _, _, hCastTime = GetSpellInfo(8690) -- Hearthstone, normal cast time 10s
         if hCastTime and hCastTime ~= 10000 then -- If current cast time is not 10s it means the player has a casting speed modifier debuff applied on himself.
             -- Since the return values by GetSpellInfo() are affected by the modifier, we need to remove so it doesn't give modified casttimes for other peoples casts.
@@ -421,7 +421,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local spellID = castedSpells[spellName]
         if not spellID then return end
 
-        local castTime, icon = GetSpellCastTime(spellID)
+        local castTime, icon = GetSpellCastInfo(spellID)
         if not castTime then return end
 
         -- is player or player pet or mind controlled
@@ -479,7 +479,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                             local castTime = (GetTime() - restoredStartTime) * 1000
                             local origCastTime = 0
                             if spellID then
-                                local cTime = GetSpellCastTime(spellID)
+                                local cTime = GetSpellCastInfo(spellID)
                                 origCastTime = cTime or 0
                             end
 
