@@ -37,6 +37,7 @@ local GetUnitSpeed = _G.GetUnitSpeed
 local CastingInfo = _G.CastingInfo
 local castTimeIncreases = namespace.castTimeIncreases
 local pushbackBlacklist = namespace.pushbackBlacklist
+local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
 
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
@@ -48,6 +49,7 @@ local BERSERKING = GetSpellInfo(20554)
 function addon:CheckCastModifier(unitID, cast)
     if not self.db.pushbackDetect or not cast then return end
     if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
+    if unaffectedCastModsSpells[cast.spellID] then return end
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified and not cast.skipCastSlowModifier then
@@ -138,7 +140,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
 end
 
 -- Store new cast data for unit, and start castbar(s)
-function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlayer, isChanneled)
+function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
     if not activeTimers[unitGUID] then
@@ -147,6 +149,7 @@ function addon:StoreCast(unitGUID, spellName, iconTexturePath, castTime, isPlaye
 
     local cast = activeTimers[unitGUID]
     cast.spellName = spellName
+    cast.spellID = spellID
     cast.icon = iconTexturePath
     cast.maxValue = castTime / 1000
     cast.endTime = currTime + (castTime / 1000)
@@ -207,7 +210,6 @@ function addon:CastPushback(unitGUID)
     end
 end
 
-local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
 local function GetSpellCastInfo(spellID)
     local _, _, icon, castTime = GetSpellInfo(spellID)
     if not castTime then return end
@@ -453,7 +455,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, spellName, icon, castTime, isPlayer)
+        return self:StoreCast(srcGUID, spellName, spellID, icon, castTime, isPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
@@ -499,7 +501,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
             if spellName == ARCANE_MISSILES and activeTimers[srcGUID] and activeTimers[srcGUID].spellName == ARCANE_MISSILES then return end
 
-            return self:StoreCast(srcGUID, spellName, GetSpellTexture(spellID), channelCast, isPlayer, true)
+            return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
         end
 
         -- non-channeled spell, finish it.
