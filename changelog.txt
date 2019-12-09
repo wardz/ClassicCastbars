@@ -1,3 +1,8 @@
+v1.1.8:
+- Hotfix for a minor oversight in v1.1.7.
+- Added blacklist for spells that can't have its cast time modified.
+
+
 v1.1.7:
 - The spell "Dark Mending" now shows a 2.0s default cast time instead of 3.5s since this one is the most used.
 - Mind Quickening Gem, Berserking and Blinding Light cast speed increases are now taken into account when target buffs are visible. (friendly units/Detect Magic)
