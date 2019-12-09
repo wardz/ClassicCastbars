@@ -124,13 +124,14 @@ function addon:SetLSMBorders(castbar, cast, db)
     end
 
     -- Apply backdrop if it isn't already active
-    if castbar.BorderFrame.currentTexture ~= db.castBorder then
+    if castbar.BorderFrame.currentTexture ~= db.castBorder or castbar:GetHeight() ~= castbar.BorderFrame.currentHeight then
         castbar.BorderFrame:SetBackdrop({
             edgeFile = db.castBorder,
             tile = false, tileSize = 0,
             edgeSize = castbar:GetHeight(),
         })
         castbar.BorderFrame.currentTexture = db.castBorder
+        castbar.BorderFrame.currentHeight = castbar:GetHeight()
     end
 
     castbar.Border:SetAlpha(0) -- hide default border
