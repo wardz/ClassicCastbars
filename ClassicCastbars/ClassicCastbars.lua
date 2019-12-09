@@ -215,9 +215,8 @@ local function GetSpellCastTime(spellID)
     if IsSpellKnown(spellID) then
         local _, _, _, hCastTime = GetSpellInfo(8690) -- Hearthstone, normal cast time 10s
         if hCastTime and hCastTime ~= 10000 then -- If current cast time is not 10s it means the player has a casting speed modifier debuff applied on himself.
-            -- Since the return values by GetSpellInfo() from spells that the player has learned in their spellbook are affected by the slow,
-            -- we need to remove so it doesn't give slow modified casttimes for other peoples casts.
-            return floor(castTime * (hCastTime / 10000)), icon
+            -- Since the return values by GetSpellInfo() are affected by the modifier, we need to remove so it doesn't give modified casttimes for other peoples casts.
+            return floor(castTime * 10000 / hCastTime), icon
         end
     end
 
