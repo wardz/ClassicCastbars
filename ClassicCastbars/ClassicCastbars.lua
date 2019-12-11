@@ -403,7 +403,6 @@ function addon:GROUP_ROSTER_UPDATE()
         end
     end
 end
-addon.GROUP_LEFT = addon.GROUP_ROSTER_UPDATE
 addon.GROUP_JOINED = addon.GROUP_ROSTER_UPDATE
 
 local bit_band = _G.bit.band
