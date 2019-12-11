@@ -44,8 +44,9 @@ local anchors = {
 
 local cache = {}
 local _G = _G
-local strmatch = _G.strmatch
+local strmatch = _G.string.match
 local strfind = _G.string.find
+local gsub = _G.string.gsub
 local UnitGUID = _G.UnitGUID
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 
@@ -107,7 +108,7 @@ function AnchorManager:GetAnchor(unitID)
         return UIParent
     end
 
-    local unitType, count = unitID:gsub("%d", "") -- party1 -> party etc
+    local unitType, count = gsub(unitID, "%d", "") -- party1 -> party etc
 
     local frame
     if unitID == "nameplate-testmode" then
