@@ -216,7 +216,7 @@ local function GetSpellCastInfo(spellID)
 
     if not unaffectedCastModsSpells[spellID] then
         local _, _, _, hCastTime = GetSpellInfo(8690) -- Hearthstone, normal cast time 10s
-        if hCastTime and hCastTime ~= 10000 then -- If current cast time is not 10s it means the player has a casting speed modifier debuff applied on himself.
+        if hCastTime and hCastTime ~= 10000 and hCastTime ~= 0 then -- If current cast time is not 10s it means the player has a casting speed modifier debuff applied on himself.
             -- Since the return values by GetSpellInfo() are affected by the modifier, we need to remove so it doesn't give modified casttimes for other peoples casts.
             return floor(castTime * 10000 / hCastTime), icon
         end
