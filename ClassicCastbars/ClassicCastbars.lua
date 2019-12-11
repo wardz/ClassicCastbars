@@ -461,7 +461,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         local spellID = castedSpells[spellName]
         if not channelCast and not spellID then
             -- Stop cast on new ability used while castbar is shown
-            if activeTimers[srcGUID] and GetTime() - activeTimers[srcGUID].timeStart > 0.2 then
+            if activeTimers[srcGUID] and GetTime() - activeTimers[srcGUID].timeStart > 0.25 then
                 return self:StopAllCasts(srcGUID)
             end
             return
