@@ -1388,6 +1388,7 @@ namespace.crowdControls = {
     [GetSpellInfo(710)] = 1,        -- Banish
 
     -- ITEMS
+    [GetSpellInfo(21167)] = 1,      -- Snowball
     [GetSpellInfo(13327)] = 1,      -- Reckless Charge
     [GetSpellInfo(1090)] = 1,       -- Sleep
     [GetSpellInfo(5134)] = 1,       -- Flash Bomb Fear
