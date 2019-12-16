@@ -1564,6 +1564,15 @@ namespace.stopCastOnDamageList = {
     [GetSpellInfo(2008)] = 1, -- Ancestral Spirit
     [GetSpellInfo(7328)] = 1, -- Redemption
     [GetSpellInfo(22999)] = 1, -- Defibrillate
+    [GetSpellInfo(3565)] = 1, -- Teleport: Darnassus
+    [GetSpellInfo(3562)] = 1, -- Teleport: Ironforge
+    [GetSpellInfo(18960)] = 1, -- Teleport: Moonglade
+    [GetSpellInfo(3567)] = 1, -- Teleport: Orgrimmar
+    [GetSpellInfo(3561)] = 1, -- Teleport: Stormwind
+    [GetSpellInfo(3566)] = 1, -- Teleport: Thunder Bluff
+    [GetSpellInfo(3563)] = 1, -- Teleport: Undercity
+    [GetSpellInfo(556)] = 1, -- Astrall Recall
+    [GetSpellInfo(22563)] = 1, -- Recall
     -- First Aid not included here since we track aura removed
 }
 
