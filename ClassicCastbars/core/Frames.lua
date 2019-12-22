@@ -181,7 +181,7 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar.fade:SetToAlpha(0)
         castbar.fade:SetSmoothing("OUT")
     end
-    castbar.animationGroup:Pause()
+    castbar.animationGroup:Stop()
 
     if not castbar.Background then
         castbar.Background = GetStatusBarBackgroundTexture(castbar)
