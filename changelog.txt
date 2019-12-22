@@ -1,3 +1,9 @@
+v1.2.1:
+- Add Teleport & Recall casts to be stopped on damage received.
+- Add Snowball & Earthshaker stun to crowd control list to stop castbar on.
+- Replace UIFrameFadeOut with AnimationGroup.
+
+
 v1.2.0:
 - Update for WoW patch 1.13.3.
 - Fix Furbolg Form cast being stopped on movement.
