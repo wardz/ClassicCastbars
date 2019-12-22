@@ -1410,6 +1410,7 @@ namespace.crowdControls = {
     [GetSpellInfo(12562)] = 1,      -- The Big One
     [GetSpellInfo(15283)] = 1,      -- Stunning Blow (Weapon Proc)
     [GetSpellInfo(56)] = 1,         -- Stun (Weapon Proc)
+    [GetSpellInfo(21152)] = 1,      -- Earthshaker (Weapon Proc)
     [GetSpellInfo(26108)] = 1,      -- Glimpse of Madness
     [GetSpellInfo(8345)] = 1,       -- Control Machine (Gnomish Universal Remote trinket)
     [GetSpellInfo(13235)] = 1,      -- Forcefield Collapse (Gnomish Harm Prevention Belt)
