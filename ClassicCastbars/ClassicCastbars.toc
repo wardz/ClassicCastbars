@@ -7,7 +7,6 @@
 ## X-Curse-Project-ID: 322865
 ## X-WoWI-ID: 24925
 
-core/UIFrameFade.lua
 core/PoolManager.lua
 core/AnchorManager.lua
 core/Data.lua
