@@ -73,13 +73,21 @@ function addon:CheckCastModifier(unitID, cast)
     end
 
     -- Buffs
-    -- These will only work for friendly units or if Detect Magic is on the unit
-    -- We could detect buffs in the CLEU aswell but this'll have to do for now.
     local _, className = UnitClass(unitID)
     local _, raceFile = UnitRace(unitID)
     if className == "DRUID" or className == "PRIEST" or className == "MAGE" or className == "PALADIN" or raceFile == "Troll" then
+        local libCD = LibStub and LibStub("LibClassicDurations", true)
+        local libCDEnemyBuffs = libCD and libCD.enableEnemyBuffTracking
+
         for i = 1, 32 do
-            local name = UnitAura(unitID, i, "HELPFUL")
+            local name
+            if not libCDEnemyBuffs then
+                name = UnitAura(unitID, i, "HELPFUL")
+            else
+                -- if LibClassicDurations happens to be loaded by some other addon, use it
+                -- to get enemy buff data
+                name = libCD.UnitAuraWithBuffs(unitID, i, "HELPFUL")
+            end
             if not name then break end -- no more buffs
 
             if name == BARKSKIN and not cast.hasBarkskinModifier then
