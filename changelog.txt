@@ -1,3 +1,9 @@
+v1.2.2:
+- Casting speed buff detection is now also always included for enemies if you have the addon ClassicAuraDurations enabled and "Full Aura Replacement" toggled on.
+- Fix rare lua error on castbar stopped.
+- Minor code cleanup & optimizations.
+
+
 v1.2.1:
 - Add Teleport & Recall casts to be stopped on damage received.
 - Add Snowball & Earthshaker stun to crowd control list to stop castbar on.
