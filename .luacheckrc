@@ -18,7 +18,6 @@ globals = {
     "LibStub",
 
     -- WoW globals
-    "UIPARENT_MANAGED_FRAME_POSITIONS",
     "hooksecurefunc",
     "ReloadUI",
     "UnitRace",
@@ -28,7 +27,6 @@ globals = {
     "CopyTable",
     "IsInGroup",
     "GetLocale",
-    "GetSpellSubtext",
     "GetSpellInfo",
     "IsAddOnLoaded",
     "GetAddOnMetadata",
@@ -37,8 +35,6 @@ globals = {
     "strfind",
     "C_NamePlate",
     "C_Timer",
-    "ResetCursor",
-    "SetCursor",
     "SlashCmdList",
     "STANDARD_TEXT_FONT",
     "UnitIsDeadOrGhost",
@@ -50,6 +46,5 @@ globals = {
     "format",
     "GetTime",
     "UIParent",
-    "strsplit",
     "floor",
 }
