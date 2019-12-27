@@ -28,7 +28,7 @@ end
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     local auraRows = parentFrame.auraRows or 0
 
-    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then
+    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then -- TODO: test if works with custom unitframe
         if parentFrame.buffsOnTop or auraRows <= 1 then
             castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
@@ -256,7 +256,7 @@ function addon:HideCastbar(castbar, noFadeOut)
         end
     end
 
-    if castbar:GetAlpha() > 0 then
+    if castbar:GetAlpha() > 0 and castbar.fade then
         castbar.fade:SetDuration(cast and cast.isInterrupted and 1.5 or 0.3)
         castbar.animationGroup:Play()
     end
