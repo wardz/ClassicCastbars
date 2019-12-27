@@ -1588,6 +1588,14 @@ namespace.stopCastOnDamageList = {
     -- First Aid not included here since we track aura removed
 }
 
+-- Player spells that shouldn't be stopped on movement
+namespace.castStopBlacklist = {
+    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(6405)] = 1,       -- Furgbolg Form
+}
+
 namespace.unaffectedCastModsSpells = {
     -- Player Spells
     [11605] = 1, -- Slam
