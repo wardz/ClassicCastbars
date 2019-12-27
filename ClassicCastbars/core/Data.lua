@@ -1141,7 +1141,7 @@ local castSpellIDs = {
     24422, -- Zandalar Signet of Might
     24421, -- Zandalar Signet of Mojo
     24420, -- Zandalar Signet of Serenity
-    1050, -- Sacrific
+    1050, -- Sacrifice
     22651, -- Sacrifice 2 (On German client this is named Opfern but other Sacrifice is named Opferung)
     10181, -- Frostbolt (needs to be last for chinese clients, see issue #16)
 
@@ -1596,6 +1596,7 @@ namespace.castStopBlacklist = {
     [GetSpellInfo(6405)] = 1,       -- Furgbolg Form
 }
 
+-- Spells that can't be slowed or speed up
 namespace.unaffectedCastModsSpells = {
     -- Player Spells
     [11605] = 1, -- Slam

@@ -81,14 +81,15 @@ local function GetPartyFrameForUnit(unitID)
     local guid = UnitGUID(unitID)
     if not guid then return end
 
-    local compact = GetCVarBool("useCompactPartyFrames")
+    local useCompact = GetCVarBool("useCompactPartyFrames")
 
     -- raid frames are recycled so frame10 might be party2 and so on, so we need
-    -- to loop through them all and check if the unit matches
+    -- to loop through them all and check if the unit matches. Same thing with party
+    -- frames for custom addons
     for i = 1, 40 do
         local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
         if frame and frame.unit and UnitGUID(frame.unit) == guid and frame:IsVisible() then
-            if compact then
+            if useCompact then
                 if strfind(frameName, "PartyMemberFrame") == nil then
                     return frame
                 end
@@ -105,6 +106,7 @@ function AnchorManager:GetAnchor(unitID)
     end
 
     if unitID == "player" then
+        -- special case for player casting bar
         return UIParent
     end
 

@@ -8,7 +8,7 @@ addon:SetScript("OnEvent", function(self, event, ...)
 end)
 
 local activeGUIDs = {}
-local activeTimers = {}
+local activeTimers = {} -- active cast data
 local activeFrames = {}
 local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
@@ -21,6 +21,7 @@ namespace.addon = addon
 ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
 -- upvalues for speed
+local strfind = _G.string.find
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
 local UnitAura = _G.UnitAura
@@ -147,7 +148,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
     end
 end
 
--- Store new cast data for unit, and start castbar(s)
+-- Store or refresh new cast data for unit, and start castbar(s)
 function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
@@ -165,7 +166,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.unitGUID = unitGUID
     cast.timeStart = currTime
     cast.isPlayer = isPlayer
-    cast.hasCastSlowModified = nil
+    cast.hasCastSlowModified = nil -- just nil previous values to avoid overhead of wiping table
     cast.hasBarkskinModifier = nil
     cast.hasNaturesGraceModifier = nil
     cast.hasFocusedCastingModifier = nil
@@ -205,8 +206,6 @@ function addon:CastPushback(unitGUID)
 
     if not cast.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
-        -- On level 1 it seems like the pushback value starts at 0.5 but at
-        -- higher lvl it is 1.0s. This needs some more testing.
         cast.pushbackValue = cast.pushbackValue or 1.0
         cast.maxValue = cast.maxValue + cast.pushbackValue
         cast.endTime = cast.endTime + cast.pushbackValue
@@ -263,7 +262,7 @@ function addon:ToggleUnitEvents(shouldReset)
     end
 
     if shouldReset then
-        self:PLAYER_ENTERING_WORLD() -- reset all data
+        self:PLAYER_ENTERING_WORLD() -- wipe all data
     end
 end
 
@@ -311,6 +310,9 @@ function addon:PLAYER_LOGIN()
         ClassicCastbarsDB.player = nil
     end
 
+    -- Added focus variables by accident at some point
+    if ClassicCastbarsDB.focus then ClassicCastbarsDB.focus = nil end
+
     -- Copy any settings from defaults if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     self.db.version = namespace.defaultConfig.version
@@ -356,14 +358,14 @@ function addon:UNIT_AURA()
 end
 
 function addon:UNIT_TARGET(unitID)
+    if not self.db.target.autoPosition then return end
+
     -- reanchor castbar when target of target is cleared or shown
-    if self.db.target.autoPosition then
-        if unitID == "target" or unitID == "player" then
-            if activeFrames.target and activeGUIDs.target then
-                local parentFrame = self.AnchorManager:GetAnchor("target")
-                if parentFrame then
-                    self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
-                end
+    if unitID == "target" or unitID == "player" then
+        if activeFrames.target and activeGUIDs.target then
+            local parentFrame = self.AnchorManager:GetAnchor("target")
+            if parentFrame then
+                self:SetTargetCastbarPosition(activeFrames.target, parentFrame)
             end
         end
     end
@@ -413,6 +415,7 @@ function addon:GROUP_ROSTER_UPDATE()
 end
 addon.GROUP_JOINED = addon.GROUP_ROSTER_UPDATE
 
+-- Upvalues for combat log events
 local bit_band = _G.bit.band
 local COMBATLOG_OBJECT_CONTROL_PLAYER = _G.COMBATLOG_OBJECT_CONTROL_PLAYER
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
@@ -438,7 +441,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
         if srcGUID ~= self.PLAYER_GUID then
             if isPlayer then
-                -- Use talent reduced cast time for certain player spells
+                -- Use hardcoded talent reduced cast time for certain player spells
                 local reducedTime = castTimeTalentDecreases[spellName]
                 if reducedTime then
                     castTime = reducedTime
@@ -471,14 +474,15 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             if activeTimers[srcGUID] and GetTime() - activeTimers[srcGUID].timeStart > 0.25 then
                 return self:StopAllCasts(srcGUID)
             end
-            return
+
+            return -- not a cast
         end
 
         local isPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0
 
         -- Auto correct cast times for mobs
         if not isPlayer and not channelCast then
-            if not strfind(srcGUID, "Player-") then -- incase player is mind controlled by NPC
+            if not strfind(srcGUID, "Player-") then -- incase player is mind controlled by an NPC
                 local cachedTime = npcCastTimeCache[srcName .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
@@ -519,6 +523,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             -- Aura that interrupts cast was applied
             return self:DeleteCast(dstGUID)
         elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
+            -- Cast modifiers doesnt modify already active casts, only the next time the player casts
             activeTimers[dstGUID].skipCastSlowModifier = true
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
@@ -605,9 +610,10 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
+                -- Delete cast incase stop event wasn't detected in CLEU
                 if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
-                    -- Delete cast incase stop event wasn't detected in CLEU
-                    self:DeleteCast(cast.unitGUID, false, true, false, (currTime - cast.timeStart) > cast.maxValue + 0.25)
+                    local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
+                    self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
                 end
             end
         end

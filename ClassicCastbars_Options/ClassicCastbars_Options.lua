@@ -49,7 +49,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
 
                 args = {
                     -- keys here has to match savedvariables key
-                    -- Or else you have to set a new 'get' and 'set' func
+                    -- or else you have to set a new 'get' and 'set' func
                     enabled = {
                         order = 1,
                         name = L.TOGGLE_CASTBAR,
@@ -64,7 +64,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars:ToggleUnitEvents(true)
                             if unitID == "player" then
                                 if value == false then
-                                    ReloadUI()
+                                    return ReloadUI()
                                 end
                                 ClassicCastbars:SkinPlayerCastbar()
                             end
