@@ -105,8 +105,8 @@ function AnchorManager:GetAnchor(unitID)
         return cache[unitID]
     end
 
-    if unitID == "player" then
-        -- special case for player casting bar
+    if unitID == "player" or unitID == "focus" then
+        -- special case for player/focus casting bar
         return UIParent
     end
 

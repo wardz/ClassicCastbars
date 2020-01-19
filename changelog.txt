@@ -1,3 +1,15 @@
+v1.2.3:
+- War Stomp now has pushback registered again. (Thought it didn't at first)
+- Add experimental focus castbar. Typing "/focus" will focus your current target and add an extra castbar for that specific unit that is always visible even if you
+  no longer have that unit targetted. You may click this castbar to target your focus, however, this only works if you set the focus
+  when out of combat. (If you change focus in combat it will display a red "P" next to the name until you leave combat.)
+  Note that if mobs have the exact same name it will target the nearest one you're facing.
+  You can also use "/click FocusCastbar" in macros to target the focus.
+  You can type /clearfocus to clear your focus (or just "/focus" again while not having a target).
+  You can unlock & move this frame in the options like the other castbars.
+  Keep in mind this focus is heavily restricted due to API limitations, and that the max combat log range is 50 yards.
+
+
 v1.2.2:
 - Casting speed buff detection is now also always included for enemies if you have the addon ClassicAuraDurations enabled and "Full Aura Replacement" toggled on.
 - Fix rare lua error on castbar stopped.

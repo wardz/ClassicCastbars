@@ -48,6 +48,7 @@ local BLINDING_LIGHT = GetSpellInfo(23733)
 local BERSERKING = GetSpellInfo(20554)
 
 function addon:CheckCastModifier(unitID, cast)
+    if unitID == "focus" then return end
     if not self.db.pushbackDetect or not cast then return end
     if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
     if unaffectedCastModsSpells[cast.spellID] then return end
@@ -217,6 +218,29 @@ function addon:CastPushback(unitGUID)
     end
 end
 
+SLASH_CCFOCUS1 = "/focus"
+SLASH_CCFOCUS2 = "/castbarfocus"
+SlashCmdList["CCFOCUS"] = function()
+    local tarGUID = UnitGUID("target")
+    if tarGUID then
+        activeGUIDs.focus = tarGUID
+        addon:StopCast("focus", true)
+        addon:StartCast(tarGUID, "focus")
+        addon:SetFocusDisplay(UnitName("target"))
+    else
+        SlashCmdList["CCFOCUSCLEAR"]()
+    end
+end
+
+SLASH_CCFOCUSCLEAR1 = "/clearfocus"
+SlashCmdList["CCFOCUSCLEAR"] = function()
+    if activeGUIDs.focus then
+        activeGUIDs.focus = nil
+        addon:StopCast("focus", true)
+        addon:SetFocusDisplay(nil)
+    end
+end
+
 local function GetSpellCastInfo(spellID)
     local _, _, icon, castTime = GetSpellInfo(spellID)
     if not castTime then return end
@@ -274,6 +298,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     wipe(activeTimers)
     wipe(activeFrames)
     PoolManager:GetFramePool():ReleaseAll() -- also wipes castbar._data
+    self:SetFocusDisplay(nil)
 
     if self.db.party.enabled and IsInGroup() then
         self:GROUP_ROSTER_UPDATE()
@@ -309,9 +334,6 @@ function addon:PLAYER_LOGIN()
     elseif ClassicCastbarsDB.version == "12" then
         ClassicCastbarsDB.player = nil
     end
-
-    -- Added focus variables by accident at some point
-    if ClassicCastbarsDB.focus then ClassicCastbarsDB.focus = nil end
 
     -- Copy any settings from defaults if they don't exist in current profile
     self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
@@ -571,12 +593,14 @@ addon:SetScript("OnUpdate", function(self, elapsed)
         if refresh < 0 then
             if next(activeGUIDs) then
                 for unitID, unitGUID in pairs(activeGUIDs) do
-                    local cast = activeTimers[unitGUID]
-                    -- Only stop cast for players since some mobs runs while casting, also because
-                    -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
-                    if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                        if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
-                            self:DeleteCast(unitGUID)
+                    if unitID ~= "focus" then
+                        local cast = activeTimers[unitGUID]
+                        -- Only stop cast for players since some mobs runs while casting, also because
+                        -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
+                        if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
+                            if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
+                                self:DeleteCast(unitGUID)
+                            end
                         end
                     end
                 end

@@ -47,4 +47,8 @@ globals = {
     "GetTime",
     "UIParent",
     "floor",
+    "UnitName",
+    "UnitIsPlayer",
+    "UnitClass",
+    "RAID_CLASS_COLORS",
 }
