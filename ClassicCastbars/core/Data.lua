@@ -1562,7 +1562,6 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
-    [GetSpellInfo(20549)] = 1,      -- War Stomp
 }
 
 -- Casts that should be stopped on damage received
