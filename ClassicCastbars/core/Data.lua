@@ -1730,7 +1730,7 @@ namespace.unaffectedCastModsSpells = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "14", -- settings version
+    version = "15", -- settings version
     pushbackDetect = true,
     movementDetect = true,
     locale = GetLocale(),
