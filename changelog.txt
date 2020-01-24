@@ -1,3 +1,8 @@
+v1.2.4:
+- Add focus mouseover support. (/focus mouseover)
+- Fix target click trigger for focus castbar being incorrectly placed when not using default UI scale.
+
+
 v1.2.3:
 - War Stomp now has pushback registered again. (Thought it didn't at first)
 - Add experimental focus castbar. Typing "/focus" will focus your current target and add an extra castbar for that specific unit that is always visible even if you
