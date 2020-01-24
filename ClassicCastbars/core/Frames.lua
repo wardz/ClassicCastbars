@@ -349,14 +349,14 @@ end
 function addon:CreateOrUpdateSecureFocusButton(text)
     if not self.FocusButton then
         -- Create an invisible secure click trigger above the nonsecure castbar frame
-        self.FocusButton = CreateFrame("Button", "FocusCastbar", nil, "SecureActionButtonTemplate")
+        self.FocusButton = CreateFrame("Button", "FocusCastbar", UIParent, "SecureActionButtonTemplate")
         self.FocusButton:SetAttribute("type", "macro")
         --self.FocusButton:SetAllPoints(self.FocusFrame)
         --self.FocusButton:SetSize(ClassicCastbarsDB.focus.width + 5, ClassicCastbarsDB.focus.height + 35)
     end
 
     local db = ClassicCastbarsDB.focus
-    self.FocusButton:SetPoint(db.position[1], UIParent, db.position[2], db.position[3])
+    self.FocusButton:SetPoint(db.position[1], UIParent, db.position[2], db.position[3] + 30)
     self.FocusButton:SetSize(db.width + 5, db.height + 35)
 
     self.FocusButton:SetAttribute("macrotext", "/targetexact " .. text)
@@ -443,5 +443,5 @@ function addon:SetFocusDisplay(text)
     end
 
     self.FocusFrame.Text:SetText(isInCombat and text .. " (|cffff0000P|r)" or text)
-    self.FocusFrame:SetPoint("CENTER", activeFrames.focus, 0, 0)
+    self.FocusFrame:SetAllPoints(activeFrames.focus)
 end
