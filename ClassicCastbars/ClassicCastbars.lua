@@ -220,13 +220,14 @@ end
 
 SLASH_CCFOCUS1 = "/focus"
 SLASH_CCFOCUS2 = "/castbarfocus"
-SlashCmdList["CCFOCUS"] = function()
-    local tarGUID = UnitGUID("target")
+SlashCmdList["CCFOCUS"] = function(msg)
+    local unitID = msg == "mouseover" and "mouseover" or "target"
+    local tarGUID = UnitGUID(unitID)
     if tarGUID then
         activeGUIDs.focus = tarGUID
         addon:StopCast("focus", true)
         addon:StartCast(tarGUID, "focus")
-        addon:SetFocusDisplay(UnitName("target"))
+        addon:SetFocusDisplay(UnitName(unitID), unitID)
     else
         SlashCmdList["CCFOCUSCLEAR"]()
     end

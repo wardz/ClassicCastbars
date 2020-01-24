@@ -367,7 +367,7 @@ local NewTimer = _G.C_Timer.NewTimer
 local focusTargetTimer
 local focusTargetResetTimer
 
-function addon:SetFocusDisplay(text)
+function addon:SetFocusDisplay(text, unitID)
     if focusTargetTimer and not focusTargetTimer:IsCancelled() then
         focusTargetTimer:Cancel()
         focusTargetTimer = nil
@@ -410,8 +410,8 @@ function addon:SetFocusDisplay(text)
         self.FocusFrame.Text:SetPoint("CENTER", self.FocusFrame, 0, 20)
     end
 
-    if UnitIsPlayer("target") then
-        self.FocusFrame.Text:SetTextColor(RAID_CLASS_COLORS[select(2, UnitClass("target"))]:GetRGBA())
+    if UnitIsPlayer(unitID) then
+        self.FocusFrame.Text:SetTextColor(RAID_CLASS_COLORS[select(2, UnitClass(unitID))]:GetRGBA())
     else
         self.FocusFrame.Text:SetTextColor(1, 0.819, 0, 1)
     end
