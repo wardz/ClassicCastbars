@@ -1583,7 +1583,6 @@ namespace.stopCastOnDamageList = {
     [GetSpellInfo(3566)] = 1, -- Teleport: Thunder Bluff
     [GetSpellInfo(3563)] = 1, -- Teleport: Undercity
     [GetSpellInfo(556)] = 1, -- Astrall Recall
-    [GetSpellInfo(22563)] = 1, -- Recall
     -- First Aid not included here since we track aura removed
 }
 
