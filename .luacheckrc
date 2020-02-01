@@ -36,6 +36,7 @@ globals = {
     "C_NamePlate",
     "C_Timer",
     "SlashCmdList",
+    "UnitExists",
     "STANDARD_TEXT_FONT",
     "UnitIsDeadOrGhost",
     "CreateFramePool",

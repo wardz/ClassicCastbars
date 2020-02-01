@@ -166,7 +166,7 @@ function TestMode:SetCastbarImmovable(unitID)
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
-        if parentFrame then
+        if parentFrame and not UnitExists("party1") then
             parentFrame:Hide()
         end
     end
