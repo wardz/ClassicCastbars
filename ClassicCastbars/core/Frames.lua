@@ -29,7 +29,7 @@ end
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     local auraRows = parentFrame.auraRows or 0
 
-    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then -- TODO: test if works with custom unitframe
+    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then
         if parentFrame.buffsOnTop or auraRows <= 1 then
             castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
