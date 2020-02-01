@@ -88,7 +88,7 @@ local function GetPartyFrameForUnit(unitID)
     -- frames for custom addons
     for i = 1, 40 do
         local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
-        if frame and frame.unit and UnitGUID(frame.unit) == guid and frame:IsVisible() then
+        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsVisible() then
             if useCompact then
                 if strfind(frameName, "PartyMemberFrame") == nil then
                     return frame
