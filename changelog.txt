@@ -1,3 +1,8 @@
+v1.2.5:
+- Fix party castbars not working with ZPerl Party frames. (Raid frames are still not supported.)
+- Fix party frame being hidden while in a party group when toggling party testmode.
+
+
 v1.2.4:
 - Add focus mouseover support. (/focus mouseover)
 - Fix target click trigger for focus castbar being incorrectly placed when not using default UI scale.
