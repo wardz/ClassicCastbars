@@ -10,7 +10,6 @@ local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
 local ceil = _G.math.ceil
-local UnitExists = _G.UnitExists
 local InCombatLockdown = _G.InCombatLockdown
 
 function addon:GetCastbarFrame(unitID)
@@ -29,18 +28,10 @@ end
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     local auraRows = parentFrame.auraRows or 0
 
-    if parentFrame.haveToT or parentFrame.haveElite or UnitExists("targettarget") then
-        if parentFrame.buffsOnTop or auraRows <= 1 then
-            castbar:SetPoint("CENTER", parentFrame, -18, -75)
-        else
-            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
-        end
+    if parentFrame.buffsOnTop or auraRows <= 1 then
+        castbar:SetPoint("CENTER", parentFrame, -18, -75)
     else
-        if not parentFrame.buffsOnTop and auraRows > 0 then
-            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
-        else
-            castbar:SetPoint("CENTER", parentFrame, -18, -50)
-        end
+        castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
     end
 end
 
@@ -48,7 +39,7 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
 
     if castbar.Text:GetText() ~= spellName then
-        if cast.icon == 136235 then
+        if cast.icon == 136235 then -- unknown texture
             cast.icon = 136243
         end
         castbar.Icon:SetTexture(cast.icon)
