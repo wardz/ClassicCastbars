@@ -2,7 +2,16 @@ local _, namespace = ...
 local PoolManager = {}
 namespace.PoolManager = PoolManager
 
-local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", PoolManager.ResetterFunc)
+local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", function(pool, frame)
+    frame:Hide()
+    frame:SetParent(nil)
+    frame:ClearAllPoints()
+
+    if frame._data then
+        frame._data = nil
+    end
+end)
+
 local framesCreated = 0
 local framesActive = 0
 
@@ -49,16 +58,6 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
     frame.Timer:SetPoint("RIGHT", frame, -6, 0)
-end
-
-function PoolManager:ResetterFunc(pool, frame)
-    frame:Hide()
-    frame:SetParent(nil)
-    frame:ClearAllPoints()
-
-    if frame._data then
-        frame._data = nil
-    end
 end
 
 function PoolManager:GetFramePool()
