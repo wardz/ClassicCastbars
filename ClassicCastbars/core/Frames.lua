@@ -262,7 +262,7 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.Timer = CastingBarFrame:CreateFontString(nil, "OVERLAY")
         CastingBarFrame.Timer:SetTextColor(1, 1, 1)
         CastingBarFrame.Timer:SetFontObject("SystemFont_Shadow_Small")
-        CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, -6, 0)
+        CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, -6, 1)
         CastingBarFrame:HookScript("OnUpdate", function(frame)
             if db.enabled and db.showTimer then
                 if not frame.channeling then
