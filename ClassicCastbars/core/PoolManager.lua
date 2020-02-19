@@ -2,7 +2,7 @@ local _, namespace = ...
 local PoolManager = {}
 namespace.PoolManager = PoolManager
 
-local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", function(pool, frame)
+local function ResetterFunc(pool, frame)
     frame:Hide()
     frame:SetParent(nil)
     frame:ClearAllPoints()
@@ -10,8 +10,9 @@ local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTe
     if frame._data then
         frame._data = nil
     end
-end)
+end
 
+local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
 local framesCreated = 0
 local framesActive = 0
 
