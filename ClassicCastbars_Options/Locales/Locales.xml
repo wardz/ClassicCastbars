@@ -6,4 +6,5 @@
     <Script file="koKR.lua"/>
     <Script file="zhCN.lua"/>
     <Script file="zhTW.lua"/>
+    <Script file="frFR.lua"/>
 </Ui>
