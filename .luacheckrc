@@ -4,20 +4,22 @@ max_line_length = false
 ignore = {
     "11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
     "213", -- Unused loop variable
+    "113/CastingBarFrame_.*", -- Accessing an undefined global variable.
     "212/self", -- Unused argument self
-    "113/CastingBarFrame_.*",
     "212/pool",
     "212/cast",
 }
 
 globals = {
-    -- Addon globals
     "ClassicCastbars_TestMode",
     "ClassicCastbarsDB",
     "ClassicCastbars",
-    "LibStub",
+    "SlashCmdList",
+    "CastingBarFrame",
+}
 
-    -- WoW globals
+read_globals = {
+    "LibStub",
     "hooksecurefunc",
     "ReloadUI",
     "UnitRace",
@@ -35,7 +37,6 @@ globals = {
     "strfind",
     "C_NamePlate",
     "C_Timer",
-    "SlashCmdList",
     "UnitExists",
     "STANDARD_TEXT_FONT",
     "UnitIsDeadOrGhost",
