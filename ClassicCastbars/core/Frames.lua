@@ -31,7 +31,7 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
     if parentFrame.buffsOnTop or auraRows <= 1 then
         castbar:SetPoint("CENTER", parentFrame, -18, -75)
     else
-        castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -37.5 * auraRows), -150))
+        castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -38.5 * auraRows), -150))
     end
 end
 
