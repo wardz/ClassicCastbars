@@ -115,7 +115,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID ~= "focus",
                         -- this note will soon be removed or changed to only contain slash commands so we dont bother localizing here
                         name = "\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r\n\n Note that if you switch focus in combat it wont update the targetting until you leave combat. Only the cast tracking will still work in combat.\n"
-                        .. "\n\nExample macro for focus cast:\n\n |cffffff00/click FocusCastbar\n /cast SpellName\n /targetlasttarget|r\n\nNote that if you somehow fail targetting your focus (i.e out of range) it will use the spell on your current target instead. Sadly nothing can be done about this, so use with caution.",
+                        .. "\n\nExample macro for focus cast:\n |cffffff00/click FocusCastbar\n /cast SpellName\n /targetlasttarget|r\n\nNote that if you somehow fail targetting your focus (i.e out of range) it will use the spell on your current target instead. Sadly nothing can be done about this, so use with caution.",
                         type = "description",
                     },
                 },

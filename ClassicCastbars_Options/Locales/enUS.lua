@@ -44,10 +44,12 @@ L["NAMEPLATE"] = "Nameplate"
 L["PARTY"] = "Party"
 L["PLAYER"] = "Player"
 L["POSXY_TOOLTIP"] = "Adjust the XY offset values to move the frame."
-L["PUSHBACK"] = "Detect Cast Pushbacks"
-L["PUSHBACK_TOOLTIP"] = [=[Enables detection for cast pushback and modifiers (i.e Curse of Tongues).
+L["PUSHBACK"] = "Detect Cast Modifiers |cffffff00(Global Setting)|r"
+L["PUSHBACK_TOOLTIP"] = [=[Enables detection for cast pushback and speed modifiers (i.e Curse of Tongues). This setting affects all castbars except your own.
 
-This detection is not fully accurate as certain spells & talents gives a chance to ignore pushback.
+Notes:
+- Pushback detection is not fully accurate as certain talents gives a chance to ignore pushback.
+- For some speed increase modifiers you will need to also have the ClassicAuraDurations addon enabled.
 ]=]
 L["REQUIRES_RESTART"] = "Disabling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
