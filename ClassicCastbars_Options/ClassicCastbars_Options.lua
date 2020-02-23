@@ -110,19 +110,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                         disabled = ModuleIsDisabled,
                     },
-                    movementDetect = {
-                        order = 7,
-                        width = "full",
-                        name = L.MOVEMENT_DETECT,
-                        desc = L.MOVEMENT_DETECT_TOOLTIP,
-                        type = "toggle",
-                        set = function(_, value)
-                            ClassicCastbarsDB.movementDetect = value
-                        end,
-                        get = function() return ClassicCastbarsDB.movementDetect end,
-                        hidden = unitID == "player" or unitID == "focus",
-                        disabled = ModuleIsDisabled,
-                    },
                     notes = {
                         order = 8,
                         hidden = unitID ~= "focus",

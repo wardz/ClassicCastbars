@@ -570,27 +570,24 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     local currTime = GetTime()
     local pushbackEnabled = self.db.pushbackDetect
 
-    if self.db.movementDetect then
-        refresh = refresh - elapsed
-
-        -- Check if unit is moving to stop castbar, thanks to Cordankos for this idea
-        if refresh < 0 then
-            if next(activeGUIDs) then
-                for unitID, unitGUID in pairs(activeGUIDs) do
-                    if unitID ~= "focus" then
-                        local cast = activeTimers[unitGUID]
-                        -- Only stop cast for players since some mobs runs while casting, also because
-                        -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
-                        if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                            if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
-                                self:DeleteCast(unitGUID)
-                            end
+    refresh = refresh - elapsed
+    if refresh < 0 then
+        if next(activeGUIDs) then
+            -- Check if unit is moving to stop castbar, thanks to Cordankos for this idea
+            for unitID, unitGUID in pairs(activeGUIDs) do
+                if unitID ~= "focus" then
+                    local cast = activeTimers[unitGUID]
+                    -- Only stop cast for players since some mobs runs while casting, also because
+                    -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
+                    if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
+                        if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
+                            self:DeleteCast(unitGUID)
                         end
                     end
                 end
             end
-            refresh = 0.1
         end
+        refresh = 0.1
     end
 
     -- Update all shown castbars in a single OnUpdate call
