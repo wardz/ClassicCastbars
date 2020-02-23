@@ -174,7 +174,6 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.hasSpeedModifier = nil
     cast.skipCastSlowModifier = nil
     cast.pushbackValue = nil
-    cast.showCastInfoOnly = nil
     cast.isInterrupted = nil
     cast.isCastComplete = nil
 
@@ -601,7 +600,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then
-                if not cast.showCastInfoOnly then
+                if not castbar.showCastInfoOnly then
                     local maxValue = cast.endTime - cast.timeStart
                     local value = currTime - cast.timeStart
                     if cast.isChanneled then -- inverse

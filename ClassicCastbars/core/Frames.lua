@@ -59,11 +59,13 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar:SetFrameLevel(db.frameLevel)
 
     if db.showCastInfoOnly then
+        castbar.showCastInfoOnly = true
         castbar.Timer:SetText("")
         castbar:SetValue(0)
         castbar.Spark:SetAlpha(0)
     else
         castbar.Spark:SetAlpha(1)
+        castbar.showCastInfoOnly = false
     end
 
     if db.hideIconBorder then
@@ -181,7 +183,6 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 
     local cast = castbar._data
-    cast.showCastInfoOnly = db.showCastInfoOnly
     if cast.isChanneled then
         castbar:SetStatusBarColor(unpack(db.statusColorChannel))
     else
