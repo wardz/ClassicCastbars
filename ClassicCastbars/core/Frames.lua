@@ -276,10 +276,15 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, -6, 1)
         CastingBarFrame:HookScript("OnUpdate", function(frame)
             if db.enabled and db.showTimer then
+                if frame.fadeOut or (not frame.casting and not frame.channeling) then
+                    -- just show no text at zero, the numbers looks kinda weird when Flash animation is playing
+                    return frame.Timer:SetText("")
+                end
+
                 if not frame.channeling then
-                    frame.Timer:SetFormattedText("%.1f", frame.casting and (frame.maxValue - frame.value) or 0)
+                    frame.Timer:SetFormattedText("%.1f", frame.maxValue - frame.value)
                 else
-                    frame.Timer:SetFormattedText("%.1f", frame.fadeOut and 0 or frame.value)
+                    frame.Timer:SetFormattedText("%.1f", frame.value)
                 end
             end
         end)
@@ -308,7 +313,7 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.Flash:SetSize(db.width + 61, db.height + 51)
         CastingBarFrame.Flash:SetPoint("TOP", 0, 26)
     else
-        CastingBarFrame.Flash:SetTexture(nil) -- hide it by deleting texture, SetAlpha() or Hide() wont work without messing with blizz code
+        CastingBarFrame.Flash:SetTexture(nil) -- hide it by removing texture, SetAlpha() or Hide() wont work without messing with blizz code
     end
 
     CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
