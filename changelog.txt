@@ -1,3 +1,14 @@
+v1.2.6:
+- Target castbar is no longer auto reanchored on target of target frame being shown or hidden, instead it's always placed below the target of target frame area.
+- Fix "Show Cast Info Only" option sometimes bugging out if you have it enabled for one type of unit frame but disabled for another.
+- Casting speed modifiers now stack like intended, also haste increases no longer affect channeled abilities.
+- Castbar background will now turn from orange to slightly yellow when the cast is finished but no spell cast success event was detected (e.g when unit is out of range)
+- Improved default settings for player castbar. (only updated on settings reset or fresh install)
+- Increased max & min values allowed for options.
+- Removed option for castbar stop on movement detection, it is now always enabled instead.
+- Add French localizations, thanks to Pgmbru. (still missing some translations)
+
+
 v1.2.5:
 - Fix party castbars not working with ZPerl Party frames. (Raid frames are still not supported.)
 - Fix party frame being hidden while in a party group when toggling party testmode.
