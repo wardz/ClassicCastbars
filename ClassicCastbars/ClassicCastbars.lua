@@ -55,22 +55,15 @@ function addon:CheckCastModifier(unitID, cast)
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified and not cast.skipCastSlowModifier then
-        local highestSlow = 0
-
         for i = 1, 16 do
             local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
             if not spellID then break end -- no more debuffs
 
-            -- TODO: cast times reduced in multiplicative manner?
             local slow = castTimeIncreases[spellID]
-            if slow and slow > highestSlow then -- might be several slow debuffs
-                highestSlow = slow
+            if slow then -- note: multiple slows stack
+                cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((slow / 100) + 1)
+                cast.hasCastSlowModified = true
             end
-        end
-
-        if highestSlow > 0 then
-            cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((highestSlow / 100) + 1)
-            cast.hasCastSlowModified = true
         end
     end
 
