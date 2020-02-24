@@ -526,9 +526,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- We also check the expiration timer in OnUpdate script just incase this event doesn't trigger when i.e unit is no longer in range.
         return self:DeleteCast(srcGUID, nil, nil, true)
     elseif eventType == "SPELL_AURA_APPLIED" then
-        if crowdControls[spellName] then
+        if crowdControls[spellName] and activeTimers[dstGUID] then
             -- Aura that interrupts cast was applied
-            activeTimers[srcGUID].isCastMaybeComplete = true
+            activeTimers[dstGUID].isCastMaybeComplete = true
             return self:DeleteCast(dstGUID)
         elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
             -- Cast modifiers doesnt modify already active casts, only the next time the player casts
