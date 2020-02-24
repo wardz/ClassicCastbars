@@ -92,15 +92,19 @@ function addon:CheckCastModifier(unitID, cast)
             end
             if not name then break end -- no more buffs
 
+            -- TODO: gotta check how speed is calculated when both Curse of Tongues and Berserking is applied
             if name == BARKSKIN and not cast.hasBarkskinModifier then
                 cast.endTime = cast.endTime + 1
                 cast.hasBarkskinModifier = true
             elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier and not cast.isChanneled then
                 cast.endTime = cast.endTime - 0.5
                 cast.hasNaturesGraceModifier = true
-            elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT or name == BERSERKING) and not cast.hasSpeedModifier then
-                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * ((name == BERSERKING and 10 or 33) / 100))
+            elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT) and not cast.hasSpeedModifier and not cast.isChanneled then
+                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 33 / 100)
                 cast.hasSpeedModifier = true
+            elseif name == BERSERKING and not cast.hasBerserkingModifier and not cast.isChanneled then -- put this seperate as it can stack with other modifiers
+                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 0.1)
+                cast.hasBerserkingModifier = true
             elseif name == FOCUSED_CASTING then
                 cast.hasFocusedCastingModifier = true
             end
@@ -172,6 +176,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.hasNaturesGraceModifier = nil
     cast.hasFocusedCastingModifier = nil
     cast.hasSpeedModifier = nil
+    cast.hasBerserkingModifier = nil
     cast.skipCastSlowModifier = nil
     cast.pushbackValue = nil
     cast.isInterrupted = nil
@@ -493,7 +498,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 local cachedTime = npcCastTimeCache[srcName .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
-                    if not cast or (cast and not cast.hasCastSlowModified and not cast.hasSpeedModifier) then
+                    if not cast or (cast and not cast.hasCastSlowModified and not cast.hasSpeedModifier and not cast.hasBerserkingModifier) then
                         local restoredStartTime = npcCastTimeCacheStart[srcGUID]
                         if restoredStartTime then
                             local castTime = (GetTime() - restoredStartTime) * 1000
