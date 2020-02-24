@@ -176,6 +176,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.pushbackValue = nil
     cast.isInterrupted = nil
     cast.isCastComplete = nil
+    cast.isCastMaybeComplete = nil
 
     self:StartAllCasts(unitGUID)
 end
@@ -187,7 +188,7 @@ function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComple
     local cast = activeTimers[unitGUID]
     if cast then
         cast.isInterrupted = isInterrupted -- just so we can avoid passing it as an arg for every function call
-        cast.isCastComplete = isCastComplete
+        cast.isCastComplete = isCastComplete -- SPELL_CAST_SUCCESS detected
         self:StopAllCasts(unitGUID, noFadeOut)
         activeTimers[unitGUID] = nil
     end
@@ -527,6 +528,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_APPLIED" then
         if crowdControls[spellName] then
             -- Aura that interrupts cast was applied
+            activeTimers[srcGUID].isCastMaybeComplete = true
             return self:DeleteCast(dstGUID)
         elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
             -- Cast modifiers doesnt modify already active casts, only the next time the player casts
@@ -618,6 +620,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 -- Delete cast incase stop event wasn't detected in CLEU
                 if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
                     local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
+                    cast.isCastMaybeComplete = true
                     self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
                 end
             end

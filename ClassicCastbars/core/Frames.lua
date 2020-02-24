@@ -222,16 +222,16 @@ function addon:HideCastbar(castbar, noFadeOut)
         return
     end
 
+    castbar.Spark:SetAlpha(0)
     local cast = castbar._data
-    if cast and cast.isInterrupted then
+    if cast and cast.isInterrupted then -- SPELL_INTERRUPT
         castbar.Text:SetText(_G.INTERRUPTED)
         castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
         castbar:SetMinMaxValues(0, 1)
         castbar:SetValue(1)
-        castbar.Spark:SetAlpha(0)
     end
 
-    if cast and cast.isCastComplete then
+    if cast and cast.isCastComplete then -- SPELL_CAST_SUCCESS
         if castbar.Border:GetAlpha() == 1 then -- not using LSM borders
             local tex = castbar.Border:GetTexture()
             if tex == "Interface\\CastingBar\\UI-CastingBar-Border" or tex == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
@@ -239,10 +239,20 @@ function addon:HideCastbar(castbar, noFadeOut)
             end
         end
 
-        castbar.Spark:SetAlpha(0)
         castbar:SetMinMaxValues(0, 1)
         if not cast.isChanneled then
             castbar:SetStatusBarColor(0, 1, 0)
+            castbar:SetValue(1)
+        else
+            castbar:SetValue(0)
+        end
+    end
+
+    if cast and cast.isCastMaybeComplete then
+        -- color castbar slightly yellow when its not 100% sure if the cast is casted or canceled
+        if not cast.isChanneled then
+            castbar:SetStatusBarColor(1, 0.78, 0, 1)
+            castbar:SetMinMaxValues(0, 1)
             castbar:SetValue(1)
         else
             castbar:SetValue(0)
