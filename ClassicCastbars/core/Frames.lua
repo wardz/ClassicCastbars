@@ -223,8 +223,8 @@ function addon:HideCastbar(castbar, noFadeOut)
     end
 
     local cast = castbar._data
-    if cast and cast.isInterrupted then -- SPELL_INTERRUPT
-        castbar.Text:SetText(_G.INTERRUPTED)
+    if cast and (cast.isInterrupted or cast.isFailed) then
+        castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
         castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
         castbar:SetMinMaxValues(0, 1)
         castbar:SetValue(1)
@@ -250,7 +250,7 @@ function addon:HideCastbar(castbar, noFadeOut)
     end
 
     if castbar:GetAlpha() > 0 and castbar.fade then
-        castbar.fade:SetDuration(cast and cast.isInterrupted and 1.5 or 0.3)
+        castbar.fade:SetDuration(cast and cast.isInterrupted and 1.5 or 0.4)
         castbar.animationGroup:Play()
     end
 end

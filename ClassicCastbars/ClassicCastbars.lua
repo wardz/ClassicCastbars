@@ -174,6 +174,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.pushbackValue = nil
     cast.isInterrupted = nil
     cast.isCastComplete = nil
+    cast.isFailed = nil
 
     self:StartAllCasts(unitGUID)
 end
@@ -525,6 +526,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_APPLIED" then
         if crowdControls[spellName] and activeTimers[dstGUID] then
             -- Aura that interrupts cast was applied
+            activeTimers[dstGUID].isFailed = true
             return self:DeleteCast(dstGUID)
         elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
             -- Cast modifiers doesnt modify already active casts, only the next time the player casts
@@ -539,11 +541,15 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_CAST_FAILED" then
         if srcGUID == self.PLAYER_GUID then
             -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-            if not CastingInfo() then
+            if not CastingInfo() and activeTimers[srcGUID] then
+                activeTimers[srcGUID].isFailed = true
                 return self:DeleteCast(srcGUID)
             end
         else
-            return self:DeleteCast(srcGUID)
+            if activeTimers[srcGUID] then
+                activeTimers[srcGUID].isFailed = true
+                return self:DeleteCast(srcGUID)
+            end
         end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
@@ -551,7 +557,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player, and not pet
             local cast = activeTimers[dstGUID]
             if cast then
-                if stopCastOnDamageList[cast.spellName] then
+                if stopCastOnDamageList[cast.spellName] and activeTimers[dstGUID] then
+                    activeTimers[dstGUID].isFailed = true
                     return self:DeleteCast(dstGUID)
                 end
 
@@ -579,6 +586,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
                     if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
                         if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
+                            activeTimers[unitGUID].isFailed = true
                             self:DeleteCast(unitGUID)
                         end
                     end
