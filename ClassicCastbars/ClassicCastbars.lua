@@ -174,7 +174,6 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.pushbackValue = nil
     cast.isInterrupted = nil
     cast.isCastComplete = nil
-    cast.isCastMaybeComplete = nil
 
     self:StartAllCasts(unitGUID)
 end
@@ -432,7 +431,7 @@ local stopCastOnDamageList = namespace.stopCastOnDamageList
 local ARCANE_MISSILES = GetSpellInfo(5143)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID,  _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -526,7 +525,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_APPLIED" then
         if crowdControls[spellName] and activeTimers[dstGUID] then
             -- Aura that interrupts cast was applied
-            activeTimers[dstGUID].isCastMaybeComplete = true
             return self:DeleteCast(dstGUID)
         elseif castTimeIncreases[spellName] and activeTimers[dstGUID] then
             -- Cast modifiers doesnt modify already active casts, only the next time the player casts
@@ -615,10 +613,22 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
+                -- color castbar slightly yellow when its not 100% sure if the cast is casted or failed
+                -- (gotta put it here to run before fadeout anim)
+                if not cast.isCastComplete and not cast.isInterrupted then
+                    castbar.Spark:SetAlpha(0)
+                    if not cast.isChanneled then
+                        castbar:SetStatusBarColor(1, 0.8, 0, 1)
+                        castbar:SetMinMaxValues(0, 1)
+                        castbar:SetValue(1)
+                    else
+                        castbar:SetValue(0)
+                    end
+                end
+
                 -- Delete cast incase stop event wasn't detected in CLEU
                 if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
                     local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
-                    cast.isCastMaybeComplete = true
                     self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
                 end
             end

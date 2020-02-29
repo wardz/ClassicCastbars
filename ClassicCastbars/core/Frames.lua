@@ -249,18 +249,6 @@ function addon:HideCastbar(castbar, noFadeOut)
         end
     end
 
-    if cast and cast.isCastMaybeComplete then
-        castbar.Spark:SetAlpha(0)
-        -- color castbar slightly yellow when its not 100% sure if the cast is casted or canceled
-        if not cast.isChanneled then
-            castbar:SetStatusBarColor(1, 0.78, 0, 1)
-            castbar:SetMinMaxValues(0, 1)
-            castbar:SetValue(1)
-        else
-            castbar:SetValue(0)
-        end
-    end
-
     if castbar:GetAlpha() > 0 and castbar.fade then
         castbar.fade:SetDuration(cast and cast.isInterrupted and 1.5 or 0.3)
         castbar.animationGroup:Play()
