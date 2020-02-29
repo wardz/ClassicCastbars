@@ -1,3 +1,13 @@
+v1.2.8:
+- Castbar now shows a red failed indicator on cast stopped.
+- Minor improvements to cast finish animations.
+- Fix Lua error from v1.2.7 when using player castbar without timer text enabled.
+
+
+v1.2.7:
+- Player castbar timer text is now placed outside the castbar if the spell name is too long, just like with the target castbar.
+
+
 v1.2.6:
 - Target castbar is no longer auto reanchored on target of target frame being shown or hidden, instead it's always placed below the target of target frame area.
 - Fix "Show Cast Info Only" option sometimes bugging out if you have it enabled for one type of unit frame but disabled for another.
