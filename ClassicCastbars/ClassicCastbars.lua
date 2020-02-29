@@ -21,6 +21,7 @@ namespace.addon = addon
 ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
 -- upvalues for speed
+local gsub = _G.string.gsub
 local strfind = _G.string.find
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
@@ -621,12 +622,13 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
                 end
             else
-                -- color castbar slightly yellow when its not 100% sure if the cast is casted or failed
+                -- slightly adjust color of the castbar when its not 100% sure if the cast is casted or failed
                 -- (gotta put it here to run before fadeout anim)
-                if not cast.isCastComplete and not cast.isInterrupted then
+                if not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                     castbar.Spark:SetAlpha(0)
                     if not cast.isChanneled then
-                        castbar:SetStatusBarColor(1, 0.8, 0, 1)
+                        local c = self.db[gsub(unit, "%d", "")].statusColor
+                        castbar:SetStatusBarColor(c[1], c[2] + 0.1, c[3], c[4])
                         castbar:SetMinMaxValues(0, 1)
                         castbar:SetValue(1)
                     else
