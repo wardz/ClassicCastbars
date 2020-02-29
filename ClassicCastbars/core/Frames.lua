@@ -299,7 +299,6 @@ function addon:SkinPlayerCastbar()
             if frame.Icon:GetTexture() == 136235 then
                 frame.Icon:SetTexture(136243)
             end
-            frame.Timer:SetPoint("RIGHT", CastingBarFrame, (frame.Text:GetText():len() >= 19) and 30 or -6, 0)
         end)
 
         hooksecurefunc("PlayerFrame_DetachCastBar", function()
