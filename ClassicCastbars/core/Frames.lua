@@ -256,7 +256,7 @@ function addon:HideCastbar(castbar, noFadeOut)
                 castbar.fade:SetStartDelay(0.5)
             end
         end
-        castbar.fade:SetDuration(0.3)
+        castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
         castbar.animationGroup:Play()
     end
 end
