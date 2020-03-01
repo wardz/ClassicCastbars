@@ -250,11 +250,13 @@ function addon:HideCastbar(castbar, noFadeOut)
     end
 
     if castbar:GetAlpha() > 0 and castbar.fade then
+        castbar.fade:SetStartDelay(0) -- reset
         if cast then
-            castbar.fade:SetDuration(cast.isInterrupted and 1.5 or cast.isFailed and 0.9 or 0.3)
-        else
-            castbar.fade:SetDuration(0.3)
+            if cast.isInterrupted or cast.isFailed then
+                castbar.fade:SetStartDelay(0.5)
+            end
         end
+        castbar.fade:SetDuration(0.3)
         castbar.animationGroup:Play()
     end
 end
