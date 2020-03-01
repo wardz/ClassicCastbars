@@ -235,6 +235,11 @@ function addon:HideCastbar(castbar, noFadeOut)
         if castbar.Border:GetAlpha() == 1 then -- not using LSM borders
             local tex = castbar.Border:GetTexture()
             if tex == "Interface\\CastingBar\\UI-CastingBar-Border" or tex == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
+                if not cast.isChanneled then
+                    castbar.Flash:SetVertexColor(1, 1, 1)
+                else
+                    castbar.Flash:SetVertexColor(0, 1, 0)
+                end
                 castbar.Flash:Show()
             end
         end
