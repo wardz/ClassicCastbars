@@ -1,7 +1,8 @@
 v1.2.8:
-- Castbar now shows a red failed indicator on cast stopped.
-- Minor improvements to cast finish animations.
+- Castbar now shows a red failed indicator on cast stopped. (Interrupt indicator will still say "Interrupted" instead of "Failed" so you can still track successful interrupts.)
+- Improvements to castbar finish animations.
 - Fix Lua error from v1.2.7 when using player castbar without timer text enabled.
+- Add more French localizations, thanks to Irhala!
 
 
 v1.2.7:
