@@ -540,16 +540,21 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:DeleteCast(srcGUID, nil, nil, true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
-        if srcGUID == self.PLAYER_GUID then
-            -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-            if not CastingInfo() and activeTimers[srcGUID] then
-                activeTimers[srcGUID].isFailed = true
-                return self:DeleteCast(srcGUID)
-            end
-        else
-            if activeTimers[srcGUID] then
-                activeTimers[srcGUID].isFailed = true
-                return self:DeleteCast(srcGUID)
+        local cast = activeTimers[srcGUID]
+        if cast then
+            if srcGUID == self.PLAYER_GUID then
+                -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
+                if not CastingInfo() then
+                    if not cast.isChanneled then
+                        cast.isFailed = true
+                    end
+                    return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled) -- note: channels shows finish anim on cast failed
+                end
+            else
+                if not cast.isChanneled then
+                    cast.isFailed = true
+                end
+                return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled)
             end
         end
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
@@ -591,8 +596,10 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                             -- due to lag its possible that the cast is successfuly casted but still shows interrupted
                             -- unless we ignore the last few miliseconds here
                             if not castAlmostFinishied then
-                                activeTimers[unitGUID].isFailed = true
-                                self:DeleteCast(unitGUID)
+                                if not cast.isChanneled then
+                                    cast.isFailed = true
+                                end
+                                self:DeleteCast(unitGUID, nil, nil, cast.isChanneled)
                             end
                         end
                     end
@@ -643,8 +650,14 @@ addon:SetScript("OnUpdate", function(self, elapsed)
 
                 -- Delete cast incase stop event wasn't detected in CLEU
                 if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
-                    local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
-                    self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
+                    if cast.isChanneled and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
+                        -- show finish animation on channels that doesnt have CLEU stop event
+                        -- Note: channels always have finish animations on stop, even if it was an early stop
+                        self:DeleteCast(cast.unitGUID, false, true, true, false)
+                    else
+                        local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
+                        self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
+                    end
                 end
             end
         end
