@@ -592,7 +592,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
                     if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
                         if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
-                            local castAlmostFinishied = ((currTime - cast.timeStart) > cast.maxValue - 0.05)
+                            local castAlmostFinishied = ((currTime - cast.timeStart) > cast.maxValue - 0.1)
                             -- due to lag its possible that the cast is successfuly casted but still shows interrupted
                             -- unless we ignore the last few miliseconds here
                             if not castAlmostFinishied then
