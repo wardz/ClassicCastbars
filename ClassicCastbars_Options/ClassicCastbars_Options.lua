@@ -274,6 +274,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hasAlpha = true,
                         type = "color",
                     },
+                    statusColorFailed = {
+                        name = L.STATUS_FAILED_COLOR,
+                        order = 3,
+                        hasAlpha = true,
+                        type = "color",
+                    },
                     statusColorChannel = {
                         name = L.STATUS_CHANNEL_COLOR,
                         order = 4,

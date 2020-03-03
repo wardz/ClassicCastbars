@@ -215,7 +215,7 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar:Show()
 end
 
-function addon:HideCastbar(castbar, noFadeOut)
+function addon:HideCastbar(castbar, unitID, noFadeOut)
     if noFadeOut then
         castbar:SetAlpha(0)
         castbar:Hide()
@@ -225,7 +225,7 @@ function addon:HideCastbar(castbar, noFadeOut)
     local cast = castbar._data
     if cast and (cast.isInterrupted or cast.isFailed) then
         castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
-        castbar:SetStatusBarColor(castbar.failedCastColor:GetRGB())
+        castbar:SetStatusBarColor(unpack(self.db[gsub(unitID, "%d", "")].statusColorFailed))
         castbar:SetMinMaxValues(0, 1)
         castbar:SetValue(1)
         castbar.Spark:SetAlpha(0)
@@ -322,7 +322,7 @@ function addon:SkinPlayerCastbar()
 	CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
 	--CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColor))
 	--CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, 0.7, 0.7, 0.7)
-    --CastingBarFrame_SetFailedCastColor(CastingBarFrame, 1.0, 0.0, 0.0)
+    CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
     if CastingBarFrame.isTesting then
         CastingBarFrame:SetStatusBarColor(CastingBarFrame.startCastColor:GetRGB())
     end

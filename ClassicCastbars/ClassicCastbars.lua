@@ -123,7 +123,7 @@ function addon:StopCast(unitID, noFadeOut)
     if not castbar then return end
 
     if not castbar.isTesting then
-        self:HideCastbar(castbar, noFadeOut)
+        self:HideCastbar(castbar, unitID, noFadeOut)
     end
 
     castbar._data = nil
