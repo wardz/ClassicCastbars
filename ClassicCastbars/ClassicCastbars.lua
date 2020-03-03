@@ -653,7 +653,8 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     if cast.isChanneled and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                         -- show finish animation on channels that doesnt have CLEU stop event
                         -- Note: channels always have finish animations on stop, even if it was an early stop
-                        self:DeleteCast(cast.unitGUID, false, true, true, false)
+                        local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.4) -- skips fade anim on castbar being RESHOWN if the cast is expired
+                        self:DeleteCast(cast.unitGUID, false, true, true, skipFade)
                     else
                         local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
                         self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
