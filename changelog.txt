@@ -1,6 +1,7 @@
 v1.2.9:
 - Add new statusbar color option for cast failed.
 - Fix castbar sometimes being incorrectly shown for a split second when you switch targets and the old target used a channeled spell before.
+- Add 64.29% of German localizations, thanks to x_RazzorX_x!
 
 
 v1.2.8:
