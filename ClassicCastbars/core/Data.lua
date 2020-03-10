@@ -1163,6 +1163,7 @@ local castSpellIDs = {
     --1002, -- Eyes of the Beast
     --1510, -- Volley
     136, -- Mend Pet
+    7268, -- Arcane Missile
     5143, -- Arcane Missiles
     --10, -- Blizzard
     12051, -- Evocation
@@ -1238,6 +1239,7 @@ namespace.channeledSpells = {
 
     -- MAGE
     [GetSpellInfo(5143)] = 5000,      -- Arcane Missiles
+    [GetSpellInfo(7268)] = 3000,      -- Arcane Missile
     [GetSpellInfo(10)] = 8000,        -- Blizzard
     [GetSpellInfo(12051)] = 8000,     -- Evocation
 
