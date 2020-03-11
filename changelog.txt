@@ -1,3 +1,10 @@
+v1.2.11:
+- Update for WoW patch 1.13.4.
+- Fix occasional Lua errors when testmode is enabled after v1.2.8 changes.
+- Fix Arcane Missiles rank 1 not being shown.
+- Fix Arcane Missiles cast by yourself being refreshed every tick if the enemy target is out of LoS.
+
+
 v1.2.10:
 - Fix rare Lua error for player castbar timer when there's no spell name text available.
 
