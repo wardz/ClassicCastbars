@@ -1,4 +1,4 @@
-## Interface: 11303
+## Interface: 11304
 ## Title: ClassicCastbars
 ## Notes: Adds castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
