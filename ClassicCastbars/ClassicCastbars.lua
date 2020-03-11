@@ -37,6 +37,7 @@ local next = _G.next
 local floor = _G.math.floor
 local GetUnitSpeed = _G.GetUnitSpeed
 local CastingInfo = _G.CastingInfo
+local ChannelInfo = _G.ChannelInfo
 local castTimeIncreases = namespace.castTimeIncreases
 local pushbackBlacklist = namespace.pushbackBlacklist
 local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
@@ -544,7 +545,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if cast then
             if srcGUID == self.PLAYER_GUID then
                 -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player
-                if not CastingInfo() then
+                -- Using Arcane Missiles on a target that is currenly LoS also seem to trigger SPELL_CAST_FAILED for some reason...
+                if not CastingInfo() and not ChannelInfo() then
                     if not cast.isChanneled then
                         cast.isFailed = true
                     end
