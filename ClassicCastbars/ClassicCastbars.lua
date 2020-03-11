@@ -443,6 +443,7 @@ local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
 local stopCastOnDamageList = namespace.stopCastOnDamageList
 local ARCANE_MISSILES = GetSpellInfo(5143)
+local ARCANE_MISSILE = GetSpellInfo(7268)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
@@ -528,7 +529,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         if channelCast then
             -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
-            if spellName == ARCANE_MISSILES and activeTimers[srcGUID] and activeTimers[srcGUID].spellName == ARCANE_MISSILES then return end
+            if (spellName == ARCANE_MISSILES or spellName == ARCANE_MISSILE) and activeTimers[srcGUID] then
+                if activeTimers[srcGUID].spellName == ARCANE_MISSILES or activeTimers[srcGUID].spellName == ARCANE_MISSILE then return end
+            end
 
             return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
         end
