@@ -4,7 +4,6 @@ local PoolManager = namespace.PoolManager
 
 local addon = namespace.addon
 local activeFrames = addon.activeFrames
-local gsub = _G.string.gsub
 local strfind = _G.string.find
 local unpack = _G.unpack
 local min = _G.math.min
@@ -159,12 +158,7 @@ function addon:DisplayCastbar(castbar, unitID)
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end
 
-    local db = self.db[gsub(unitID, "%d", "")] -- nameplate1 -> nameplate
-    if unitID == "nameplate-testmode" then
-        db = self.db.nameplate
-    elseif unitID == "party-testmode" then
-        db = self.db.party
-    end
+    local db = self.db[self:GetUnitType(unitID)]
 
     if not castbar.animationGroup then
         castbar.animationGroup = castbar:CreateAnimationGroup()
@@ -225,7 +219,7 @@ function addon:HideCastbar(castbar, unitID, noFadeOut)
     local cast = castbar._data
     if cast and (cast.isInterrupted or cast.isFailed) then
         castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
-        castbar:SetStatusBarColor(unpack(self.db[gsub(unitID, "%d", "")].statusColorFailed))
+        castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorFailed))
         castbar:SetMinMaxValues(0, 1)
         castbar:SetValue(1)
         castbar.Spark:SetAlpha(0)

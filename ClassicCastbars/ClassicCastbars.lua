@@ -49,6 +49,17 @@ local MIND_QUICKENING = GetSpellInfo(23723)
 local BLINDING_LIGHT = GetSpellInfo(23733)
 local BERSERKING = GetSpellInfo(20554)
 
+function addon:GetUnitType(unitID)
+    local unit = gsub(unitID or "", "%d", "")
+    if unit == "nameplate-testmode" then
+        unit = "nameplate"
+    elseif unit == "party-testmode" then
+        unit = "party"
+    end
+
+    return unit
+end
+
 function addon:CheckCastModifier(unitID, cast)
     if unitID == "focus" then return end
     if not self.db.pushbackDetect or not cast then return end
@@ -641,7 +652,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 if not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                     castbar.Spark:SetAlpha(0)
                     if not cast.isChanneled then
-                        local c = self.db[gsub(unit, "%d", "")].statusColor
+                        local c = self.db[self:GetUnitType(unit)].statusColor
                         castbar:SetStatusBarColor(c[1], c[2] + 0.1, c[3], c[4])
                         castbar:SetMinMaxValues(0, 1)
                         castbar:SetValue(1)
