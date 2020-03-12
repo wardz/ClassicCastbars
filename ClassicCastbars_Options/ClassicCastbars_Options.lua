@@ -110,6 +110,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                         disabled = ModuleIsDisabled,
                     },
+                    showBorderShield = {
+                        order = 7,
+                        width = "full",
+                        name = "Show Border Shield",
+                        desc = "Shows a shield when a cast cannot be interrupted",
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                    },
                     notes = {
                         order = 8,
                         hidden = unitID ~= "focus",
@@ -232,6 +240,24 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         max = 2000,
                         bigStep = 5,
                     },
+                    shieldIconPositionX = {
+                        order = 6,
+                        name = "Uninterruptible Icon Position X",
+                        desc = "Where to place the icon when the uninterruptible shield is visible",
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 5,
+                    },
+                    shieldIconPositionY = {
+                        order = 6,
+                        name = "Uninterruptible Icon Position Y",
+                        desc = "Where to place the icon when the uninterruptible shield is visible",
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 5,
+                    },
                 },
             },
 
@@ -289,6 +315,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     statusBackgroundColor = {
                         name = L.STATUS_BG_COLOR,
                         order = 5,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColorUninterruptible ={
+                        name = "Select Uninterruptible Fill Color",
+                        order = 6,
                         hasAlpha = true,
                         type = "color",
                     }

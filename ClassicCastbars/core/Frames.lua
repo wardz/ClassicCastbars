@@ -3,6 +3,7 @@ local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
 
 local addon = namespace.addon
+local uninterruptibleList = namespace.uninterruptibleList
 local activeFrames = addon.activeFrames
 local strfind = _G.string.find
 local unpack = _G.unpack
@@ -46,7 +47,11 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
 
         -- Move timer position depending on spellname length
         if db.showTimer then
-            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, 0)
+            local yOff = 0
+            if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
+                yOff = yOff + 2
+            end
+            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
         end
     end
 end
@@ -76,14 +81,14 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Spark:SetHeight(db.height * 2.1)
     castbar.Icon:SetShown(db.showIcon)
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
-    castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
 
     castbar.Flash:ClearAllPoints()
     castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height-1)
     castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height-1)
 
-    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" then -- default border
+    local isDefaultBorder = db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border"
+    if isDefaultBorder then
         castbar.Border:SetAlpha(1)
         if castbar.BorderFrame then
             -- Hide LSM border frame if it exists
@@ -98,6 +103,22 @@ function addon:SetCastbarStyle(castbar, cast, db)
     else
         -- Using border sat by LibSharedMedia
         self:SetLSMBorders(castbar, cast, db)
+    end
+
+    if (cast) then
+        if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
+            if (isDefaultBorder) then
+                castbar.Border:SetAlpha(0);
+            end
+            castbar.BorderShield:Show()
+            castbar.Icon:SetPoint("LEFT", castbar, db.shieldIconPositionX - db.iconSize, db.shieldIconPositionY)
+        else
+            if (isDefaultBorder) then
+                castbar.Border:SetAlpha(1);
+            end
+            castbar.BorderShield:Hide()
+            castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
+        end
     end
 end
 
@@ -141,7 +162,12 @@ function addon:SetCastbarFonts(castbar, cast, db)
     local c = db.textColor
     castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
     castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
-    castbar.Text:SetPoint("CENTER", db.textPositionX, db.textPositionY)
+    local xOff = db.textPositionX
+    local yOff = db.textPositionY
+    if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
+        yOff = yOff + 2
+    end
+    castbar.Text:SetPoint("CENTER", xOff, yOff)
 end
 
 local function GetStatusBarBackgroundTexture(statusbar)
@@ -179,6 +205,8 @@ function addon:DisplayCastbar(castbar, unitID)
     local cast = castbar._data
     if cast.isChanneled then
         castbar:SetStatusBarColor(unpack(db.statusColorChannel))
+    elseif uninterruptibleList[cast.spellName] then
+        castbar:SetStatusBarColor(unpack(db.statusColorUninterruptible))
     else
         castbar:SetStatusBarColor(unpack(db.statusColor))
     end
