@@ -113,8 +113,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     showBorderShield = {
                         order = 7,
                         width = "full",
-                        name = "Show Border Shield",
-                        desc = "Shows a shield when a cast cannot be interrupted",
+                        name = L.BORDERSHIELD,
+                        desc = L._BORDERSHIELD_TOOLTIP,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
@@ -242,8 +242,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     shieldIconPositionX = {
                         order = 6,
-                        name = "Uninterruptible Icon Position X",
-                        desc = "Where to place the icon when the uninterruptible shield is visible",
+                        name = L.SHIELD_ICON_POS_X,
+                        desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
                         max = 2000,
@@ -251,8 +251,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     shieldIconPositionY = {
                         order = 6,
-                        name = "Uninterruptible Icon Position Y",
-                        desc = "Where to place the icon when the uninterruptible shield is visible",
+                        name = L.SHIELD_ICON_POS_Y,
+                        desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
                         max = 2000,
@@ -319,7 +319,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "color",
                     },
                     statusColorUninterruptible ={
-                        name = "Select Uninterruptible Fill Color",
+                        name = L.STATUS_UNINTERRUPTIBLE_COLOR,
                         order = 6,
                         hasAlpha = true,
                         type = "color",

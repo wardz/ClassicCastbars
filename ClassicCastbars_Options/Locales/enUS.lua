@@ -12,6 +12,8 @@ L["AUTO_POS_BAR_TOOLTIP"] = [=[When enabled it will auto position the castbar ba
 
 Does not work with third-party unit frames.]=]
 L["BORDER_COLOR"] = "Select Border Color"
+L["BORDERSHIELD"] = "Show Uninterruptible Border Shield"
+L["BORDERSHIELD_TOOLTIP"] = "Shows a shield around the castbar when a cast cannot be interrupted."
 L["CAST_BORDER"] = "Select Border Texture"
 L["CAST_BORDER_TOOLTIP"] = "Select texture used for castbar border."
 L["CAST_FONT"] = "Select Castbar Font"
@@ -53,6 +55,8 @@ Notes:
 ]=]
 L["REQUIRES_RESTART"] = "Disabling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
+L["SHIELD_ICON_POS_X"] = "Uninterruptible Icon Position X"
+L["SHIELD_ICON_POS_X"] = "Uninterruptible Icon Position Y"
 L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
 L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show the cast information.
 
@@ -63,6 +67,7 @@ L["STATUS_BG_COLOR"] = "Select Background Color"
 L["STATUS_CHANNEL_COLOR"] = "Select Channel Fill Color"
 L["STATUS_FAILED_COLOR"] = "Select Cast Failed Fill Color"
 L["STATUS_COLOR"] = "Select Cast Fill Color"
+L["STATUS_UNINTERRUPTIBLE_COLOR"] = "Select Uninterruptible Fill Color"
 L["TARGET"] = "Target"
 L["TEST"] = "Toggle Testing"
 L["TEST_MODE_DRAG"] = "Test Mode - Drag To Move"
