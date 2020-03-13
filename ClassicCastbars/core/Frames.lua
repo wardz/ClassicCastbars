@@ -48,7 +48,7 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
         -- Move timer position depending on spellname length
         if db.showTimer then
             local yOff = 0
-            if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
+            if uninterruptibleList[cast.spellName] and db.showBorderShield then
                 yOff = yOff + 2
             end
             castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
@@ -105,16 +105,16 @@ function addon:SetCastbarStyle(castbar, cast, db)
         self:SetLSMBorders(castbar, cast, db)
     end
 
-    if (cast) then
-        if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
-            if (isDefaultBorder) then
-                castbar.Border:SetAlpha(0);
+    if cast then
+        if uninterruptibleList[cast.spellName] and db.showBorderShield then
+            if isDefaultBorder then
+                castbar.Border:SetAlpha(0)
             end
             castbar.BorderShield:Show()
             castbar.Icon:SetPoint("LEFT", castbar, db.shieldIconPositionX - db.iconSize, db.shieldIconPositionY)
         else
-            if (isDefaultBorder) then
-                castbar.Border:SetAlpha(1);
+            if isDefaultBorder then
+                castbar.Border:SetAlpha(1)
             end
             castbar.BorderShield:Hide()
             castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
@@ -162,9 +162,10 @@ function addon:SetCastbarFonts(castbar, cast, db)
     local c = db.textColor
     castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
     castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
+
     local xOff = db.textPositionX
     local yOff = db.textPositionY
-    if (uninterruptibleList[cast.spellName] and db.showBorderShield) then
+    if uninterruptibleList[cast.spellName] and db.showBorderShield then
         yOff = yOff + 2
     end
     castbar.Text:SetPoint("CENTER", xOff, yOff)
