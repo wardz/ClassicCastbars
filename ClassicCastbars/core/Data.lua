@@ -1545,6 +1545,15 @@ C_Timer.After(11, function()
     crowdControls = nil
 end)
 
+-- List of player interrupts that can lock out a school (not silences)
+namespace.playerInterrupts = {
+    [GetSpellInfo(2139)] = 1,  -- Counterspell
+    [GetSpellInfo(1766)] = 1,  -- Kick
+    [GetSpellInfo(8042)] = 1,  -- Earth Shock
+    [GetSpellInfo(19244)] = 1, -- Spell Lock
+    [GetSpellInfo(6552)] = 1,  -- Pummel
+}
+
 -- Skip pushback calculation for these spells since they
 -- have chance to ignore pushback when talented, or is always immune.
 namespace.pushbackBlacklist = {

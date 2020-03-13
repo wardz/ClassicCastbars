@@ -12,6 +12,7 @@ local activeTimers = {} -- active cast data
 local activeFrames = {}
 local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
+local npcCastUninterruptibleCache = {}
 
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
@@ -41,6 +42,7 @@ local ChannelInfo = _G.ChannelInfo
 local castTimeIncreases = namespace.castTimeIncreases
 local pushbackBlacklist = namespace.pushbackBlacklist
 local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
+local uninterruptibleList = namespace.uninterruptibleList
 
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
@@ -160,7 +162,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
 end
 
 -- Store or refresh new cast data for unit, and start castbar(s)
-function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
+function addon:StoreCast(unitGUID, unitName, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
     if not activeTimers[unitGUID] then
@@ -177,7 +179,10 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.unitGUID = unitGUID
     cast.timeStart = currTime
     cast.isPlayer = isPlayer
-    cast.hasCastSlowModified = nil -- just nil previous values to avoid overhead of wiping table
+    cast.isUninterruptible = uninterruptibleList[spellName] or not isPlayer and npcCastUninterruptibleCache[unitName .. spellName]
+
+    -- just nil previous values to avoid overhead of wiping table
+    cast.hasCastSlowModified = nil
     cast.hasBarkskinModifier = nil
     cast.hasNaturesGraceModifier = nil
     cast.hasFocusedCastingModifier = nil
@@ -318,6 +323,7 @@ end
 function addon:ZONE_CHANGED_NEW_AREA()
     wipe(npcCastTimeCacheStart)
     wipe(npcCastTimeCache)
+    wipe(npcCastUninterruptibleCache)
 end
 
 -- Copies table values from src to dst if they don't exist in dst
@@ -442,11 +448,12 @@ local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
 local stopCastOnDamageList = namespace.stopCastOnDamageList
+local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, missTypeIfSwingPrefix, spellName, _, missType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -484,7 +491,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, spellName, spellID, icon, castTime, isPlayer)
+        return self:StoreCast(srcGUID, srcName, spellName, spellID, icon, castTime, isPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
@@ -533,7 +540,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 if activeTimers[srcGUID].spellName == ARCANE_MISSILES or activeTimers[srcGUID].spellName == ARCANE_MISSILE then return end
             end
 
-            return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
+            return self:StoreCast(srcGUID, srcName, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
         end
 
         -- non-channeled spell, finish it.
@@ -585,6 +592,20 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 end
 
                 return self:CastPushback(dstGUID)
+            end
+        end
+    elseif eventType == "SPELL_MISSED" or eventType == "RANGE_MISSED" or eventType == "SWING_MISSED" then
+        if eventType == "SWING_MISSED" then
+            -- the missType suffix parameter is on arg12 for SWING_MISSED and arg15 for SPELL_MISSED and RANGE_MISSED
+            missType = missTypeIfSwingPrefix
+        end
+
+        -- TODO: check if Improved Counterspell has same name as normal Counterspell here
+        if missType == "IMMUNE" and playerInterrupts[spellName] then
+            if not bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- dest unit is not a player
+                if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
+                    npcCastUninterruptibleCache[srcName .. spellName] = true
+                end
             end
         end
     end
