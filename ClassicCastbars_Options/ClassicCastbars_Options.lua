@@ -114,7 +114,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 7,
                         width = "full",
                         name = L.BORDERSHIELD,
-                        desc = L._BORDERSHIELD_TOOLTIP,
+                        desc = L.BORDERSHIELD_TOOLTIP,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
