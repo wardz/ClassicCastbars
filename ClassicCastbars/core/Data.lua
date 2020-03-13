@@ -1569,9 +1569,32 @@ namespace.pushbackBlacklist = {
 namespace.uninterruptibleList = {
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+    [GetSpellInfo(13237)] = 1,      -- Goblin Mortar
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
     [GetSpellInfo(20549)] = 1,      -- War Stomp
+    [GetSpellInfo(1510)] = 1,       -- Volley
+    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
+    [GetSpellInfo(11605)] = 1,      -- Slam
+    [GetSpellInfo(6461)] = 1,       -- Pick Lock
+    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
+    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
+    [GetSpellInfo(2480)] = 1,       -- Shoot Bow
+    [GetSpellInfo(7918)] = 1,       -- Shoot Gun
+
+    -- these are technically uninterruptible but breaks on dmg
+    [GetSpellInfo(22999)] = 1,      -- Defibrillate
+    [GetSpellInfo(746)] = 1,        -- First Aid
+    [GetSpellInfo(20577)] = 1,      -- Cannibalize
 }
 
 -- Casts that should be stopped on damage received
