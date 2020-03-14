@@ -117,6 +117,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.BORDERSHIELD_TOOLTIP,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
+                        hidden = unitID == "player",
                     },
                     notes = {
                         order = 8,
