@@ -451,9 +451,11 @@ local stopCastOnDamageList = namespace.stopCastOnDamageList
 local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
+local DIVINE_SHIELD = GetSpellInfo(642)
+local DIVINE_PROTECTION = GetSpellInfo(498)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, missTypeIfSwingPrefix, spellName, _, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -594,16 +596,24 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 return self:CastPushback(dstGUID)
             end
         end
-    elseif eventType == "SPELL_MISSED" or eventType == "RANGE_MISSED" or eventType == "SWING_MISSED" then
-        if eventType == "SWING_MISSED" then
-            -- the missType suffix parameter is on arg12 for SWING_MISSED and arg15 for SPELL_MISSED and RANGE_MISSED
-            missType = missTypeIfSwingPrefix
-        end
-
+    elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             if not bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
+                    -- Check for bubble immunity
+                    local libCD = LibStub and LibStub("LibClassicDurations", true)
+                    if libCD and libCD.buffCache then
+                        local buffCacheHit = libCD.buffCache[dstGUID]
+                        if buffCacheHit then
+                            for i = 1, #buffCacheHit do
+                                if buffCacheHit[i].name == DIVINE_SHIELD or buffCacheHit[i].name == DIVINE_PROTECTION then
+                                    return
+                                end
+                            end
+                        end
+                    end
+
                     npcCastUninterruptibleCache[srcName .. spellName] = true
                 end
             end
