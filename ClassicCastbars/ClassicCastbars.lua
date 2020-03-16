@@ -598,8 +598,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
-        if missType == "IMMUNE" and playerInterrupts[spellName] then
-            if not bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- dest unit is not a player
+            if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     -- Check for bubble immunity
                     local libCD = LibStub and LibStub("LibClassicDurations", true)
