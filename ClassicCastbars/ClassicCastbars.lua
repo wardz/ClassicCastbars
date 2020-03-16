@@ -455,7 +455,7 @@ local DIVINE_SHIELD = GetSpellInfo(642)
 local DIVINE_PROTECTION = GetSpellInfo(498)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, dstName, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -598,6 +598,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
+        if missType == "IMMUNE" and playerInterrupts[spellName] and activeTimers[dstGUID] then
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     -- Check for bubble immunity
@@ -613,7 +614,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     end
 
-                    npcCastUninterruptibleCache[srcName .. spellName] = true
+                    npcCastUninterruptibleCache[dstName .. activeTimers[dstGUID].spellName] = true
                 end
             end
         end
