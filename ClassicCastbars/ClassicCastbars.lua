@@ -323,7 +323,6 @@ end
 function addon:ZONE_CHANGED_NEW_AREA()
     wipe(npcCastTimeCacheStart)
     wipe(npcCastTimeCache)
-    wipe(npcCastUninterruptibleCache)
 end
 
 -- Copies table values from src to dst if they don't exist in dst
@@ -360,6 +359,7 @@ function addon:PLAYER_LOGIN()
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT
         self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
+        self.db.npcCastUninterruptibleCache = {} -- NPC names are locale dependent
     end
 
     -- config is not needed anymore if options are not loaded
@@ -372,6 +372,7 @@ function addon:PLAYER_LOGIN()
         self:SkinPlayerCastbar()
     end
 
+    npcCastUninterruptibleCache = self.db.npcCastUninterruptibleCache
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -598,7 +599,11 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
-        if missType == "IMMUNE" and playerInterrupts[spellName] and activeTimers[dstGUID] then
+        if missType == "IMMUNE" and playerInterrupts[spellName] then
+            local cast = activeTimers[dstGUID]
+            if not cast then return end
+            if npcCastUninterruptibleCache[dstName .. cast.spellName] then return end -- already added
+
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     -- Check for bubble immunity
@@ -614,7 +619,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     end
 
-                    npcCastUninterruptibleCache[dstName .. activeTimers[dstGUID].spellName] = true
+                    npcCastUninterruptibleCache[dstName .. cast.spellName] = true
                 end
             end
         end

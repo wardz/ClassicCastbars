@@ -1772,6 +1772,7 @@ namespace.defaultConfig = {
     version = "18", -- settings version
     pushbackDetect = true,
     locale = GetLocale(),
+    npcCastUninterruptibleCache = {},
 
     nameplate = {
         enabled = true,
