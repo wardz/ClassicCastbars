@@ -1407,7 +1407,6 @@ local crowdControls = {
     4067,       -- Big Bronze Bomb
     4066,       -- Small Bronze Bomb
     4065,       -- Large Copper Bomb
-    13237,      -- Goblin Mortar
     835,        -- Tidal Charm
     13181,      -- Gnomish Mind Control Cap
     12562,      -- The Big One
@@ -1587,7 +1586,6 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
     [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
     [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
-    [GetSpellInfo(13237)] = 1,      -- Goblin Mortar
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
     [GetSpellInfo(20549)] = 1,      -- War Stomp
