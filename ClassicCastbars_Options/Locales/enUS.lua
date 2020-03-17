@@ -58,8 +58,6 @@ Notes:
 ]=]
 L["REQUIRES_RESTART"] = "Disabling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
-L["SHIELD_ICON_POS_X"] = "Uninterruptible Icon Position X"
-L["SHIELD_ICON_POS_Y"] = "Uninterruptible Icon Position Y"
 L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
 L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show the cast information.
 

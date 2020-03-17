@@ -122,13 +122,16 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
         -- Update border shield to match current castbar size
         local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
         castbar.BorderShield:ClearAllPoints()
-        castbar.BorderShield:SetPoint("TOPLEFT", width-7, height+1)
+        castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
         castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+2, -height+4)
 
-        if strfind(unitID, "nameplate") then
-            castbar.Icon:SetPoint("LEFT", castbar, db.shieldIconPositionX - db.iconSize, db.shieldIconPositionY)
+        local unitType = self:GetUnitType(unitID)
+        if unitType == "nameplate" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
+        elseif unitType == "party" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 4, db.iconPositionY + 2)
         else
-            castbar.Icon:SetPoint("LEFT", castbar, db.shieldIconPositionX - db.iconSize, db.shieldIconPositionY)
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
         end
 
         castbar.BorderShield:Show()
