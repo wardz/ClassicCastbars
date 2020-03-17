@@ -89,10 +89,10 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar.Flash:ClearAllPoints()
     if cast.isUninterruptible then
         castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
-        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45), -db.height-1)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
     else
-        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height-1)
-        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height-1)
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
     end
 
     local isDefaultBorder = db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border"
