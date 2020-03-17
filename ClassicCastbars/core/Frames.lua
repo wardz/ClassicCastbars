@@ -30,7 +30,11 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
     if parentFrame.buffsOnTop or auraRows <= 1 then
         castbar:SetPoint("CENTER", parentFrame, -18, -75)
     else
-        castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -38.5 * auraRows), -150))
+        if castbar.BorderShield:IsShown() then
+            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -43 * auraRows), -150))
+        else
+            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -39 * auraRows), -150))
+        end
     end
 end
 
@@ -46,12 +50,16 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
 
         -- Move timer position depending on spellname length
         if db.showTimer then
-            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, 0)
+            local yOff = 0
+            if db.showBorderShield and cast.isUninterruptible then
+                yOff = yOff + 2
+            end
+            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
         end
     end
 end
 
-function addon:SetCastbarStyle(castbar, cast, db)
+function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar:SetSize(db.width, db.height)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
@@ -76,14 +84,19 @@ function addon:SetCastbarStyle(castbar, cast, db)
     castbar.Spark:SetHeight(db.height * 2.1)
     castbar.Icon:SetShown(db.showIcon)
     castbar.Icon:SetSize(db.iconSize, db.iconSize)
-    castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
 
     castbar.Flash:ClearAllPoints()
-    castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height-1)
-    castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height-1)
+    if cast.isUninterruptible then
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
+    else
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
+    end
 
-    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" then -- default border
+    local isDefaultBorder = db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border"
+    if isDefaultBorder then
         castbar.Border:SetAlpha(1)
         if castbar.BorderFrame then
             -- Hide LSM border frame if it exists
@@ -98,6 +111,38 @@ function addon:SetCastbarStyle(castbar, cast, db)
     else
         -- Using border sat by LibSharedMedia
         self:SetLSMBorders(castbar, cast, db)
+    end
+
+    if db.showBorderShield and cast.isUninterruptible then
+        castbar.Border:SetAlpha(0)
+        if castbar.BorderFrame then
+            castbar.BorderFrame:SetAlpha(0)
+        end
+
+        -- Update border shield to match current castbar size
+        local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
+        castbar.BorderShield:ClearAllPoints()
+        castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
+        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+2, -height+4)
+
+        local unitType = self:GetUnitType(unitID)
+        if unitType == "nameplate" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
+        elseif unitType == "party" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 4, db.iconPositionY + 2)
+        else
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
+        end
+
+        castbar.BorderShield:Show()
+    else
+        if isDefaultBorder then
+            castbar.Border:SetAlpha(1)
+        else
+            castbar.BorderFrame:SetAlpha(1)
+        end
+        castbar.BorderShield:Hide()
+        castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     end
 end
 
@@ -141,7 +186,13 @@ function addon:SetCastbarFonts(castbar, cast, db)
     local c = db.textColor
     castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
     castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
-    castbar.Text:SetPoint("CENTER", db.textPositionX, db.textPositionY)
+
+    local xOff = db.textPositionX
+    local yOff = db.textPositionY
+    if db.showBorderShield and cast.isUninterruptible then
+        yOff = yOff + 2
+    end
+    castbar.Text:SetPoint("CENTER", xOff, yOff)
 end
 
 local function GetStatusBarBackgroundTexture(statusbar)
@@ -179,6 +230,8 @@ function addon:DisplayCastbar(castbar, unitID)
     local cast = castbar._data
     if cast.isChanneled then
         castbar:SetStatusBarColor(unpack(db.statusColorChannel))
+    elseif cast.isUninterruptible then
+        castbar:SetStatusBarColor(unpack(db.statusColorUninterruptible))
     else
         castbar:SetStatusBarColor(unpack(db.statusColor))
     end
@@ -186,7 +239,7 @@ function addon:DisplayCastbar(castbar, unitID)
     -- Note: since frames are recycled and we also allow having different styles
     -- between castbars for all the unitframes, we need to always update the style here
     -- incase it was modified to something else on last recycle
-    self:SetCastbarStyle(castbar, cast, db)
+    self:SetCastbarStyle(castbar, cast, db, unitID)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
 
@@ -226,13 +279,15 @@ function addon:HideCastbar(castbar, unitID, noFadeOut)
     end
 
     if cast and cast.isCastComplete then -- SPELL_CAST_SUCCESS
-        if castbar.Border:GetAlpha() == 1 then -- not using LSM borders
+        if castbar.Border:GetAlpha() == 1 or cast.isUninterruptible then
             local tex = castbar.Border:GetTexture()
             if tex == "Interface\\CastingBar\\UI-CastingBar-Border" or tex == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
-                if not cast.isChanneled then
-                    castbar.Flash:SetVertexColor(1, 1, 1)
-                else
+                if cast.isUninterruptible then
+                    castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
+                elseif cast.isChanneled then
                     castbar.Flash:SetVertexColor(0, 1, 0)
+                else
+                    castbar.Flash:SetVertexColor(1, 1, 1)
                 end
                 castbar.Flash:Show()
             end
@@ -241,7 +296,11 @@ function addon:HideCastbar(castbar, unitID, noFadeOut)
         castbar.Spark:SetAlpha(0)
         castbar:SetMinMaxValues(0, 1)
         if not cast.isChanneled then
-            castbar:SetStatusBarColor(0, 1, 0)
+            if cast.isUninterruptible then
+                castbar:SetStatusBarColor(0.7, 0.7, 0.7, 1)
+            else
+                castbar:SetStatusBarColor(0, 1, 0)
+            end
             castbar:SetValue(1)
         else
             castbar:SetValue(0)
@@ -348,7 +407,7 @@ function addon:SkinPlayerCastbar()
         end
     end
 
-    self:SetCastbarStyle(CastingBarFrame, nil, db)
+    self:SetCastbarStyle(CastingBarFrame, nil, db, "player")
     self:SetCastbarFonts(CastingBarFrame, nil, db)
 end
 

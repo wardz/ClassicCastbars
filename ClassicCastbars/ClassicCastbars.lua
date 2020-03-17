@@ -12,6 +12,7 @@ local activeTimers = {} -- active cast data
 local activeFrames = {}
 local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
+local npcCastUninterruptibleCache = {}
 
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
@@ -41,6 +42,7 @@ local ChannelInfo = _G.ChannelInfo
 local castTimeIncreases = namespace.castTimeIncreases
 local pushbackBlacklist = namespace.pushbackBlacklist
 local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
+local uninterruptibleList = namespace.uninterruptibleList
 
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
@@ -160,7 +162,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
 end
 
 -- Store or refresh new cast data for unit, and start castbar(s)
-function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
+function addon:StoreCast(unitGUID, unitName, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
     if not activeTimers[unitGUID] then
@@ -177,7 +179,10 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.unitGUID = unitGUID
     cast.timeStart = currTime
     cast.isPlayer = isPlayer
-    cast.hasCastSlowModified = nil -- just nil previous values to avoid overhead of wiping table
+    cast.isUninterruptible = uninterruptibleList[spellName] or not isPlayer and npcCastUninterruptibleCache[unitName .. spellName]
+
+    -- just nil previous values to avoid overhead of wiping table
+    cast.hasCastSlowModified = nil
     cast.hasBarkskinModifier = nil
     cast.hasNaturesGraceModifier = nil
     cast.hasFocusedCastingModifier = nil
@@ -354,6 +359,7 @@ function addon:PLAYER_LOGIN()
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT
         self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
+        self.db.npcCastUninterruptibleCache = {} -- NPC names are locale dependent
     end
 
     -- config is not needed anymore if options are not loaded
@@ -366,6 +372,7 @@ function addon:PLAYER_LOGIN()
         self:SkinPlayerCastbar()
     end
 
+    npcCastUninterruptibleCache = self.db.npcCastUninterruptibleCache
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -442,11 +449,14 @@ local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
 local castedSpells = namespace.castedSpells
 local stopCastOnDamageList = namespace.stopCastOnDamageList
+local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
+local DIVINE_SHIELD = GetSpellInfo(642)
+local DIVINE_PROTECTION = GetSpellInfo(498)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, dstName, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -484,7 +494,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, spellName, spellID, icon, castTime, isPlayer)
+        return self:StoreCast(srcGUID, srcName, spellName, spellID, icon, castTime, isPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
@@ -533,7 +543,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 if activeTimers[srcGUID].spellName == ARCANE_MISSILES or activeTimers[srcGUID].spellName == ARCANE_MISSILE then return end
             end
 
-            return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
+            return self:StoreCast(srcGUID, srcName, spellName, spellID, GetSpellTexture(spellID), channelCast, isPlayer, true)
         end
 
         -- non-channeled spell, finish it.
@@ -585,6 +595,32 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 end
 
                 return self:CastPushback(dstGUID)
+            end
+        end
+    elseif eventType == "SPELL_MISSED" then
+        -- TODO: check if Improved Counterspell has same name as normal Counterspell here
+        if missType == "IMMUNE" and playerInterrupts[spellName] then
+            local cast = activeTimers[dstGUID]
+            if not cast then return end
+            if npcCastUninterruptibleCache[dstName .. cast.spellName] then return end -- already added
+
+            if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
+                if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
+                    -- Check for bubble immunity
+                    local libCD = LibStub and LibStub("LibClassicDurations", true)
+                    if libCD and libCD.buffCache then
+                        local buffCacheHit = libCD.buffCache[dstGUID]
+                        if buffCacheHit then
+                            for i = 1, #buffCacheHit do
+                                if buffCacheHit[i].name == DIVINE_SHIELD or buffCacheHit[i].name == DIVINE_PROTECTION then
+                                    return
+                                end
+                            end
+                        end
+                    end
+
+                    npcCastUninterruptibleCache[dstName .. cast.spellName] = true
+                end
             end
         end
     end

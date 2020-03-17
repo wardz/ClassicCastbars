@@ -1407,7 +1407,6 @@ local crowdControls = {
     4067,       -- Big Bronze Bomb
     4066,       -- Small Bronze Bomb
     4065,       -- Large Copper Bomb
-    13237,      -- Goblin Mortar
     835,        -- Tidal Charm
     13181,      -- Gnomish Mind Control Cap
     12562,      -- The Big One
@@ -1545,6 +1544,15 @@ C_Timer.After(11, function()
     crowdControls = nil
 end)
 
+-- List of player interrupts that can lock out a school (not silences)
+namespace.playerInterrupts = {
+    [GetSpellInfo(2139)] = 1,  -- Counterspell
+    [GetSpellInfo(1766)] = 1,  -- Kick
+    [GetSpellInfo(8042)] = 1,  -- Earth Shock
+    [GetSpellInfo(19244)] = 1, -- Spell Lock
+    [GetSpellInfo(6552)] = 1,  -- Pummel
+}
+
 -- Skip pushback calculation for these spells since they
 -- have chance to ignore pushback when talented, or is always immune.
 namespace.pushbackBlacklist = {
@@ -1564,6 +1572,36 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
+}
+
+namespace.uninterruptibleList = {
+    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
+    [GetSpellInfo(20589)] = 1,      -- Escape Artist
+    [GetSpellInfo(20549)] = 1,      -- War Stomp
+    [GetSpellInfo(1510)] = 1,       -- Volley
+    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
+    [GetSpellInfo(11605)] = 1,      -- Slam
+    [GetSpellInfo(6461)] = 1,       -- Pick Lock
+    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
+    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
+    [GetSpellInfo(2480)] = 1,       -- Shoot Bow
+    [GetSpellInfo(7918)] = 1,       -- Shoot Gun
+
+    -- these are technically uninterruptible but breaks on dmg
+    [GetSpellInfo(22999)] = 1,      -- Defibrillate
+    [GetSpellInfo(746)] = 1,        -- First Aid
+    [GetSpellInfo(20577)] = 1,      -- Cannibalize
 }
 
 -- Casts that should be stopped on damage received
@@ -1731,15 +1769,17 @@ namespace.unaffectedCastModsSpells = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "17", -- settings version
+    version = "18", -- settings version
     pushbackDetect = true,
     locale = GetLocale(),
+    npcCastUninterruptibleCache = {},
 
     nameplate = {
         enabled = true,
         width = 106,
         height = 11,
         iconSize = 13,
+        showBorderShield = true,
         showCastInfoOnly = false,
         showTimer = false,
         showIcon = true,
@@ -1756,6 +1796,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
@@ -1768,6 +1809,7 @@ namespace.defaultConfig = {
         width = 150,
         height = 15,
         iconSize = 16,
+        showBorderShield = true,
         showCastInfoOnly = false,
         showTimer = false,
         showIcon = true,
@@ -1784,6 +1826,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
@@ -1796,6 +1839,7 @@ namespace.defaultConfig = {
         width = 150,
         height = 15,
         iconSize = 16,
+        showBorderShield = true,
         showCastInfoOnly = false,
         showTimer = false,
         showIcon = true,
@@ -1812,6 +1856,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
@@ -1826,6 +1871,7 @@ namespace.defaultConfig = {
         iconSize = 16,
         showCastInfoOnly = false,
         showTimer = false,
+        showBorderShield = true,
         showIcon = true,
         autoPosition = false,
         castFont = _G.STANDARD_TEXT_FONT,
@@ -1840,6 +1886,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 0,
@@ -1853,6 +1900,7 @@ namespace.defaultConfig = {
         height = 20,
         iconSize = 22,
         showCastInfoOnly = false,
+        showBorderShield = false,
         showTimer = false,
         showIcon = true,
         autoPosition = true,
@@ -1868,6 +1916,7 @@ namespace.defaultConfig = {
         statusColor = { 1, 0.7, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
         textColor = { 1, 1, 1, 1 },
         textPositionX = 0,
         textPositionY = 1,

@@ -129,6 +129,12 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.Timer:SetText("0.75")
     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
 
+    if IsModifierKeyDown() then
+        castbar._data.isUninterruptible = true
+    else
+        castbar._data.isUninterruptible = false
+    end
+
     if unitID == "party-testmode" then
         parentFrame:SetAlpha(1)
         parentFrame:Show()

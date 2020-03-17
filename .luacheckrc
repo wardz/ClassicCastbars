@@ -19,12 +19,12 @@ globals = {
 }
 
 read_globals = {
+    "IsModifierKeyDown",
     "LibStub",
     "hooksecurefunc",
     "ReloadUI",
     "UnitRace",
     "TargetFrame",
-    "CastingBarFrame",
     "GetCVarBool",
     "CopyTable",
     "IsInGroup",

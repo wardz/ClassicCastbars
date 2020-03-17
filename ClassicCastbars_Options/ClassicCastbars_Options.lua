@@ -110,6 +110,15 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         get = function() return ClassicCastbarsDB.pushbackDetect end,
                         disabled = ModuleIsDisabled,
                     },
+                    showBorderShield = {
+                        order = 7,
+                        width = "full",
+                        name = L.BORDERSHIELD,
+                        desc = L.BORDERSHIELD_TOOLTIP,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID == "player",
+                    },
                     notes = {
                         order = 8,
                         hidden = unitID ~= "focus",
@@ -289,6 +298,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     statusBackgroundColor = {
                         name = L.STATUS_BG_COLOR,
                         order = 5,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColorUninterruptible ={
+                        name = L.STATUS_UNINTERRUPTIBLE_COLOR,
+                        order = 6,
                         hasAlpha = true,
                         type = "color",
                     }
