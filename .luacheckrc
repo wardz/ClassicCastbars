@@ -25,7 +25,6 @@ read_globals = {
     "ReloadUI",
     "UnitRace",
     "TargetFrame",
-    "CastingBarFrame",
     "GetCVarBool",
     "CopyTable",
     "IsInGroup",
