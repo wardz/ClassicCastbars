@@ -19,6 +19,7 @@ globals = {
 }
 
 read_globals = {
+    "IsModifierKeyDown",
     "LibStub",
     "hooksecurefunc",
     "ReloadUI",

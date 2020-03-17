@@ -13,7 +13,10 @@ L["AUTO_POS_BAR_TOOLTIP"] = [=[When enabled it will auto position the castbar ba
 Does not work with third-party unit frames.]=]
 L["BORDER_COLOR"] = "Select Border Color"
 L["BORDERSHIELD"] = "Show Uninterruptible Border Shield"
-L["BORDERSHIELD_TOOLTIP"] = "Shows a shield around the castbar when a cast cannot be interrupted."
+L["BORDERSHIELD_TOOLTIP"] = [[Shows a shield around the castbar when a cast cannot be interrupted. Disabling this option will still show a grey background color on uninterruptible casts.
+
+|cffffff00You can click the "Toggle Testing Castbar" button while holding down any modifier keys like SHIFT or CTRL to test the castbar with border shield shown.|r
+]]
 L["CAST_BORDER"] = "Select Border Texture"
 L["CAST_BORDER_TOOLTIP"] = "Select texture used for castbar border."
 L["CAST_FONT"] = "Select Castbar Font"
