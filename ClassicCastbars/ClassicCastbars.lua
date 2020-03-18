@@ -676,23 +676,21 @@ addon:SetScript("OnUpdate", function(self, elapsed)
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then
-                if not castbar.showCastInfoOnly then
-                    local maxValue = cast.endTime - cast.timeStart
-                    local value = currTime - cast.timeStart
-                    if cast.isChanneled then -- inverse
-                        value = maxValue - value
-                    end
-
-                    if pushbackEnabled then
-                        -- maxValue is only updated dynamically when pushback detect is enabled
-                        castbar:SetMinMaxValues(0, maxValue)
-                    end
-
-                    castbar:SetValue(value)
-                    castbar.Timer:SetFormattedText("%.1f", castTime)
-                    local sparkPosition = (value / maxValue) * castbar:GetWidth()
-                    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+                local maxValue = cast.endTime - cast.timeStart
+                local value = currTime - cast.timeStart
+                if cast.isChanneled then -- inverse
+                    value = maxValue - value
                 end
+
+                if pushbackEnabled then
+                    -- maxValue is only updated dynamically when pushback detect is enabled
+                    castbar:SetMinMaxValues(0, maxValue)
+                end
+
+                castbar:SetValue(value)
+                castbar.Timer:SetFormattedText("%.1f", castTime)
+                local sparkPosition = (value / maxValue) * castbar:GetWidth()
+                castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
                 -- slightly adjust color of the castbar when its not 100% sure if the cast is casted or failed
                 -- (gotta put it here to run before fadeout anim)

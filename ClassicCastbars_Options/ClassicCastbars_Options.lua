@@ -88,12 +88,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
-                    showCastInfoOnly = {
-                        order = 5,
+                    showSpark = {
+                        order = 4,
                         width = "full",
-                        name = L.SHOW_CAST_INFO_ONLY,
-                        desc = L.SHOW_CAST_INFO_ONLY_TOOLTIP,
-                        hidden = unitID == "player",
+                        name = L.SHOW_SPARK,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },

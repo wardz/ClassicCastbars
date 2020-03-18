@@ -58,10 +58,7 @@ Notes:
 ]=]
 L["REQUIRES_RESTART"] = "Disabling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
-L["SHOW_CAST_INFO_ONLY"] = "Show Cast Info Only"
-L["SHOW_CAST_INFO_ONLY_TOOLTIP"] = [=[Enable to hide cast timers, but still show the cast information.
-
-You can also set the castbar height to zero and border to none if you want to only show the spell name instead of the whole bar.]=]
+L["SHOW_SPARK"] = "Show Castbar Spark Effect"
 L["SHOW_TIMER"] = "Show Timer Text"
 L["SHOW_TIMER_TOOLTIP"] = "Display a timer countdown for the current cast."
 L["STATUS_BG_COLOR"] = "Select Background Color"
