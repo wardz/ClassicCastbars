@@ -149,7 +149,11 @@ function TestMode:SetCastbarMovable(unitID, parent)
 		castbar.holdTime = 0
         castbar.fadeOut = nil
         castbar.flash = nil
-        castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
+        if IsModifierKeyDown() then
+            castbar:SetStatusBarColor(castbar.nonInterruptibleColor:GetRGB())
+        else
+            castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
+        end
         castbar:SetAlpha(1)
         castbar:Show()
     else
