@@ -1,15 +1,30 @@
 local _, namespace = ...
 local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
-
 local addon = namespace.addon
 local activeFrames = addon.activeFrames
+
 local strfind = _G.string.find
 local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
 local ceil = _G.math.ceil
 local InCombatLockdown = _G.InCombatLockdown
+
+local nonLSMBorders = {
+    ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
+    ["Interface\\CastingBar\\UI-CastingBar-Border"] = true,
+}
+
+local function GetStatusBarBackgroundTexture(statusbar)
+    if statusbar.Background then return statusbar.Background end
+
+    for _, v in pairs({ statusbar:GetRegions() }) do
+        if v.GetTexture and strfind(v:GetTexture() or "", "Color-") then
+            return v
+        end
+    end
+end
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
@@ -40,22 +55,55 @@ end
 
 function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
+    if castbar.Text:GetText() == spellName then return end
 
-    if castbar.Text:GetText() ~= spellName then
-        if cast.icon == 136235 then -- unknown texture
-            cast.icon = 136243
-        end
-        castbar.Icon:SetTexture(cast.icon)
-        castbar.Text:SetText(spellName)
+    if cast.icon == 136235 then -- unknown texture
+        cast.icon = 136243
+    end
+    castbar.Icon:SetTexture(cast.icon)
+    castbar.Text:SetText(spellName)
 
-        -- Move timer position depending on spellname length
-        if db.showTimer then
-            local yOff = 0
-            if db.showBorderShield and cast.isUninterruptible then
-                yOff = yOff + 2
-            end
-            castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
+    -- Move timer position depending on spellname length
+    if db.showTimer then
+        local yOff = 0
+        if db.showBorderShield and cast.isUninterruptible then
+            yOff = yOff + 2
         end
+        castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
+    end
+end
+
+function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
+    if db.showBorderShield and cast and cast.isUninterruptible then
+        castbar.Border:SetAlpha(0)
+        if castbar.BorderFrameLSM then
+            castbar.BorderFrameLSM:SetAlpha(0)
+        end
+
+        -- Update border shield to match current castbar size
+        local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
+        castbar.BorderShield:ClearAllPoints()
+        castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
+        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+2, -height+4)
+
+        local unitType = self:GetUnitType(unitID)
+        if unitType == "nameplate" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
+        elseif unitType == "party" then
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 4, db.iconPositionY + 2)
+        else
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
+        end
+
+        castbar.BorderShield:Show()
+    else
+        if nonLSMBorders[db.castBorder] then
+            castbar.Border:SetAlpha(1)
+        else
+            castbar.BorderFrameLSM:SetAlpha(1)
+        end
+        castbar.BorderShield:Hide()
+        castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     end
 end
 
@@ -64,6 +112,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
     castbar:SetFrameLevel(db.frameLevel)
+    castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
 
     if db.showCastInfoOnly then
         castbar.showCastInfoOnly = true
@@ -87,7 +136,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar.Border:SetVertexColor(unpack(db.borderColor))
 
     castbar.Flash:ClearAllPoints()
-    if cast.isUninterruptible then
+    if cast and cast.isUninterruptible then
         castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
         castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
     else
@@ -95,12 +144,12 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
         castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
     end
 
-    local isDefaultBorder = db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border"
+    local isDefaultBorder = nonLSMBorders[db.castBorder]
     if isDefaultBorder then
         castbar.Border:SetAlpha(1)
-        if castbar.BorderFrame then
+        if castbar.BorderFrameLSM then
             -- Hide LSM border frame if it exists
-            castbar.BorderFrame:SetAlpha(0)
+            castbar.BorderFrameLSM:SetAlpha(0)
         end
 
         -- Update border to match castbar size
@@ -113,37 +162,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
         self:SetLSMBorders(castbar, cast, db)
     end
 
-    if db.showBorderShield and cast.isUninterruptible then
-        castbar.Border:SetAlpha(0)
-        if castbar.BorderFrame then
-            castbar.BorderFrame:SetAlpha(0)
-        end
-
-        -- Update border shield to match current castbar size
-        local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
-        castbar.BorderShield:ClearAllPoints()
-        castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
-        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+2, -height+4)
-
-        local unitType = self:GetUnitType(unitID)
-        if unitType == "nameplate" then
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
-        elseif unitType == "party" then
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 4, db.iconPositionY + 2)
-        else
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
-        end
-
-        castbar.BorderShield:Show()
-    else
-        if isDefaultBorder then
-            castbar.Border:SetAlpha(1)
-        else
-            castbar.BorderFrame:SetAlpha(1)
-        end
-        castbar.BorderShield:Hide()
-        castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
-    end
+    self:SetBorderShieldStyle(castbar, cast, db, unitID)
 end
 
 local textureFrameLevels = {
@@ -153,27 +172,27 @@ local textureFrameLevels = {
 
 function addon:SetLSMBorders(castbar, cast, db)
     -- Create new frame to contain our LSM backdrop
-    if not castbar.BorderFrame then
-        castbar.BorderFrame = CreateFrame("Frame", nil, castbar)
-        castbar.BorderFrame:SetPoint("TOPLEFT", castbar, -2, 2)
-        castbar.BorderFrame:SetPoint("BOTTOMRIGHT", castbar, 2, -2)
+    if not castbar.BorderFrameLSM then
+        castbar.BorderFrameLSM = CreateFrame("Frame", nil, castbar)
+        castbar.BorderFrameLSM:SetPoint("TOPLEFT", castbar, -2, 2)
+        castbar.BorderFrameLSM:SetPoint("BOTTOMRIGHT", castbar, 2, -2)
     end
 
     -- Apply backdrop if it isn't already active
-    if castbar.BorderFrame.currentTexture ~= db.castBorder or castbar:GetHeight() ~= castbar.BorderFrame.currentHeight then
-        castbar.BorderFrame:SetBackdrop({
+    if castbar.BorderFrameLSM.currentTexture ~= db.castBorder or castbar:GetHeight() ~= castbar.BorderFrameLSM.currentHeight then
+        castbar.BorderFrameLSM:SetBackdrop({
             edgeFile = db.castBorder,
             tile = false, tileSize = 0,
             edgeSize = castbar:GetHeight(),
         })
-        castbar.BorderFrame.currentTexture = db.castBorder
-        castbar.BorderFrame.currentHeight = castbar:GetHeight()
+        castbar.BorderFrameLSM.currentTexture = db.castBorder
+        castbar.BorderFrameLSM.currentHeight = castbar:GetHeight()
     end
 
     castbar.Border:SetAlpha(0) -- hide default border
-    castbar.BorderFrame:SetAlpha(1)
-    castbar.BorderFrame:SetFrameLevel(textureFrameLevels[db.castBorder] or castbar:GetFrameLevel() + 1)
-    castbar.BorderFrame:SetBackdropBorderColor(unpack(db.borderColor))
+    castbar.BorderFrameLSM:SetAlpha(1)
+    castbar.BorderFrameLSM:SetFrameLevel(textureFrameLevels[db.castBorder] or castbar:GetFrameLevel() + 1)
+    castbar.BorderFrameLSM:SetBackdropBorderColor(unpack(db.borderColor))
 end
 
 function addon:SetCastbarFonts(castbar, cast, db)
@@ -187,21 +206,37 @@ function addon:SetCastbarFonts(castbar, cast, db)
     castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
     castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
 
-    local xOff = db.textPositionX
     local yOff = db.textPositionY
     if db.showBorderShield and cast.isUninterruptible then
         yOff = yOff + 2
     end
-    castbar.Text:SetPoint("CENTER", xOff, yOff)
+    castbar.Text:SetPoint("CENTER", db.textPositionX, yOff)
 end
 
-local function GetStatusBarBackgroundTexture(statusbar)
-    if statusbar.Background then return statusbar.Background end
+function addon:CreateFadeAnimationGroup(frame)
+    if frame.animationGroup then return frame.animationGroup end
+    frame.animationGroup = frame:CreateAnimationGroup()
+    frame.animationGroup:SetToFinalAlpha(true)
 
-    for _, v in pairs({ statusbar:GetRegions() }) do
-        if v.GetTexture and v:GetTexture() and strfind(v:GetTexture(), "Color-") then
-            return v
-        end
+    frame.fade = frame.animationGroup:CreateAnimation("Alpha")
+    frame.fade:SetOrder(1)
+    frame.fade:SetFromAlpha(1)
+    frame.fade:SetToAlpha(0)
+    frame.fade:SetSmoothing("OUT")
+
+    return frame.animationGroup
+end
+
+function addon:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
+    castbar.Background = castbar.Background or GetStatusBarBackgroundTexture(castbar)
+    castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
+
+    if cast.isChanneled then
+        castbar:SetStatusBarColor(unpack(db.statusColorChannel))
+    elseif cast.isUninterruptible then
+        castbar:SetStatusBarColor(unpack(db.statusColorUninterruptible))
+    else
+        castbar:SetStatusBarColor(unpack(db.statusColor))
     end
 end
 
@@ -210,35 +245,15 @@ function addon:DisplayCastbar(castbar, unitID)
     if not parentFrame then return end
 
     local db = self.db[self:GetUnitType(unitID)]
-
-    if not castbar.animationGroup then
-        castbar.animationGroup = castbar:CreateAnimationGroup()
-        castbar.animationGroup:SetToFinalAlpha(true)
-        castbar.fade = castbar.animationGroup:CreateAnimation("Alpha")
-        castbar.fade:SetOrder(1)
-        castbar.fade:SetFromAlpha(1)
-        castbar.fade:SetToAlpha(0)
-        castbar.fade:SetSmoothing("OUT")
-    end
-    castbar.animationGroup:Stop()
-
-    if not castbar.Background then
-        castbar.Background = GetStatusBarBackgroundTexture(castbar)
-    end
-    castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
-
     local cast = castbar._data
-    if cast.isChanneled then
-        castbar:SetStatusBarColor(unpack(db.statusColorChannel))
-    elseif cast.isUninterruptible then
-        castbar:SetStatusBarColor(unpack(db.statusColorUninterruptible))
-    else
-        castbar:SetStatusBarColor(unpack(db.statusColor))
-    end
+
+    castbar.animationGroup = castbar.animationGroup or self:CreateFadeAnimationGroup(castbar)
+    castbar.animationGroup:Stop()
 
     -- Note: since frames are recycled and we also allow having different styles
     -- between castbars for all the unitframes, we need to always update the style here
     -- incase it was modified to something else on last recycle
+    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db, unitID)
     self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
@@ -255,55 +270,55 @@ function addon:DisplayCastbar(castbar, unitID)
         castbar.Spark:SetPoint("CENTER", castbar, "LEFT", 0, 0)
     end
 
-    castbar.Flash:Hide()
     castbar:SetParent(parentFrame)
-    castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
+    castbar.Flash:Hide()
     castbar:SetAlpha(1)
     castbar:Show()
 end
 
-function addon:HideCastbar(castbar, unitID, noFadeOut)
-    if noFadeOut then
+function addon:HideCastbar(castbar, unitID, skipFadeOut)
+    if skipFadeOut then
         castbar:SetAlpha(0)
         castbar:Hide()
         return
     end
 
     local cast = castbar._data
-    if cast and (cast.isInterrupted or cast.isFailed) then
-        castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
-        castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorFailed))
-        castbar:SetMinMaxValues(0, 1)
-        castbar:SetValue(1)
-        castbar.Spark:SetAlpha(0)
-    end
-
-    if cast and cast.isCastComplete then -- SPELL_CAST_SUCCESS
-        if castbar.Border:GetAlpha() == 1 or cast.isUninterruptible then
-            local tex = castbar.Border:GetTexture()
-            if tex == "Interface\\CastingBar\\UI-CastingBar-Border" or tex == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
-                if cast.isUninterruptible then
-                    castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
-                elseif cast.isChanneled then
-                    castbar.Flash:SetVertexColor(0, 1, 0)
-                else
-                    castbar.Flash:SetVertexColor(1, 1, 1)
-                end
-                castbar.Flash:Show()
-            end
+    if cast then
+        if cast.isInterrupted or cast.isFailed then
+            castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
+            castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorFailed))
+            castbar:SetMinMaxValues(0, 1)
+            castbar:SetValue(1)
+            castbar.Spark:SetAlpha(0)
         end
 
-        castbar.Spark:SetAlpha(0)
-        castbar:SetMinMaxValues(0, 1)
-        if not cast.isChanneled then
-            if cast.isUninterruptible then
-                castbar:SetStatusBarColor(0.7, 0.7, 0.7, 1)
-            else
-                castbar:SetStatusBarColor(0, 1, 0)
+        if cast.isCastComplete then -- SPELL_CAST_SUCCESS
+            if castbar.Border:GetAlpha() == 1 or cast.isUninterruptible then
+                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTexture() or ""] then
+                    if cast.isUninterruptible then
+                        castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
+                    elseif cast.isChanneled then
+                        castbar.Flash:SetVertexColor(0, 1, 0)
+                    else
+                        castbar.Flash:SetVertexColor(1, 1, 1)
+                    end
+                    castbar.Flash:Show()
+                end
             end
-            castbar:SetValue(1)
-        else
-            castbar:SetValue(0)
+
+            castbar.Spark:SetAlpha(0)
+            castbar:SetMinMaxValues(0, 1)
+            if not cast.isChanneled then
+                if cast.isUninterruptible then
+                    castbar:SetStatusBarColor(0.7, 0.7, 0.7, 1)
+                else
+                    castbar:SetStatusBarColor(0, 1, 0)
+                end
+                castbar:SetValue(1)
+            else
+                castbar:SetValue(0)
+            end
         end
     end
 
@@ -314,6 +329,7 @@ function addon:HideCastbar(castbar, unitID, noFadeOut)
                 castbar.fade:SetStartDelay(0.5)
             end
         end
+
         castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
         castbar.animationGroup:Play()
     end
@@ -366,18 +382,17 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.CC_isHooked = true
     end
 
-    if db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" or db.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
+    if nonLSMBorders[db.castBorder] then
         CastingBarFrame.Flash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash")
         CastingBarFrame.Flash:SetSize(db.width + 61, db.height + 51)
         CastingBarFrame.Flash:SetPoint("TOP", 0, 26)
     else
-        CastingBarFrame.Flash:SetTexture(nil) -- hide it by removing texture, SetAlpha() or Hide() wont work without messing with blizz code
+        CastingBarFrame.Flash:SetTexture(nil) -- Hide it by removing texture. SetAlpha() or Hide() wont work without messing with blizz code
     end
 
     CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
 	CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
-	--CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColor))
-	--CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, 0.7, 0.7, 0.7)
+	CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, unpack(db.statusColorUninterruptible))
     CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
     if CastingBarFrame.isTesting then
         CastingBarFrame:SetStatusBarColor(CastingBarFrame.startCastColor:GetRGB())
@@ -388,17 +403,13 @@ function addon:SkinPlayerCastbar()
     CastingBarFrame.Icon:ClearAllPoints()
     CastingBarFrame.Icon:SetShown(db.showIcon)
 
-    if not CastingBarFrame.Background then
-        CastingBarFrame.Background = GetStatusBarBackgroundTexture(CastingBarFrame)
-    end
+    CastingBarFrame.Background = CastingBarFrame.Background or GetStatusBarBackgroundTexture(CastingBarFrame)
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 
     if not db.autoPosition then
-        CastingBarFrame:ClearAllPoints()
         CastingBarFrame.ignoreFramePositionManager = true
-
-        local pos = db.position
-        CastingBarFrame:SetPoint(pos[1], UIParent, pos[2], pos[3])
+        CastingBarFrame:ClearAllPoints()
+        CastingBarFrame:SetPoint(db.position[1], UIParent, db.position[2], db.position[3])
     else
         if not _G.PLAYER_FRAME_CASTBARS_SHOWN then
             CastingBarFrame.ignoreFramePositionManager = false
@@ -416,8 +427,6 @@ function addon:CreateOrUpdateSecureFocusButton(text)
         -- Create an invisible secure click trigger above the nonsecure castbar frame
         self.FocusButton = CreateFrame("Button", "FocusCastbar", UIParent, "SecureActionButtonTemplate")
         self.FocusButton:SetAttribute("type", "macro")
-        --self.FocusButton:SetAllPoints(self.FocusFrame)
-        --self.FocusButton:SetSize(ClassicCastbarsDB.focus.width + 5, ClassicCastbarsDB.focus.height + 35)
     end
 
     local db = ClassicCastbarsDB.focus
@@ -429,8 +438,32 @@ function addon:CreateOrUpdateSecureFocusButton(text)
 end
 
 local NewTimer = _G.C_Timer.NewTimer
-local focusTargetTimer
-local focusTargetResetTimer
+local focusTargetTimer -- time for changing focus
+local focusTargetResetTimer -- timer for clearing focus
+
+
+local function ClearFocusTarget()
+    if not InCombatLockdown() then
+        addon.FocusButton:SetAttribute("macrotext", "")
+    else
+        focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
+    end
+end
+
+function addon:ClearFocus()
+    if self.FocusFrame then
+        self.FocusFrame.Text:SetText("")
+    end
+
+    if self.FocusButton then
+        if not InCombatLockdown() then
+            self.FocusButton:SetAttribute("macrotext", "")
+        else
+            -- If we're in combat try to check every 4s if we left combat and can update secure frame
+            focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
+        end
+    end
+end
 
 function addon:SetFocusDisplay(text, unitID)
     if focusTargetTimer and not focusTargetTimer:IsCancelled() then
@@ -442,28 +475,8 @@ function addon:SetFocusDisplay(text, unitID)
         focusTargetResetTimer = nil
     end
 
-    if not text then -- clear focus
-        if self.FocusFrame then
-            self.FocusFrame.Text:SetText("")
-        end
-
-        if self.FocusButton then
-            if not InCombatLockdown() then
-                self.FocusButton:SetAttribute("macrotext", "")
-            else
-                -- If we're in combat try to check every 4s if we left combat and can update secure frame
-                local function ClearFocusTarget()
-                    if not InCombatLockdown() then
-                        addon.FocusButton:SetAttribute("macrotext", "")
-                    else
-                        focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
-                    end
-                end
-                focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
-            end
-        end
-
-        return
+    if not text then
+        return self:ClearFocus()
     end
 
     if not self.FocusFrame then
