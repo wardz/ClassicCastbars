@@ -116,7 +116,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             },
 
             ----------------------------------------------------
-
+            -- Castbar Size Options Tab
+            ----------------------------------------------------
             sizing = {
                 order = 2,
                 name = L.CASTBAR_SIZING,
@@ -130,7 +131,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.WIDTH,
                         desc = L.WIDTH_TOOLTIP,
                         type = "range",
-                        min = 0.1,
+                        min = 1,
                         max = 500,
                         step = 1,
                         bigStep = 10,
@@ -140,7 +141,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.HEIGHT,
                         desc = L.HEIGHT_TOOLTIP,
                         type = "range",
-                        min = 0.1,
+                        min = 1,
                         max = 200,
                         step = 1,
                         bigStep = 10,
@@ -151,7 +152,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.FONT_SIZE_TOOLTIP,
                         type = "range",
                         width = "double",
-                        min = 0.1,
+                        min = 1, -- TODO: check me
                         max = 50,
                         bigStep = 1,
                     },
@@ -177,7 +178,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             },
 
             ----------------------------------------------------
-
+            -- Castbar Icon Options Tab
+            ----------------------------------------------------
             castIcon = {
                 order = 3,
                 name = L.CASTBAR_ICON,
@@ -230,7 +232,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             },
 
             ----------------------------------------------------
-
+            -- Castbar Color Options Tab
+            ----------------------------------------------------
             colors = {
                 order = 4,
                 name = L.CASTBAR_COLORS,
@@ -296,7 +299,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             },
 
             ----------------------------------------------------
-
+            -- Castbar Textures Options Tab
+            ----------------------------------------------------
             sharedMedia = {
                 order = 5,
                 name = L.CASTBAR_TEXTURE_FONT,
@@ -372,6 +376,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 },
            },
 
+            ----------------------------------------------------
+            -- Test Button
+            ----------------------------------------------------
            testing = {
                 order = -1,
                 name = "",
@@ -385,9 +392,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = format("%s %s", L.TEST, localizedUnit),
                         type = "execute",
                         disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
-                        func = function()
-                            ClassicCastbars_TestMode:ToggleCastbarMovable(unitID)
-                        end,
+                        func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitID) end,
                     },
                     notes = {
                         order = 2,

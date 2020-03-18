@@ -23,7 +23,9 @@ Type `/castbar` or go to `Escape -> Interface Options -> AddOns -> ClassicCastba
 - [Submit a pull request.](https://github.com/wardz/ClassicCastbars/pulls)  
   When forking the addon you should save the folder somewhere outside your WoW AddOns directory and  
   instead have two symlinks inside the AddOns folder pointing to
-  `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.
+  `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.  
+  You will also need to manually install the libs for ClassicCastbars_Options. See "Externals" in `.pkgmeta` file.
+
 
 ## License
 
