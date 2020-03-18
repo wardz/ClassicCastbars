@@ -1770,7 +1770,6 @@ namespace.unaffectedCastModsSpells = {
 -- Addon Savedvariables
 namespace.defaultConfig = {
     version = "18", -- settings version
-    pushbackDetect = true,
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
 

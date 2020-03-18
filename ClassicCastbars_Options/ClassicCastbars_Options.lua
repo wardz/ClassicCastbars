@@ -95,19 +95,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
-                    pushbackDetect = {
-                        order = 6,
-                        width = "full",
-                        name = L.PUSHBACK,
-                        desc = L.PUSHBACK_TOOLTIP,
-                        type = "toggle",
-                        hidden = unitID == "player",
-                        set = function(_, value)
-                            ClassicCastbarsDB.pushbackDetect = value
-                        end,
-                        get = function() return ClassicCastbarsDB.pushbackDetect end,
-                        disabled = ModuleIsDisabled,
-                    },
                     showBorderShield = {
                         order = 7,
                         width = "full",

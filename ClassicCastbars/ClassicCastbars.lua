@@ -62,8 +62,8 @@ function addon:GetUnitType(unitID)
 end
 
 function addon:CheckCastModifier(unitID, cast)
+    if not cast then return end
     if unitID == "focus" then return end
-    if not self.db.pushbackDetect or not cast then return end
     if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
     if unaffectedCastModsSpells[cast.spellID] then return end
 
@@ -214,7 +214,6 @@ function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComple
 end
 
 function addon:CastPushback(unitGUID)
-    if not self.db.pushbackDetect then return end
     local cast = activeTimers[unitGUID]
     if not cast or cast.hasBarkskinModifier or cast.hasFocusedCastingModifier then return end
     if pushbackBlacklist[cast.spellName] then return end
@@ -639,7 +638,6 @@ local castStopBlacklist = namespace.castStopBlacklist
 addon:SetScript("OnUpdate", function(self, elapsed)
     if not next(activeTimers) then return end
     local currTime = GetTime()
-    local pushbackEnabled = self.db.pushbackDetect
 
     -- Check if unit is moving to stop castbar, thanks to Cordankos for this idea
     refresh = refresh - elapsed
@@ -682,11 +680,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     value = maxValue - value
                 end
 
-                if pushbackEnabled then
-                    -- maxValue is only updated dynamically when pushback detect is enabled
-                    castbar:SetMinMaxValues(0, maxValue)
-                end
-
+                castbar:SetMinMaxValues(0, maxValue)
                 castbar:SetValue(value)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
                 local sparkPosition = (value / maxValue) * castbar:GetWidth()
