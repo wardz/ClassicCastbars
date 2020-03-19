@@ -331,6 +331,10 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
     end
 end
 
+--------------------------------------------------------------
+-- Player & Focus Castbar Stuff
+--------------------------------------------------------------
+
 function addon:SkinPlayerCastbar()
     local db = self.db.player
     if not db.enabled then return end

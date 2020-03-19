@@ -605,7 +605,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
-        -- Auto learn if a spell is uninterruptible for NPCs
+        -- Auto learn if a spell is uninterruptible for NPCs by checking if an interrupt was immuned
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             local cast = activeTimers[dstGUID]
             if not cast then return end
