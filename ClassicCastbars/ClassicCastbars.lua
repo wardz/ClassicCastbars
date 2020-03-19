@@ -26,7 +26,6 @@ local strfind = _G.string.find
 local pairs = _G.pairs
 local UnitGUID = _G.UnitGUID
 local UnitAura = _G.UnitAura
-local UnitClass = _G.UnitClass
 local GetSpellTexture = _G.GetSpellTexture
 local GetSpellInfo = _G.GetSpellInfo
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
@@ -49,6 +48,8 @@ local NATURES_GRACE = GetSpellInfo(16886)
 local MIND_QUICKENING = GetSpellInfo(23723)
 local BLINDING_LIGHT = GetSpellInfo(23733)
 local BERSERKING = GetSpellInfo(20554)
+local DIVINE_SHIELD = GetSpellInfo(642)
+local DIVINE_PROTECTION = GetSpellInfo(498)
 
 function addon:GetUnitType(unitID)
     local unit = gsub(unitID or "", "%d", "")
@@ -82,38 +83,39 @@ function addon:CheckCastModifier(unitID, cast)
     end
 
     -- Buffs
-    local _, className = UnitClass(unitID)
-    local _, raceFile = UnitRace(unitID)
-    if className == "DRUID" or className == "PRIEST" or className == "MAGE" or className == "PALADIN" or raceFile == "Troll" then
-        local libCD = LibStub and LibStub("LibClassicDurations", true)
-        local libCDEnemyBuffs = libCD and libCD.enableEnemyBuffTracking
+    local libCD = LibStub and LibStub("LibClassicDurations", true)
+    local libCDEnemyBuffs = libCD and libCD.enableEnemyBuffTracking
+    for i = 1, 32 do
+        local name
+        if not libCDEnemyBuffs then
+            name = UnitAura(unitID, i, "HELPFUL")
+        else
+            -- if LibClassicDurations happens to be loaded by some other addon, use it to get enemy buff data
+            name = libCD.UnitAuraWithBuffs(unitID, i, "HELPFUL")
+        end
+        if not name then break end -- no more buffs
 
-        for i = 1, 32 do
-            local name
-            if not libCDEnemyBuffs then
-                name = UnitAura(unitID, i, "HELPFUL")
-            else
-                -- if LibClassicDurations happens to be loaded by some other addon, use it to get enemy buff data
-                name = libCD.UnitAuraWithBuffs(unitID, i, "HELPFUL")
-            end
-            if not name then break end -- no more buffs
-
-            -- TODO: gotta check how speed is calculated when e.g both Curse of Tongues and Berserking is applied
-            if name == BARKSKIN and not cast.hasBarkskinModifier then
-                cast.endTime = cast.endTime + 1
-                cast.hasBarkskinModifier = true
-            elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier and not cast.isChanneled then
-                cast.endTime = cast.endTime - 0.5
-                cast.hasNaturesGraceModifier = true
-            elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT) and not cast.hasSpeedModifier and not cast.isChanneled then
-                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 33 / 100)
-                cast.hasSpeedModifier = true
-            elseif name == BERSERKING and not cast.hasBerserkingModifier and not cast.isChanneled then -- put this seperate as it can stack with other modifiers
-                cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 0.1)
-                cast.hasBerserkingModifier = true
-            elseif name == FOCUSED_CASTING then
-                cast.hasFocusedCastingModifier = true
-            end
+        -- TODO: gotta check how speed is calculated when e.g both Curse of Tongues and Berserking is applied
+        if name == BARKSKIN and not cast.hasBarkskinModifier then
+            cast.endTime = cast.endTime + 1
+            cast.hasBarkskinModifier = true
+        elseif name == NATURES_GRACE and not cast.hasNaturesGraceModifier and not cast.isChanneled then
+            cast.endTime = cast.endTime - 0.5
+            cast.hasNaturesGraceModifier = true
+        elseif (name == MIND_QUICKENING or name == BLINDING_LIGHT) and not cast.hasSpeedModifier and not cast.isChanneled then
+            cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 33 / 100)
+            cast.hasSpeedModifier = true
+        elseif name == BERSERKING and not cast.hasBerserkingModifier and not cast.isChanneled then -- put this seperate as it can stack with other modifiers
+            cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * 0.1)
+            cast.hasBerserkingModifier = true
+        elseif name == FOCUSED_CASTING then
+            cast.hasFocusedCastingModifier = true
+        elseif (name == DIVINE_PROTECTION or name == DIVINE_SHIELD) and not cast.isUninterruptible then
+            cast.origIsUninterruptibleValue = cast.isUninterruptible
+            cast.isUninterruptible = true
+        elseif cast.prevIsUninterruptibleValue then
+            cast.isUninterruptible = cast.origIsUninterruptibleValue
+            cast.origIsUninterruptibleValue = nil
         end
     end
 end
@@ -126,8 +128,8 @@ function addon:StartCast(unitGUID, unitID)
     if not castbar then return end
 
     castbar._data = cast -- set ref to current cast data
-    self:DisplayCastbar(castbar, unitID)
     self:CheckCastModifier(unitID, cast)
+    self:DisplayCastbar(castbar, unitID)
 end
 
 function addon:StopCast(unitID, noFadeOut)
@@ -180,6 +182,7 @@ function addon:StoreCast(unitGUID, unitName, spellName, spellID, iconTexturePath
     cast.isUninterruptible = uninterruptibleList[spellName] or not isPlayer and npcCastUninterruptibleCache[unitName .. spellName]
 
     -- just nil previous values to avoid overhead of wiping table
+    cast.origIsUninterruptibleValue = nil
     cast.hasCastSlowModified = nil
     cast.hasBarkskinModifier = nil
     cast.hasNaturesGraceModifier = nil
@@ -457,8 +460,7 @@ local stopCastOnDamageList = namespace.stopCastOnDamageList
 local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
-local DIVINE_SHIELD = GetSpellInfo(642)
-local DIVINE_PROTECTION = GetSpellInfo(498)
+local BLESSING_OF_PROTECTION = GetSpellInfo(1022)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, dstName, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
@@ -605,6 +607,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_MISSED" then
         -- TODO: check if Improved Counterspell has same name as normal Counterspell here
+        -- TODO: magical vs physical interrupts
         -- Auto learn if a spell is uninterruptible for NPCs by checking if an interrupt was immuned
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             local cast = activeTimers[dstGUID]
@@ -619,7 +622,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         local buffCacheHit = libCD.buffCache[dstGUID]
                         if buffCacheHit then
                             for i = 1, #buffCacheHit do
-                                if buffCacheHit[i].name == DIVINE_SHIELD or buffCacheHit[i].name == DIVINE_PROTECTION then
+                                local spell = buffCacheHit[i].name
+                                if spell == DIVINE_SHIELD or spell == DIVINE_PROTECTION or spell == BLESSING_OF_PROTECTION then
                                     return
                                 end
                             end

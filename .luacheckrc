@@ -23,7 +23,6 @@ read_globals = {
     "LibStub",
     "hooksecurefunc",
     "ReloadUI",
-    "UnitRace",
     "TargetFrame",
     "GetCVarBool",
     "CopyTable",
