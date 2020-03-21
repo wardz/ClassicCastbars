@@ -1597,6 +1597,7 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
     [GetSpellInfo(2480)] = 1,       -- Shoot Bow
     [GetSpellInfo(7918)] = 1,       -- Shoot Gun
+    [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
 
     -- these are technically uninterruptible but breaks on dmg
     [GetSpellInfo(22999)] = 1,      -- Defibrillate
