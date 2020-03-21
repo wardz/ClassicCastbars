@@ -1924,3 +1924,35 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
     },
 }
+
+if GetLocale() == "enUS" or GetLocale() == "enGB" then
+    -- Add some sensible defaults here if using english locale
+    -- (both spell name and npc name are locale dependent)
+    namespace.defaultConfig.npcCastUninterruptibleCache = {
+        ["Baroness AnastariBanshee Wail"] = true,
+        ["Maleki the PallidFrostbolt"] = true,
+        ["ShazzrahArcane Explosion"] = true,
+        ["LucifronDominate Mind"] = true,
+        ["EbonrocWing Buffet"] = true,
+        ["EbonrocShadow Flame"] = true,
+        ["FlamegorWing Buffet"] = true,
+        ["FlamegorShadow Flame"] = true,
+        ["FiremawWing Buffet"] = true,
+        ["FiremawShadow Flame"] = true,
+        ["Razorgore the UntamedFireball Volley"] = true,
+        ["Vaelastrasz the CorruptFlame Breath"] = true,
+        ["ChromaggusIgnite Flesh"] = true,
+        ["ChromaggusTime Lapse"] = true,
+        ["ChromaggusFrost Burn"] = true,
+        ["ChromaggusCorrosive Acid"] = true,
+        ["ChromaggusIncinerate"] = true,
+        ["OnyxiaWing Buffet"] = true,
+        ["OnyxiaFlame Breath"] = true,
+        ["HydrospawnMassive Geyser"] = true,
+        ["Zevrim ThornhoofIntense Pain"] = true,
+        ["Zevrim ThornhoofSacrifice"] = true,
+        ["Alzzin the WildshaperEnervate"] = true,
+        ["Alzzin the WildshaperWither"] = true,
+        ["Alzzin the WildshaperWild Regeneration"] = true,
+    }
+end
