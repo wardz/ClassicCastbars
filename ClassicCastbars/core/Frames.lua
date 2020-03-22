@@ -114,7 +114,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar:SetFrameLevel(db.frameLevel)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
 
-    if cast.isChanneled then
+    if cast and cast.isChanneled then
         castbar.Spark:SetAlpha(0)
     else
         castbar.Spark:SetAlpha(db.showSpark and 1 or 0)

@@ -5,7 +5,7 @@ v1.3.0:
   immunity this will be ignored aslong as you have LibClassicDurations enabled (should be embedded in either Details, WeakAuras or ClassicAuraDurations).
   Auto-learning is currently only enabled for NPCs, against players it will use a prebuilt list of uninterruptible spells instead. This is because there's
   so many temporary immunities for players that can give false positives. Also note that only interrupts are checked and not silences since its possible
-  for a silence to be immuned while an interrupt still lands.
+  for a silence to be immuned while an interrupt still lands. This feature is still very much WIP, please let me know if there's any bugs or oversights.
 - Add option to toggle castbar spark effect.
 - Castbar spark effect is now hidden for channeled casts like on retail.
 - Removed option for detecting cast speed modifiers, it is now always enabled instead.
