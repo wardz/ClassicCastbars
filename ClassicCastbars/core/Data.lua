@@ -1598,6 +1598,7 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(2480)] = 1,       -- Shoot Bow
     [GetSpellInfo(7918)] = 1,       -- Shoot Gun
     [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
+    -- TODO: totem attack?
 
     -- these are technically uninterruptible but breaks on dmg
     [GetSpellInfo(22999)] = 1,      -- Defibrillate
@@ -1954,5 +1955,6 @@ if GetLocale() == "enUS" or GetLocale() == "enGB" then
         ["Alzzin the WildshaperEnervate"] = true,
         ["Alzzin the WildshaperWither"] = true,
         ["Alzzin the WildshaperWild Regeneration"] = true,
+        ["Princess TheradrasBoulder"] = true,
     }
 end
