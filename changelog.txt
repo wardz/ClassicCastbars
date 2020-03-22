@@ -1,3 +1,17 @@
+v1.3.0:
+- Add uninterruptible cast indicator like on retail. You can configure this in the options. (SHIFT+Click the test button to force show uninterruptible castbar)
+  This system works by detecting and learning from interrupt immunities. If you interrupt a casting mob and it shows "immune", the addon will
+  remember this for the next time that spell is being cast and will show a grey uninterruptible spell indicator from then on. If you interrupt into bubble
+  immunity this will be ignored aslong as you have LibClassicDurations enabled (should be embedded in either Details, WeakAuras or ClassicAuraDurations).
+  Auto-learning is currently only enabled for NPCs, against players it will use a prebuilt list of uninterruptible spells instead. This is because there's
+  so many temporary immunities for players that can give false positives. Also note that only interrupts are checked and not silences since its possible
+  for a silence to be immuned while an interrupt still lands.
+- Add option to toggle castbar spark effect.
+- Castbar spark effect is now hidden for channeled casts like on retail.
+- Removed option for detecting cast speed modifiers, it is now always enabled instead.
+- Removed option for showing cast info only. You can achieve the same effect by setting border texture to none, disabling spark & setting castbar background color to zero alpha value.
+- Minor localization string updates & added 40% of Brazilian localizations, thanks to dalanwoopy.
+
 v1.2.11:
 - Update for WoW patch 1.13.4.
 - Fix occasional Lua errors when testmode is enabled after v1.2.8 changes.
