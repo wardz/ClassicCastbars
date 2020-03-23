@@ -1772,7 +1772,7 @@ namespace.unaffectedCastModsSpells = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "18", -- settings version
+    version = "19", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
 
@@ -1957,5 +1957,6 @@ if GetLocale() == "enUS" or GetLocale() == "enGB" then
         ["Alzzin the WildshaperWither"] = true,
         ["Alzzin the WildshaperWild Regeneration"] = true,
         ["Princess TheradrasBoulder"] = true,
+        ["NefarianBellowing Roar"] = true,
     }
 end
