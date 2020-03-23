@@ -1958,5 +1958,6 @@ if GetLocale() == "enUS" or GetLocale() == "enGB" then
         ["Alzzin the WildshaperWild Regeneration"] = true,
         ["Princess TheradrasBoulder"] = true,
         ["NefarianBellowing Roar"] = true,
+        ["OnyxiaBellowing Roar"] = true,
     }
 end
