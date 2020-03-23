@@ -1551,6 +1551,7 @@ namespace.playerInterrupts = {
     [GetSpellInfo(8042)] = 1,  -- Earth Shock
     [GetSpellInfo(19244)] = 1, -- Spell Lock
     [GetSpellInfo(6552)] = 1,  -- Pummel
+    [GetSpellInfo(16979)] = 1, -- Feral Charge
 }
 
 -- Skip pushback calculation for these spells since they
@@ -1586,7 +1587,7 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
     [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
     [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
-    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
+    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
     [GetSpellInfo(20549)] = 1,      -- War Stomp
     [GetSpellInfo(1510)] = 1,       -- Volley
