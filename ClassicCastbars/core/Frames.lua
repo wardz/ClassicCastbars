@@ -435,6 +435,8 @@ function addon:CreateOrUpdateSecureFocusButton(text)
 
     self.FocusButton:SetAttribute("macrotext", "/targetexact " .. text)
     self.FocusFrame.Text:SetText(text)
+    self.FocusFrame:EnableMouse(true)
+    self.FocusButton:EnableMouse(true)
 end
 
 local NewTimer = _G.C_Timer.NewTimer
@@ -445,6 +447,8 @@ local focusTargetResetTimer -- timer for clearing focus
 local function ClearFocusTarget()
     if not InCombatLockdown() then
         addon.FocusButton:SetAttribute("macrotext", "")
+        addon.FocusFrame:EnableMouse(false)
+        addon.FocusButton:EnableMouse(false)
     else
         focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
     end
@@ -458,6 +462,8 @@ function addon:ClearFocus()
     if self.FocusButton then
         if not InCombatLockdown() then
             self.FocusButton:SetAttribute("macrotext", "")
+            self.FocusFrame:EnableMouse(false)
+            self.FocusButton:EnableMouse(false)
         else
             -- If we're in combat try to check every 4s if we left combat and can update secure frame
             focusTargetResetTimer = NewTimer(4, ClearFocusTarget)
