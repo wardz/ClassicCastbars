@@ -113,7 +113,7 @@ function addon:CheckCastModifier(unitID, cast)
         elseif (name == DIVINE_PROTECTION or name == DIVINE_SHIELD) and not cast.isUninterruptible then
             cast.origIsUninterruptibleValue = cast.isUninterruptible
             cast.isUninterruptible = true
-        elseif cast.prevIsUninterruptibleValue then
+        elseif cast.origIsUninterruptibleValue then
             cast.isUninterruptible = cast.origIsUninterruptibleValue
             cast.origIsUninterruptibleValue = nil
         end
