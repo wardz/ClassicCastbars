@@ -1,3 +1,9 @@
+v1.3.1:
+- Fix focus frame not being click-through when it's hidden after first usage.
+- Minor improvements and bug fixes to uninterruptible cast system.
+- Localization updates.
+
+
 v1.3.0:
 - Add uninterruptible cast indicator like on retail. You can configure this in the options. (SHIFT+Click the test button to force show uninterruptible castbar)
   This system works by detecting and learning from interrupt immunities. If you interrupt a casting mob and it shows "immune", the addon will
