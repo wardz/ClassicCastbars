@@ -152,7 +152,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.FONT_SIZE_TOOLTIP,
                         type = "range",
                         width = "double",
-                        min = 1, -- TODO: check me
+                        min = 1,
                         max = 50,
                         bigStep = 1,
                     },
