@@ -21,6 +21,7 @@ namespace.addon = addon
 ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
 -- upvalues for speed
+local strsplit = _G.string.split
 local gsub = _G.string.gsub
 local strfind = _G.string.find
 local pairs = _G.pairs
@@ -181,7 +182,13 @@ function addon:StoreCast(unitGUID, unitName, spellName, spellID, iconTexturePath
     cast.unitGUID = unitGUID
     cast.timeStart = currTime
     cast.isPlayer = isPlayer
-    cast.isUninterruptible = uninterruptibleList[spellName] or not isPlayer and npcCastUninterruptibleCache[unitName .. spellName]
+    cast.isUninterruptible = uninterruptibleList[spellName]
+    if not cast.isUninterruptible and not isPlayer then
+        local _, _, _, _, _, npcID = strsplit("-", unitGUID)
+        if npcID then
+            cast.isUninterruptible = npcCastUninterruptibleCache[npcID .. spellName]
+        end
+    end
 
     -- just nil previous values to avoid overhead of wiping table
     cast.origIsUninterruptibleValue = nil
@@ -355,6 +362,8 @@ function addon:PLAYER_LOGIN()
         ClassicCastbarsDB.party.position = nil
     elseif ClassicCastbarsDB.version == "12" then
         ClassicCastbarsDB.player = nil
+    elseif ClassicCastbarsDB.version == "18" or ClassicCastbarsDB.version == "19" then
+        ClassicCastbarsDB.npcCastUninterruptibleCache = nil
     end
 
     -- Copy any settings from defaults if they don't exist in current profile
@@ -366,7 +375,7 @@ function addon:PLAYER_LOGIN()
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT -- Font here only works for certain locales
         self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
-        self.db.npcCastUninterruptibleCache = {} -- NPC names are locale dependent
+        self.db.npcCastUninterruptibleCache = {} -- Spell names are locale dependent
     end
 
     -- config is not needed anymore if options are not loaded
@@ -614,10 +623,13 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             local cast = activeTimers[dstGUID]
             if not cast then return end
-            if npcCastUninterruptibleCache[dstName .. cast.spellName] then return end -- already added
 
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
+                    local _, _, _, _, _, npcID = strsplit("-", dstGUID)
+                    if not npcID or npcID == "12457" then return end -- Blackwing Spellbinder
+                    if npcCastUninterruptibleCache[npcID .. cast.spellName] then return end -- already added
+
                     -- Check for bubble immunity
                     local libCD = LibStub and LibStub("LibClassicDurations", true)
                     if libCD and libCD.buffCache then
@@ -632,7 +644,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     end
 
-                    npcCastUninterruptibleCache[dstName .. cast.spellName] = true
+                    npcCastUninterruptibleCache[npcID .. cast.spellName] = true
                 end
             end
         end

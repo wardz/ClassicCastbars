@@ -1791,7 +1791,7 @@ namespace.unaffectedCastModsSpells = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "19", -- settings version
+    version = "20", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
 
@@ -1946,37 +1946,40 @@ namespace.defaultConfig = {
     },
 }
 
-if GetLocale() == "enUS" or GetLocale() == "enGB" then
-    -- Add some sensible defaults here if using english locale
-    -- (both spell name and npc name are locale dependent)
-    namespace.defaultConfig.npcCastUninterruptibleCache = {
-        ["Baroness AnastariBanshee Wail"] = true,
-        ["Maleki the PallidFrostbolt"] = true,
-        ["ShazzrahArcane Explosion"] = true,
-        ["LucifronDominate Mind"] = true,
-        ["EbonrocWing Buffet"] = true,
-        ["EbonrocShadow Flame"] = true,
-        ["FlamegorWing Buffet"] = true,
-        ["FlamegorShadow Flame"] = true,
-        ["FiremawWing Buffet"] = true,
-        ["FiremawShadow Flame"] = true,
-        ["Razorgore the UntamedFireball Volley"] = true,
-        ["Vaelastrasz the CorruptFlame Breath"] = true,
-        ["ChromaggusIgnite Flesh"] = true,
-        ["ChromaggusTime Lapse"] = true,
-        ["ChromaggusFrost Burn"] = true,
-        ["ChromaggusCorrosive Acid"] = true,
-        ["ChromaggusIncinerate"] = true,
-        ["OnyxiaWing Buffet"] = true,
-        ["OnyxiaFlame Breath"] = true,
-        ["HydrospawnMassive Geyser"] = true,
-        ["Zevrim ThornhoofIntense Pain"] = true,
-        ["Zevrim ThornhoofSacrifice"] = true,
-        ["Alzzin the WildshaperEnervate"] = true,
-        ["Alzzin the WildshaperWither"] = true,
-        ["Alzzin the WildshaperWild Regeneration"] = true,
-        ["Princess TheradrasBoulder"] = true,
-        ["NefarianBellowing Roar"] = true,
-        ["OnyxiaBellowing Roar"] = true,
-    }
-end
+namespace.defaultConfig.npcCastUninterruptibleCache = {
+    ["11981" .. GetSpellInfo(18500)] = true, -- Flamegor Wing Buffet
+    ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
+    ["12264" .. GetSpellInfo(1449)] = true, -- Shazzrah Arcane Explosion
+    ["13280" .. GetSpellInfo(22421)] = true, -- Hydrospawn Massive Geyser
+    ["11583" .. GetSpellInfo(18431)] = true, -- Nefarian Bellowing Roar
+    ["11983" .. GetSpellInfo(18500)] = true, -- Firemaw Wing Buffet
+    ["11983" .. GetSpellInfo(22539)] = true, -- Firemaw Shadow Flame
+    ["12265" .. GetSpellInfo(133)] = true, -- Lava Spawn Fireball
+    ["11492" .. GetSpellInfo(22662)] = true, -- Alzzin the Wildshaper Wither
+    ["10438" .. GetSpellInfo(116)] = true, -- Maleki the Pallid Frostbolt
+    ["12465" .. GetSpellInfo(22425)] = true, -- Death Talon Wyrmkin Fireball Voley
+    ["14020" .. GetSpellInfo(23310)] = true, -- Chromaggus Time Lapse
+    ["14020" .. GetSpellInfo(23316)] = true, -- Chromaggus Ignite Flesh
+    ["14020" .. GetSpellInfo(23309)] = true, -- Chromaggus Incinerate
+    ["14020" .. GetSpellInfo(23187)] = true, -- Chromaggus Frost Burn
+    ["14020" .. GetSpellInfo(23314)] = true, -- Chromaggus Corrosive Acid
+    ["12468" .. GetSpellInfo(2120)] = true, -- Death Talon Hatcher Flamestrike
+    ["13020" .. GetSpellInfo(9573)] = true, -- Vaelastrasz the Corrupt Flame Breath
+    ["12435" .. GetSpellInfo(22425)] = true, -- Razorgore the Untamed Fireball Volley
+    ["14601" .. GetSpellInfo(18500)] = true, -- Ebonroc Wing Buffet
+    ["14601" .. GetSpellInfo(22539)] = true, -- Ebonroc Shadow Flame
+    ["11981" .. GetSpellInfo(22539)] = true, -- Flamegor Shadow Flame
+    ["11583" .. GetSpellInfo(22539)] = true, -- Nefarian Shadow Flame
+    ["10184" .. GetSpellInfo(18500)] = true, -- Onyxia Wing Buffet
+    ["12118" .. GetSpellInfo(20604)] = true, -- Lucifron Dominate Mind
+    ["12201" .. GetSpellInfo(9483)] = true, -- Princess Theradras Boulder
+    ["10184" .. GetSpellInfo(9573)] = true, -- Onyxia Flame Breath
+    ["10184" .. GetSpellInfo(133)] = true, -- Onyxia Fireball
+    ["11492" .. GetSpellInfo(22661)] = true, -- Alzzin the Wildshaper Enervate
+    ["11490" .. GetSpellInfo(1050)] = true, -- Zevrim Thornhoof Sacrifice
+    ["11490" .. GetSpellInfo(22478)] = true,  -- Zevrim Thornhoof Intense Pain
+    ["10436" .. GetSpellInfo(16868)] = true, -- Baroness Anastari Banshee Wail
+    ["10184" .. GetSpellInfo(18431)] = true, -- Onyxia Bellowing Roar
+    ["11492" .. GetSpellInfo(9616)] = true, -- Alzzin the Wildshaper Wild Regeneration
+    ["13996" .. GetSpellInfo(22334)] = true, -- Blackwing Technician Bomb
+}
