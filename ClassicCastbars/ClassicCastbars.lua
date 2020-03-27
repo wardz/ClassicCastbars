@@ -84,10 +84,12 @@ function addon:CheckCastModifier(unitID, cast)
 
     -- Buffs
     local libCD = LibStub and LibStub("LibClassicDurations", true)
-    local libCDEnemyBuffs = libCD and libCD.enableEnemyBuffTracking
+    if libCD and not libCD.enableEnemyBuffTracking then
+        libCD.enableEnemyBuffTracking = true
+    end
     for i = 1, 32 do
         local name
-        if not libCDEnemyBuffs then
+        if not libCD then
             name = UnitAura(unitID, i, "HELPFUL")
         else
             -- if LibClassicDurations happens to be loaded by some other addon, use it to get enemy buff data
