@@ -1588,6 +1588,7 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
     [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
+    [GetSpellInfo(23041)] = 1,      -- Call Anathema
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
     [GetSpellInfo(20549)] = 1,      -- War Stomp
     [GetSpellInfo(1510)] = 1,       -- Volley
