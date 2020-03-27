@@ -165,7 +165,7 @@ function addon:StopAllCasts(unitGUID, noFadeOut)
 end
 
 -- Store or refresh new cast data for unit, and start castbar(s)
-function addon:StoreCast(unitGUID, unitName, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
+function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime, isPlayer, isChanneled)
     local currTime = GetTime()
 
     if not activeTimers[unitGUID] then
@@ -474,7 +474,7 @@ local ARCANE_MISSILE = GetSpellInfo(7268)
 local BLESSING_OF_PROTECTION = GetSpellInfo(1022)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, dstName, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -512,7 +512,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
 
         -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
-        return self:StoreCast(srcGUID, srcName, spellName, spellID, icon, castTime, isSrcPlayer)
+        return self:StoreCast(srcGUID, spellName, spellID, icon, castTime, isSrcPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
         local spellID = castedSpells[spellName]
@@ -559,7 +559,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 if activeTimers[srcGUID].spellName == ARCANE_MISSILES or activeTimers[srcGUID].spellName == ARCANE_MISSILE then return end
             end
 
-            return self:StoreCast(srcGUID, srcName, spellName, spellID, GetSpellTexture(spellID), channelCast, isSrcPlayer, true)
+            return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isSrcPlayer, true)
         else
             -- non-channeled spell, finish it.
             -- We also check the expiration timer in OnUpdate script just incase this event doesn't trigger when i.e unit is no longer in range.
