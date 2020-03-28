@@ -429,7 +429,7 @@ function addon:CreateOrUpdateSecureFocusButton(text)
         self.FocusButton:SetAttribute("type", "macro")
     end
 
-    local db = ClassicCastbarsDB.focus
+    local db = ClassicCastbars.db.focus
     self.FocusButton:SetPoint(db.position[1], UIParent, db.position[2], db.position[3] + 30)
     self.FocusButton:SetSize(db.width + 5, db.height + 35)
 
@@ -489,7 +489,7 @@ function addon:SetFocusDisplay(text, unitID)
         -- Create a new unsecure frame to display focus text. We dont reuse the castbar frame as we want to
         -- display this text even when the castbar is hidden
         self.FocusFrame = CreateFrame("Frame", nil, UIParent)
-        self.FocusFrame:SetSize(ClassicCastbarsDB.focus.width + 5, ClassicCastbarsDB.focus.height + 35)
+        self.FocusFrame:SetSize(ClassicCastbars.db.focus.width + 5, ClassicCastbars.db.focus.height + 35)
         self.FocusFrame.Text = self.FocusFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLargeOutline")
         self.FocusFrame.Text:SetPoint("CENTER", self.FocusFrame, 0, 20)
     end
@@ -519,7 +519,7 @@ function addon:SetFocusDisplay(text, unitID)
     -- HACK: quickly create the focus castbar if it doesnt exist and hide it.
     -- This is just to make anchoring easier for self.FocusFrame on first usage
     if not activeFrames.focus then
-        local pos = ClassicCastbarsDB.focus.position
+        local pos = ClassicCastbars.db.focus.position
         local castbar = self:GetCastbarFrame("focus")
         castbar:ClearAllPoints()
         castbar:SetParent(UIParent)

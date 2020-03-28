@@ -368,7 +368,11 @@ function addon:PLAYER_LOGIN()
     end
 
     -- Copy any settings from defaults if they don't exist in current profile
-    self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
+    if ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings then
+        self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsCharDB)
+    else
+        self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
+    end
     self.db.version = namespace.defaultConfig.version
 
     -- Reset certain stuff on game locale switched

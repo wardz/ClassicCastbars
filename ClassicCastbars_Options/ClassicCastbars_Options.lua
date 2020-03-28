@@ -25,7 +25,7 @@ end
 
 local function CreateUnitTabGroup(unitID, localizedUnit, order)
     local function ModuleIsDisabled()
-        return not ClassicCastbarsDB[unitID].enabled
+        return not ClassicCastbars.db[unitID].enabled
     end
 
     return {
@@ -33,10 +33,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         order = order,
         type = "group",
         get = function(info)
-            return ClassicCastbarsDB[info[1]][info[3]]
+            return ClassicCastbars.db[info[1]][info[3]]
         end,
         set = function(info, value)
-            ClassicCastbarsDB[info[1]][info[3]] = value -- db.unit.x = value
+            ClassicCastbars.db[info[1]][info[3]] = value -- db.unit.x = value
             ClassicCastbars_TestMode:OnOptionChanged(unitID)
         end,
 
@@ -58,10 +58,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "toggle",
                         hidden = unitID == "focus",
                         confirm = function()
-                            return unitID == "player" and ClassicCastbarsDB[unitID].enabled and L.REQUIRES_RESTART or false
+                            return unitID == "player" and ClassicCastbars.db[unitID].enabled and L.REQUIRES_RESTART or false
                         end,
                         set = function(_, value)
-                            ClassicCastbarsDB[unitID].enabled = value
+                            ClassicCastbars.db[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
                             if unitID == "player" then
                                 if value == false then
@@ -257,10 +257,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 inline = false,
                 disabled = ModuleIsDisabled,
                 get = function(info)
-                    return unpack(ClassicCastbarsDB[info[1]][info[3]])
+                    return unpack(ClassicCastbars.db[info[1]][info[3]])
                 end,
                 set = function(info, r, g, b, a)
-                    local cfg = ClassicCastbarsDB[info[1]][info[3]]
+                    local cfg = ClassicCastbars.db[info[1]][info[3]]
                     cfg[1] = r -- overwrite values here instead of creating
                     cfg[2] = g -- a new table, so we can save memory. This function
                     cfg[3] = b -- is ran very frequently when picking colors
@@ -336,10 +336,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         get = function(info)
                             -- We store texture path instead of name in savedvariables so ClassicCastbars can still work
                             -- without LibSharedMedia or ClassicCastbars_Options loaded
-                            return GetLSMNameByTexture("font", ClassicCastbarsDB[info[1]][info[3]])
+                            return GetLSMNameByTexture("font", ClassicCastbars.db[info[1]][info[3]])
                         end,
                         set = function(info, value)
-                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("font")[value]
+                            ClassicCastbars.db[info[1]][info[3]] = GetLSMTable("font")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
@@ -352,10 +352,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.CAST_STATUSBAR_TOOLTIP,
                         values = GetLSMTable("statusbar"),
                         get = function(info)
-                            return GetLSMNameByTexture("statusbar", ClassicCastbarsDB[info[1]][info[3]])
+                            return GetLSMNameByTexture("statusbar", ClassicCastbars.db[info[1]][info[3]])
                         end,
                         set = function(info, value)
-                            ClassicCastbarsDB[info[1]][info[3]] = LSM:HashTable("statusbar")[value]
+                            ClassicCastbars.db[info[1]][info[3]] = LSM:HashTable("statusbar")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
@@ -368,10 +368,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.CAST_BORDER_TOOLTIP,
                         values = GetLSMTable("border"),
                         get = function(info)
-                            return GetLSMNameByTexture("border", ClassicCastbarsDB[info[1]][info[3]])
+                            return GetLSMNameByTexture("border", ClassicCastbars.db[info[1]][info[3]])
                         end,
                         set = function(info, value)
-                            ClassicCastbarsDB[info[1]][info[3]] = GetLSMTable("border")[value]
+                            ClassicCastbars.db[info[1]][info[3]] = GetLSMTable("border")[value]
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
@@ -407,7 +407,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         width = 1.4,
                         name = format("%s %s", L.TEST, localizedUnit),
                         type = "execute",
-                        disabled = function() return not ClassicCastbarsDB[unitID].enabled end,
+                        disabled = function() return not ClassicCastbars.db[unitID].enabled end,
                         func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitID) end,
                     },
                     notes = {
@@ -435,13 +435,15 @@ local function GetOptionsTable()
             focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
 
             resetAllSettings = {
-                order = 3,
+                order = 6,
+                --width = 2,
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = true,
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
                     -- Reset savedvariables to default
+                    ClassicCastbarsCharDB = {}
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
                     ClassicCastbars_TestMode:OnOptionChanged("target")
@@ -453,6 +455,26 @@ local function GetOptionsTable()
                     if shouldReloadUI then
                         ReloadUI()
                     end
+                end,
+            },
+
+            usePerCharacterSettings = {
+                order = 8,
+                width = 2,
+                name = "Character Specific Settings",
+                desc = "Click this to toggle between general settings and settings specific to this character. (Requires reload)",
+                type = "toggle",
+                confirm = function()
+                    return L.REQUIRES_RESTART
+                end,
+                get = function()
+                    return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
+                end,
+                set = function(_, value)
+                    ClassicCastbarsDB.usePerCharacterSettings = value
+                    ClassicCastbarsCharDB = ClassicCastbarsCharDB or {}
+                    ClassicCastbarsCharDB.usePerCharacterSettings = value
+                    ReloadUI()
                 end,
             },
         },

@@ -13,6 +13,7 @@ ignore = {
 globals = {
     "ClassicCastbars_TestMode",
     "ClassicCastbarsDB",
+    "ClassicCastbarsCharDB",
     "ClassicCastbars",
     "SlashCmdList",
     "CastingBarFrame",

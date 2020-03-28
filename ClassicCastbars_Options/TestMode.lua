@@ -43,10 +43,10 @@ local function OnDragStop(self)
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
     local x, y = CalcScreenGetPoint(self)
-    ClassicCastbarsDB[unit].position[1] = "CENTER" -- has to be center for CalcScreenGetPoint to work
-    ClassicCastbarsDB[unit].position[2] = x
-    ClassicCastbarsDB[unit].position[3] = y
-    ClassicCastbarsDB[unit].autoPosition = false
+    ClassicCastbars.db[unit].position[1] = "CENTER" -- has to be center for CalcScreenGetPoint to work
+    ClassicCastbars.db[unit].position[2] = x
+    ClassicCastbars.db[unit].position[3] = y
+    ClassicCastbars.db[unit].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
     self:SetParent(self.parent)
@@ -71,7 +71,7 @@ function TestMode:ToggleCastbarMovable(unitID)
         self:SetCastbarMovable(unitID)
         self.isTesting[unitID] = true
 
-        if ClassicCastbarsDB.nameplate.enabled and unitID == "nameplate-testmode" then
+        if ClassicCastbars.db.nameplate.enabled and unitID == "nameplate-testmode" then
             self:RegisterEvent("PLAYER_TARGET_CHANGED")
         end
     end
@@ -183,7 +183,7 @@ function TestMode:SetCastbarImmovable(unitID)
 end
 
 function TestMode:ReanchorOnNameplateTargetSwitch()
-    if not ClassicCastbarsDB.nameplate.enabled then return end
+    if not ClassicCastbars.db.nameplate.enabled then return end
 
     -- Reanchor castbar when we target a new nameplate/unit.
     -- We only want to show castbar for 1 nameplate at a time

@@ -2,6 +2,7 @@
 ## Title: ClassicCastbars
 ## Notes: Adds castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
+## SavedVariablesPerCharacter: ClassicCastbarsCharDB
 ## Author: Wardz
 ## Version: @project-version@
 ## X-Curse-Project-ID: 322865

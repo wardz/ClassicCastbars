@@ -1795,6 +1795,7 @@ namespace.defaultConfig = {
     version = "20", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
+    usePerCharacterSettings = false,
 
     nameplate = {
         enabled = true,
