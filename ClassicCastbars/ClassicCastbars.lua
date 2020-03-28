@@ -36,6 +36,7 @@ local abs = _G.math.abs
 local next = _G.next
 local floor = _G.math.floor
 local GetUnitSpeed = _G.GetUnitSpeed
+local UnitIsFriend = _G.UnitIsFriend
 local CastingInfo = _G.CastingInfo
 local ChannelInfo = _G.ChannelInfo
 local castTimeIncreases = namespace.castTimeIncreases
@@ -422,6 +423,10 @@ function addon:PLAYER_TARGET_CHANGED()
 end
 
 function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
+    local isFriendly = UnitIsFriend("player", namePlateUnitToken)
+    if not self.db.nameplate.showForFriendly and isFriendly then return end
+    if not self.db.nameplate.showForEnemy and not isFriendly then return end
+
     local unitGUID = UnitGUID(namePlateUnitToken)
     activeGUIDs[namePlateUnitToken] = unitGUID
 

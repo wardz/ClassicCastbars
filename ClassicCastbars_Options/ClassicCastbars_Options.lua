@@ -71,8 +71,24 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             end
                         end,
                     },
-                    autoPosition = {
+                    showForFriendly = {
                         order = 2,
+                        width = "full",
+                        name = L.SHOW_FOR_FRIENDLY,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID ~= "nameplate",
+                    },
+                    showForEnemy = {
+                        order = 3,
+                        width = "full",
+                        name = L.SHOW_FOR_ENEMY,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID ~= "nameplate",
+                    },
+                    autoPosition = {
+                        order = 4,
                         width = "full",
                         name = L.AUTO_POS_BAR,
                         desc = unitID ~= "player" and L.AUTO_POS_BAR_TOOLTIP or "",
@@ -81,7 +97,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                     },
                     showTimer = {
-                        order = 3,
+                        order = 5,
                         width = "full",
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
@@ -89,7 +105,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                     },
                     showSpark = {
-                        order = 4,
+                        order = 6,
                         width = "full",
                         name = L.SHOW_SPARK,
                         type = "toggle",

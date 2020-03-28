@@ -1798,6 +1798,8 @@ namespace.defaultConfig = {
 
     nameplate = {
         enabled = true,
+        showForFriendly = true,
+        showForEnemy = true,
         width = 106,
         height = 11,
         iconSize = 13,
