@@ -471,8 +471,9 @@ local function GetOptionsTable()
                     return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
                 end,
                 set = function(_, value)
-                    ClassicCastbarsDB.usePerCharacterSettings = value
-                    ClassicCastbarsCharDB = ClassicCastbarsCharDB or {}
+                    if not next(ClassicCastbarsCharDB or {}) then
+                        ClassicCastbarsCharDB = CopyTable(ClassicCastbarsDB)
+                    end
                     ClassicCastbarsCharDB.usePerCharacterSettings = value
                     ReloadUI()
                 end,
