@@ -461,8 +461,8 @@ local function GetOptionsTable()
             usePerCharacterSettings = {
                 order = 8,
                 width = 2,
-                name = "Character Specific Settings",
-                desc = "Click this to toggle between general settings and settings specific to this character. (Requires reload)",
+                name = L.PER_CHARACTER,
+                desc = L.PER_CHARACTER_TOOLTIP,
                 type = "toggle",
                 confirm = function()
                     return L.REQUIRES_RESTART

@@ -13,10 +13,10 @@ L["AUTO_POS_BAR_TOOLTIP"] = [=[When enabled it will auto position the castbar ba
 Does not work with third-party unit frames.]=]
 L["BORDER_COLOR"] = "Select Border Color"
 L["BORDERSHIELD"] = "Show Uninterruptible Border Shield"
-L["BORDERSHIELD_TOOLTIP"] = [[Shows a shield around the castbar when a cast cannot be interrupted. Disabling this option will still show a grey background color on uninterruptible casts.
+L["BORDERSHIELD_TOOLTIP"] = [=[Shows a shield around the castbar when a cast cannot be interrupted. Disabling this option will still show a grey background color on uninterruptible casts.
 
 |cffffff00You can click the "Toggle Testing Castbar" button while holding down any modifier keys like SHIFT or CTRL to test the castbar with border shield shown.|r
-]]
+]=]
 L["CAST_BORDER"] = "Select Border Texture"
 L["CAST_BORDER_TOOLTIP"] = "Select texture used for castbar border."
 L["CAST_FONT"] = "Select Castbar Font"
@@ -47,19 +47,21 @@ L["LSM_TEXTURE_NOTE"] = [=[
 Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here for the addon to continue working.]=]
 L["NAMEPLATE"] = "Nameplate"
 L["PARTY"] = "Party"
+L["PER_CHARACTER"] = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tCharacter Specific Settings"
+L["PER_CHARACTER_TOOLTIP"] = "Click this to toggle between general settings and settings specific to this character."
 L["PLAYER"] = "Player"
 L["POSXY_TOOLTIP"] = "Adjust the XY offset values to move the frame."
 L["REQUIRES_RESTART"] = "Toggling this castbar module requires a reload of your interface. Press Accept to reload UI."
 L["RESET_ALL"] = "Reset All Settings"
-L["SHOW_FOR_FRIENDLY"] = "Show Friendly Casts"
-L["SHOW_FOR_ENEMY"] = "Show Enemy Casts"
+L["SHOW_FOR_ENEMY"] = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tShow Enemy Casts"
+L["SHOW_FOR_FRIENDLY"] = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tShow Friendly Casts"
 L["SHOW_SPARK"] = "Show Castbar Spark Effect"
 L["SHOW_TIMER"] = "Show Timer Text"
 L["SHOW_TIMER_TOOLTIP"] = "Display a timer countdown for the current cast."
 L["STATUS_BG_COLOR"] = "Select Background Color"
 L["STATUS_CHANNEL_COLOR"] = "Select Channel Fill Color"
-L["STATUS_FAILED_COLOR"] = "Select Cast Failed Fill Color"
 L["STATUS_COLOR"] = "Select Cast Fill Color"
+L["STATUS_FAILED_COLOR"] = "Select Cast Failed Fill Color"
 L["STATUS_UNINTERRUPTIBLE_COLOR"] = "Select Uninterruptible Fill Color"
 L["TARGET"] = "Target"
 L["TEST"] = "Toggle Testing"
