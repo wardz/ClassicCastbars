@@ -36,6 +36,7 @@ local abs = _G.math.abs
 local next = _G.next
 local floor = _G.math.floor
 local GetUnitSpeed = _G.GetUnitSpeed
+local IsFalling = _G.IsFalling
 local UnitIsFriend = _G.UnitIsFriend
 local CastingInfo = _G.CastingInfo
 local ChannelInfo = _G.ChannelInfo
@@ -676,7 +677,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     -- Only stop cast for players since some mobs runs while casting, also because
                     -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
                     if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                        if not castStopBlacklist[cast.spellName] and GetUnitSpeed(unitID) ~= 0 then
+                        if not castStopBlacklist[cast.spellName] and (GetUnitSpeed(unitID) ~= 0 or IsFalling(unitID)) then
                             local castAlmostFinishied = ((currTime - cast.timeStart) > cast.maxValue - 0.1)
                             -- due to lag its possible that the cast is successfuly casted but still shows interrupted
                             -- unless we ignore the last few miliseconds here
