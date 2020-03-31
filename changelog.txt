@@ -1,3 +1,11 @@
+v1.3.2:
+- Casts will now also be stopped on unit jumping.
+- Add options to toggle between showing friendly & enemy casts for nameplates.
+- Add option to use different settings profile per character.
+- Add default list of uninterruptible NPC spells for all locales. (As a side effect your previous auto-learned uninterruptible list will be reset).
+  Note that this is just some sensible defaults, it doesn't have every single uninterruptible spell in the game.
+
+
 v1.3.1:
 - Fix focus frame not being click-through when it's hidden after first usage.
 - Minor improvements and bug fixes to uninterruptible cast system.
