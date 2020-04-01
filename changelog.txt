@@ -1,5 +1,6 @@
 v1.3.2:
 - Casts will now also be stopped on unit jumping.
+- Removed April fools joke, don't worry there'll be a new one next year :)
 - Add options to toggle between showing friendly & enemy casts for nameplates.
 - Add option to use different settings profile per character.
 - Add default list of uninterruptible NPC spells for all locales. (As a side effect your previous auto-learned uninterruptible list will be reset).
