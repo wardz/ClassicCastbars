@@ -126,6 +126,8 @@ function addon:CheckCastModifier(unitID, cast)
 end
 
 function addon:StartCast(unitGUID, unitID)
+    if not unitGUID then return end
+
     local cast = activeTimers[unitGUID]
     if not cast then return end
 
@@ -205,6 +207,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     cast.isInterrupted = nil
     cast.isCastComplete = nil
     cast.isFailed = nil
+    cast.isUnknownState = nil
 
     self:StartAllCasts(unitGUID)
 end
@@ -564,9 +567,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped.
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         if channelCast then
-            -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
-            if (spellName == ARCANE_MISSILES or spellName == ARCANE_MISSILE) and activeTimers[srcGUID] then
-                if activeTimers[srcGUID].spellName == ARCANE_MISSILES or activeTimers[srcGUID].spellName == ARCANE_MISSILE then return end
+            local cast = activeTimers[srcGUID]
+            if cast and (spellName == ARCANE_MISSILES or spellName == ARCANE_MISSILE) then
+                -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
+                if cast.spellName == ARCANE_MISSILES or cast.spellName == ARCANE_MISSILE then return end
             end
 
             return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isSrcPlayer, true)
@@ -589,7 +593,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no proper event for channel stop,
         -- so check if aura is gone instead since most channels has an aura effect.
-        if channeledSpells[spellName] and srcGUID == dstGUID then
+        if srcGUID == dstGUID and channeledSpells[spellName] then
             return self:DeleteCast(srcGUID, nil, nil, true)
         end
     elseif eventType == "SPELL_CAST_FAILED" then
@@ -671,7 +675,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     refresh = refresh - elapsed
     if refresh < 0 then
         if next(activeGUIDs) then
-            for unitID, unitGUID in pairs(activeGUIDs) do
+            for unitID, unitGUID in next, activeGUIDs do
                 if unitID ~= "focus" then
                     local cast = activeTimers[unitGUID]
                     -- Only stop cast for players since some mobs runs while casting, also because
@@ -696,7 +700,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     end
 
     -- Update all shown castbars in a single OnUpdate call
-    for unit, castbar in pairs(activeFrames) do
+    for unit, castbar in next, activeFrames do
         local cast = castbar._data
         if cast then
             local castTime = cast.endTime - currTime
@@ -711,12 +715,12 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 castbar:SetMinMaxValues(0, maxValue)
                 castbar:SetValue(value)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
-                local sparkPosition = (value / maxValue) * castbar:GetWidth()
+                local sparkPosition = (value / maxValue) * (castbar.currWidth or castbar:GetWidth())
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
                 -- slightly adjust color of the castbar when its not 100% sure if the cast is casted or failed
                 -- (gotta put it here to run before fadeout anim)
-                if not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
+                if not cast.isUnknownState and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                     castbar.Spark:SetAlpha(0)
                     if not cast.isChanneled then
                         local c = self.db[self:GetUnitType(unit)].statusColor
@@ -726,6 +730,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     else
                         castbar:SetValue(0)
                     end
+                    cast.isUnknownState = true
                 end
 
                 -- Delete cast incase stop event wasn't detected in CLEU
