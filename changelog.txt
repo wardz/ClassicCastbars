@@ -1,3 +1,7 @@
+v1.3.3:
+- Fix addon not working when old versions of LibClassicDurations is loaded by some other addon.
+- Minor performance optimizations.
+
 v1.3.2:
 - Casts will now also be stopped on unit jumping.
 - Removed April fools joke, don't worry there'll be a new one next year :)
