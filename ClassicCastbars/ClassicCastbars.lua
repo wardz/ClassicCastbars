@@ -96,7 +96,7 @@ function addon:CheckCastModifier(unitID, cast)
             name = UnitAura(unitID, i, "HELPFUL")
         else
             -- if LibClassicDurations happens to be loaded by some other addon, use it to get enemy buff data
-            name = libCD.UnitAuraWithBuffs(unitID, i, "HELPFUL")
+            name = libCD.UnitAuraDirect(unitID, i, "HELPFUL")
         end
         if not name then break end -- no more buffs
 
