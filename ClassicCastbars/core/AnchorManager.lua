@@ -42,7 +42,6 @@ local anchors = {
     },
 }
 
-local cache = {}
 local _G = _G
 local strmatch = _G.string.match
 local strfind = _G.string.find
@@ -100,23 +99,24 @@ local function GetPartyFrameForUnit(unitID)
     end
 end
 
-function AnchorManager:GetAnchor(unitID)
-    if cache[unitID] then
-        return cache[unitID]
-    end
+local anchorCache = {
+    player = UIParent,  -- special case for player/focus casting bar
+    focus = UIParent,
+    target = nil, -- will be set later
+}
 
-    if unitID == "player" or unitID == "focus" then
-        -- special case for player/focus casting bar
-        return UIParent
+function AnchorManager:GetAnchor(unitID)
+    if anchorCache[unitID] then
+        return anchorCache[unitID]
     end
 
     local unitType, count = gsub(unitID, "%d", "") -- party1 -> party etc
 
     local frame
-    if unitID == "nameplate-testmode" then
-        frame = GetNamePlateForUnit("target")
-    elseif unitType == "nameplate" then
+    if unitType == "nameplate" then
         frame = GetNamePlateForUnit(unitID)
+    elseif unitID == "nameplate-testmode" then
+        frame = GetNamePlateForUnit("target")
     elseif unitType == "party" or unitType == "party-testmode" then
         frame = GetPartyFrameForUnit(unitID)
     else -- target
@@ -125,7 +125,7 @@ function AnchorManager:GetAnchor(unitID)
 
     if frame and unitType == "target" then
         anchors[unitID] = nil
-        cache[unitID] = frame
+        anchorCache[unitID] = frame
     end
 
     return frame
