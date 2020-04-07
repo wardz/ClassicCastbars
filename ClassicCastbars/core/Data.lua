@@ -1664,7 +1664,6 @@ namespace.unaffectedCastModsSpells = {
     [6651] = 1, -- Instant Toxin
     [1842] = 1, -- Disarm Trap
     [6461] = 1, -- Pick Lock
-    [20904] = 1, -- Aimed Shot
     [2641] = 1, -- Dismiss Pet
     [2480] = 1, -- Shoot Bow
     [7918] = 1, -- Shoot Gun
