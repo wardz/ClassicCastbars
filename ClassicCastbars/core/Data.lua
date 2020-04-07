@@ -1575,6 +1575,7 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
 }
 
+-- Player spells that can't be interrupted
 namespace.uninterruptibleList = {
     [GetSpellInfo(4068)] = 1,       -- Iron Grenade
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
@@ -1657,7 +1658,7 @@ namespace.castStopBlacklist = {
     [GetSpellInfo(6405)] = 1,       -- Furgbolg Form
 }
 
--- Spells that can't be slowed or speed up
+-- Casts that can't be slowed or speed up
 namespace.unaffectedCastModsSpells = {
     -- Player Spells
     [11605] = 1, -- Slam
@@ -1792,6 +1793,7 @@ namespace.unaffectedCastModsSpells = {
 local function IsNotChanneled(cast) return not cast.isChanneled end
 local function IsRangedSpell(cast) return cast.spellID == 20904 or cast.spellID == 1540 end -- Aimed Shot/Volley
 
+-- Buffs that modify casting speed
 namespace.castModifiers = {
     [GetSpellInfo(22812)] = { -- Barkskin
         value = 1.0,
@@ -2011,6 +2013,7 @@ namespace.defaultConfig = {
     },
 }
 
+-- NPC spells that can't be interrupted. (Sensible defaults, doesn't include all)
 namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11981" .. GetSpellInfo(18500)] = true, -- Flamegor Wing Buffet
     ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt

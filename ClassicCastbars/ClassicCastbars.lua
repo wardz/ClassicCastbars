@@ -621,7 +621,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             local cast = activeTimers[dstGUID]
             if cast then
                 if stopCastOnDamageList[cast.spellName] then
-                    activeTimers[dstGUID].isFailed = true
+                    cast.isFailed = true
                     return self:DeleteCast(dstGUID)
                 end
 
