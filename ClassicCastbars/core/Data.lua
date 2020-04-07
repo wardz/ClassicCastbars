@@ -1330,7 +1330,7 @@ namespace.castTimeTalentDecreases = {
     [GetSpellInfo(8129)] = 2500,     -- Mana Burn
     [GetSpellInfo(5176)] = 1500,     -- Wrath
     [GetSpellInfo(2912)] = 3000,     -- Starfire
-    [GetSpellInfo(5185)] = 3000,     -- Healing Touch
+    [GetSpellInfo(9888)] = 3000,     -- Healing Touch
     [GetSpellInfo(2645)] = 1000,     -- Ghost Wolf
     [GetSpellInfo(691)] = 6000,      -- Summon Felhunter
     [GetSpellInfo(688)] = 6000,      -- Summon Imp
@@ -1564,7 +1564,7 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(2054)] = 1,       -- Heal
     [GetSpellInfo(2050)] = 1,       -- Lesser Heal
     [GetSpellInfo(596)] = 1,        -- Prayer of Healing
-    [GetSpellInfo(2060)] = 1,       -- Greater Heal
+    [GetSpellInfo(25314)] = 1,      -- Greater Heal
     [GetSpellInfo(19750)] = 1,      -- Flash of Light
     [GetSpellInfo(635)] = 1,        -- Holy Light
     -- Druid heals are afaik many times not talented so ignoring them for now
@@ -1787,6 +1787,68 @@ namespace.unaffectedCastModsSpells = {
     [7901] = 1, -- Decayed Agility
     [7054] = 1, -- Forsaken Skills
     [24189] = 1, -- Force Punch
+}
+
+local function IsNotChanneled(cast) return not cast.isChanneled end
+local function IsRangedSpell(cast) return cast.spellID == 20904 or cast.spellID == 1540 end -- Aimed Shot/Volley
+
+namespace.castModifiers = {
+    [GetSpellInfo(22812)] = { -- Barkskin
+        value = 1.0,
+    },
+
+    [GetSpellInfo(16886)] = { -- Nature's Grace
+        value = -0.5,
+        condition = IsNotChanneled,
+    },
+
+    [GetSpellInfo(23723)] = { -- Mind Quickening
+        percentage = true,
+        value = 33,
+        condition = IsNotChanneled,
+    },
+
+    [GetSpellInfo(23733)] = { -- Blinding Light
+        percentage = true,
+        value = 33,
+        condition = IsNotChanneled,
+    },
+
+    [GetSpellInfo(20554)] = { -- Berserking
+        percentage = true,
+        value = 10,
+        condition = IsNotChanneled,
+    },
+
+    [GetSpellInfo(24542)] = { -- Nimble Healing Touch
+        percentage = true,
+        value = 40,
+        condition = function(cast) return cast.spellID == 9888 end,
+    },
+
+    [GetSpellInfo(24546)] = { -- Rapid Healing
+        percentage = true,
+        value = 40,
+        condition = function(cast) return cast.spellID == 25314 end,
+    },
+
+    [GetSpellInfo(3045)] = { -- Rapid Fire
+        percentage = true,
+        value = 40,
+        condition = IsRangedSpell,
+    },
+
+    [GetSpellInfo(6150)] = { -- Quick Shots
+        percentage = true,
+        value = 30,
+        condition = IsRangedSpell,
+    },
+
+    [GetSpellInfo(28866)] = { -- Kiss of the Spider
+        percentage = true,
+        value = 20,
+        condition = IsRangedSpell,
+    },
 }
 
 -- Addon Savedvariables
