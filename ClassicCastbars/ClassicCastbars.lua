@@ -70,13 +70,21 @@ function addon:CheckCastModifiers(unitID, cast)
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified then
-        if cast.spellID ~= 20904 and cast.spellID ~= 1540 then -- ignore Aimed Shot/Volley for now
-            for i = 1, 16 do
-                local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
-                if not spellID then break end -- no more debuffs
+        for i = 1, 16 do
+            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
+            if not spellID then break end -- no more debuffs
 
-                local slow = castTimeIncreases[spellID]
-                if slow then -- note: multiple slows stack
+            local slow = castTimeIncreases[spellID]
+            if slow then -- note: multiple slows stack
+                local continue = true
+                if cast.spellID == 20904 then -- hack for Aimed Shot
+                    if spellID ~= 89 and spellID ~= 19365 and spellID ~= 17331 then
+                        -- dont continue if the modifier doesnt modify RANGED attacks
+                        continue = false
+                    end
+                end
+
+                if continue then
                     cast.endTime = cast.timeStart + (cast.endTime - cast.timeStart) * ((slow / 100) + 1)
                     cast.hasCastSlowModified = true
                 end
