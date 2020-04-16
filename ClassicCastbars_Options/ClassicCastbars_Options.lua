@@ -222,7 +222,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.ICON_SIZE_TOOLTIP,
                         type = "range",
                         width = "double",
-                        min = 0.1,
+                        min = 1,
                         max = 100,
                         bigStep = 1,
                     },
