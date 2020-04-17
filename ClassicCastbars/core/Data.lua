@@ -2050,4 +2050,7 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["10184" .. GetSpellInfo(18431)] = true, -- Onyxia Bellowing Roar
     ["11492" .. GetSpellInfo(9616)] = true, -- Alzzin the Wildshaper Wild Regeneration
     ["13996" .. GetSpellInfo(22334)] = true, -- Blackwing Technician Bomb
+    ["11359" .. GetSpellInfo(16430)] = true, -- Soulflayer Soul Tap
+    ["11359" .. GetSpellInfo(22678)] = true, -- Soulflayer Fear
+    ["11372" .. GetSpellInfo(24011)] = true, -- Razzashi Adder Venom Spit
 }
