@@ -93,16 +93,16 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
             castbar.IconShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Arena-Shield")
         end
 
-        castbar.IconShield:SetPoint("LEFT", castbar.Icon, "LEFT", -0.44 * db.iconSize, -2)
+        castbar.IconShield:SetPoint("LEFT", castbar.Icon, "LEFT", -0.44 * db.iconSize, 0)
         castbar.IconShield:SetSize(db.iconSize * 3, db.iconSize * 3)
 
         local unitType = self:GetUnitType(unitID)
         if unitType == "nameplate" then
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) - 1, db.iconPositionY + 2)
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize), db.iconPositionY + 2)
         elseif unitType == "party" then
             castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
         else
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
         end
 
         castbar.BorderShield:Show()
