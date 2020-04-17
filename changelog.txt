@@ -1,3 +1,12 @@
+v1.3.4:
+- Aimed Shot will now take cast speed modifiers into account.
+- Add cast speed detection for Wushoolay's Charm of Nature and Hazza'rah's Charm of Healing.
+- Improvements for uninterruptible cast data in Zul Gurub.
+- Border shield for uninterruptible casts is now split into 2 different textures, so you can now
+  modify the icon shield without modifying the statusbar shield and vice versa.
+  (You might want to adjust icon position after this change if you use a very large icon size.)
+
+
 v1.3.3:
 - Fix addon not working when old versions of LibClassicDurations is loaded by some other addon.
 - Minor performance optimizations.
