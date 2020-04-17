@@ -490,6 +490,7 @@ local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
 local BLESSING_OF_PROTECTION = GetSpellInfo(1022)
+local ANTI_MAGIC_SHIELD = GetSpellInfo(24021)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
@@ -657,7 +658,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         if buffCacheHit then
                             for i = 1, #buffCacheHit do
                                 local spell = buffCacheHit[i].name
-                                if spell == DIVINE_SHIELD or spell == DIVINE_PROTECTION or spell == BLESSING_OF_PROTECTION then
+                                if spell == DIVINE_SHIELD or spell == DIVINE_PROTECTION or spell == BLESSING_OF_PROTECTION or spell == ANTI_MAGIC_SHIELD then
                                     return
                                 end
                             end
