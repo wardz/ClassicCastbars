@@ -1855,7 +1855,7 @@ namespace.castModifiers = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "20", -- settings version
+    version = "21", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
