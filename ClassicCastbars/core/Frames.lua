@@ -84,18 +84,29 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
         local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
         castbar.BorderShield:ClearAllPoints()
         castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
-        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+2, -height+4)
+        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.16), -height+4)
+
+        if not castbar.IconShield then
+            castbar.BorderShield:SetTexCoord(0.16, 0, 0.118, 1, 1, 0, 1, 1) -- cut left side of texture away
+
+            castbar.IconShield = castbar:CreateTexture(nil, "OVERLAY")
+            castbar.IconShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Arena-Shield")
+        end
+
+        castbar.IconShield:SetPoint("LEFT", castbar.Icon, "LEFT", -0.44 * db.iconSize, -2)
+        castbar.IconShield:SetSize(db.iconSize * 3, db.iconSize * 3)
 
         local unitType = self:GetUnitType(unitID)
         if unitType == "nameplate" then
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) - 1, db.iconPositionY + 2)
         elseif unitType == "party" then
-            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 4, db.iconPositionY + 2)
+            castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 2)
         else
             castbar.Icon:SetPoint("LEFT", castbar, (db.iconPositionX - db.iconSize) + 2, db.iconPositionY + 4)
         end
 
         castbar.BorderShield:Show()
+        castbar.IconShield:Show()
     else
         if nonLSMBorders[db.castBorder] then
             castbar.Border:SetAlpha(1)
@@ -103,6 +114,9 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
             castbar.BorderFrameLSM:SetAlpha(1)
         end
         castbar.BorderShield:Hide()
+        if castbar.IconShield then
+            castbar.IconShield:Hide()
+        end
         castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
     end
 end
