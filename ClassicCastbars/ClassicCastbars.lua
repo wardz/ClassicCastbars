@@ -368,7 +368,11 @@ function addon:PLAYER_LOGIN()
     elseif ClassicCastbarsDB.version == "12" then
         ClassicCastbarsDB.player = nil
     elseif ClassicCastbarsDB.version == "18" or ClassicCastbarsDB.version == "19" then
-        ClassicCastbarsDB.npcCastUninterruptibleCache = nil
+        ClassicCastbarsDB.npcCastUninterruptibleCache = {}
+    end
+
+    if ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] then
+        ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] = nil
     end
 
     -- Copy any settings from defaults if they don't exist in current profile
