@@ -371,7 +371,7 @@ function addon:PLAYER_LOGIN()
         ClassicCastbarsDB.npcCastUninterruptibleCache = {}
     end
 
-    if ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] then
+    if ClassicCastbarsDB.npcCastUninterruptibleCache and ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] then
         ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] = nil
     end
 
