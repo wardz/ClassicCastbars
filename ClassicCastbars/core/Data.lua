@@ -2053,4 +2053,9 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11359" .. GetSpellInfo(16430)] = true, -- Soulflayer Soul Tap
     ["11359" .. GetSpellInfo(22678)] = true, -- Soulflayer Fear
     ["11372" .. GetSpellInfo(24011)] = true, -- Razzashi Adder Venom Spit
+    ["14834" .. GetSpellInfo(24322)] = true, -- Hakkar Blood Siphon
+    ["14509" .. GetSpellInfo(24189)] = true, -- High Priest Thekal Force Punch
+    ["11382" .. GetSpellInfo(24314)] = true, -- Broodlord Mandokir Threatening Gaze
+    ["14750" .. GetSpellInfo(24024)] = true, -- Gurubashi Bat Rider Unstable Concoction
+    ["12259" .. GetSpellInfo(686)] = true, -- Gehennas Shadow Bolt
 }
