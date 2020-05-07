@@ -48,6 +48,7 @@ local strfind = _G.string.find
 local gsub = _G.string.gsub
 local UnitGUID = _G.UnitGUID
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
+local GetNumGroupMembers = _G.GetNumGroupMembers
 
 local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
     local anchorNames = anchors[unitType]
@@ -77,6 +78,9 @@ local function GetPartyFrameForUnit(unitID)
         return GetUnitFrameForUnit("party", "party1", true)
     end
 
+    -- Dont show party castbars in raid
+    if GetNumGroupMembers() > 5 then return end
+
     local guid = UnitGUID(unitID)
     if not guid then return end
 
@@ -87,7 +91,7 @@ local function GetPartyFrameForUnit(unitID)
     -- frames for custom addons
     for i = 1, 40 do
         local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
-        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsVisible() then
+        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsShown() then
             if useCompact then
                 if strfind(frameName, "PartyMemberFrame") == nil then
                     return frame
