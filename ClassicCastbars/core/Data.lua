@@ -1855,7 +1855,7 @@ namespace.castModifiers = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "21", -- settings version
+    version = "22", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -2058,4 +2058,7 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11382" .. GetSpellInfo(24314)] = true, -- Broodlord Mandokir Threatening Gaze
     ["14750" .. GetSpellInfo(24024)] = true, -- Gurubashi Bat Rider Unstable Concoction
     ["12259" .. GetSpellInfo(686)] = true, -- Gehennas Shadow Bolt
+    ["11339" .. GetSpellInfo(22908)] = true, -- Hakkari Shadow Hunter Volley
+    ["14507" .. GetSpellInfo(14914)] = true, -- High Priest Venoxis Holy Fire
+    ["13161" .. GetSpellInfo(21188)] = true, -- Aerie Gryphon Stun Bomb Attack
 }
