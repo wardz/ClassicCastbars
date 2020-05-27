@@ -1,3 +1,9 @@
+v1.3.7:
+- Add option to disable inheriting transparency/alpha value from parent unit frame.
+- Uninterruptible border shield will now disappear for current cast on immunity aura removed.
+- Improvements for uninterruptible cast data.
+
+
 v1.3.6:
 - Party castbars is now disabled in groups with more than 5 players.
 - Improvements for uninterruptible cast data.
