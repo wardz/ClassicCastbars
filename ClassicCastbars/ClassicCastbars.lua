@@ -604,6 +604,14 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no proper event for channel stop,
         -- so check if aura is gone instead since most channels has an aura effect.
+        if spellName == DIVINE_SHIELD or spellName == DIVINE_PROTECTION or spellName == BLESSING_OF_PROTECTION or spellName == ANTI_MAGIC_SHIELD then
+            local cast = activeTimers[srcGUID]
+            if cast then
+                cast.isUninterruptible = cast.origIsUninterruptibleValue or false
+                self:StartAllCasts(srcGUID) -- Hack: Restart cast to update border shield
+            end
+        end
+
         if srcGUID == dstGUID and channeledSpells[spellName] then
             return self:DeleteCast(srcGUID, nil, nil, true)
         end
