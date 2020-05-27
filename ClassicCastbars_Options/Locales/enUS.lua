@@ -42,6 +42,8 @@ L["ICON_POS_Y"] = "Icon Position Y"
 L["ICON_SHOW"] = "Show Spell Icon"
 L["ICON_SIZE"] = "Icon Size"
 L["ICON_SIZE_TOOLTIP"] = "Sets the size for the castbar spell icon."
+L["IGNORE_PARENT_ALPHA"] = "Ignore Parent Frame Alpha"
+L["IGNORE_PARENT_ALPHA_TOOLTIP"] = "Ignore transparency/alpha value inherited from castbars parent's frame."
 L["LSM_TEXTURE_NOTE"] = [=[
 
 Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here for the addon to continue working.]=]

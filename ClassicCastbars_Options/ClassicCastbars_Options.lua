@@ -120,8 +120,17 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
-                    notes = {
+                    ignoreParentAlpha = {
                         order = 8,
+                        width = "full",
+                        name = L.IGNORE_PARENT_ALPHA,
+                        desc = L.IGNORE_PARENT_ALPHA_TOOLTIP,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID == "player" or unitID == "focus",
+                    },
+                    notes = {
+                        order = 9,
                         hidden = unitID ~= "focus",
                         -- this note will soon be removed or changed to only contain slash commands so we dont bother localizing here
                         name = "\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r\n\n Note that if you switch focus in combat it wont update the targetting until you leave combat. Only the cast tracking will still work in combat.\n"
@@ -310,7 +319,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 6,
                         hasAlpha = true,
                         type = "color",
-                    }
+                    },
                 },
             },
 

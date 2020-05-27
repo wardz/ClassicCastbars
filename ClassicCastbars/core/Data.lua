@@ -1855,7 +1855,7 @@ namespace.castModifiers = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "22", -- settings version
+    version = "23", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -1890,6 +1890,7 @@ namespace.defaultConfig = {
         textPositionY = 0,
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
     },
 
     target = {
@@ -1920,6 +1921,7 @@ namespace.defaultConfig = {
         textPositionY = 0,
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
     },
 
     focus = {
@@ -1950,6 +1952,7 @@ namespace.defaultConfig = {
         textPositionY = 0,
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
     },
 
     party = {
@@ -1980,6 +1983,7 @@ namespace.defaultConfig = {
         textPositionY = 0,
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
     },
 
     player = {
@@ -2010,6 +2014,7 @@ namespace.defaultConfig = {
         textPositionY = 1,
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
     },
 }
 
