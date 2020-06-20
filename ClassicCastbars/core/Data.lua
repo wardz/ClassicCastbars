@@ -2072,4 +2072,6 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["14945" .. GetSpellInfo(21188)] = true, -- Mulverick's War Rider Stun Bomb Attack
     ["12119" .. GetSpellInfo(20604)] = true, -- Flamewaker Protector Dominate Mind
     ["12459" .. GetSpellInfo(22372)] = true, -- Blackwing Warlock Demon Portal
+    ["15114" .. GetSpellInfo(22479)] = true, -- Gahz'ranka Frost Breath
+    ["15114" .. GetSpellInfo(22421)] = true, -- Gahz'ranka Massive Geyser
 }
