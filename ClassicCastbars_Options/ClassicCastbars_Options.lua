@@ -462,7 +462,9 @@ local function GetOptionsTable()
                 --width = 2,
                 name = L.RESET_ALL,
                 type = "execute",
-                confirm = true,
+                confirm = function()
+                    return ClassicCastbars.db.player.enabled and L.REQUIRES_RESTART or true
+                end,
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
                     -- Reset savedvariables to default
