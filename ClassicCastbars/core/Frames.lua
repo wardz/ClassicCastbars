@@ -106,7 +106,7 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
         end
 
         castbar.BorderShield:Show()
-        castbar.IconShield:Show()
+        castbar.IconShield:SetShown(db.showIcon)
     else
         if nonLSMBorders[db.castBorder] then
             castbar.Border:SetAlpha(1)
