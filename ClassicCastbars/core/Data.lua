@@ -1316,7 +1316,7 @@ end)
 -- Spells that often have cast time reduced by talents.
 namespace.castTimeTalentDecreases = {
     [GetSpellInfo(403)] = 2000,      -- Lightning Bolt
-    [GetSpellInfo(421)] = 1500,      -- Chain Lightning
+    [GetSpellInfo(10605)] = 1500,    -- Chain Lightning
     [GetSpellInfo(6353)] = 4000,     -- Soul Fire
     [GetSpellInfo(116)] = 2500,      -- Frostbolt
     [GetSpellInfo(133)] = 3000,      -- Fireball
