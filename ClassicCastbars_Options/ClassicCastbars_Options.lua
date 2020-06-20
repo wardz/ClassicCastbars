@@ -1,6 +1,14 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 local LSM = LibStub("LibSharedMedia-3.0")
 
+local TEXT_POINTS = {
+    ["CENTER"] = "CENTER",
+    ["RIGHT"] = "RIGHT",
+    ["LEFT"] = "LEFT",
+    ["TOP"] = "TOP",
+    ["BOTTOM"] = "BOTTOM",
+}
+
 local function GetLSMTable(lsmType)
     local tbl = CopyTable(LSM:HashTable(lsmType)) -- copy to prevent modifying LSM table
 
@@ -198,6 +206,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = -2000,
                         max = 2000,
                         bigStep = 1,
+                    },
+                    textPoint = {
+                        order = 6,
+                        name = L.TEXT_POINT,
+                        type = "select",
+                        values = TEXT_POINTS,
                     },
                 },
             },

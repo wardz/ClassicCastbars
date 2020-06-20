@@ -75,6 +75,7 @@ L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can
 You'll need to target someone first to see the test castbar.
 ]=]
 L["TEXT_COLOR"] = "Select Text Color"
+L["TEXT_POINT"] = "Text Alignment"
 L["TEXT_POS_X"] = "Text Position X"
 L["TEXT_POS_Y"] = "Text Position Y"
 L["TOGGLE_CASTBAR"] = "Enable Castbar"

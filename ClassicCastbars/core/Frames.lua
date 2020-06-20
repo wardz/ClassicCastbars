@@ -55,11 +55,13 @@ end
 
 function addon:SetCastbarIconAndText(castbar, cast, db)
     local spellName = cast.spellName
-    if castbar.Text:GetText() == spellName then return end
+    if not castbar.isTesting and castbar.Text:GetText() == spellName then return end
 
     if cast.icon == 136235 then -- unknown texture
         cast.icon = 136243
     end
+    castbar.Text:ClearAllPoints()
+    castbar.Text:SetPoint(db.textPoint)
     castbar.Icon:SetTexture(cast.icon)
     castbar.Text:SetText(spellName)
 
@@ -222,7 +224,8 @@ function addon:SetCastbarFonts(castbar, cast, db)
     if db.showBorderShield and cast.isUninterruptible then
         yOff = yOff + 2
     end
-    castbar.Text:SetPoint("CENTER", db.textPositionX, yOff)
+    castbar.Text:ClearAllPoints()
+    castbar.Text:SetPoint(db.textPoint, db.textPositionX, yOff)
 end
 
 function addon:CreateFadeAnimationGroup(frame)
@@ -267,8 +270,8 @@ function addon:DisplayCastbar(castbar, unitID)
     -- incase it was modified to something else on last recycle
     self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db, unitID)
-    self:SetCastbarFonts(castbar, cast, db)
     self:SetCastbarIconAndText(castbar, cast, db)
+    self:SetCastbarFonts(castbar, cast, db)
 
     if unitID == "target" and self.db.target.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
@@ -415,7 +418,7 @@ function addon:SkinPlayerCastbar()
     end
 
     CastingBarFrame.Text:ClearAllPoints()
-    CastingBarFrame.Text:SetPoint("CENTER")
+    CastingBarFrame.Text:SetPoint(db.textPoint)
     CastingBarFrame.Icon:ClearAllPoints()
     CastingBarFrame.Icon:SetShown(db.showIcon)
 
