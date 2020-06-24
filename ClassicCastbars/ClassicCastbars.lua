@@ -379,8 +379,9 @@ function addon:PLAYER_LOGIN()
         ClassicCastbarsDB.npcCastUninterruptibleCache = {}
     end
 
-    if ClassicCastbarsDB.npcCastUninterruptibleCache and ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] then
+    if ClassicCastbarsDB.npcCastUninterruptibleCache then
         ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] = nil
+        ClassicCastbarsDB.npcCastUninterruptibleCache["11359"..GetSpellInfo(22678)] = nil
     end
 
     -- Copy any settings from defaults if they don't exist in current profile

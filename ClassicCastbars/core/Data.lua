@@ -2061,7 +2061,6 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11492" .. GetSpellInfo(9616)] = true, -- Alzzin the Wildshaper Wild Regeneration
     ["13996" .. GetSpellInfo(22334)] = true, -- Blackwing Technician Bomb
     ["11359" .. GetSpellInfo(16430)] = true, -- Soulflayer Soul Tap
-    ["11359" .. GetSpellInfo(22678)] = true, -- Soulflayer Fear
     ["11372" .. GetSpellInfo(24011)] = true, -- Razzashi Adder Venom Spit
     ["14834" .. GetSpellInfo(24322)] = true, -- Hakkar Blood Siphon
     ["14509" .. GetSpellInfo(24189)] = true, -- High Priest Thekal Force Punch
