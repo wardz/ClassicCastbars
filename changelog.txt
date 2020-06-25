@@ -1,3 +1,10 @@
+v1.3.8:
+- 100 milliseconds is now always subtracted from players cast times to account for any lag, this should hopefully make interrupting feel a tiny bit smoother.
+- Add option for spell name text anchor alignment.
+- Fix icon shield not being hidden when show icon is set to false.
+- Fix Soulflayer's Fear being incorrectly marked as uninterruptible.
+
+
 v1.3.7:
 - Add option to disable inheriting transparency/alpha value from parent unit frame.
 - Uninterruptible border shield will now disappear for current cast on immunity aura removed.
