@@ -2078,4 +2078,5 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["12459" .. GetSpellInfo(22372)] = true, -- Blackwing Warlock Demon Portal
     ["15114" .. GetSpellInfo(22479)] = true, -- Gahz'ranka Frost Breath
     ["15114" .. GetSpellInfo(22421)] = true, -- Gahz'ranka Massive Geyser
+    ["12557" .. GetSpellInfo(14515)] = true, -- Grethok the Controller Dominate Mind
 }
