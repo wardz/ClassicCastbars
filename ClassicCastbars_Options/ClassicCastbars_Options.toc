@@ -1,4 +1,4 @@
-## Interface: 11304
+## Interface: 11305
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## Dependencies: ClassicCastbars
