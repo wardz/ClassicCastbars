@@ -62,6 +62,7 @@ function addon:SetCastbarIconAndText(castbar, cast, db)
     end
     castbar.Text:ClearAllPoints()
     castbar.Text:SetPoint(db.textPoint)
+    castbar.Text:SetJustifyH(db.textPoint)
     castbar.Icon:SetTexture(cast.icon)
     castbar.Text:SetText(spellName)
 
@@ -224,6 +225,7 @@ function addon:SetCastbarFonts(castbar, cast, db)
     if db.showBorderShield and cast.isUninterruptible then
         yOff = yOff + 2
     end
+    castbar.Text:SetJustifyH(db.textPoint)
     castbar.Text:ClearAllPoints()
     castbar.Text:SetPoint(db.textPoint, db.textPositionX, yOff)
 end
@@ -419,6 +421,7 @@ function addon:SkinPlayerCastbar()
 
     CastingBarFrame.Text:ClearAllPoints()
     CastingBarFrame.Text:SetPoint(db.textPoint)
+    CastingBarFrame.Text:SetJustifyH(db.textPoint)
     CastingBarFrame.Icon:ClearAllPoints()
     CastingBarFrame.Icon:SetShown(db.showIcon)
 

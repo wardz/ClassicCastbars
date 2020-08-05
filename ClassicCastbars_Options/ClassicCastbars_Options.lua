@@ -5,8 +5,6 @@ local TEXT_POINTS = {
     ["CENTER"] = "CENTER",
     ["RIGHT"] = "RIGHT",
     ["LEFT"] = "LEFT",
-    ["TOP"] = "TOP",
-    ["BOTTOM"] = "BOTTOM",
 }
 
 local function GetLSMTable(lsmType)
