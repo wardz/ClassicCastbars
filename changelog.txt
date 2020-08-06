@@ -1,3 +1,8 @@
+v1.3.10:
+- Fix horizontal text justification for text alignment option. Any custom XY offsets might need to be re-adjusted.
+- Localization updates.
+
+
 v1.3.9:
 - Bump toc version for patch 1.13.5.
 
