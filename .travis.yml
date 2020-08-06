@@ -16,7 +16,7 @@ script:
   - |
     if [ "$TRAVIS_PULL_REQUEST" == "false" -a -n "$TRAVIS_TAG" ]; then
       cd ClassicCastbars
-      curl -s release.sh https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5
+      curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
     fi
 
 branches:
