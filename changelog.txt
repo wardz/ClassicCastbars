@@ -1,3 +1,6 @@
+v1.3.11:
+- Improvements for uninterruptible cast data in AQ and Silithus.
+
 v1.3.10:
 - Fix horizontal text justification for text alignment option. Any custom XY offsets might need to be re-adjusted.
 - Localization updates.
