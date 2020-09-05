@@ -7,6 +7,10 @@ local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
 local npcCastUninterruptibleCache = {}
 
+if not _G.WOW_PROJECT_ID or (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) then
+    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW patch 1.13.x.|r")
+end
+
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
