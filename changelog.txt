@@ -1,3 +1,10 @@
+v1.3.12:
+- More improvements for uninterruptible cast data in AQ.
+- Set default Arcane Explosion cast time to 1.0s instead of 1.5s.
+- Addon will now show an error if the addon is loaded on a non-classic client.
+- Fix Hakkari Priest not resetting uninterruptible state after Anti Magic Shield expires. (requires LibClassicDurations)
+
+
 v1.3.11:
 - Improvements for uninterruptible cast data in AQ and Silithus.
 
