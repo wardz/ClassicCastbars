@@ -1855,7 +1855,7 @@ namespace.castModifiers = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "24", -- settings version
+    version = "25", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -2080,6 +2080,7 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["15114" .. GetSpellInfo(22421)] = true, -- Gahz'ranka Massive Geyser
     ["12557" .. GetSpellInfo(14515)] = true, -- Grethok the Controller Dominate Mind
     ["15727" .. GetSpellInfo(26134)] = true, -- C'Thun Eye Beam
+    ["15589" .. GetSpellInfo(26134)] = true, -- Eye of C'Thun Eye Beam
     ["15517" .. GetSpellInfo(26102)] = true, -- Ouro Sand Blast
     ["15517" .. GetSpellInfo(26103)] = true, -- Ouro Sweep
     ["15517" .. GetSpellInfo(26616)] = true, -- Ouro Boulder
@@ -2103,4 +2104,6 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["15247" .. GetSpellInfo(16568)] = true, -- Qiraji Brainwasher Mind Flay
     ["11881" .. GetSpellInfo(26616)] = true, -- Twilight Geolord Boulder
     ["11729" .. GetSpellInfo(19452)] = true, -- Hive'Zora Hive Sister Toxic Spit
+    ["15323" .. GetSpellInfo(26381)] = true, -- Hive'Zara Sandstalker Burrow
+    ["15263" .. GetSpellInfo(785)] = true, -- The Prophet Skeram True Fulfillment
 }
