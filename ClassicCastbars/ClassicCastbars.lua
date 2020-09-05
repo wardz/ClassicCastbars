@@ -54,6 +54,7 @@ local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
 local DIVINE_SHIELD = GetSpellInfo(642)
 local DIVINE_PROTECTION = GetSpellInfo(498)
+local ANTI_MAGIC_SHIELD = GetSpellInfo(24021)
 
 function addon:GetUnitType(unitID)
     local unit = gsub(unitID or "", "%d", "")
@@ -123,7 +124,7 @@ function addon:CheckCastModifiers(unitID, cast)
         -- Special cases
         if name == FOCUSED_CASTING or name == BARKSKIN then
             cast.hasPushbackImmuneModifier = true
-        elseif (name == DIVINE_PROTECTION or name == DIVINE_SHIELD) and not cast.isUninterruptible then
+        elseif (name == DIVINE_PROTECTION or name == DIVINE_SHIELD or name == ANTI_MAGIC_SHIELD) and not cast.isUninterruptible then
             cast.origIsUninterruptibleValue = cast.isUninterruptible
             cast.isUninterruptible = true
         elseif cast.origIsUninterruptibleValue then
@@ -507,7 +508,6 @@ local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
 local BLESSING_OF_PROTECTION = GetSpellInfo(1022)
-local ANTI_MAGIC_SHIELD = GetSpellInfo(24021)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
@@ -663,7 +663,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
     elseif eventType == "SPELL_MISSED" then
-        -- TODO: check if Improved Counterspell has same name as normal Counterspell here
         -- TODO: magical vs physical interrupts
         -- Auto learn if a spell is uninterruptible for NPCs by checking if an interrupt was immuned
         if missType == "IMMUNE" and playerInterrupts[spellName] then
@@ -673,7 +672,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     local _, _, _, _, _, npcID = strsplit("-", dstGUID)
-                    if not npcID or npcID == "12457" then return end -- Blackwing Spellbinder
+                    if not npcID or npcID == "12457" or npcID == "11830" then return end -- Blackwing Spellbinder or Hakkari Priest
                     if npcCastUninterruptibleCache[npcID .. cast.spellName] then return end -- already added
 
                     -- Check for bubble immunity
