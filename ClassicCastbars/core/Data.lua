@@ -17,7 +17,7 @@ local castSpellIDs = {
     19645, -- Anti-Magic Shield
     13901, -- Arcane Bolt
     19821, -- Arcane Bomb
-    11975, -- Arcane Explosion
+    26192, -- Arcane Explosion
     1450, -- Arcane Spirit II
     1451, -- Arcane Spirit III
     1452, -- Arcane Spirit IV
