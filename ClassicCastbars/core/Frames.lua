@@ -465,7 +465,6 @@ local NewTimer = _G.C_Timer.NewTimer
 local focusTargetTimer -- time for changing focus
 local focusTargetResetTimer -- timer for clearing focus
 
-
 local function ClearFocusTarget()
     if not InCombatLockdown() then
         addon.FocusButton:SetAttribute("macrotext", "")

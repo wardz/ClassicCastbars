@@ -1,8 +1,6 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
-
-local TestMode = CreateFrame("Frame")
+local TestMode = CreateFrame("Frame", "ClassicCastbars_TestMode")
 TestMode.isTesting = {}
-ClassicCastbars_TestMode = TestMode -- global ref for use in both addons
 
 local dummySpellData = {
     spellName = GetSpellInfo(118),
@@ -43,15 +41,32 @@ local function OnDragStop(self)
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
     local x, y = CalcScreenGetPoint(self)
-    ClassicCastbars.db[unit].position[1] = "CENTER" -- has to be center for CalcScreenGetPoint to work
-    ClassicCastbars.db[unit].position[2] = x
-    ClassicCastbars.db[unit].position[3] = y
+    ClassicCastbars.db[unit].position = { "CENTER", x, y }  -- has to be center for CalcScreenGetPoint to work
     ClassicCastbars.db[unit].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
     self:SetParent(self.parent)
     self:ClearAllPoints()
     self:SetPoint("CENTER", self.parent, x, y)
+end
+
+function TestMode:OnOptionChanged(unitID)
+    if unitID == "nameplate" then
+        unitID = "nameplate-testmode"
+    elseif unitID == "party" then
+        unitID = "party-testmode"
+    end
+
+    if unitID == "player" then
+        return ClassicCastbars:SkinPlayerCastbar()
+    end
+
+    -- Immediately update castbar display after changing an option
+    local castbar = ClassicCastbars.activeFrames[unitID]
+    if castbar and castbar.isTesting then
+        castbar._data = CopyTable(dummySpellData)
+        ClassicCastbars:DisplayCastbar(castbar, unitID)
+    end
 end
 
 function TestMode:ToggleCastbarMovable(unitID)
@@ -77,25 +92,6 @@ function TestMode:ToggleCastbarMovable(unitID)
     end
 end
 
-function TestMode:OnOptionChanged(unitID)
-    if unitID == "nameplate" then
-        unitID = "nameplate-testmode"
-    elseif unitID == "party" then
-        unitID = "party-testmode"
-    end
-
-    if unitID == "player" then
-        return ClassicCastbars:SkinPlayerCastbar()
-    end
-
-    -- Immediately update castbar display after changing an option
-    local castbar = ClassicCastbars.activeFrames[unitID]
-    if castbar and castbar.isTesting then
-        castbar._data = dummySpellData
-        ClassicCastbars:DisplayCastbar(castbar, unitID)
-    end
-end
-
 function TestMode:SetCastbarMovable(unitID, parent)
     local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
     if not parentFrame then
@@ -115,7 +111,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.tooltip:SetText(L.TEST_MODE_DRAG)
     castbar.tooltip:Show()
 
-    -- Note: we use OnMouseX instead of OnDragX as it's more accurate
+    -- Note: we use OnMouseX instead of OnDragX as it's more precise when dragging small distances
     castbar:SetScript("OnMouseDown", castbar.StartMoving)
     castbar:SetScript("OnMouseUp", OnDragStop)
 
@@ -171,8 +167,8 @@ function TestMode:SetCastbarImmovable(unitID)
     castbar.unitID = nil
     castbar.parent = nil
     castbar.isTesting = nil
-    castbar:EnableMouse(false)
     castbar.holdTime = 0
+    castbar:EnableMouse(false)
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)

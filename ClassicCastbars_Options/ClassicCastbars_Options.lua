@@ -481,15 +481,15 @@ local function GetOptionsTable()
                 end,
             },
 
+            -- Character specific savedvariables
             usePerCharacterSettings = {
-                order = 8,
+                order = 7,
                 width = 2,
+                type = "toggle",
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,
-                type = "toggle",
-                confirm = function()
-                    return L.REQUIRES_RESTART
-                end,
+                confirm = true,
+                confirmText = L.REQUIRES_RESTART,
                 get = function()
                     return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
                 end,

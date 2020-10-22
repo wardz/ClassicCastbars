@@ -60,14 +60,14 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
             name = format(name, strmatch(unitID, "%d+")) -- add unit index to unitframe name
         end
 
-        local frame = _G[name]
-        if frame then
+        local unitFrame = _G[name]
+        if unitFrame then
             if unitType == "party" then
-                return _G[name], name
+                return unitFrame, name
             end
 
-            if frame:IsVisible() then -- unit frame exists and also is in use
-                return _G[name], name
+            if unitFrame:IsVisible() then -- unit frame exists and also is in use (for party we need to ignore this check)
+                return unitFrame, name
             end
         end
     end

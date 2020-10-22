@@ -1,28 +1,28 @@
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
+
 local activeGUIDs = {} -- unitID to unitGUID mappings
 local activeTimers = {} -- active cast data
 local activeFrames = {} -- visible castbar frames
+
 local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
 local npcCastUninterruptibleCache = {}
 
 if not _G.WOW_PROJECT_ID or (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) then
-    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW patch 1.13.x.|r")
+    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW.|r")
 end
 
-local addon = CreateFrame("Frame")
+local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
-
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 addon.activeTimers = activeTimers
 namespace.addon = addon
-ClassicCastbars = addon -- global ref for ClassicCastbars_Options
 
 -- upvalues for speed
 local strsplit = _G.string.split
@@ -211,7 +211,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
         end
     end
 
-    -- just nil previous values to avoid overhead of wiping table
+    -- just nil previous values to avoid overhead of wiping() table
     cast.origIsUninterruptibleValue = nil
     cast.hasCastSlowModified = nil
     cast.hasPushbackImmuneModifier = nil
@@ -376,11 +376,10 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
-    if ClassicCastbarsDB.version == "11" then
+    -- Delete some old invalid settings
+    if ClassicCastbarsDB.version and tonumber(ClassicCastbarsDB.version) <= 19 then
         ClassicCastbarsDB.party.position = nil
-    elseif ClassicCastbarsDB.version == "12" then
         ClassicCastbarsDB.player = nil
-    elseif ClassicCastbarsDB.version == "18" or ClassicCastbarsDB.version == "19" then
         ClassicCastbarsDB.npcCastUninterruptibleCache = {}
     end
 

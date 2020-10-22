@@ -26,7 +26,6 @@ Type `/castbar` or go to `Escape -> Interface Options -> AddOns -> ClassicCastba
   `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.  
   You will also need to manually install the libs for ClassicCastbars_Options. See "Externals" in `.pkgmeta` file.
 
-
 ## License
 
 Copyright (C) 2019 Wardz | [MIT License](https://opensource.org/licenses/MIT)

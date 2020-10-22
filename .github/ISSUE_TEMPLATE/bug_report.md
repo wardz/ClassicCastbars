@@ -21,4 +21,4 @@ assignees: ''
 **Does the issue still occur when all addons except ClassicCastbars are disabled?**
 
 
-**Any additional info? If you play on a non English client, please include your locale:**
+**Any additional info? If you play on a non-english client, please include your locale type:**

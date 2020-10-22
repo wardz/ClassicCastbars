@@ -17,7 +17,7 @@ local framesCreated = 0
 local framesActive = 0
 
 function PoolManager:AcquireFrame()
-    if framesCreated >= 300 then return end -- should never happen
+    if framesCreated >= 256 then return end -- should never happen
 
     local frame, isNew = framePool:Acquire()
     framesActive = framesActive + 1
