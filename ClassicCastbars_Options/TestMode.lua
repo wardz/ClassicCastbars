@@ -125,7 +125,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.Timer:SetText("0.75")
     castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
 
-    if IsModifierKeyDown() then
+    if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
         castbar._data.isUninterruptible = true
     else
         castbar._data.isUninterruptible = false
@@ -145,11 +145,13 @@ function TestMode:SetCastbarMovable(unitID, parent)
 		castbar.holdTime = 0
         castbar.fadeOut = nil
         castbar.flash = nil
-        if IsModifierKeyDown() then
+
+        if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
             castbar:SetStatusBarColor(castbar.nonInterruptibleColor:GetRGB())
         else
             castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
         end
+
         castbar:SetAlpha(1)
         castbar:Show()
     else
