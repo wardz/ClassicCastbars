@@ -5,9 +5,9 @@ TestMode.isTesting = {}
 local dummySpellData = {
     spellName = GetSpellInfo(118),
     icon = GetSpellTexture(118),
-    maxValue = 10,
+    maxValue = 10.0,
     timeStart = GetTime(),
-    endTime = GetTime() + 10,
+    endTime = GetTime() + 10.0,
     isChanneled = false,
 }
 
@@ -120,10 +120,11 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.unitID = unitID
     castbar.isTesting = true
 
-    castbar:SetMinMaxValues(1, 10)
-    castbar:SetValue(5)
-    castbar.Timer:SetText("0.75")
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (5 / 10) * castbar:GetWidth(), 0)
+    local maxValue = castbar._data.maxValue
+    castbar:SetMinMaxValues(1, maxValue)
+    castbar:SetValue(maxValue / 2)
+    castbar.Timer:SetFormattedText("%.1f", maxValue / 2)
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (((maxValue / 2) / maxValue) * castbar:GetWidth()) - 6, 0)
 
     if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
         castbar._data.isUninterruptible = true
