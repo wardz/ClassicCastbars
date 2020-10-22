@@ -115,7 +115,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar:SetScript("OnMouseDown", castbar.StartMoving)
     castbar:SetScript("OnMouseUp", OnDragStop)
 
-    castbar._data = dummySpellData -- Set test data for :DisplayCastbar()
+    castbar._data = CopyTable(dummySpellData) -- Set test data for :DisplayCastbar()
     castbar.parent = parentFrame
     castbar.unitID = unitID
     castbar.isTesting = true
