@@ -704,23 +704,21 @@ addon:SetScript("OnUpdate", function(self, elapsed)
     -- Check if unit is moving to stop castbar, thanks to Cordankos for this idea
     refresh = refresh - elapsed
     if refresh < 0 then
-        if next(activeGUIDs) then
-            for unitID, unitGUID in next, activeGUIDs do
-                if unitID ~= "focus" then
-                    local cast = activeTimers[unitGUID]
-                    -- Only stop cast for players since some mobs runs while casting, also because
-                    -- of lag we have to only stop it if the cast has been active for atleast 0.25 sec
-                    if cast and cast.isPlayer and currTime - cast.timeStart > 0.25 then
-                        if not castStopBlacklist[cast.spellName] and (GetUnitSpeed(unitID) ~= 0 or IsFalling(unitID)) then
-                            local castAlmostFinishied = ((currTime - cast.timeStart) > cast.maxValue - 0.1)
-                            -- due to lag its possible that the cast is successfuly casted but still shows interrupted
-                            -- unless we ignore the last few miliseconds here
-                            if not castAlmostFinishied then
-                                if not cast.isChanneled then
-                                    cast.isFailed = true
-                                end
-                                self:DeleteCast(unitGUID, nil, nil, cast.isChanneled)
+        for unitID, castbar in next, activeFrames do
+            if unitID ~= "focus" then
+                local cast = castbar._data
+                -- Only stop cast for players since some mobs runs while casting, also because
+                -- of lag we have to only stop it if the cast has been active for atleast 0.15 sec
+                if cast and cast.isPlayer and currTime - cast.timeStart > 0.15 then
+                    if not castStopBlacklist[cast.spellName] and (GetUnitSpeed(unitID) ~= 0 or IsFalling(unitID)) then
+                        local castAlmostFinishied = ((currTime - cast.timeStart) > cast.maxValue - 0.1)
+                        -- due to lag its possible that the cast is successfuly casted but still shows interrupted
+                        -- unless we ignore the last few miliseconds here
+                        if not castAlmostFinishied then
+                            if not cast.isChanneled then
+                                cast.isFailed = true
                             end
+                            self:DeleteCast(castbar._data.unitGUID, nil, nil, cast.isChanneled)
                         end
                     end
                 end
@@ -749,7 +747,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
                 -- slightly adjust color of the castbar when its not 100% sure if the cast is casted or failed
-                -- (gotta put it here to run before fadeout anim)
+                -- (gotta put it here to run before fadeout anim but in the future we should move this into Frames.lua)
                 if not cast.isUnknownState and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                     castbar.Spark:SetAlpha(0)
                     if not cast.isChanneled then
