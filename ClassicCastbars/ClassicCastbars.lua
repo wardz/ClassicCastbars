@@ -99,8 +99,9 @@ function addon:CheckCastModifiers(unitID, cast)
 
     -- Buffs
     local libCD = LibStub and LibStub("LibClassicDurations", true)
+    local GetUnitAura = libCD and libCD.UnitAuraDirect or UnitAura
     for i = 1, 32 do
-        local name = libCD and libCD.UnitAuraDirect(unitID, i, "HELPFUL") or not libCD and UnitAura(unitID, i, "HELPFUL")
+        local name = GetUnitAura(unitID, i, "HELPFUL")
         if not name then break end -- no more buffs
 
         local modifier = castModifiers[name]
