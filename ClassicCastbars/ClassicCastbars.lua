@@ -402,7 +402,7 @@ function addon:PLAYER_LOGIN()
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT -- Font here only works for certain locales
         self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
-        self.db.npcCastUninterruptibleCache = {} -- Spell names are locale dependent
+        self.db.npcCastUninterruptibleCache = CopyTable(namespace.defaultConfig.npcCastUninterruptibleCache)
     end
 
     -- config is not needed anymore if options are not loaded
