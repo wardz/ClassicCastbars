@@ -22,6 +22,7 @@ addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 addon.activeTimers = activeTimers
+addon.npcCastUninterruptibleCache = npcCastUninterruptibleCache
 namespace.addon = addon
 
 -- upvalues for speed
@@ -57,7 +58,7 @@ local DIVINE_PROTECTION = GetSpellInfo(498)
 local ANTI_MAGIC_SHIELD = GetSpellInfo(24021)
 
 function addon:GetUnitType(unitID)
-    local unit = gsub(unitID or "", "%d", "")
+    local unit = gsub(unitID or "", "%d", "") -- remove numbers
     if unit == "nameplate-testmode" then
         unit = "nameplate"
     elseif unit == "party-testmode" then
