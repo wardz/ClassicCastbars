@@ -1,3 +1,10 @@
+v1.3.13:
+- Fix uninterruptible cast data being nil until a reload ui when switching game locale.
+- Resetting addon settings will no longer wipe learned uninterruptible cast data.
+- Minor code cleanup and performance improvements.
+- Update libraries.
+
+
 v1.3.12:
 - More improvements for uninterruptible cast data in AQ.
 - Set default Arcane Explosion cast time to 1.0s instead of 1.5s.
@@ -7,6 +14,7 @@ v1.3.12:
 
 v1.3.11:
 - Improvements for uninterruptible cast data in AQ and Silithus.
+
 
 v1.3.10:
 - Fix horizontal text justification for text alignment option. Any custom XY offsets might need to be re-adjusted.
