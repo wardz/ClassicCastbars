@@ -525,4 +525,7 @@ SLASH_CLASSICCASTBARS3 = "/classiccastbars"
 SLASH_CLASSICCASTBARS4 = "/classicastbars"
 SlashCmdList["CLASSICCASTBARS"] = function()
     LibStub("AceConfigDialog-3.0"):Open("ClassicCastbars")
+    if LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"] then
+        LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("Buy me a coffee: https://paypal.me/castbar")
+    end
 end
