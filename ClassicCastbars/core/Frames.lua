@@ -370,11 +370,6 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.Timer:SetFontObject("SystemFont_Shadow_Small")
         CastingBarFrame:HookScript("OnUpdate", function(frame)
             if db.enabled and db.showTimer then
-                local spellText = frame.Text and frame.Text:GetText()
-                if spellText then
-                    frame.Timer:SetPoint("RIGHT", CastingBarFrame, (spellText:len() >= 19) and 30 or -6, 0)
-                end
-
                 if frame.fadeOut or (not frame.casting and not frame.channeling) then
                     -- just show no text at zero, the numbers looks kinda weird when Flash animation is playing
                     return frame.Timer:SetText("")
@@ -385,6 +380,12 @@ function addon:SkinPlayerCastbar()
                 else
                     frame.Timer:SetFormattedText("%.1f", frame.value)
                 end
+            end
+        end)
+
+        hooksecurefunc(CastingBarFrame.Text, "SetText", function(_, text)
+            if text then
+                CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, (text:len() >= 19) and 30 or -6, 0)
             end
         end)
     end
