@@ -1,8 +1,9 @@
 v1.3.13:
 - Fix uninterruptible cast data being nil until a reload ui when switching game locale.
+- Fix testmode sometimes requiring double button press when clicked initially without having a target.
 - Resetting addon settings will no longer wipe learned uninterruptible cast data.
 - Minor code cleanup and performance improvements.
-- Update libraries.
+- Update Ace3 libraries.
 
 
 v1.3.12:
