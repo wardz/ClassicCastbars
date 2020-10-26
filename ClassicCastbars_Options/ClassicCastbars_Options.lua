@@ -34,6 +34,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         return not ClassicCastbars.db[unitID].enabled
     end
 
+    local function GetStatusColoredEnableText(unit)
+        if ClassicCastbars.db[unit].enabled then
+            return "|cFF20C000" .. L.TOGGLE_CASTBAR .. "|r"
+        else
+            return "|cFFFF0000" .. L.TOGGLE_CASTBAR .. "|r"
+        end
+    end
+
     return {
         name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
@@ -58,7 +66,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     -- or else you have to set a new 'get' and 'set' func
                     enabled = {
                         order = 1,
-                        name = L.TOGGLE_CASTBAR,
+                        name = GetStatusColoredEnableText(unitID),
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
                         width = "full", -- these have to be full to not truncate text in non-english locales
                         type = "toggle",
