@@ -360,6 +360,10 @@ function addon:SkinPlayerCastbar()
     local db = self.db.player
     if not db.enabled then return end
 
+    if not CastingBarFrame:IsEventRegistered("UNIT_SPELLCAST_START") then
+        print("|cFFFF0000[ClassicCastbars] Incompatibility detected for player castbar. You most likely have another addon disabling the Blizzard castbar.|r")
+    end
+
     if not CastingBarFrame.Timer then
         CastingBarFrame.Timer = CastingBarFrame:CreateFontString(nil, "OVERLAY")
         CastingBarFrame.Timer:SetTextColor(1, 1, 1)
