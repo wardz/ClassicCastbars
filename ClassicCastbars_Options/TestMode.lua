@@ -83,11 +83,12 @@ function TestMode:ToggleCastbarMovable(unitID)
             self:UnregisterEvent("PLAYER_TARGET_CHANGED")
         end
     else
-        self:SetCastbarMovable(unitID)
-        self.isTesting[unitID] = true
+        if self:SetCastbarMovable(unitID) then
+            self.isTesting[unitID] = true
 
-        if ClassicCastbars.db.nameplate.enabled and unitID == "nameplate-testmode" then
-            self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            if ClassicCastbars.db.nameplate.enabled and unitID == "nameplate-testmode" then
+                self:RegisterEvent("PLAYER_TARGET_CHANGED")
+            end
         end
     end
 end
@@ -96,9 +97,9 @@ function TestMode:SetCastbarMovable(unitID, parent)
     local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
     if not parentFrame then
         if unitID == "target" or unitID == "nameplate-testmode" then
-            print(_G.ERR_GENERIC_NO_TARGET)
+            print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_GENERIC_NO_TARGET))
         end
-        return
+        return false
     end
 
     local castbar = ClassicCastbars:GetCastbarFrame(unitID)
@@ -158,6 +159,8 @@ function TestMode:SetCastbarMovable(unitID, parent)
     else
         ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
+
+    return true
 end
 
 function TestMode:SetCastbarImmovable(unitID)
