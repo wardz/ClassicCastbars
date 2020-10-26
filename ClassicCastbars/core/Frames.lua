@@ -188,7 +188,7 @@ local textureFrameLevels = {
 function addon:SetLSMBorders(castbar, cast, db)
     -- Create new frame to contain our LSM backdrop
     if not castbar.BorderFrameLSM then
-        castbar.BorderFrameLSM = CreateFrame("Frame", nil, castbar)
+        castbar.BorderFrameLSM = CreateFrame("Frame", nil, castbar, _G.BackdropTemplateMixin and "BackdropTemplate")
         castbar.BorderFrameLSM:SetPoint("TOPLEFT", castbar, -2, 2)
         castbar.BorderFrameLSM:SetPoint("BOTTOMRIGHT", castbar, 2, -2)
     end
