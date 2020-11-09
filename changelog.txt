@@ -1,3 +1,8 @@
+v1.3.14:
+- Set correct cast time for Kel'Thuzad's Frostbolt.
+- Possible fix for player castbar not applying custom colors correctly for some users.
+
+
 v1.3.13:
 - Fix uninterruptible cast data being nil until a reload ui when switching game locale.
 - Fix testmode sometimes requiring double button press when clicked initially without having a target.
