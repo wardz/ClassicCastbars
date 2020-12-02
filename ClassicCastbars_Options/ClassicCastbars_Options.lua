@@ -167,6 +167,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         name = L.WIDTH,
                         desc = L.WIDTH_TOOLTIP,
+                        width = 2,
                         type = "range",
                         min = 1,
                         max = 500,
@@ -177,45 +178,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         name = L.HEIGHT,
                         desc = L.HEIGHT_TOOLTIP,
+                        width = 2,
                         type = "range",
                         min = 1,
                         max = 200,
                         step = 1,
                         bigStep = 10,
-                    },
-                    castFontSize = {
-                        order = 3,
-                        name = L.FONT_SIZE,
-                        desc = L.FONT_SIZE_TOOLTIP,
-                        type = "range",
-                        width = "double",
-                        min = 1,
-                        max = 50,
-                        bigStep = 1,
-                    },
-                    textPositionX = {
-                        order = 4,
-                        name = L.TEXT_POS_X,
-                        desc = L.POSXY_TOOLTIP,
-                        type = "range",
-                        min = -2000,
-                        max = 2000,
-                        bigStep = 1,
-                    },
-                    textPositionY = {
-                        order = 5,
-                        name = L.TEXT_POS_Y,
-                        desc = L.POSXY_TOOLTIP,
-                        type = "range",
-                        min = -2000,
-                        max = 2000,
-                        bigStep = 1,
-                    },
-                    textPoint = {
-                        order = 6,
-                        name = L.TEXT_POINT,
-                        type = "select",
-                        values = TEXT_POINTS,
                     },
                 },
             },
@@ -296,47 +264,117 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 end,
 
                 args = {
+                    groupCastBarHeader = {
+                        order = 0,
+                        type = "header",
+                        name = L.CASTBAR_COLORS,
+                    },
                     borderColor = {
                         name = L.BORDER_COLOR,
                         order = 1,
+                        width = 1.2,
                         hasAlpha = true,
                         type = "color",
                     },
                     textColor = {
                         name = L.TEXT_COLOR,
                         order = 2,
-                        hasAlpha = true,
-                        type = "color",
-                    },
-                    statusColor = {
-                        name = L.STATUS_COLOR,
-                        order = 3,
-                        hasAlpha = true,
-                        type = "color",
-                    },
-                    statusColorFailed = {
-                        name = L.STATUS_FAILED_COLOR,
-                        order = 3,
-                        hasAlpha = true,
-                        type = "color",
-                    },
-                    statusColorChannel = {
-                        name = L.STATUS_CHANNEL_COLOR,
-                        order = 4,
+                        width = 1.2,
                         hasAlpha = true,
                         type = "color",
                     },
                     statusBackgroundColor = {
                         name = L.STATUS_BG_COLOR,
+                        order = 3,
+                        width = 1.2,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    spacer = {
                         order = 5,
+                        type = "description",
+                        name = "\n\n\n",
+                    },
+                    groupCastFillHeader = {
+                        order = 6,
+                        type = "header",
+                        name = "Cast Fill Colors", -- TODO: localize
+                    },
+                    statusColor = {
+                        name = L.STATUS_COLOR,
+                        order = 7,
+                        width = 1.2,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColorFailed = {
+                        name = L.STATUS_FAILED_COLOR,
+                        order = 8,
+                        width = 1.2,
+                        hasAlpha = true,
+                        type = "color",
+                    },
+                    statusColorChannel = {
+                        name = L.STATUS_CHANNEL_COLOR,
+                        order = 9,
+                        width = 1.2,
                         hasAlpha = true,
                         type = "color",
                     },
                     statusColorUninterruptible ={
                         name = L.STATUS_UNINTERRUPTIBLE_COLOR,
-                        order = 6,
+                        order = 10,
+                        width = 1.2,
                         hasAlpha = true,
                         type = "color",
+                    },
+                },
+            },
+
+            ----------------------------------------------------
+            -- Castbar Font Options Tab
+            ----------------------------------------------------
+            fonts = {
+                order = 5,
+                name = "Castbar Text", -- TODO: localize
+                type = "group",
+                inline = false,
+                disabled = ModuleIsDisabled,
+
+                args = {
+                    castFontSize = {
+                        order = 3,
+                        name = L.FONT_SIZE,
+                        desc = L.FONT_SIZE_TOOLTIP,
+                        type = "range",
+                        width = "double",
+                        min = 1,
+                        max = 50,
+                        bigStep = 1,
+                    },
+                    textPositionX = {
+                        order = 4,
+                        name = L.TEXT_POS_X,
+                        desc = L.POSXY_TOOLTIP,
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 1,
+                    },
+                    textPositionY = {
+                        order = 5,
+                        name = L.TEXT_POS_Y,
+                        desc = L.POSXY_TOOLTIP,
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 1,
+                    },
+                    textPoint = {
+                        order = 6,
+                        name = L.TEXT_POINT,
+                        type = "select",
+                        values = TEXT_POINTS,
                     },
                 },
             },
@@ -345,7 +383,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             -- Castbar Textures Options Tab
             ----------------------------------------------------
             sharedMedia = {
-                order = 5,
+                order = 6,
                 name = L.CASTBAR_TEXTURE_FONT,
                 type = "group",
                 inline = false,
@@ -370,8 +408,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
-                    castStatusBar = {
+                    spacer1 = {
                         order = 2,
+                        type = "description",
+                        name = "\n\n",
+                    },
+                    castStatusBar = {
+                        order = 3,
                         width = "double",
                         type = "select",
                         dialogControl = "LSM30_Statusbar",
@@ -386,8 +429,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
+                    spacer2 = {
+                        order = 4,
+                        type = "description",
+                        name = "\n\n",
+                    },
                     castBorder = {
-                        order = 3,
+                        order = 5,
                         width = "double",
                         type = "select",
                         dialogControl = "LSM30_Border",
@@ -402,8 +450,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
+                    spacer3 = {
+                        order = 6,
+                        type = "description",
+                        name = "\n\n",
+                    },
                     frameLevel = {
-                        order = 4,
+                        order = 7,
                         name = L.FRAME_LEVEL,
                         desc = L.FRAME_LEVEL_DESC,
                         type = "range",
