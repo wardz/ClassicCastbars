@@ -411,11 +411,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         max = 99,
                         bigStep = 5,
                     },
-                    notes = {
-                        order = 5,
-                        type = "description",
-                        name = L.LSM_TEXTURE_NOTE,
-                    },
                 },
            },
 
@@ -437,9 +432,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = function() return not ClassicCastbars.db[unitID].enabled end,
                         func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitID) end,
                     },
-                    notes = {
+                    spacer = {
                         order = 2,
-                        name = unitID == "target" and L.TEST_TARGET_TOOLTIP or unitID == "nameplate" and L.TEST_PLATE_TOOLTIP or "",
+                        name = "\n",
                         type = "description",
                     },
                 },

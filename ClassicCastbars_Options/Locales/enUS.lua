@@ -44,9 +44,6 @@ L["ICON_SIZE"] = "Icon Size"
 L["ICON_SIZE_TOOLTIP"] = "Sets the size for the castbar spell icon."
 L["IGNORE_PARENT_ALPHA"] = "Ignore Parent Frame Alpha"
 L["IGNORE_PARENT_ALPHA_TOOLTIP"] = "Ignore transparency/alpha value inherited from castbars parent's frame."
-L["LSM_TEXTURE_NOTE"] = [=[
-
-Note: If you use a custom third-party texture/font and delete it later on from your PC, you'll need to manually reset the texture or font here for the addon to continue working.]=]
 L["NAMEPLATE"] = "Nameplate"
 L["PARTY"] = "Party"
 L["PER_CHARACTER"] = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tCharacter Specific Settings"
@@ -68,12 +65,6 @@ L["STATUS_UNINTERRUPTIBLE_COLOR"] = "Select Uninterruptible Fill Color"
 L["TARGET"] = "Target"
 L["TEST"] = "Toggle Testing"
 L["TEST_MODE_DRAG"] = "Test Mode - Drag To Move"
-L["TEST_PLATE_TOOLTIP"] = [=[Show the nameplate castbar for testing. You can drag the castbar to move it.
-You'll need to target someone and have the nameplate be visible to see the test castbar.
-]=]
-L["TEST_TARGET_TOOLTIP"] = [=[Show the target frame castbar for testing. You can drag the castbar to move it.
-You'll need to target someone first to see the test castbar.
-]=]
 L["TEXT_COLOR"] = "Select Text Color"
 L["TEXT_POINT"] = "Text Alignment"
 L["TEXT_POS_X"] = "Text Position X"
