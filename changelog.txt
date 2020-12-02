@@ -1,3 +1,9 @@
+v1.3.15:
+- Bump toc version for Classic patch 1.13.6.
+- Fix Lua error introduced in v1.3.13 when upgrading from old addon versions.
+- Minor tweaks to options panel. Font options are now moved into its own tab.
+
+
 v1.3.14:
 - Set correct cast time for Kel'Thuzad's Frostbolt.
 - Possible fix for player castbar not applying custom colors correctly for some users.
