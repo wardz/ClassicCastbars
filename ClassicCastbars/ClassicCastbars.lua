@@ -385,7 +385,9 @@ function addon:PLAYER_LOGIN()
 
     -- Delete some old invalid settings
     if ClassicCastbarsDB.version and tonumber(ClassicCastbarsDB.version) <= 19 then
-        ClassicCastbarsDB.party.position = nil
+        if ClassicCastbarsDB.party then
+            ClassicCastbarsDB.party.position = nil
+        end
         ClassicCastbarsDB.player = nil
         ClassicCastbarsDB.npcCastUninterruptibleCache = {}
     end
