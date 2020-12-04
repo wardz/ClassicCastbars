@@ -1,6 +1,7 @@
 ## Interface: 11306
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
+## Version: @project-version@
 ## Dependencies: ClassicCastbars
 
 Libs\LibStub\LibStub.lua
