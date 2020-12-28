@@ -1857,7 +1857,7 @@ namespace.castModifiers = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "25", -- settings version
+    version = "26", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -2108,4 +2108,15 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11729" .. GetSpellInfo(19452)] = true, -- Hive'Zora Hive Sister Toxic Spit
     ["15323" .. GetSpellInfo(26381)] = true, -- Hive'Zara Sandstalker Burrow
     ["15263" .. GetSpellInfo(785)] = true, -- The Prophet Skeram True Fulfillment
+    ["15979" .. GetSpellInfo(28615)] = true, -- Tomb Horror Spike Volley
+    ["15979" .. GetSpellInfo(28614)] = true, -- Tomb Horror Pointy Spike
+    ["15989" .. GetSpellInfo(28524)] = true, -- Sapphiron Frost Breath
+    ["16017" .. GetSpellInfo(27794)] = true, -- Patchwork Golem Cleave
+    ["15928" .. GetSpellInfo(28089)] = true, -- Thaddius Polarity Shift
+    ["16168" .. GetSpellInfo(28995)] = true, -- Stoneskin Gargoyle Stoneskin
+    ["16446" .. GetSpellInfo(28995)] = true, -- Plagued Gargoyle Stoneskin
+    ["16146" .. GetSpellInfo(17473)] = true, -- Death Knight Raise Dead
+    ["16368" .. GetSpellInfo(9081)] = true, -- Necropolis Acolyte Shadow Bolt Volley
+    ["15956" .. GetSpellInfo(28783)] = true, -- Anub'Rekhan Impale
+    ["16022" .. GetSpellInfo(16568)] = true, -- Surgical Assistant Mind Flay
 }
