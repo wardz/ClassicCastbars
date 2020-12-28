@@ -1375,6 +1375,7 @@ local crowdControls = {
     16922,      -- Improved Starfire
     19410,      -- Improved Concussive Shot
     12355,      -- Impact
+    28783,      -- Impale
     20170,      -- Seal of Justice Stun
     15269,      -- Blackout
     18093,      -- Pyroclasm
