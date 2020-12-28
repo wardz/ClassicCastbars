@@ -1,3 +1,7 @@
+v1.3.16:
+- Improvements for cast data in Naxxramas.
+
+
 v1.3.15:
 - Bump toc version for Classic patch 1.13.6.
 - Fix Lua error introduced in v1.3.13 when upgrading from old addon versions.
