@@ -1181,6 +1181,7 @@ local castSpellIDs = {
     --6358, -- Seduction Channel
 }
 
+local castSpellIDsLen = #castSpellIDs
 local counter, cursor = 0, 1
 local castedSpells = {}
 namespace.castedSpells = castedSpells
@@ -1189,7 +1190,7 @@ namespace.castedSpells = castedSpells
 local function BuildSpellNameToSpellIDTable()
     counter = 0
 
-    for i = cursor, #castSpellIDs do
+    for i = cursor, castSpellIDsLen do
         local spellName = GetSpellInfo(castSpellIDs[i])
         if spellName then
             castedSpells[spellName] = castSpellIDs[i]
@@ -1202,7 +1203,7 @@ local function BuildSpellNameToSpellIDTable()
         end
     end
 
-    if cursor < #castSpellIDs then
+    if cursor < castSpellIDsLen then
         C_Timer.After(2, BuildSpellNameToSpellIDTable)
     else
         castSpellIDs = nil
