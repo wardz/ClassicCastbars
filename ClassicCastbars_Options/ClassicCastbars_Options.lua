@@ -574,6 +574,6 @@ SLASH_CLASSICCASTBARS4 = "/classicastbars"
 SlashCmdList["CLASSICCASTBARS"] = function()
     LibStub("AceConfigDialog-3.0"):Open("ClassicCastbars")
     if LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"] then
-        LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("Buy me a coffee: https://paypal.me/castbar")
+        LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("https://www.curseforge.com/wow/addons/classiccastbars")
     end
 end
