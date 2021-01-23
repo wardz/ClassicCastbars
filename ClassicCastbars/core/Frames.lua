@@ -211,10 +211,13 @@ function addon:SetLSMBorders(castbar, cast, db)
 end
 
 function addon:SetCastbarFonts(castbar, cast, db)
-    local fontName, fontHeight = castbar.Text:GetFont()
-    if fontName ~= db.castFont or db.castFontSize ~= fontHeight then
-        castbar.Text:SetFont(db.castFont, db.castFontSize)
-        castbar.Timer:SetFont(db.castFont, db.castFontSize)
+    local fontName, fontHeight, fontFlags = castbar.Text:GetFont()
+    if fontName ~= db.castFont or db.castFontSize ~= fontHeight or db.textOutline ~= fontFlags then
+        castbar.Text:SetFont(db.castFont, db.castFontSize, db.textOutline)
+        castbar.Timer:SetFont(db.castFont, db.castFontSize, db.textOutline)
+
+        castbar.Text:SetShadowColor(0, 0, 0, db.textOutline == "" and 1 or 0)
+        castbar.Timer:SetShadowColor(0, 0, 0, db.textOutline == "" and 1 or 0)
     end
 
     local c = db.textColor
