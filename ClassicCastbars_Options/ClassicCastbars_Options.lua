@@ -306,7 +306,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     groupCastFillHeader = {
                         order = 6,
                         type = "header",
-                        name = "Cast Fill Colors", -- TODO: localize
+                        name = L.CAST_FILL_HEADER,
                     },
                     statusColor = {
                         name = L.STATUS_COLOR,
@@ -344,7 +344,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
             ----------------------------------------------------
             fonts = {
                 order = 5,
-                name = "Castbar Text", -- TODO: localize
+                name = L.CASTBAR_FONTS,
                 type = "group",
                 inline = false,
                 disabled = ModuleIsDisabled,
