@@ -1,3 +1,8 @@
+v1.3.17:
+- Add option for basic font outlines. (#45)
+- Improvements for cast data in Naxxramas.
+
+
 v1.3.16:
 - Improvements for cast data in Naxxramas.
 
