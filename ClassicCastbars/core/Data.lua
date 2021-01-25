@@ -762,7 +762,7 @@ local castSpellIDs = {
     10955, -- Shackle Undead
     11661, -- Shadow Bolt
     14871, -- Shadow Bolt Misfire
-    14887, -- Shadow Bolt Volley
+    22665, -- Shadow Bolt Volley
     22979, -- Shadow Flame
     28165, -- Shadow Guard
     22596, -- Shadow Mantle of the Dawn
