@@ -216,7 +216,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
                 cast.endTime = currTime + 2
             end
             -- HACK: force show 7s cast time for Sapphiron's Frost Breath
-            if npcID == "15989" and cast.spellID == 3131 then
+            if npcID == "15989" and (cast.spellID == 3131 or cast.spellID == 28524) then
                 cast.maxValue = 7
                 cast.endTime = currTime + 7
             end

@@ -403,6 +403,7 @@ local castSpellIDs = {
     16028, -- Freeze Rookery Egg - Prototype
     11836, -- Freeze Solid
     19755, -- Frightalon
+    28524, -- Frost Breath (Sapphiron version, has different name on Chinese clients)
     3131, -- Frost Breath
     23187, -- Frost Burn
     22594, -- Frost Mantle of the Dawn
