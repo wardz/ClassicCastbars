@@ -1143,7 +1143,8 @@ local castSpellIDs = {
     24420, -- Zandalar Signet of Serenity
     1050, -- Sacrifice
     22651, -- Sacrifice 2 (On German client this is named Opfern but other Sacrifice is named Opferung)
-    10181, -- Frostbolt (needs to be last for chinese clients, see issue #16)
+    28478, -- Frostbolt 2 (Has different spelling on Chinese clients)
+    10181, -- Frostbolt (Needs to be last for chinese clients, see issue #16)
 
     -- Channeled casts in random order. These are used to retrieve spell icon later on (namespace.channeledSpells only stores spell name)
     -- Commented out IDs are duplicates that also has a normal cast already listed above.
