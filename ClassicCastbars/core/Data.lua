@@ -2124,6 +2124,7 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["16146" .. GetSpellInfo(17473)] = true, -- Death Knight Raise Dead
     ["16368" .. GetSpellInfo(9081)] = true, -- Necropolis Acolyte Shadow Bolt Volley
     ["15956" .. GetSpellInfo(28783)] = true, -- Anub'Rekhan Impale
+    ["15956" .. GetSpellInfo(28786)] = true, -- Anub'Rekhan Locust Swarm
     ["16022" .. GetSpellInfo(16568)] = true, -- Surgical Assistant Mind Flay
     ["16021" .. GetSpellInfo(1397)] = true, -- Living Monstrosity Fear
     ["16021" .. GetSpellInfo(1339)] = true, -- Living Monstrosity Chain Lightning
@@ -2131,4 +2132,6 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["16215" .. GetSpellInfo(1467)] = true, -- Unholy Staff Arcane Explosion
     ["16452" .. GetSpellInfo(1467)] = true, -- Necro Knight Guardian Arcane Explosion
     ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
+    ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
+    ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
 }
