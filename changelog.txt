@@ -1,3 +1,7 @@
+v1.3.19:
+- Fix Sapphiron's Frost Breath not being tracked for non-english clients.
+
+
 v1.3.18:
 - Hopefully fix Kel'Thuzad's Frostbolt not being tracked for Chinese clients.
 - Minor improvements for cast data in Naxxramas.
