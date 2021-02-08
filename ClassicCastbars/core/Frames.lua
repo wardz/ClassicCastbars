@@ -420,7 +420,7 @@ function addon:SkinPlayerCastbar()
                 -- Color castbar on first OnShow triggered aswell with a small delay. Hopefully fixes an issue where other addons or scripts
                 -- can cause conflicts by overwriting our color values
                 addon.playerColorChangesRan = true
-                C_Timer.After(0.1, ColorPlayerCastbar)
+                C_Timer.After(0.3, ColorPlayerCastbar)
             end
         end)
 
