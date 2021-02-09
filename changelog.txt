@@ -1,3 +1,7 @@
+v1.3.20:
+- Minor hacky fix for player castbar color conflict with other addons.
+
+
 v1.3.19:
 - Fix Sapphiron's Frost Breath not being tracked for non-english clients.
 
