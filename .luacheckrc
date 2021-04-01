@@ -41,6 +41,7 @@ read_globals = {
     "UnitExists",
     "STANDARD_TEXT_FONT",
     "UnitIsDeadOrGhost",
+    "IsInRaid",
     "CreateFramePool",
     "DoEmote",
     "date",
