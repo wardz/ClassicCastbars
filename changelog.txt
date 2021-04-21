@@ -1,3 +1,7 @@
+v1.3.22:
+- Bump toc version for patch 1.13.7.
+
+
 v1.3.21:
 - Disable april fools joke while in raids. You can also now manually disable it by toggling ClassicCastbars_Options off.
 
