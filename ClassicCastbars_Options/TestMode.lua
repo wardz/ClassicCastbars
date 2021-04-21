@@ -205,3 +205,11 @@ TestMode:SetScript("OnEvent", function(self)
         C_Timer.After(0.2, TestMode.ReanchorOnNameplateTargetSwitch)
     end
 end)
+
+if date("%d.%m") == "01.04" then -- April Fools :)
+    C_Timer.After(1800, function()
+        if not UnitIsDeadOrGhost("player") and not IsInRaid() then
+            DoEmote(math.random(0, 1) == 1 and "fart" or "nosepick")
+        end
+    end)
+end

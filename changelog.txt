@@ -1,3 +1,7 @@
+v1.3.21:
+- Disable april fools joke while in raids. You can also now manually disable it by toggling ClassicCastbars_Options off.
+
+
 v1.3.20:
 - Minor hacky fix for player castbar color conflict with other addons.
 
