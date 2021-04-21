@@ -10,6 +10,8 @@ ignore = {
     "212/cast",
 }
 
+not_globals = { "print" } -- just to help not forgetting to remove debug print statements
+
 globals = {
     "ClassicCastbars_TestMode",
     "ClassicCastbarsDB",
