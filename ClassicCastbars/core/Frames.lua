@@ -432,6 +432,13 @@ function addon:SkinPlayerCastbar()
         hooksecurefunc("PlayerFrame_AttachCastBar", function()
             addon:SkinPlayerCastbar()
         end)
+
+        hooksecurefunc("PlayerFrame_AdjustAttachments", function()
+            if _G.PLAYER_FRAME_CASTBARS_SHOWN and not db.autoPosition then
+                CastingBarFrame:ClearAllPoints()
+                CastingBarFrame:SetPoint(db.position[1], UIParent, db.position[2], db.position[3])
+            end
+        end)
         CastingBarFrame.CC_isHooked = true
     end
 
@@ -456,7 +463,11 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame:ClearAllPoints()
         CastingBarFrame:SetPoint(db.position[1], UIParent, db.position[2], db.position[3])
     else
-        if not _G.PLAYER_FRAME_CASTBARS_SHOWN then
+        if _G.PLAYER_FRAME_CASTBARS_SHOWN then
+            CastingBarFrame.ignoreFramePositionManager = true
+            CastingBarFrame:ClearAllPoints()
+            PlayerFrame_AdjustAttachments()
+        else
             CastingBarFrame.ignoreFramePositionManager = false
             CastingBarFrame:ClearAllPoints()
             CastingBarFrame:SetPoint("BOTTOM", UIParent, 0, 150)
