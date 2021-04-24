@@ -1,3 +1,7 @@
+v1.3.23:
+- Fix incorrect anchoring for player castbar when the pet frame or autoPosition option is toggled.
+
+
 v1.3.22:
 - Bump toc version for patch 1.13.7.
 
