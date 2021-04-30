@@ -22,6 +22,7 @@ globals = {
 }
 
 read_globals = {
+    "PlayerFrame_AdjustAttachments",
     "IsModifierKeyDown",
     "IsMetaKeyDown",
     "LibStub",

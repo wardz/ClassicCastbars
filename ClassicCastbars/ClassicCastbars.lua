@@ -10,8 +10,7 @@ local npcCastTimeCache = {}
 local npcCastUninterruptibleCache = {}
 
 if not _G.WOW_PROJECT_ID or (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) then
-    -- luacheck: ignore
-    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW.|r")
+    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW.|r") -- luacheck: ignore
 end
 
 local addon = CreateFrame("Frame", "ClassicCastbars")
