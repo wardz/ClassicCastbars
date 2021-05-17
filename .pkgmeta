@@ -20,3 +20,4 @@ ignore:
   - release.sh
   - ClassicCastbars_Options/Libs/LibStub/LibStub.toc
   - ClassicCastbars_Options/Libs/LibStub/tests
+  - ClassicCastbars/ClassicCastbars_TBC.lua
