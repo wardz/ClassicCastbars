@@ -477,6 +477,8 @@ function addon:SkinPlayerCastbar()
     self:SetCastbarFonts(CastingBarFrame, nil, db)
 end
 
+--@version-classic@
+
 function addon:CreateOrUpdateSecureFocusButton(text)
     if not self.FocusButton then
         -- Create an invisible secure click trigger above the nonsecure castbar frame
@@ -583,3 +585,5 @@ function addon:SetFocusDisplay(text, unitID)
     self.FocusFrame.Text:SetText(isInCombat and text .. " (|cffff0000P|r)" or text)
     self.FocusFrame:SetAllPoints(activeFrames.focus)
 end
+
+--@end-version-classic@

@@ -1,6 +1,10 @@
 local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
+-------------------------------------------------------------------------------
+--@version-classic@
+-------------------------------------------------------------------------------
+
 local castSpellIDs = {
     25262, -- Abomination Spit
     24334, -- Acid Spit
@@ -1548,16 +1552,6 @@ C_Timer.After(11, function()
     crowdControls = nil
 end)
 
--- List of player interrupts that can lock out a school (not silences)
-namespace.playerInterrupts = {
-    [GetSpellInfo(2139)] = 1,  -- Counterspell
-    [GetSpellInfo(1766)] = 1,  -- Kick
-    [GetSpellInfo(8042)] = 1,  -- Earth Shock
-    [GetSpellInfo(19244)] = 1, -- Spell Lock
-    [GetSpellInfo(6552)] = 1,  -- Pummel
-    [GetSpellInfo(16979)] = 1, -- Feral Charge
-}
-
 -- Skip pushback calculation for these spells since they
 -- have chance to ignore pushback when talented, or is always immune.
 namespace.pushbackBlacklist = {
@@ -1577,59 +1571,6 @@ namespace.pushbackBlacklist = {
     [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
     [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
     [GetSpellInfo(20589)] = 1,      -- Escape Artist
-}
-
--- Player spells that can't be interrupted
-namespace.uninterruptibleList = {
-    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
-    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
-    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
-    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
-    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
-    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
-    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
-    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
-    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
-    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
-    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
-    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
-    [GetSpellInfo(23041)] = 1,      -- Call Anathema
-    [GetSpellInfo(20589)] = 1,      -- Escape Artist
-    [GetSpellInfo(20549)] = 1,      -- War Stomp
-    [GetSpellInfo(1510)] = 1,       -- Volley
-    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
-    [GetSpellInfo(11605)] = 1,      -- Slam
-    [GetSpellInfo(6461)] = 1,       -- Pick Lock
-    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
-    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
-    [GetSpellInfo(2480)] = 1,       -- Shoot Bow
-    [GetSpellInfo(7918)] = 1,       -- Shoot Gun
-    [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
-    [GetSpellInfo(11202)] = 1,      -- Crippling Poison
-    [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
-    [GetSpellInfo(2835)] = 1,       -- Deadly Poison
-    [GetSpellInfo(2837)] = 1,       -- Deadly Poison II
-    [GetSpellInfo(11355)] = 1,      -- Deadly Poison III
-    [GetSpellInfo(11356)] = 1,      -- Deadly Poison IV
-    [GetSpellInfo(25347)] = 1,      -- Deadly Poison V
-    [GetSpellInfo(8681)] = 1,       -- Instant Poison
-    [GetSpellInfo(8686)] = 1,       -- Instant Poison II
-    [GetSpellInfo(8688)] = 1,       -- Instant Poison III
-    [GetSpellInfo(11338)] = 1,      -- Instant Poison IV
-    [GetSpellInfo(11339)] = 1,      -- Instant Poison V
-    [GetSpellInfo(11343)] = 1,      -- Instant Poison VI
-    [GetSpellInfo(5761)] = 1,       -- Mind-numbing Poison
-    [GetSpellInfo(8693)] = 1,       -- Mind-numbing Poison II
-    [GetSpellInfo(11399)] = 1,      -- Mind-numbing Poison III
-    [GetSpellInfo(13227)] = 1,      -- Wound Poison
-    [GetSpellInfo(13228)] = 1,      -- Wound Poison II
-    [GetSpellInfo(13229)] = 1,      -- Wound Poison III
-    [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
-
-    -- these are technically uninterruptible but breaks on dmg
-    [GetSpellInfo(22999)] = 1,      -- Defibrillate
-    [GetSpellInfo(746)] = 1,        -- First Aid
-    [GetSpellInfo(20577)] = 1,      -- Cannibalize
 }
 
 -- Casts that should be stopped on damage received
@@ -1857,9 +1798,76 @@ namespace.castModifiers = {
     },
 }
 
+-------------------------------------------------------------------------------
+--@end-version-classic@
+-------------------------------------------------------------------------------
+
+-- List of player interrupts that can lock out a school (not silences)
+namespace.playerInterrupts = {
+    [GetSpellInfo(2139)] = 1,  -- Counterspell
+    [GetSpellInfo(1766)] = 1,  -- Kick
+    [GetSpellInfo(8042)] = 1,  -- Earth Shock
+    [GetSpellInfo(19244)] = 1, -- Spell Lock
+    [GetSpellInfo(6552)] = 1,  -- Pummel
+    [GetSpellInfo(16979)] = 1, -- Feral Charge
+}
+
+-- Player spells that can't be interrupted
+namespace.uninterruptibleList = {
+    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
+    [GetSpellInfo(23041)] = 1,      -- Call Anathema
+    [GetSpellInfo(20589)] = 1,      -- Escape Artist
+    [GetSpellInfo(20549)] = 1,      -- War Stomp
+    [GetSpellInfo(1510)] = 1,       -- Volley
+    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
+    [GetSpellInfo(11605)] = 1,      -- Slam
+    [GetSpellInfo(6461)] = 1,       -- Pick Lock
+    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
+    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
+    [GetSpellInfo(2480)] = 1,       -- Shoot Bow
+    [GetSpellInfo(7918)] = 1,       -- Shoot Gun
+    [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
+    [GetSpellInfo(11202)] = 1,      -- Crippling Poison
+    [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
+    [GetSpellInfo(2835)] = 1,       -- Deadly Poison
+    [GetSpellInfo(2837)] = 1,       -- Deadly Poison II
+    [GetSpellInfo(11355)] = 1,      -- Deadly Poison III
+    [GetSpellInfo(11356)] = 1,      -- Deadly Poison IV
+    [GetSpellInfo(25347)] = 1,      -- Deadly Poison V
+    [GetSpellInfo(8681)] = 1,       -- Instant Poison
+    [GetSpellInfo(8686)] = 1,       -- Instant Poison II
+    [GetSpellInfo(8688)] = 1,       -- Instant Poison III
+    [GetSpellInfo(11338)] = 1,      -- Instant Poison IV
+    [GetSpellInfo(11339)] = 1,      -- Instant Poison V
+    [GetSpellInfo(11343)] = 1,      -- Instant Poison VI
+    [GetSpellInfo(5761)] = 1,       -- Mind-numbing Poison
+    [GetSpellInfo(8693)] = 1,       -- Mind-numbing Poison II
+    [GetSpellInfo(11399)] = 1,      -- Mind-numbing Poison III
+    [GetSpellInfo(13227)] = 1,      -- Wound Poison
+    [GetSpellInfo(13228)] = 1,      -- Wound Poison II
+    [GetSpellInfo(13229)] = 1,      -- Wound Poison III
+    [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
+
+    -- these are technically uninterruptible but breaks on dmg
+    [GetSpellInfo(22999)] = 1,      -- Defibrillate
+    [GetSpellInfo(746)] = 1,        -- First Aid
+    [GetSpellInfo(20577)] = 1,      -- Cannibalize
+}
+
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "27", -- settings version
+    version = "28", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -1998,6 +2006,39 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
     },
 
+    --[[arena = {
+        enabled = false,
+        width = 150,
+        height = 15,
+        iconSize = 16,
+        showBorderShield = true,
+        showTimer = false,
+        showIcon = true,
+        showSpark = true,
+        autoPosition = false,
+        castFont = _G.STANDARD_TEXT_FONT,
+        castFontSize = 10,
+        castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
+        castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
+        hideIconBorder = false,
+        position = { "TOPLEFT", 275, -260 },
+        iconPositionX = -5,
+        iconPositionY = 0,
+        borderColor = { 1, 1, 1, 1 },
+        statusColor = { 1, 0.7, 0, 1 },
+        statusColorFailed = { 1, 0, 0 },
+        statusColorChannel = { 0, 1, 0, 1 },
+        statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },
+        textColor = { 1, 1, 1, 1 },
+        textPositionX = 0,
+        textPositionY = 0,
+        textPoint = "CENTER",
+        textOutline = "",
+        frameLevel = 10,
+        statusBackgroundColor = { 0, 0, 0, 0.535 },
+        ignoreParentAlpha = false,
+    },]]
+
     player = {
         enabled = false,
         width = 190,
@@ -2033,7 +2074,7 @@ namespace.defaultConfig = {
 }
 
 -- NPC spells that can't be interrupted. (Sensible defaults, doesn't include all)
--- TODO: should prob load these async aswell, but will need to update pointers
+--@version-classic@
 namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["11981" .. GetSpellInfo(18500)] = true, -- Flamegor Wing Buffet
     ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
@@ -2137,3 +2178,4 @@ namespace.defaultConfig.npcCastUninterruptibleCache = {
     ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
     ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
 }
+--@end-version-classic@

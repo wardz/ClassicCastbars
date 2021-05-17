@@ -40,6 +40,40 @@ local anchors = {
         "CompactPartyFrameMember%d",
         "CompactRaidGroup1Member%d",
     },
+
+    --@version-bc@
+    focus = {
+        "SUFUnitfocus",
+        "XPerl_FocusportraitFrame",
+        "ElvUF_Focus",
+        "oUF_TukuiFocus",
+        "bfocusUnitFrame",
+        "DUF_FocusFrame",
+        "GwFocusUnitFrame",
+        "PitBull4_Frames_Focus",
+        "oUF_Focus",
+        "SUI_focusFrame",
+        "gUI4_UnitFocus",
+        "oUF_Adirelle_Focus",
+        "Stuf.units.focus",
+        "oUF_AftermathhFocus",
+        "LUFUnitfocus",
+        "oUF_LumenFocus",
+        "FocusFrame",
+    },
+
+    arena = {
+        "ElvUF_Arena%d",
+        "oUF_TukuiArena%d",
+        "barena%dUnitFrame",
+        "oUF_Arena%d",
+        "oUF_Adirelle_Arena%d",
+        "Stuf.units.arena%d",
+        "sArenaEnemyFrame%d",
+        "oUF_LumenArena%d",
+        "ArenaEnemyFrame%d",
+    },
+    --@end-version-bc@
 }
 
 local _G = _G
@@ -105,7 +139,7 @@ end
 
 local anchorCache = {
     player = UIParent,  -- special case for player/focus casting bar
-    focus = UIParent,
+    focus = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC) and UIParent or nil,
     target = nil, -- will be set later
 }
 

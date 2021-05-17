@@ -1,6 +1,8 @@
 ## Interface: 11307
+## Interface-Classic: 11307
+## Interface-BCC: 20501
 ## Title: ClassicCastbars
-## Notes: Adds castbars to various unitframes.
+## Notes: Adds modifiable castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
 ## SavedVariablesPerCharacter: ClassicCastbarsCharDB
 ## Author: Wardz
@@ -12,5 +14,10 @@
 core/PoolManager.lua
 core/AnchorManager.lua
 core/Data.lua
+#@version-classic@
 ClassicCastbars.lua
+#@end-version-classic@
+#@version-bc@
+#ClassicCastbars_TBC.lua
+#@end-version-bc@
 core/Frames.lua

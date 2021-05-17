@@ -34,6 +34,8 @@ local function OnDragStop(self)
     local unit = self.unitID
     if strfind(unit, "nameplate") then
         unit = "nameplate" -- make it match our DB key
+    elseif strfind(unit, "arena") then
+        unit = "arena"
     elseif strfind(unit, "party") then
         unit = "party"
     end
@@ -53,6 +55,8 @@ end
 function TestMode:OnOptionChanged(unitID)
     if unitID == "nameplate" then
         unitID = "nameplate-testmode"
+    elseif unitID == "arena" then
+        unitID = "arena-testmode"
     elseif unitID == "party" then
         unitID = "party-testmode"
     end
@@ -72,6 +76,8 @@ end
 function TestMode:ToggleCastbarMovable(unitID)
     if unitID == "nameplate" then
         unitID = "nameplate-testmode"
+    elseif unitID == "arena" then
+        unitID = "arena-testmode"
     elseif unitID == "party" then
         unitID = "party-testmode"
     end
@@ -133,7 +139,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
         castbar._data.isUninterruptible = false
     end
 
-    if unitID == "party-testmode" then
+    if unitID == "party-testmode" or unitID == "arena-testmode" then
         parentFrame:SetAlpha(1)
         parentFrame:Show()
     end
@@ -179,6 +185,11 @@ function TestMode:SetCastbarImmovable(unitID)
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
         if parentFrame and not UnitExists("party1") then
+            parentFrame:Hide()
+        end
+    elseif unitID == "arena-testmode" then
+        local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
+        if parentFrame and not UnitExists("arena1") then
             parentFrame:Hide()
         end
     end

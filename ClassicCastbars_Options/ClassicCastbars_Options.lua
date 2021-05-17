@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 local LSM = LibStub("LibSharedMedia-3.0")
 
+local isClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
+
 local TEXT_POINTS = {
     ["CENTER"] = "CENTER",
     ["RIGHT"] = "RIGHT",
@@ -78,7 +80,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
                         width = "full", -- these have to be full to not truncate text in non-english locales
                         type = "toggle",
-                        hidden = unitID == "focus",
+                        hidden = isClassic and unitID == "focus",
                         confirm = function()
                             return unitID == "player" and ClassicCastbars.db[unitID].enabled and L.REQUIRES_RESTART or false
                         end,
@@ -517,11 +519,12 @@ local function GetOptionsTable()
         name = "ClassicCastbars " .. GetAddOnMetadata("ClassicCastbars", "version"),
 
         args = {
-            target = CreateUnitTabGroup("target", L.TARGET, 1),
-            nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
-            party = CreateUnitTabGroup("party", L.PARTY, 3),
+            target = isClassic and CreateUnitTabGroup("target", L.TARGET, 1) or nil, -- temp disable these for TBC until we add support
+            nameplate = isClassic and CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2) or nil,
+            party = isClassic and CreateUnitTabGroup("party", L.PARTY, 3) or nil,
             player = CreateUnitTabGroup("player", L.PLAYER, 4),
-            focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
+            focus = isClassic and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
+            --arena = not isClassic and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
             resetAllSettings = {
                 order = 6,
@@ -545,6 +548,7 @@ local function GetOptionsTable()
                     ClassicCastbars_TestMode:OnOptionChanged("party")
                     ClassicCastbars_TestMode:OnOptionChanged("player")
                     ClassicCastbars_TestMode:OnOptionChanged("focus")
+                    ClassicCastbars_TestMode:OnOptionChanged("arena")
 
                     if shouldReloadUI then
                         ReloadUI()

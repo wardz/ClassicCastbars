@@ -9,10 +9,6 @@ local npcCastTimeCacheStart = {}
 local npcCastTimeCache = {}
 local npcCastUninterruptibleCache = {}
 
-if not _G.WOW_PROJECT_ID or (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) then
-    return print("|cFFFF0000[ERROR] ClassicCastbars only supports Classic WoW.|r") -- luacheck: ignore
-end
-
 local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:SetScript("OnEvent", function(self, event, ...)
@@ -422,6 +418,16 @@ function addon:PLAYER_LOGIN()
     if not IsAddOnLoaded("ClassicCastbars_Options") then
         self.defaultConfig = nil
         namespace.defaultConfig = nil
+    end
+
+    if _G.WOW_PROJECT_ID == (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) then
+        self.db.player.enabled = true
+        self.db.party.enabled = false
+        self.db.focus.enabled = false
+        self.db.target.enabled = false
+        self.db.nameplate.enabled = false
+        self.db.npcCastUninterruptibleCache = {}
+        print("Warning: ClassicCastbars is not yet supported for TBC, only the player's own castbar is modifiable for now.") -- luacheck: ignore
     end
 
     if self.db.player.enabled then
