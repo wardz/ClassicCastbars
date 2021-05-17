@@ -6,6 +6,8 @@ end
 ------------------------------
 -- EARLY PROTOTYPE STUFF, NOTHING HERE WORKS YET !!!
 
+-- luacheck: ignore
+
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
 local activeFrames = {}
