@@ -41,7 +41,7 @@ local anchors = {
         "CompactRaidGroup1Member%d",
     },
 
-    --@version-bc@
+    --@version-bcc@
     focus = {
         "SUFUnitfocus",
         "XPerl_FocusportraitFrame",
@@ -73,7 +73,7 @@ local anchors = {
         "oUF_LumenArena%d",
         "ArenaEnemyFrame%d",
     },
-    --@end-version-bc@
+    --@end-version-bcc@
 }
 
 local _G = _G
@@ -96,11 +96,11 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
 
         local unitFrame = _G[name]
         if unitFrame then
-            if unitType == "party" then
+            if unitType == "party" or unitType == "arena" then
                 return unitFrame, name
             end
 
-            if unitFrame:IsVisible() then -- unit frame exists and also is in use (for party we need to ignore this check)
+            if unitFrame:IsVisible() then -- unit frame exists and also is in use (for party/arena we need to ignore this check)
                 return unitFrame, name
             end
         end
@@ -157,13 +157,22 @@ function AnchorManager:GetAnchor(unitID)
         frame = GetNamePlateForUnit("target")
     elseif unitType == "party" or unitType == "party-testmode" then
         frame = GetPartyFrameForUnit(unitID)
-    else -- target
+    elseif unitType == "arena-testmode" then
+        frame = GetUnitFrameForUnit("arena", "arena1", true)
+    else -- target/focus
         frame = GetUnitFrameForUnit(unitType, unitID, count > 0)
     end
 
     if frame and unitType == "target" then
         anchors[unitID] = nil
         anchorCache[unitID] = frame
+    end
+
+    if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC then
+        if frame and unitType == "focus" then
+            anchors[unitID] = nil
+            anchorCache[unitID] = frame
+        end
     end
 
     return frame

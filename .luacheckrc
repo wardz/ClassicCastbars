@@ -19,10 +19,14 @@ globals = {
     "ClassicCastbars",
     "SlashCmdList",
     "CastingBarFrame",
+    "TargetFrameSpellBar",
+    "FocusFrameSpellBar",
 }
 
 read_globals = {
     "PlayerFrame_AdjustAttachments",
+    "ArenaEnemyFrames",
+    "LoadAddOn",
     "IsModifierKeyDown",
     "IsMetaKeyDown",
     "LibStub",

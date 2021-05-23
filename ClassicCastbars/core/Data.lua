@@ -1832,12 +1832,14 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(1510)] = 1,       -- Volley
     [GetSpellInfo(20904)] = 1,      -- Aimed Shot
     [GetSpellInfo(11605)] = 1,      -- Slam
-    [GetSpellInfo(6461)] = 1,       -- Pick Lock
+    [GetSpellInfo(1804)] = 1,       -- Pick Lock
     [GetSpellInfo(1842)] = 1,       -- Disarm Trap
     [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
+    --@version-classic@
     [GetSpellInfo(2480)] = 1,       -- Shoot Bow
     [GetSpellInfo(7918)] = 1,       -- Shoot Gun
     [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
+    --@end-version-classic@
     [GetSpellInfo(11202)] = 1,      -- Crippling Poison
     [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
     [GetSpellInfo(2835)] = 1,       -- Deadly Poison
@@ -1949,13 +1951,19 @@ namespace.defaultConfig = {
         showTimer = false,
         showIcon = true,
         showSpark = true,
-        autoPosition = false,
         castFont = _G.STANDARD_TEXT_FONT,
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         hideIconBorder = false,
-        position = { "TOPLEFT", 275, -260 },
+        --@version-classic@
+        autoPosition = false, -- luacheck: ignore
+        position = { "TOPLEFT", 275, -260 }, -- luacheck: ignore
+        --@end-version-classic@
+        --@version-bcc@
+        autoPosition = true,
+        position = { "CENTER", -19, -112 },
+        --@end-version-bcc@
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
@@ -2006,7 +2014,8 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
     },
 
-    --[[arena = {
+    --@version-bcc@
+    arena = {
         enabled = false,
         width = 150,
         height = 15,
@@ -2021,7 +2030,7 @@ namespace.defaultConfig = {
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         hideIconBorder = false,
-        position = { "TOPLEFT", 275, -260 },
+        position = { "CENTER", -149, -5 },
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
@@ -2037,7 +2046,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-    },]]
+    },
+    --@end-version-bcc@
 
     player = {
         enabled = false,

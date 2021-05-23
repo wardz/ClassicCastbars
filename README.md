@@ -24,7 +24,8 @@ Type `/castbar` or go to `Escape -> Interface Options -> AddOns -> ClassicCastba
   When forking the addon you should save the folder somewhere outside your WoW AddOns directory and
   instead have two symlinks inside the AddOns folder pointing to
   `ClassicCastbars/ClassicCastbars/` and `ClassicCastbars/ClassicCastbars_Options/`.
-  You will also need to manually install the libs for ClassicCastbars_Options. See "Externals" in `.pkgmeta` file.
+  As of TBC release, you now need to run the [BigWigs packager](https://github.com/BigWigsMods/packager) script after making changes to the code.
+  `./release.sh -d -l -z -g bcc` for TBC and `./release.sh -d -l -z -g classic` for Classic era.
 
 ## License
 

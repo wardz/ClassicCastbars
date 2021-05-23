@@ -1,3 +1,10 @@
+v1.4.0:
+- Add support for TBC (Make sure you download the correct file, classic and BC have seperate zips).
+  Note: This is the very first release for TBC pre-patch so expect minor bugs. Uninterruptible border shield is not yet supported but will be in the future.
+  Arena and party castbars are mostly untested and default off.
+  There's currently no way to distinguish between failed and successfully interrupted casts. (Will fix later)
+
+
 v1.3.23:
 - Fix incorrect anchoring for player castbar when the pet frame or autoPosition option is toggled.
 

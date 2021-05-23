@@ -20,9 +20,17 @@ local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
     for _, v in pairs({ statusbar:GetRegions() }) do
+        --@version-classic@
         if v.GetTexture and strfind(v:GetTexture() or "", "Color-") then
             return v
         end
+        --@end-version-classic@
+
+        --@version-bcc@
+        if v.GetTexture and strfind("UI-StatusBar", v:GetTexture() or "") then -- TODO: test on classic
+            return v
+        end
+        --@end-version-bcc@
     end
 end
 
@@ -343,15 +351,22 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
     end
 
     if castbar:GetAlpha() > 0 and castbar.fade then
-        castbar.fade:SetStartDelay(0) -- reset
-        if cast then
-            if cast.isInterrupted or cast.isFailed then
-                castbar.fade:SetStartDelay(0.5)
+        if not castbar.fade:IsPlaying() then
+            castbar.fade:SetStartDelay(0) -- reset
+            if cast then
+                if cast.isInterrupted or cast.isFailed then
+                    castbar.fade:SetStartDelay(0.5)
+                end
             end
-        end
 
-        castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
-        castbar.animationGroup:Play()
+            --@version-classic@
+            castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
+            --@end-version-classic@
+            --@version-bcc@
+            castbar.fade:SetDuration(0.6)
+            --@end-version-bcc@
+            castbar.animationGroup:Play()
+        end
     end
 end
 

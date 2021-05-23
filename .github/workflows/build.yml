@@ -28,7 +28,18 @@ jobs:
         uses: BigWigsMods/packager@master
         if: ${{ success() && github.event_name != 'pull_request' && contains(github.ref, 'tags/v') }}
         with:
-          args: -g classic
+          args: -g classic -w 24925
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+
+      - name: Create TBC Package
+        uses: BigWigsMods/packager@master
+        if: ${{ success() && github.event_name != 'pull_request' && contains(github.ref, 'tags/v') }}
+        with:
+          args: -g bcc
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}

@@ -87,6 +87,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
+                            ClassicCastbars:DisableBlizzardCastbar(unitID, value)
                             if unitID == "player" then
                                 if value == false then
                                     return ReloadUI()
@@ -117,7 +118,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.AUTO_POS_BAR,
                         desc = unitID ~= "player" and L.AUTO_POS_BAR_TOOLTIP or "",
                         type = "toggle",
-                        hidden = unitID == "nameplate" or unitID == "party" or unitID == "focus",
+                        hidden = unitID == "nameplate" or unitID == "party" or unitID == "arena",
                         disabled = ModuleIsDisabled,
                     },
                     showTimer = {
@@ -151,13 +152,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.IGNORE_PARENT_ALPHA_TOOLTIP,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
-                        hidden = unitID == "player" or unitID == "focus",
-                    },
-                    notes = {
-                        order = 9,
-                        hidden = unitID ~= "focus",
-                        name = "\n\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r",
-                        type = "description",
+                        hidden = unitID == "player",
                     },
                 },
             },
@@ -519,12 +514,12 @@ local function GetOptionsTable()
         name = "ClassicCastbars " .. GetAddOnMetadata("ClassicCastbars", "version"),
 
         args = {
-            target = isClassic and CreateUnitTabGroup("target", L.TARGET, 1) or nil, -- temp disable these for TBC until we add support
-            nameplate = isClassic and CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2) or nil,
-            party = isClassic and CreateUnitTabGroup("party", L.PARTY, 3) or nil,
+            target = CreateUnitTabGroup("target", L.TARGET, 1),
+            nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
+            party = CreateUnitTabGroup("party", L.PARTY, 3),
             player = CreateUnitTabGroup("player", L.PLAYER, 4),
-            focus = isClassic and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
-            --arena = not isClassic and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
+            focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
+            arena = not isClassic and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
             resetAllSettings = {
                 order = 6,

@@ -8,7 +8,6 @@
 ## Author: Wardz
 ## Version: @project-version@
 ## X-Curse-Project-ID: 322865
-## X-WoWI-ID: 24925
 ## X-Wago-ID: vEGPdkG1
 
 core/PoolManager.lua
@@ -17,7 +16,7 @@ core/Data.lua
 #@version-classic@
 ClassicCastbars.lua
 #@end-version-classic@
-#@version-bc@
-#ClassicCastbars_TBC.lua
-#@end-version-bc@
+#@version-bcc@
+ClassicCastbars_TBC.lua
+#@end-version-bcc@
 core/Frames.lua

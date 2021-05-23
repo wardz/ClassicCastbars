@@ -21,4 +21,7 @@ assignees: ''
 **Does the issue still occur when all addons except ClassicCastbars are disabled?**
 
 
+**Is this for Classic or TBC client?**
+
+
 **Any additional info? If you play on a non-english client, please include your locale type:**
