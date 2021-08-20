@@ -71,15 +71,15 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
             end
         end
     else -- for classic era or unknown parent frame
-    local auraRows = parentFrame.auraRows or 0
+        local auraRows = parentFrame.auraRows or 0
 
-    if parentFrame.buffsOnTop or auraRows <= 1 then
-        castbar:SetPoint("CENTER", parentFrame, -18, -75)
-    else
-        if castbar.BorderShield:IsShown() then
-            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -43 * auraRows), -150))
+        if parentFrame.buffsOnTop or auraRows <= 1 then
+            castbar:SetPoint("CENTER", parentFrame, -18, -75)
         else
-            castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -39 * auraRows), -150))
+            if castbar.BorderShield:IsShown() then
+                castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -43 * auraRows), -150))
+            else
+                castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -39 * auraRows), -150))
             end
         end
     end
