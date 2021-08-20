@@ -156,6 +156,48 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
+                    posX = {
+                        order = 9,
+                        name = "Position X",
+                        desc = "Position X",
+                        width = 2,
+                        type = "range",
+                        min = -999,
+                        max = 999,
+                        step = 1,
+                        bigStep = 10,
+                        hidden = unitID ~= "nameplate",
+                        get = function() return ClassicCastbars.db[unitID].position[2] end,
+                        set = function(_, value)
+                            ClassicCastbars.db[unitID].position[2] = value
+                            local bar = ClassicCastbars:GetCastbarFrame("nameplate-testmode")
+                            if bar then
+                                bar:SetPoint("CENTER", bar.parent, value, ClassicCastbars.db[unitID].position[3])
+                            end
+                        end,
+                    },
+                    posY = {
+                        order = 10,
+                        name = "Position Y",
+                        desc = "Position Y",
+                        width = 2,
+                        type = "range",
+                        min = -999,
+                        max = 999,
+                        step = 1,
+                        bigStep = 10,
+                        hidden = unitID ~= "nameplate",
+                        get = function()
+                            return ClassicCastbars.db[unitID].position[3]
+                        end,
+                        set = function(_, value)
+                            ClassicCastbars.db[unitID].position[3] = value
+                            local bar = ClassicCastbars:GetCastbarFrame("nameplate-testmode")
+                            if bar then
+                                bar:SetPoint("CENTER", bar.parent, ClassicCastbars.db[unitID].position[2], value)
+                            end
+                        end,
+                    },
                 },
             },
 

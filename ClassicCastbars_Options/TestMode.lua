@@ -113,18 +113,20 @@ function TestMode:SetCastbarMovable(unitID, parent)
     end
 
     local castbar = ClassicCastbars:GetCastbarFrame(unitID)
-    castbar:EnableMouse(true)
-    castbar:SetMovable(true)
-    castbar:SetClampedToScreen(true)
+    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames in TBC :(
+        castbar:SetMovable(true)
+        castbar:SetClampedToScreen(true)
+        castbar:EnableMouse(true)
 
-    castbar.tooltip = castbar.tooltip or castbar:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    castbar.tooltip:SetPoint("TOP", castbar, 0, 15)
-    castbar.tooltip:SetText(L.TEST_MODE_DRAG)
-    castbar.tooltip:Show()
+        castbar.tooltip = castbar.tooltip or castbar:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        castbar.tooltip:SetPoint("TOP", castbar, 0, 15)
+        castbar.tooltip:SetText(L.TEST_MODE_DRAG)
+        castbar.tooltip:Show()
 
-    -- Note: we use OnMouseX instead of OnDragX as it's more precise when dragging small distances
-    castbar:SetScript("OnMouseDown", castbar.StartMoving)
-    castbar:SetScript("OnMouseUp", OnDragStop)
+        -- Note: we use OnMouseX instead of OnDragX as it's more precise when dragging small distances
+        castbar:SetScript("OnMouseDown", castbar.StartMoving)
+        castbar:SetScript("OnMouseUp", OnDragStop)
+    end
 
     castbar._data = CopyTable(dummySpellData) -- Set test data for :DisplayCastbar()
     castbar.parent = parentFrame
