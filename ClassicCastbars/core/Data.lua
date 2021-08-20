@@ -1810,7 +1810,12 @@ namespace.playerInterrupts = {
     [GetSpellInfo(19244)] = 1, -- Spell Lock
     [GetSpellInfo(6552)] = 1,  -- Pummel
     [GetSpellInfo(16979)] = 1, -- Feral Charge
+    [GetSpellInfo(72)] = 1, -- Shield Bash
 }
+
+--@version-bcc@
+namespace.playerInterrupts[GetSpellInfo(32747)] = 1 -- Deadly Throw Interrupt Effect
+--@end-version-bcc@
 
 -- Player spells that can't be interrupted
 namespace.uninterruptibleList = {
@@ -1831,6 +1836,9 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(20549)] = 1,      -- War Stomp
     [GetSpellInfo(1510)] = 1,       -- Volley
     [GetSpellInfo(20904)] = 1,      -- Aimed Shot
+    --@version-bcc@
+    [GetSpellInfo(34120)] = 1,      -- Steady Shot
+    --@end-version-bcc@
     [GetSpellInfo(11605)] = 1,      -- Slam
     [GetSpellInfo(1804)] = 1,       -- Pick Lock
     [GetSpellInfo(1842)] = 1,       -- Disarm Trap
