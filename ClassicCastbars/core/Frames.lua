@@ -16,6 +16,8 @@ local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border"] = true,
 }
 
+local isClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
+
 local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
@@ -48,6 +50,27 @@ function addon:GetCastbarFrame(unitID)
 end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
+    if not isClassic and parentFrame:GetName() == "TargetFrame" then
+        if ( parentFrame.haveToT ) then
+            if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
+                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 )
+            else
+                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            end
+        elseif ( parentFrame.haveElite ) then
+            if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
+                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5 )
+            else
+                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            end
+        else
+            if ( (not parentFrame.buffsOnTop) and parentFrame.auraRows > 0 ) then
+                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            else
+                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7 )
+            end
+        end
+    else -- for classic era or unknown parent frame
     local auraRows = parentFrame.auraRows or 0
 
     if parentFrame.buffsOnTop or auraRows <= 1 then
@@ -57,6 +80,7 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
             castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -43 * auraRows), -150))
         else
             castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -39 * auraRows), -150))
+            end
         end
     end
 end
