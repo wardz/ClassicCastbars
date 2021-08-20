@@ -341,7 +341,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
                 if cast.isUninterruptible then
                     castbar:SetStatusBarColor(0.7, 0.7, 0.7, 1)
                 else
-                    castbar:SetStatusBarColor(0, 1, 0)
+                    castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorSuccess))
                 end
                 castbar:SetValue(1)
             else
@@ -385,6 +385,10 @@ local function ColorPlayerCastbar(db)
     --if CastingBarFrame.isTesting then
         CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))
     --end
+
+    CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
+    CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
+	CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
 
     CastingBarFrame.Background = CastingBarFrame.Background or GetStatusBarBackgroundTexture(CastingBarFrame)
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
