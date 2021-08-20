@@ -44,7 +44,7 @@ local anchors = {
     --@version-bcc@
     focus = {
         "SUFUnitfocus",
-        "XPerl_FocusportraitFrame",
+        "XPerl_Focushighlight",
         "ElvUF_Focus",
         "oUF_TukuiFocus",
         "bfocusUnitFrame",
