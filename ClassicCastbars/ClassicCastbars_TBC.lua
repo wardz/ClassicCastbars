@@ -403,6 +403,7 @@ function addon:PLAYER_LOGIN()
 
     self:DisableBlizzardCastbar("target", self.db.target.enabled)
     self:DisableBlizzardCastbar("focus", self.db.focus.enabled)
+    self:DisableBlizzardCastbar("arena", self.db.arena.enabled)
 
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
