@@ -1877,7 +1877,7 @@ namespace.uninterruptibleList = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "28", -- settings version
+    version = "29", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
