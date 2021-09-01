@@ -1,6 +1,6 @@
 ## Interface: 11307
 ## Interface-Classic: 11307
-## Interface-BCC: 20501
+## Interface-BCC: 20502
 ## Title: ClassicCastbars
 ## Notes: Adds modifiable castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
