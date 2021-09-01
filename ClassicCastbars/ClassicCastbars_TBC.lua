@@ -459,6 +459,7 @@ function addon:GROUP_ROSTER_UPDATE()
         if UnitExists("party"..i) then
             if activeFrames["party"..i] then
                 activeFrames["party"..i]:Hide()
+                activeFrames["party"..i]._data = nil
             end
         else
             -- party member no longer exists, release castbar
