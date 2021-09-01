@@ -26,8 +26,9 @@ local gsub = _G.string.gsub
 local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
 
+-- cast immunity buffs that gives *both* physical and magical interrupt protection
 local castImmunityBuffs = {
-    [GetSpellInfo(1022)] = true, -- Blessing of Protection
+    --[GetSpellInfo(1022)] = true, -- Blessing of Protection
     [GetSpellInfo(642)] = true, -- Divine Shield
     [GetSpellInfo(498)] = true, -- Divine Protection
     [GetSpellInfo(24021)] = true, -- Anti Magic Shield
