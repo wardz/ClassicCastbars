@@ -25,6 +25,7 @@ local UnitChannelInfo = _G.UnitChannelInfo
 local gsub = _G.string.gsub
 local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
+local next = _G.next
 
 -- cast immunity buffs that gives *both* physical and magical interrupt protection
 local castImmunityBuffs = {
@@ -47,6 +48,14 @@ local castEvents = {
     "UNIT_SPELLCAST_CHANNEL_STOP",
 }
 
+function addon:GetFirstAvailableUnitIDByGUID(unitGUID)
+    for unitID, guid in next, activeGUIDs do
+        if guid == unitGUID then
+            return unitID
+        end
+    end
+end
+
 function addon:GetUnitType(unitID)
     local unit = gsub(unitID or "", "%d", "") -- remove numbers
     if unit == "nameplate-testmode" then
@@ -61,9 +70,10 @@ function addon:GetUnitType(unitID)
 end
 
 function addon:GetCastbarFrameIfEnabled(unitID)
-    local cfg = self.db[self:GetUnitType(unitID)]
+    local unitType = self:GetUnitType(unitID)
+    local cfg = self.db[unitType]
     if cfg and cfg.enabled then
-        if self:GetUnitType(unitID) == "nameplate" then
+        if unitType == "nameplate" then
             local isFriendly = UnitIsFriend("player", unitID)
             if not self.db.nameplate.showForFriendly and isFriendly then return end
             if not self.db.nameplate.showForEnemy and not isFriendly then return end
@@ -156,7 +166,7 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     end
     if not cast.isUninterruptible then
         -- Check for temp immunities
-        for i = 1, 32 do
+        for i = 1, 40 do
             local buffName = UnitAura(unitID, i, "HELPFUL")
             if not buffName then break end
             if castImmunityBuffs[buffName] then
@@ -359,9 +369,7 @@ end
 
 function addon:UNIT_AURA(unitID)
     if not self.db[unitID].autoPosition then return end
-    -- TODO: aurarows
 
-    -- Update target castbar position based on amount of auras currently shown
     if activeFrames[unitID] and UnitExists(unitID) then
         local parentFrame = self.AnchorManager:GetAnchor(unitID)
         if parentFrame then
@@ -507,11 +515,11 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
     if eventType == "SPELL_MISSED" then
         if missType == "IMMUNE" and playerInterrupts[spellName] then
-            local unitID = activeGUIDs[dstGUID]
-            if not unitID then return end -- only learn from target/focus/nameplates for now
-
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
+                    local unitID = self:GetFirstAvailableUnitIDByGUID(dstGUID)
+                    if not unitID then return end -- only learn from target/focus/nameplates for now
+
                     local castName = UnitCastingInfo(unitID) or UnitChannelInfo(unitID)
                     if not castName then return end
 
@@ -520,7 +528,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     if self.db.npcCastUninterruptibleCache[npcID .. castName] then return end -- already added
 
                     -- Check for temp immunities
-                    for i = 1, 32 do
+                    for i = 1, 40 do
                         local buffName = UnitAura(unitID, i, "HELPFUL")
                         if not buffName then break end
                         if castImmunityBuffs[buffName] then
@@ -534,7 +542,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         if castImmunityBuffs[spellName] then
-            local unitID = activeGUIDs[dstGUID]
+            local unitID = self:GetFirstAvailableUnitIDByGUID(dstGUID)
             if not unitID then return end
 
             local castbar = activeFrames[unitID]
