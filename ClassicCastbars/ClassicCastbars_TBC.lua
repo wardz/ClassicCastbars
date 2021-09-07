@@ -141,6 +141,7 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     cast.icon = iconTexturePath
     cast.isChanneled = isChanneled
     cast.timeStart = startTimeMS / 1000
+    cast.origIsUninterruptible = nil
     cast.isUninterruptible = nil
     cast.isFailed = nil
     cast.isInterrupted = nil
@@ -160,6 +161,29 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
             if not buffName then break end
             if castImmunityBuffs[buffName] then
                 cast.isUninterruptible = true
+                return
+            end
+        end
+    end
+end
+
+function addon:UNIT_AURA(unitID)
+    local castbar = activeFrames[unitID]
+    if not castbar or not castbar._data then return end
+
+    if castbar._data.origIsUninterruptible ~= nil then
+        -- Reset incase it was modified before
+        castbar._data.isUninterruptible = castbar._data.origIsUninterruptible
+    end
+
+    if not castbar._data.isUninterruptible then
+        -- Check for temp immunities
+        for i = 1, 40 do
+            local buffName = UnitAura(unitID, i, "HELPFUL")
+            if not buffName then break end
+            if castImmunityBuffs[buffName] then
+                castbar._data.origIsUninterruptible = castbar._data.origIsUninterruptible or castbar._data.isUninterruptible
+                castbar._data.isUninterruptible = true
                 return
             end
         end
