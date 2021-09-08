@@ -347,13 +347,13 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
 
         if cast.isCastComplete then -- SPELL_CAST_SUCCESS
             if castbar.Border:GetAlpha() == 1 or cast.isUninterruptible then
-                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTexture() or ""] then
+                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] then
                     if cast.isUninterruptible then
                         castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
                     elseif cast.isChanneled then
-                        castbar.Flash:SetVertexColor(0, 1, 0)
+                        castbar.Flash:SetVertexColor(0, 1, 0, 1)
                     else
-                        castbar.Flash:SetVertexColor(1, 1, 1)
+                        castbar.Flash:SetVertexColor(1, 1, 1, 1)
                     end
                     castbar.Flash:Show()
                 end
