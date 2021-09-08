@@ -7,6 +7,7 @@ local PoolManager = namespace.PoolManager
 local activeFrames = {}
 local activeGUIDs = {}
 local uninterruptibleList = namespace.uninterruptibleList
+local playerSilences = namespace.playerSilences
 
 local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -151,6 +152,7 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     cast.icon = iconTexturePath
     cast.isChanneled = isChanneled
     cast.timeStart = startTimeMS / 1000
+    cast.unitIsPlayer = UnitIsPlayer(unitID)
     cast.origIsUninterruptible = nil
     cast.isUninterruptible = nil
     cast.isFailed = nil
@@ -158,26 +160,47 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     cast.isCastComplete = nil
 
     cast.isUninterruptible = uninterruptibleList[spellName] or false
-    if not cast.isUninterruptible and not UnitIsPlayer(unitID) then
+    if not cast.isUninterruptible and not cast.unitIsPlayer then
         local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
         if npcID then
             cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. spellName]
+            -- Check for debuff silences. If mob is still casting while silenced he's most likely interrupt immune
+            -- (if silence effect hits but not kick itself it wont actually show up in CLEU as spell immuned so we gotta check here aswell)
+            for i = 1, 40 do
+                local debuffName = UnitAura(unitID, i, "HARMFUL")
+                if not debuffName then break end
+                if playerSilences[debuffName] then
+                    self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] = true
+                    cast.isUninterruptible = true
+                    break
+                end
+            end
         end
     end
     if not cast.isUninterruptible then
-        -- Check for temp immunities
+        -- Check for temp buff immunities
         for i = 1, 40 do
             local buffName = UnitAura(unitID, i, "HELPFUL")
             if not buffName then break end
             if castImmunityBuffs[buffName] then
                 cast.isUninterruptible = true
-                return
+                break
             end
         end
     end
 end
 
+-- Check UNIT_AURA aswell for cast immunites since CLEU range in classic is very short
 function addon:UNIT_AURA(unitID)
+    if self.db[unitID] and self.db[unitID].autoPosition then
+        if activeFrames[unitID] then
+            local parentFrame = self.AnchorManager:GetAnchor(unitID)
+            if parentFrame then
+                self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
+            end
+        end
+    end
+
     local castbar = activeFrames[unitID]
     if not castbar or not castbar._data then return end
 
@@ -194,7 +217,29 @@ function addon:UNIT_AURA(unitID)
             if castImmunityBuffs[buffName] then
                 castbar._data.origIsUninterruptible = castbar._data.origIsUninterruptible or castbar._data.isUninterruptible
                 castbar._data.isUninterruptible = true
+                if castbar._data.isChanneled then
+                    self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+                else
+                    self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+                end
                 return
+            end
+        end
+        if not castbar._data.unitIsPlayer then
+            for i = 1, 40 do
+                local debuffName = UnitAura(unitID, i, "HARMFUL")
+                if not debuffName then break end
+                if playerSilences[debuffName] then
+                    castbar._data.origIsUninterruptible = castbar._data.origIsUninterruptible or castbar._data.isUninterruptible
+                    castbar._data.isUninterruptible = true
+                    self.db.npcCastUninterruptibleCache[select(6, strsplit("-", UnitGUID(unitID))) .. castbar._data.spellName] = true
+                    if castbar._data.isChanneled then
+                        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+                    else
+                        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+                    end
+                    return
+                end
             end
         end
     end
@@ -367,28 +412,10 @@ function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     castbar._data = nil
 end
 
-function addon:UNIT_AURA(unitID)
-    if not self.db[unitID].autoPosition then return end
-
-    if activeFrames[unitID] and UnitExists(unitID) then
-        local parentFrame = self.AnchorManager:GetAnchor(unitID)
-        if parentFrame then
-            self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
-        end
-    end
-end
-
 function addon:ToggleUnitEvents(shouldReset)
-    if self.db.target.enabled or self.db.focus.enabled then
-        if self.db.target.autoPosition or self.db.focus.autoPosition then
-            self:RegisterUnitEvent("UNIT_AURA", "target", "focus")
-        end
-    else
-        self:UnregisterEvent("UNIT_AURA")
-    end
-
     self:RegisterEvent("PLAYER_TARGET_CHANGED")
     self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    self:RegisterEvent("UNIT_AURA")
 
     if self.db.party.enabled then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")

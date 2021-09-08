@@ -1813,6 +1813,16 @@ namespace.playerInterrupts = {
     [GetSpellInfo(72)] = 1, -- Shield Bash
 }
 
+namespace.playerSilences = {
+    --@version-bcc@
+    [GetSpellInfo(18469)] = 1,  -- Counterspell - Silenced
+    [GetSpellInfo(18425)] = 1,  -- Kick - Silenced
+    [GetSpellInfo(24259)] = 1, -- Spell Lock
+    [GetSpellInfo(15487)] = 1, -- Silence
+    [GetSpellInfo(34490)] = 1, -- Silencing Shot
+    --@end-version-bcc@
+}
+
 --@version-bcc@
 namespace.playerInterrupts[GetSpellInfo(32747)] = 1 -- Deadly Throw Interrupt Effect
 --@end-version-bcc@
