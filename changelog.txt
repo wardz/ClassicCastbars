@@ -3,7 +3,8 @@ v1.4.1:
 - Add slider options for setting **nameplate** castbar position due to new restricted frame system from Blizzard.
 - Add color config for cast success (#54).
 - Use Blizzard's own spellbar anchor when available, instead of calculating positioning on our own (fixes #51).
-- Minor bug fixes.
+- Fix flash animation not displaying on cast success in TBC & other minor bug fixes.
+- Bump toc version for patch 2.5.2.
 
 
 v1.4.0:
