@@ -22,17 +22,9 @@ local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
     for _, v in pairs({ statusbar:GetRegions() }) do
-        --@version-classic@
-        if v.GetTexture and strfind(v:GetTexture() or "", "Color-") then
+        if v.GetTexture and strfind("UI-StatusBar", v:GetTexture() or "") then
             return v
         end
-        --@end-version-classic@
-
-        --@version-bcc@
-        if v.GetTexture and strfind("UI-StatusBar", v:GetTexture() or "") then -- TODO: test on classic
-            return v
-        end
-        --@end-version-bcc@
     end
 end
 
