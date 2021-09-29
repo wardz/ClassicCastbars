@@ -1,3 +1,7 @@
+v1.4.2:
+- Update for Classic Era 1.14.0.
+
+
 v1.4.1:
 - Add uninterruptible cast auto-learning for TBC. (Work in progress)
 - Add slider options for setting **nameplate** castbar position due to new restricted frame system from Blizzard.
