@@ -5,7 +5,8 @@ on:
     branches:
       - master
     tags:
-      - "v*"
+      - v*
+      - '!**-alpha**'
   pull_request:
     branches:
       - master
@@ -16,13 +17,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-        with:
-          fetch-depth: 100
 
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
         with:
-          args: "--no-color -q"
+          args: --no-color -q
 
       - name: Create Classic Package
         uses: BigWigsMods/packager@master

@@ -1,9 +1,11 @@
 # Project specifics
-.release/
-release.sh
 ClassicCastbars_Options/Libs/
+release.sh
+/.release
+/.vscode
+/.idea
 
-# luarocks build files
+# Luarocks build files
 *.src.rock
 *.zip
 *.tar.gz
@@ -17,6 +19,7 @@ Thumbs.db
 $RECYCLE.BIN/
 *.lnk
 .DS_Store
+.DS_Store?
 .AppleDouble
 .LSOverride
 Icon\r\r
