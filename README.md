@@ -1,6 +1,6 @@
 # ClassicCastbars
 
-> World of Warcraft addon that brings back the target castbar and adds customizable castbars to Classic & TBC. Casting times in Classic are estimates only, due to API restrictions.
+> World of Warcraft Classic/TBC addon that brings back the target & nameplate castbars. Casting times in classic era are always based on highest spell rank due to API restrictions.
 
 ## Links
 

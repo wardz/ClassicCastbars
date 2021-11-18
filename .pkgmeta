@@ -1,5 +1,3 @@
-enable-nolib-creation: no
-manual-changelog: changelog.txt
 package-as: ClassicCastbars
 
 externals:
@@ -16,7 +14,5 @@ move-folders:
   ClassicCastbars/ClassicCastbars: ClassicCastbars
 
 ignore:
-  - README.md
-  - release.sh
   - ClassicCastbars_Options/Libs/LibStub/LibStub.toc
   - ClassicCastbars_Options/Libs/LibStub/tests
