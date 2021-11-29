@@ -1,6 +1,11 @@
 std = "lua51"
 max_line_length = false
 
+exclude_files = {
+	"ClassicCastbars_Options/Libs/",
+	".luacheckrc"
+}
+
 ignore = {
     "11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
     "113/CastingBarFrame_.*", -- Accessing an undefined (CastingBarFrame) global variable.
