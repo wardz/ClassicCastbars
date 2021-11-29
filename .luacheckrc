@@ -3,7 +3,7 @@ max_line_length = false
 
 exclude_files = {
     "ClassicCastbars_Options/Libs/",
-    ".luacheckrc"
+    ".luacheckrc",
 }
 
 ignore = {
@@ -48,7 +48,7 @@ read_globals = {
     "GetTickTime",
     "GetTime",
     "hooksecurefunc",
-    "InterfaceOptionsFrame"
+    "InterfaceOptionsFrame",
     "IsAddOnLoaded",
     "IsAddOnLoadOnDemand",
     "IsInGroup",
