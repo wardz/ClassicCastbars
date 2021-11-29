@@ -1,27 +1,81 @@
 ---
 name: Bug report
-about: Create an issue ticket to help us improve.
+about: Create an issue report to help us improve.
 title: ''
 labels: bug
-assignees: ''
+assignees: wardz
+body:
+  - type: markdown
+    attributes:
+      value: Please make sure you're using the latest version of the addon before reporting a bug.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What is the issue? How may you reproduce it?
+    validations:
+      required: true
+  - type: textarea
+    id: errors
+    attributes:
+      label: Is there any errors?
+      description: Is there any Lua errors shown ingame for the addon? Leave blank if not.
+      placeholder: /console scriptErrors 1
+      render: shell
+    validations:
+      required: false
+  - type: dropdown
+    id: version
+    attributes:
+      label: Game Version
+      description: Which version(s) of World of Warcraft are you experiencing the issue for?
+      multiple: true
+      options:
+        - The Burning Crusade Classic
+        - Classic Era
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Game Language
+      description: What language is your World of Warcraft client running?
+      value: English
+      multiple: true
+      options:
+        - English
+        - French
+        - German
+        - Italian
+        - Korean
+        - Chinese
+        - Russian
+        - Spanish
+        - Brazil
+    validations:
+      required: true
+  - type: dropdown
+    id: conflicts
+    attributes:
+      label:  Does the issue still occur when ALL addons except ClassicCastbars are temporarily disabled?
+      description: |
+        Please verify if the bug is caused by other third party addons conflicting.
+        If it is, please include the name of the addon(s) causing conflicts below.
+      options:
+        - Yes, issue still occurs.
+        - No, issue disappears.
+        - Not sure.
+        - Not applicable.
+      validations:
+        required: false
+  - type: textarea
+    id: comments
+    attributes:
+      label: Any additional info?
+    description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
 
+      Tip: You can attach images or files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: false
 ---
-
-<!--
-  Please make sure you're using the latest version of ClassicCastbars before reporting a bug.
-  You may enable Lua errors by typing "/console scriptErrors 1" ingame.
--->
-
-**What is the problem? Is there any Lua errors?**
-
-
-**What steps will reproduce the problem?**
-
-
-**Does the issue still occur when all addons except ClassicCastbars are disabled?**
-
-
-**Is this for Classic or TBC client?**
-
-
-**Any additional info? If you play on a non-english client, please include your locale type:**
