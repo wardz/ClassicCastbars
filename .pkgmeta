@@ -1,13 +1,13 @@
 package-as: ClassicCastbars
 
 externals:
-  ClassicCastbars_Options/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
   ClassicCastbars_Options/Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
   ClassicCastbars_Options/Libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
   ClassicCastbars_Options/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
   ClassicCastbars_Options/Libs/AceLocale-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceLocale-3.0
-  ClassicCastbars_Options/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
   ClassicCastbars_Options/Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  ClassicCastbars_Options/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
+  ClassicCastbars_Options/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
 
 move-folders:
   ClassicCastbars/ClassicCastbars_Options: ClassicCastbars_Options

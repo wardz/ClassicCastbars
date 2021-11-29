@@ -2,8 +2,8 @@ std = "lua51"
 max_line_length = false
 
 exclude_files = {
-	"ClassicCastbars_Options/Libs/",
-	".luacheckrc"
+    "ClassicCastbars_Options/Libs/",
+    ".luacheckrc"
 }
 
 ignore = {
@@ -15,56 +15,57 @@ ignore = {
     "213", -- Unused loop variable
 }
 
-not_globals = { "print" } -- just to help not forgetting to remove debug print statements
+not_globals = { "print" } -- force error on print() to help catch forgotten debug statements
 
 globals = {
+    "ClassicCastbars",
     "ClassicCastbars_TestMode",
     "ClassicCastbarsDB",
     "ClassicCastbarsCharDB",
-    "ClassicCastbars",
-    "SlashCmdList",
+
     "CastingBarFrame",
     "TargetFrameSpellBar",
     "FocusFrameSpellBar",
+    "SlashCmdList",
 }
 
 read_globals = {
-    "PlayerFrame_AdjustAttachments",
     "ArenaEnemyFrames",
-    "LoadAddOn",
-    "IsModifierKeyDown",
-    "IsMetaKeyDown",
-    "LibStub",
-    "hooksecurefunc",
-    "ReloadUI",
-    "TargetFrame",
-    "GetCVarBool",
-    "CopyTable",
-    "IsInGroup",
-    "GetLocale",
-    "GetSpellInfo",
-    "IsAddOnLoaded",
-    "GetAddOnMetadata",
-    "GetSpellTexture",
-    "UnitGUID",
-    "strfind",
     "C_NamePlate",
     "C_Timer",
-    "UnitExists",
-    "STANDARD_TEXT_FONT",
-    "UnitIsDeadOrGhost",
-    "IsInRaid",
-    "CreateFramePool",
-    "DoEmote",
-    "date",
+    "CopyTable",
     "CreateFrame",
-    "wipe",
-    "format",
-    "GetTime",
-    "UIParent",
+    "CreateFramePool",
+    "date",
+    "DoEmote",
     "floor",
-    "UnitName",
-    "UnitIsPlayer",
-    "UnitClass",
+    "format",
+    "GetAddOnMetadata",
+    "GetCVarBool",
+    "GetLocale",
+    "GetSpellInfo",
+    "GetSpellTexture",
+    "GetTime",
+    "hooksecurefunc",
+    "IsAddOnLoaded",
+    "IsInGroup",
+    "IsInRaid",
+    "IsMetaKeyDown",
+    "IsModifierKeyDown",
+    "LibStub",
+    "LoadAddOn",
     "RAID_CLASS_COLORS",
+    "ReloadUI",
+    "STANDARD_TEXT_FONT",
+    "strfind",
+    "TargetFrame",
+    "UIParent",
+    "UnitClass",
+    "UnitExists",
+    "UnitGUID",
+    "UnitIsDeadOrGhost",
+    "UnitIsPlayer",
+    "UnitName",
+    "wipe",
+    "PlayerFrame_AdjustAttachments",
 }
