@@ -1,12 +1,14 @@
 name: Bug report
 description: Create an issue report to help us improve.
-title: ''
-labels: bug
-assignees: wardz
+title: ""
+labels: ["bug"]
+assignees:
+  - wardz
 body:
   - type: markdown
     attributes:
-      value: Please make sure you're using the latest version of the addon before reporting a bug.
+      value: |
+        Please make sure you're using the latest version of the addon before reporting a bug.
   - type: textarea
     id: description
     attributes:
