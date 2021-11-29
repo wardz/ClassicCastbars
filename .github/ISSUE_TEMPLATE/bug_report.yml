@@ -57,15 +57,17 @@ body:
 - type: dropdown
   id: conflicts
   attributes:
-    label:  Does the issue still occur when ALL addons except ClassicCastbars are temporarily disabled?
+    label:  Does the issue still occur when all other addons are temporarily disabled?
     description: |
-      Please verify if the bug is caused by other third party addons conflicting.
+      Please verify if the bug is caused by other third party addons conflicting with this one.
       If it is, please include the name of the addon(s) causing conflicts below.
     options:
       - Yes, issue still occurs.
       - No, issue disappears.
       - Not sure.
       - Not applicable.
+    validations:
+      required: true
 - type: textarea
   id: comments
   attributes:
