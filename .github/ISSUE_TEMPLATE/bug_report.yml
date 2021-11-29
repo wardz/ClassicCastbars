@@ -1,6 +1,6 @@
 name: Bug report
 description: Create an issue report to help us improve.
-title: ""
+title: "[Bug]: "
 labels: [bug]
 assignees:
   - wardz
@@ -41,7 +41,6 @@ body:
   attributes:
     label: Game Language
     description: What language is your World of Warcraft client running?
-    value: English
     multiple: true
     options:
       - English
@@ -67,13 +66,11 @@ body:
       - No, issue disappears.
       - Not sure.
       - Not applicable.
-    validations:
-      required: false
 - type: textarea
   id: comments
   attributes:
     label: Any additional info?
-  description: |
+  value: |
     Links? References? Anything that will give us more context about the issue you are encountering!
 
     Tip: You can attach images or files by clicking this area to highlight it and then dragging files in.
