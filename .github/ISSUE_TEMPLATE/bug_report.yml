@@ -1,6 +1,5 @@
----
 name: Bug report
-about: Create an issue report to help us improve.
+description: Create an issue report to help us improve.
 title: ''
 labels: bug
 assignees: wardz
@@ -78,4 +77,3 @@ body:
       Tip: You can attach images or files by clicking this area to highlight it and then dragging files in.
   validations:
     required: false
----
