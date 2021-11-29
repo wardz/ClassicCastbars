@@ -45,9 +45,12 @@ read_globals = {
     "GetLocale",
     "GetSpellInfo",
     "GetSpellTexture",
+    "GetTickTime",
     "GetTime",
     "hooksecurefunc",
+    "InterfaceOptionsFrame"
     "IsAddOnLoaded",
+    "IsAddOnLoadOnDemand",
     "IsInGroup",
     "IsInRaid",
     "IsMetaKeyDown",

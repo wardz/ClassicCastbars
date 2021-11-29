@@ -20,3 +20,4 @@ ClassicCastbars.lua
 ClassicCastbars_TBC.lua
 #@end-version-bcc@
 core/Frames.lua
+core/LoadOptions.lua

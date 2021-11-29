@@ -5,6 +5,7 @@
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## Version: @project-version@
 ## Dependencies: ClassicCastbars
+## LoadOnDemand: 1
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
