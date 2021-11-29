@@ -66,8 +66,6 @@ body:
       - No, issue disappears.
       - Not sure.
       - Not applicable.
-    validations:
-      required: true
 - type: textarea
   id: comments
   attributes:
