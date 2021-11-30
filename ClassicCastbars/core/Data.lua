@@ -1184,6 +1184,7 @@ local castSpellIDs = {
     1949, -- Hellfire
     755, -- Health Funnel
     17854, -- Consume Shadows
+    27286, -- Shadow Wrath
     --6358, -- Seduction Channel
 }
 
@@ -1232,6 +1233,7 @@ namespace.channeledSpells = {
     [GetSpellInfo(7290)] = 10000,    -- Soul Siphon
     [GetSpellInfo(24322)] = 8000,    -- Blood Siphon
     [GetSpellInfo(27177)] = 10000,   -- Defile
+    [GetSpellInfo(27286)] = 1000,    -- Shadow Wrath (see issue #59)
 
     -- DRUID
     [GetSpellInfo(17401)] = 10000,   -- Hurricane
