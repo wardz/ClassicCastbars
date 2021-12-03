@@ -23,6 +23,7 @@ local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local UnitIsFriend = _G.UnitIsFriend
 local UnitCastingInfo = _G.UnitCastingInfo
 local UnitChannelInfo = _G.UnitChannelInfo
+local UnitIsUnit = _G.UnitIsUnit
 local gsub = _G.string.gsub
 local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
@@ -329,7 +330,7 @@ function addon:UNIT_SPELLCAST_STOP(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
-        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
+        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
@@ -346,7 +347,7 @@ function addon:UNIT_SPELLCAST_INTERRUPTED(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
-        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
+        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             castbar._data.isInterrupted = true
             castbar._data.isFailed = false
@@ -391,7 +392,7 @@ function addon:UNIT_SPELLCAST_FAILED(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
-        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
+        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
