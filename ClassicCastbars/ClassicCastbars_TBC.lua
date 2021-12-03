@@ -1,5 +1,5 @@
 if _G.WOW_PROJECT_ID ~= (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) then
-    return print("|cFFFF0000[ERROR] You're using the TBC version of ClassicCastbars on a non-TBC client. Please download the correct version.|r") -- luacheck: ignore
+    return (_G.message or print)("[ERROR] You're using the TBC version of ClassicCastbars on a non-TBC client. Please download the correct version.") -- luacheck: ignore
 end
 
 local _, namespace = ...

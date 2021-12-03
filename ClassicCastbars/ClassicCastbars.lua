@@ -1,5 +1,5 @@
 if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC then
-    return print("|cFFFF0000[ERROR] You're using the Vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.|r") -- luacheck: ignore
+    return (_G.message or print)("[ERROR] You're using the Vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
 end
 
 local _, namespace = ...
