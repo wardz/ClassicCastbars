@@ -1,5 +1,3 @@
-if not IsAddOnLoadOnDemand("ClassicCastbars_Options") then return end -- check if deleted or disabled
-
 SLASH_CLASSICCASTBARS1 = "/castbars"
 SLASH_CLASSICCASTBARS2 = "/castbar"
 SLASH_CLASSICCASTBARS3 = "/classiccastbar"
@@ -9,19 +7,30 @@ SLASH_CLASSICCASTBARS6 = "/classicastbars"
 
 local isLoaded = false
 
-if InterfaceOptionsFrame then -- sanity check
-    InterfaceOptionsFrame:HookScript("OnShow", function()
-        if not isLoaded and not IsAddOnLoaded("ClassicCastbars_Options") then
-            isLoaded = LoadAddOn("ClassicCastbars_Options")
+GameMenuFrame:HookScript("OnShow", function()
+    if not isLoaded and not IsAddOnLoaded("ClassicCastbars_Options") then
+        local loaded, reason = LoadAddOn("ClassicCastbars_Options")
+        if not loaded and reason == "DISABLED" then
+            isLoaded = true -- disabled, dont attempt to load it anymore
+            return
         end
-    end)
-end
+
+        isLoaded = loaded
+    end
+end)
 
 SlashCmdList["CLASSICCASTBARS"] = function()
     if not IsAddOnLoaded("ClassicCastbars_Options") then
-        if not isLoaded and LoadAddOn("ClassicCastbars_Options") then
-            isLoaded = true
-            C_Timer.After(GetTickTime(), SlashCmdList.CLASSICCASTBARS) -- Run again next frame to actually open the options
+        if not isLoaded then
+            local loaded, reason = LoadAddOn("ClassicCastbars_Options")
+            if not loaded and reason == "DISABLED" then
+                isLoaded = true -- disabled, dont attempt to load it anymore
+                return
+            end
+            isLoaded = loaded
+            if isLoaded then
+                C_Timer.After(GetTickTime(), SlashCmdList.CLASSICCASTBARS) -- Run again next frame to actually open the options
+            end
         end
     else
         LibStub("AceConfigDialog-3.0"):Open("ClassicCastbars")

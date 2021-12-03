@@ -421,12 +421,6 @@ function addon:PLAYER_LOGIN()
         self.db.npcCastUninterruptibleCache = CopyTable(namespace.defaultConfig.npcCastUninterruptibleCache)
     end
 
-    -- config is not needed anymore if options are not loaded
-    if not IsAddOnLoaded("ClassicCastbars_Options") then
-        self.defaultConfig = nil
-        namespace.defaultConfig = nil
-    end
-
     if self.db.player.enabled then
         self:SkinPlayerCastbar()
     end
