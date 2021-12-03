@@ -329,6 +329,7 @@ function addon:UNIT_SPELLCAST_STOP(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
+        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
@@ -345,6 +346,7 @@ function addon:UNIT_SPELLCAST_INTERRUPTED(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
+        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             castbar._data.isInterrupted = true
             castbar._data.isFailed = false
@@ -389,6 +391,7 @@ function addon:UNIT_SPELLCAST_FAILED(unitID)
     if not castbar then return end
 
     if not castbar.isTesting then
+        if unitID == "player" and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
         if castbar._data then
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
