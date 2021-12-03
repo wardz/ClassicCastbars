@@ -16,3 +16,4 @@ move-folders:
 ignore:
   - ClassicCastbars_Options/Libs/LibStub/LibStub.toc
   - ClassicCastbars_Options/Libs/LibStub/tests
+  - add_symlinks.bat

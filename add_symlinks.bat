@@ -1,7 +1,7 @@
 @echo off
 
 :: Path to where ClassicCastbars source code folder is stored (no trailing slashes!).
-set "path_projects=E:\Projects\Github"
+set "path_projects=D:\Projects\Github"
 
 :: Path to your WoW folders.
 set "path_bcc=C:\Program Files (x86)\World of Warcraft\_classic_\Interface\AddOns"
