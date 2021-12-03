@@ -1889,7 +1889,7 @@ namespace.uninterruptibleList = {
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "29", -- settings version
+    version = "30", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
