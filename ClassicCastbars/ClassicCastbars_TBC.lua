@@ -34,7 +34,7 @@ local castImmunityBuffs = {
     --[GetSpellInfo(1022)] = true, -- Blessing of Protection
     [GetSpellInfo(642)] = true, -- Divine Shield
     [GetSpellInfo(498)] = true, -- Divine Protection
-    [GetSpellInfo(24021)] = true, -- Anti Magic Shield
+    --[GetSpellInfo(24021)] = true, -- Anti Magic Shield
 }
 
 local castEvents = {
