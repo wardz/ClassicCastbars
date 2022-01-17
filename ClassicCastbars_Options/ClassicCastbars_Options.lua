@@ -629,15 +629,3 @@ end
 -- Initialize option panel
 LibStub("AceConfig-3.0"):RegisterOptionsTable("ClassicCastbars", GetOptionsTable)
 LibStub("AceConfigDialog-3.0"):AddToBlizOptions("ClassicCastbars")
-
--- Slash commands to open panel
-SLASH_CLASSICCASTBARS1 = "/castbars"
-SLASH_CLASSICCASTBARS2 = "/castbar"
-SLASH_CLASSICCASTBARS3 = "/classiccastbars"
-SLASH_CLASSICCASTBARS4 = "/classicastbars"
-SlashCmdList["CLASSICCASTBARS"] = function()
-    LibStub("AceConfigDialog-3.0"):Open("ClassicCastbars")
-    if LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"] then
-        LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("https://www.curseforge.com/wow/addons/classiccastbars")
-    end
-end
