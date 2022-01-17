@@ -12,7 +12,7 @@ World of Warcraft Classic addon that brings back the target & nameplate castbars
 
 ### Contributing
 
-Everytime you want to test changes to the addon's source code you will need to run the [BigWigs packager](https://github.com/BigWigsMods/packager) script. You should setup a symlink for `/ClassicCastbars/` and `/ClassicCastbars_Options/` in the generated `ClassicCastbars/.release/ClassicCastbars/` folders, and link it to your WoW addons folder so your game files are always up to date after running the packager script.  
+When you want to test changes to the addon's source code you will need to run the [BigWigs packager](https://github.com/BigWigsMods/packager) script. You should setup a symlink for `/ClassicCastbars/` and `/ClassicCastbars_Options/` in the generated `ClassicCastbars/.release/ClassicCastbars/` folders, and link it to your WoW addons folder so your game files are always up to date after running the packager script.  
 See file `add_symlinks.bat` for Windows.
   
 **Packager Script:**  
@@ -23,4 +23,4 @@ See file `add_symlinks.bat` for Windows.
 
 ### License
 
-Copyright (C) 2021 Wardz | [MIT License](https://opensource.org/licenses/MIT).
+Copyright (C) 2022 Wardz | [MIT License](https://opensource.org/licenses/MIT).
