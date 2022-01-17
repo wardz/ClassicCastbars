@@ -178,6 +178,7 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
             end
         end
     end
+
     if not cast.isUninterruptible then
         -- Check for temp buff immunities
         for i = 1, 40 do
@@ -231,9 +232,11 @@ function addon:UNIT_AURA(unitID)
                 local debuffName = UnitAura(unitID, i, "HARMFUL")
                 if not debuffName then break end
                 if playerSilences[debuffName] then
+                    local npcID = select(6, strsplit("-", UnitGUID(unitID)))
                     castbar._data.origIsUninterruptible = castbar._data.origIsUninterruptible or castbar._data.isUninterruptible
                     castbar._data.isUninterruptible = true
-                    self.db.npcCastUninterruptibleCache[select(6, strsplit("-", UnitGUID(unitID))) .. castbar._data.spellName] = true
+                    self.db.npcCastUninterruptibleCache[npcID .. castbar._data.spellName] = true
+
                     if castbar._data.isChanneled then
                         self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
                     else
