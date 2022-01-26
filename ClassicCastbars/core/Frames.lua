@@ -1,7 +1,7 @@
 local _, namespace = ...
+local addon = ClassicCastbars
 local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
-local addon = namespace.addon
 local activeFrames = addon.activeFrames
 
 local strfind = _G.string.find

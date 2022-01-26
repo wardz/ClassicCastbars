@@ -23,7 +23,6 @@ addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 addon.activeTimers = activeTimers
 addon.npcCastUninterruptibleCache = npcCastUninterruptibleCache
-namespace.addon = addon
 
 -- upvalues for speed
 local strsplit = _G.string.split
@@ -243,7 +242,7 @@ function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComple
 
     local cast = activeTimers[unitGUID]
     if cast then
-        cast.isInterrupted = isInterrupted -- SPELL_INTERRUPT
+        cast.isInterrupted = isInterrupted
         cast.isCastComplete = isCastComplete -- SPELL_CAST_SUCCESS
         self:StopAllCasts(unitGUID, noFadeOut)
         activeTimers[unitGUID] = nil

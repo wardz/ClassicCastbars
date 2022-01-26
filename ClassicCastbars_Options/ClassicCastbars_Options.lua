@@ -165,7 +165,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = -999,
                         max = 999,
                         step = 1,
-                        bigStep = 10,
                         hidden = unitID ~= "nameplate",
                         get = function() return ClassicCastbars.db[unitID].position[2] end,
                         set = function(_, value)
@@ -185,7 +184,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = -999,
                         max = 999,
                         step = 1,
-                        bigStep = 10,
                         hidden = unitID ~= "nameplate",
                         get = function()
                             return ClassicCastbars.db[unitID].position[3]

@@ -17,7 +17,6 @@ end)
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
-namespace.addon = addon
 
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local UnitIsFriend = _G.UnitIsFriend
@@ -258,7 +257,7 @@ function addon:PLAYER_TARGET_CHANGED()
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     else
         local castbar = activeFrames["target"]
-        if castbar then -- this seems to be needed for race conditions
+        if castbar then
             self:HideCastbar(castbar, "target", true)
         end
     end
