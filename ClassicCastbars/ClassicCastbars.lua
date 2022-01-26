@@ -336,10 +336,8 @@ function addon:ToggleUnitEvents(shouldReset)
 
     if self.db.party.enabled then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")
-        self:RegisterEvent("GROUP_JOINED")
     else
         self:UnregisterEvent("GROUP_ROSTER_UPDATE")
-        self:UnregisterEvent("GROUP_JOINED")
     end
 
     if shouldReset then
@@ -357,7 +355,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     PoolManager:GetFramePool():ReleaseAll() -- also removes castbar._data references
     self:SetFocusDisplay(nil)
 
-    if self.db.party.enabled and IsInGroup() then
+    if self.db.party.enabled then
         self:GROUP_ROSTER_UPDATE()
     end
 end
@@ -490,8 +488,8 @@ function addon:GROUP_ROSTER_UPDATE()
         activeGUIDs[unitID] = UnitGUID(unitID) or nil
 
         if activeGUIDs[unitID] then
-            -- hide castbar incase party frames were shifted around
-            self:StopCast(unitID, true)
+            self:StopCast(unitID, true) -- always hide castbar incase party frames were shifted around
+            self:StartCast(activeGUIDs[unitID], unitID) -- restart any potential casts
         else
             -- party member no longer exists, release castbar
             local castbar = activeFrames[unitID]
@@ -502,7 +500,6 @@ function addon:GROUP_ROSTER_UPDATE()
         end
     end
 end
-addon.GROUP_JOINED = addon.GROUP_ROSTER_UPDATE
 
 -- Upvalues for combat log events
 local bit_band = _G.bit.band

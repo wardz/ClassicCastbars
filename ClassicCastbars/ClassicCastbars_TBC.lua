@@ -425,10 +425,8 @@ function addon:ToggleUnitEvents(shouldReset)
 
     if self.db.party.enabled then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")
-        self:RegisterEvent("GROUP_JOINED")
     else
         self:UnregisterEvent("GROUP_ROSTER_UPDATE")
-        self:UnregisterEvent("GROUP_JOINED")
     end
 
     --if self.db.nameplate.enabled then
@@ -456,7 +454,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
     wipe(activeGUIDs)
     PoolManager:GetFramePool():ReleaseAll() -- also removes castbar._data references
 
-    if self.db.party.enabled and IsInGroup() then
+    if self.db.party.enabled then
         self:GROUP_ROSTER_UPDATE()
     end
 end
@@ -516,22 +514,30 @@ end
 
 function addon:GROUP_ROSTER_UPDATE()
     for i = 1, 5 do
-        if UnitExists("party"..i) then
-            if activeFrames["party"..i] then
-                activeFrames["party"..i]:Hide()
-                activeFrames["party"..i]._data = nil
-            end
-        else
-            -- party member no longer exists, release castbar
-            local castbar = activeFrames["party"..i]
-            if castbar then
+        local unitID = "party"..i
+        local castbar = activeFrames[unitID]
+        activeGUIDs[unitID] = UnitGUID(unitID) or nil
+
+        if castbar then
+            if UnitExists(unitID) then
+                castbar:Hide()
+                castbar:ClearAllPoints()
+                castbar._data = nil
+            else
+                -- party member no longer exists, release castbar completely
                 PoolManager:ReleaseFrame(castbar)
                 activeFrames["party"..i] = nil
             end
         end
+
+        -- Restart any active casts
+        if UnitCastingInfo(unitID) then
+            self:UNIT_SPELLCAST_START(unitID)
+        elseif UnitChannelInfo(unitID) then
+            self:UNIT_SPELLCAST_CHANNEL_START(unitID)
+        end
     end
 end
-addon.GROUP_JOINED = addon.GROUP_ROSTER_UPDATE
 
 local COMBATLOG_OBJECT_CONTROL_PLAYER = _G.COMBATLOG_OBJECT_CONTROL_PLAYER
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
