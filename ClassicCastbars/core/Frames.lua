@@ -419,8 +419,8 @@ function addon:SkinPlayerCastbar()
     local db = self.db.player
     if not db.enabled then return end
 
-    if not CastingBarFrame:IsEventRegistered("UNIT_SPELLCAST_START") then
-        print("|cFFFF0000[ClassicCastbars] Incompatibility detected for player castbar. You most likely have another addon disabling the Blizzard castbar.|r") -- luacheck: ignore
+    if not CastingBarFrame.showCastbar or not CastingBarFrame:IsEventRegistered("UNIT_SPELLCAST_START") then
+        print("|cFFFF0000[ClassicCastbars] Incompatibility detected for player castbar. You most likely have another addon disabling the default Blizzard castbar.|r") -- luacheck: ignore
     end
 
     if not CastingBarFrame.Timer then
@@ -443,7 +443,7 @@ function addon:SkinPlayerCastbar()
         end)
 
         hooksecurefunc(CastingBarFrame.Text, "SetText", function(_, text)
-            if text then
+            if text and text.len then
                 CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, (text:len() >= 19) and 30 or -6, 0)
             end
         end)
