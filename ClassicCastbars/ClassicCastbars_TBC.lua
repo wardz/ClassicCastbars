@@ -18,6 +18,8 @@ addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 
+local GetSchoolString = _G.GetSchoolString
+local strformat = _G.string.format
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local UnitIsFriend = _G.UnitIsFriend
 local UnitCastingInfo = _G.UnitCastingInfo
@@ -545,7 +547,7 @@ local bit_band = _G.bit.band
 local playerInterrupts = namespace.playerInterrupts
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, spellSchool, missType = CombatLogGetCurrentEventInfo()
     if eventType == "SPELL_MISSED" then
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
@@ -585,6 +587,14 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
                 else
                     self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+                end
+            end
+        end
+    elseif eventType == "SPELL_INTERRUPT" then
+        for unitID, castbar in pairs(activeFrames) do -- have to scan for it due to race conditions with UNIT_SPELLCAST_*
+            if castbar:GetAlpha() > 0 then
+                if UnitGUID(unitID) == dstGUID then
+                    castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(spellSchool)))
                 end
             end
         end
