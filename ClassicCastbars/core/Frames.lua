@@ -395,8 +395,8 @@ end
 -- Player & Focus Castbar Stuff
 --------------------------------------------------------------
 
-local function ColorPlayerCastbar(db)
-    db = db or addon.db.player
+local function ColorPlayerCastbar()
+    local db = addon.db.player
     if not db.enabled then return end
 
     CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
@@ -455,13 +455,6 @@ function addon:SkinPlayerCastbar()
             if frame.Icon:GetTexture() == 136235 then
                 frame.Icon:SetTexture(136243)
             end
-
-            if not addon.playerColorChangesRan then
-                -- Color castbar on first OnShow triggered aswell with a small delay. Hopefully fixes an issue where other addons or scripts
-                -- can cause conflicts by overwriting our color values
-                addon.playerColorChangesRan = true
-                C_Timer.After(0.3, ColorPlayerCastbar)
-            end
         end)
 
         hooksecurefunc("PlayerFrame_DetachCastBar", function()
@@ -489,8 +482,6 @@ function addon:SkinPlayerCastbar()
         CastingBarFrame.Flash:SetTexture(nil) -- Hide it by removing texture. SetAlpha() or Hide() wont work without messing with blizz code
     end
 
-    ColorPlayerCastbar(db)
-
     CastingBarFrame.Text:ClearAllPoints()
     CastingBarFrame.Text:SetPoint(db.textPoint)
     CastingBarFrame.Text:SetJustifyH(db.textPoint)
@@ -515,6 +506,8 @@ function addon:SkinPlayerCastbar()
 
     self:SetCastbarStyle(CastingBarFrame, nil, db, "player")
     self:SetCastbarFonts(CastingBarFrame, nil, db)
+    hooksecurefunc("CastingBarFrame_OnLoad", ColorPlayerCastbar)
+    C_Timer.After(GetTickTime(), ColorPlayerCastbar)
 end
 
 --@version-classic@
