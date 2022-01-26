@@ -285,11 +285,13 @@ function addon:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
 end
 
 function addon:DisplayCastbar(castbar, unitID)
+    local cast = castbar._data
+    if not cast then return end
+
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end
 
     local db = self.db[self:GetUnitType(unitID)]
-    local cast = castbar._data
 
     castbar.animationGroup = castbar.animationGroup or self:CreateFadeAnimationGroup(castbar)
     if castbar.animationGroup:IsPlaying() then
@@ -332,6 +334,8 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
         return
     end
 
+    if castbar:GetAlpha() <= 0 then return end
+
     local cast = castbar._data
     if cast then
         if cast.isInterrupted or cast.isFailed then
@@ -371,7 +375,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
         end
     end
 
-    if --[[castbar:GetAlpha() > 0 and]] castbar.fade then
+    if castbar.fade then
         if not castbar.fade:IsPlaying() then
             castbar.fade:SetStartDelay(0) -- reset
             if cast then
