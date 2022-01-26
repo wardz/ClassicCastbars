@@ -371,7 +371,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
         end
     end
 
-    if castbar:GetAlpha() > 0 and castbar.fade then
+    if --[[castbar:GetAlpha() > 0 and]] castbar.fade then
         if not castbar.fade:IsPlaying() then
             castbar.fade:SetStartDelay(0) -- reset
             if cast then
