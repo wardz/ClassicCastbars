@@ -292,7 +292,9 @@ function addon:DisplayCastbar(castbar, unitID)
     local cast = castbar._data
 
     castbar.animationGroup = castbar.animationGroup or self:CreateFadeAnimationGroup(castbar)
-    castbar.animationGroup:Stop()
+    if castbar.animationGroup:IsPlaying() then
+        castbar.animationGroup:Stop()
+    end
 
     -- Note: since frames are recycled and we also allow having different styles
     -- between castbars for all the unitframes, we need to always update the style here
@@ -322,6 +324,9 @@ end
 
 function addon:HideCastbar(castbar, unitID, skipFadeOut)
     if skipFadeOut then
+        if castbar.animationGroup then
+            castbar.animationGroup:Stop()
+        end
         castbar:SetAlpha(0)
         castbar:Hide()
         return

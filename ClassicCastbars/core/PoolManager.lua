@@ -7,6 +7,10 @@ local function ResetterFunc(pool, frame)
     frame:SetParent(nil)
     frame:ClearAllPoints()
 
+    if frame.animationGroup and frame.animationGroup:IsPlaying() then
+        frame.animationGroup:Stop()
+    end
+
     if frame._data then
         frame._data = nil
     end
