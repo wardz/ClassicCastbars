@@ -75,7 +75,7 @@ function addon:CheckCastModifiers(unitID, cast)
 
     -- Debuffs
     if not cast.isChanneled and not cast.hasCastSlowModified then
-        for i = 1, 16 do
+        for i = 1, 40 do -- 16 in classic era but 40 in season of mastery
             local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
             if not spellID then break end -- no more debuffs
 
@@ -100,7 +100,7 @@ function addon:CheckCastModifiers(unitID, cast)
     -- Buffs
     local libCD = LibStub and LibStub("LibClassicDurations", true)
     local GetUnitAura = libCD and libCD.UnitAuraDirect or UnitAura
-    for i = 1, 32 do
+    for i = 1, 40 do
         local name = GetUnitAura(unitID, i, "HELPFUL")
         if not name then break end -- no more buffs
 
