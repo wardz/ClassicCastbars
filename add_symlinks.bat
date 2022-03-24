@@ -9,7 +9,7 @@ set "path_classic=C:\Program Files (x86)\World of Warcraft\_classic_era_\Interfa
 
 :: Download BigWigs packager script
 if NOT exist release.sh (
-  powershell.exe -Command "Invoke-WebRequest https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh -OutFile release.sh"
+  powershell.exe -Command "Invoke-WebRequest https://raw.githubusercontent.com/BigWigsMods/packager/v1/release.sh -OutFile release.sh"
 )
 
 :: Create build folder if it doesn't already exists.
