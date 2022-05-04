@@ -1,0 +1,20 @@
+name: Luacheck Analyze & Lint
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install and run Luacheck
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: --quiet
