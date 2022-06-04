@@ -502,19 +502,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.CAST_BORDER,
                         desc = L.CAST_BORDER_TOOLTIP,
                         values = GetLSMTable("border"),
-                        confirm = function(info, value)
-                            if ClassicCastbars.db[info[1]].showBorderShield then
-                                if value ~= "Interface\\CastingBar\\UI-CastingBar-Border-Small" then
-                                    return L.CAST_BORDER_SHIELD_NOTICE
-                                end
-                            end
-                            return false
-                        end,
                         get = function(info)
                             return GetLSMNameByTexture("border", ClassicCastbars.db[info[1]][info[3]])
                         end,
                         set = function(info, value)
                             ClassicCastbars.db[info[1]][info[3]] = GetLSMTable("border")[value]
+                            if ClassicCastbars.db[info[1]].showBorderShield then
+                                print("ClassicCastbars: " .. L.CAST_BORDER_SHIELD_NOTICE) --luacheck: ignore
+                            end
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
