@@ -18,6 +18,7 @@ L["BORDERSHIELD_TOOLTIP"] = [=[Shows a shield around the castbar when a cast can
 |cffffff00You can click the "Toggle Testing Castbar" button while holding down any modifier keys like SHIFT or CTRL to test the castbar with border shield shown.|r
 ]=]
 L["CAST_BORDER"] = "Select Border Texture"
+L["CAST_BORDER_SHIELD_NOTICE"] = "Notice: When changing border textures you might also want to disable the uninterruptible border shield option. Uninterruptible casts will then still be grey colored, but without the Blizzard shield border."
 L["CAST_BORDER_TOOLTIP"] = "Select texture used for castbar border."
 L["CAST_FILL_HEADER"] = "Cast Fill Colors"
 L["CAST_FONT"] = "Select Castbar Font"
