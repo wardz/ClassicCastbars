@@ -30,13 +30,19 @@ local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
 local next = _G.next
 
--- cast immunity buffs that gives *both* physical and magical interrupt protection
+-- cast immunity auras that gives physical or magical interrupt protection
 local castImmunityBuffs = {
-    --[GetSpellInfo(1022)] = true, -- Blessing of Protection
     [GetSpellInfo(642)] = true, -- Divine Shield
     [GetSpellInfo(498)] = true, -- Divine Protection
-    --[GetSpellInfo(24021)] = true, -- Anti Magic Shield
 }
+
+local _, playerClass = UnitClass("player")
+if playerClass == "WARRIOR" or playerClass == "ROGUE" or playerClass == "DRUID" then
+    castImmunityBuffs[GetSpellInfo(1022)] = true -- Blessing of Protection
+else
+    castImmunityBuffs[GetSpellInfo(41451)] = true -- Blessing of Spell Warding
+    castImmunityBuffs[GetSpellInfo(24021)] = true -- Anti Magic Shield
+end
 
 local castEvents = {
     "UNIT_SPELLCAST_START",
