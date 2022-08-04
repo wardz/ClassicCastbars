@@ -554,7 +554,7 @@ local bit_band = _G.bit.band
 local playerInterrupts = namespace.playerInterrupts
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, spellSchool, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType, _, extraSchool = CombatLogGetCurrentEventInfo()
     if eventType == "SPELL_MISSED" then
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
@@ -601,7 +601,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         for unitID, castbar in pairs(activeFrames) do -- have to scan for it due to race conditions with UNIT_SPELLCAST_*
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then
-                    castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(spellSchool)))
+                    castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
                 end
             end
         end
