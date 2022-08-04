@@ -17,7 +17,7 @@ core/Data.lua
 ClassicCastbars.lua
 #@end-version-classic@
 #@version-bcc@
-ClassicCastbars_TBC.lua
+ClassicCastbars_NonClassic.lua
 #@end-version-bcc@
 core/Frames.lua
 core/LoadOptions.lua
