@@ -32,6 +32,8 @@ body:
     description: Which version(s) of World of Warcraft are you experiencing the issue for?
     multiple: true
     options:
+      - Retail
+      - Wrath of the Lich King
       - The Burning Crusade Classic
       - Classic Era
   validations:
