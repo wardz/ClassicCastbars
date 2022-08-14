@@ -41,7 +41,7 @@ local anchors = {
         "CompactRaidGroup1Member%d",
     },
 
-    --@version-bcc@
+    --@non-version-classic@
     focus = {
         "SUFUnitfocus",
         "XPerl_Focushighlight",
@@ -73,7 +73,7 @@ local anchors = {
         "oUF_LumenArena%d",
         "ArenaEnemyFrame%d",
     },
-    --@end-version-bcc@
+    --@end-non-version-classic@
 }
 
 local _G = _G

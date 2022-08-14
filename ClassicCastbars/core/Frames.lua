@@ -30,7 +30,7 @@ end
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
-    if unitID == "player" then return CastingBarFrame end
+    if unitID == "player" then return end
 
     if activeFrames[unitID] then
         return activeFrames[unitID]
@@ -42,7 +42,7 @@ function addon:GetCastbarFrame(unitID)
 end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
-    if not isClassic and parentFrame:GetName() == "TargetFrame" then
+    if not isClassic and (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
         if ( parentFrame.haveToT ) then
             if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
                 castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 )
@@ -308,6 +308,8 @@ function addon:DisplayCastbar(castbar, unitID)
 
     if unitID == "target" and self.db.target.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
+    elseif not isClassic and unitID == "focus" and self.db.focus.autoPosition then
+        self:SetTargetCastbarPosition(castbar, parentFrame)
     else
         castbar:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
     end
@@ -387,9 +389,9 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
             --@version-classic@
             castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
             --@end-version-classic@
-            --@version-bcc@
+            --@non-version-classic@
             castbar.fade:SetDuration(0.6)
-            --@end-version-bcc@
+            --@end-non-version-classic@
             castbar.animationGroup:Play()
         end
     end
@@ -403,9 +405,15 @@ local function ColorPlayerCastbar()
     local db = addon.db.player
     if not db.enabled then return end
 
+    if CastingBarFrame_SetNonInterruptibleCastColor then
+        -- TODO: fix me
+        CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, unpack(db.statusColorUninterruptible))
+    else
+        CastingBarFrame.iconWhenNoninterruptible = false
+    end
+
     CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
-	CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
-	CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, unpack(db.statusColorUninterruptible))
+    CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
     CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
     --if CastingBarFrame.isTesting then
         CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))

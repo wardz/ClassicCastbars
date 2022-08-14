@@ -1,6 +1,8 @@
-## Interface: 11402
-## Interface-Classic: 11402
+## Interface: 11403
+## Interface-Retail: 90205
+## Interface-Classic: 11403
 ## Interface-BCC: 20504
+## Interface-Wrath: 30400
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## Version: @project-version@

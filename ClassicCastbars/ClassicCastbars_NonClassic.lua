@@ -1,5 +1,13 @@
-if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then
-    return (_G.message or print)("[ERROR] You're using the TBC/WOTLK version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
+if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
+    return (_G.message or print)("[ERROR] You're using the vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
+end
+
+local CLIENT_IS_TBC = _G.WOW_PROJECT_ID == (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
+
+-- FIXME: WOW_PROJECT_ID is currently equal to TBC in wrath, this is a temp override fix until blizz adds the new constants
+local tocVersion = select(4, GetBuildInfo())
+if tocVersion >= 30400 and tocVersion < 40000 then
+    CLIENT_IS_TBC = false
 end
 
 local _, namespace = ...
@@ -86,6 +94,7 @@ function addon:GetCastbarFrameIfEnabled(unitID)
             local isFriendly = UnitIsFriend("player", unitID)
             if not self.db.nameplate.showForFriendly and isFriendly then return end
             if not self.db.nameplate.showForEnemy and not isFriendly then return end
+            if UnitIsUnit("player", unitID) then return end -- personal resource display nameplate
         end
 
         return addon:GetCastbarFrame(unitID)
@@ -169,31 +178,33 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     cast.timeStart = startTimeMS / 1000
     cast.unitIsPlayer = UnitIsPlayer(unitID)
     cast.origIsUninterruptible = nil
-    cast.isUninterruptible = nil
+    cast.isUninterruptible = notInterruptible or nil
     cast.isFailed = nil
     cast.isInterrupted = nil
     cast.isCastComplete = nil
 
-    cast.isUninterruptible = uninterruptibleList[spellName] or false
-    if not cast.isUninterruptible and not cast.unitIsPlayer then
-        local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
-        if npcID then
-            cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. spellName]
-            -- Check for debuff silences. If mob is still casting while silenced he's most likely interrupt immune
-            -- (if silence effect hits but not kick itself it wont actually show up in CLEU as spell immuned so we gotta check here aswell)
-            for i = 1, 40 do
-                local debuffName = UnitAura(unitID, i, "HARMFUL")
-                if not debuffName then break end
-                if playerSilences[debuffName] then
-                    self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] = true
-                    cast.isUninterruptible = true
-                    break
+    if CLIENT_IS_TBC then -- only wotlk and beyond has notInterruptible from UnitCastingInfo()
+        cast.isUninterruptible = uninterruptibleList[spellName] or false
+        if not cast.isUninterruptible and not cast.unitIsPlayer then
+            local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
+            if npcID then
+                cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. spellName]
+                -- Check for debuff silences. If mob is still casting while silenced he's most likely interrupt immune
+                -- (if silence effect hits but not kick itself it wont actually show up in CLEU as spell immuned so we gotta check here aswell)
+                for i = 1, 40 do
+                    local debuffName = UnitAura(unitID, i, "HARMFUL")
+                    if not debuffName then break end
+                    if playerSilences[debuffName] then
+                        self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] = true
+                        cast.isUninterruptible = true
+                        break
+                    end
                 end
             end
         end
     end
 
-    if not cast.isUninterruptible then
+    if CLIENT_IS_TBC and not cast.isUninterruptible then
         -- Check for temp buff immunities
         for i = 1, 40 do
             local buffName = UnitAura(unitID, i, "HELPFUL")
@@ -216,6 +227,9 @@ function addon:UNIT_AURA(unitID)
             end
         end
     end
+
+    -- Checks below are only needed for TBC (+vanilla but thats handled in the other CLassicCastbars lua file)
+    if not CLIENT_IS_TBC then return end
 
     local castbar = activeFrames[unitID]
     if not castbar or not castbar._data then return end
@@ -294,12 +308,17 @@ function addon:PLAYER_FOCUS_CHANGED()
 end
 
 function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
+    if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
+
     activeGUIDs[namePlateUnitToken] = UnitGUID(namePlateUnitToken) or nil
 
     local plate = GetNamePlateForUnit(namePlateUnitToken)
-    plate.UnitFrame.CastBar.showCastbar = not self.db.nameplate.enabled
-    if self.db.nameplate.enabled then
-        plate.UnitFrame.CastBar:Hide()
+    local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
+    if plateCastbar then
+        plateCastbar.showCastbar = not self.db.nameplate.enabled
+        if self.db.nameplate.enabled then
+            plateCastbar:Hide()
+        end
     end
 
     if UnitCastingInfo(namePlateUnitToken) then
@@ -561,7 +580,7 @@ local playerInterrupts = namespace.playerInterrupts
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType, _, extraSchool = CombatLogGetCurrentEventInfo()
-    if eventType == "SPELL_MISSED" then
+    if eventType == "SPELL_MISSED" and CLIENT_IS_TBC then
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
@@ -589,7 +608,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
-        if castImmunityBuffs[spellName] then
+        if CLIENT_IS_TBC and castImmunityBuffs[spellName] then
             local unitID = self:GetFirstAvailableUnitIDByGUID(dstGUID)
             if not unitID then return end
 
@@ -604,6 +623,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
     elseif eventType == "SPELL_INTERRUPT" then
+        -- TODO: check channeled
         for unitID, castbar in pairs(activeFrames) do -- have to scan for it due to race conditions with UNIT_SPELLCAST_*
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then

@@ -30,6 +30,10 @@ globals = {
 }
 
 read_globals = {
+    "WOW_PROJECT_ID",
+    "WOW_PROJECT_CLASSIC",
+    "WOW_PROJECT_BURNING_CRUSADE_CLASSIC",
+    "GetBuildInfo",
     "ArenaEnemyFrames",
     "C_NamePlate",
     "C_Timer",

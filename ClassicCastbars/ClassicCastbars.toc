@@ -1,6 +1,8 @@
-## Interface: 11402
-## Interface-Classic: 11402
+## Interface: 11403
+## Interface-Retail: 90205
+## Interface-Classic: 11403
 ## Interface-BCC: 20504
+## Interface-Wrath: 30400
 ## Title: ClassicCastbars
 ## Notes: Adds customizable castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
@@ -16,8 +18,8 @@ core/Data.lua
 #@version-classic@
 ClassicCastbars.lua
 #@end-version-classic@
-#@version-bcc@
+#@non-version-classic@
 ClassicCastbars_NonClassic.lua
-#@end-version-bcc@
+#@end-non-version-classic@
 core/Frames.lua
 core/LoadOptions.lua

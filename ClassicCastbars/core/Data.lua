@@ -1,6 +1,14 @@
 local _, namespace = ...
 local GetSpellInfo = _G.GetSpellInfo
 
+local CLIENT_PRE_WOTLK = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) or (WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5))
+
+-- FIXME: WOW_PROJECT_ID is currently equal to TBC in wrath, this is a temp override fix until blizz adds the new constants
+local tocVersion = select(4, GetBuildInfo())
+if tocVersion >= 30400 and tocVersion < 40000 then
+    CLIENT_PRE_WOTLK = false
+end
+
 -------------------------------------------------------------------------------
 --@version-classic@
 -------------------------------------------------------------------------------
@@ -1804,88 +1812,89 @@ namespace.castModifiers = {
 --@end-version-classic@
 -------------------------------------------------------------------------------
 
--- List of player interrupts that can lock out a school (not silences)
-namespace.playerInterrupts = {
-    [GetSpellInfo(2139)] = 1,  -- Counterspell
-    [GetSpellInfo(1766)] = 1,  -- Kick
-    [GetSpellInfo(8042)] = 1,  -- Earth Shock
-    [GetSpellInfo(19244)] = 1, -- Spell Lock
-    [GetSpellInfo(6552)] = 1,  -- Pummel
-    [GetSpellInfo(16979)] = 1, -- Feral Charge
-    [GetSpellInfo(72)] = 1, -- Shield Bash
-}
+if CLIENT_PRE_WOTLK then
+    -- List of player interrupts that can lock out a school (not silences)
+    namespace.playerInterrupts = {
+        [GetSpellInfo(2139)] = 1,  -- Counterspell
+        [GetSpellInfo(1766)] = 1,  -- Kick
+        [GetSpellInfo(8042)] = 1,  -- Earth Shock
+        [GetSpellInfo(19244)] = 1, -- Spell Lock
+        [GetSpellInfo(6552)] = 1,  -- Pummel
+        [GetSpellInfo(16979)] = 1, -- Feral Charge
+        [GetSpellInfo(72)] = 1,    -- Shield Bash
+        --@version-bcc@
+        [GetSpellInfo(32747)] = 1, -- Deadly Throw Interrupt Effect
+        --@end-version-bcc@
+    }
 
-namespace.playerSilences = {
-    --@version-bcc@
-    [GetSpellInfo(18469)] = 1,  -- Counterspell - Silenced
-    [GetSpellInfo(18425)] = 1,  -- Kick - Silenced
-    [GetSpellInfo(24259)] = 1, -- Spell Lock
-    [GetSpellInfo(15487)] = 1, -- Silence
-    [GetSpellInfo(34490)] = 1, -- Silencing Shot
-    --@end-version-bcc@
-}
+    namespace.playerSilences = {
+        --@version-bcc@
+        [GetSpellInfo(18469)] = 1, -- Counterspell - Silenced
+        [GetSpellInfo(18425)] = 1, -- Kick - Silenced
+        [GetSpellInfo(24259)] = 1, -- Spell Lock
+        [GetSpellInfo(15487)] = 1, -- Silence
+        [GetSpellInfo(34490)] = 1, -- Silencing Shot
+        --@end-version-bcc@
+    }
 
---@version-bcc@
-namespace.playerInterrupts[GetSpellInfo(32747)] = 1 -- Deadly Throw Interrupt Effect
---@end-version-bcc@
+    -- Player spells that can't be interrupted
+    namespace.uninterruptibleList = {
+        [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+        [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+        [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+        [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+        [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+        [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+        [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+        [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+        [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+        [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+        [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+        [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
+        [GetSpellInfo(23041)] = 1,      -- Call Anathema
+        [GetSpellInfo(20589)] = 1,      -- Escape Artist
+        [GetSpellInfo(20549)] = 1,      -- War Stomp
+        [GetSpellInfo(1510)] = 1,       -- Volley
+        [GetSpellInfo(20904)] = 1,      -- Aimed Shot
+        --@version-bcc@
+        [GetSpellInfo(34120)] = 1,      -- Steady Shot
+        --@end-version-bcc@
+        [GetSpellInfo(11605)] = 1,      -- Slam
+        [GetSpellInfo(1804)] = 1,       -- Pick Lock
+        [GetSpellInfo(1842)] = 1,       -- Disarm Trap
+        [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
+        --@version-classic@
+        [GetSpellInfo(2480)] = 1,       -- Shoot Bow
+        [GetSpellInfo(7918)] = 1,       -- Shoot Gun
+        [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
+        --@end-version-classic@
+        [GetSpellInfo(11202)] = 1,      -- Crippling Poison
+        [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
+        [GetSpellInfo(2835)] = 1,       -- Deadly Poison
+        [GetSpellInfo(2837)] = 1,       -- Deadly Poison II
+        [GetSpellInfo(11355)] = 1,      -- Deadly Poison III
+        [GetSpellInfo(11356)] = 1,      -- Deadly Poison IV
+        [GetSpellInfo(25347)] = 1,      -- Deadly Poison V
+        [GetSpellInfo(8681)] = 1,       -- Instant Poison
+        [GetSpellInfo(8686)] = 1,       -- Instant Poison II
+        [GetSpellInfo(8688)] = 1,       -- Instant Poison III
+        [GetSpellInfo(11338)] = 1,      -- Instant Poison IV
+        [GetSpellInfo(11339)] = 1,      -- Instant Poison V
+        [GetSpellInfo(11343)] = 1,      -- Instant Poison VI
+        [GetSpellInfo(5761)] = 1,       -- Mind-numbing Poison
+        [GetSpellInfo(8693)] = 1,       -- Mind-numbing Poison II
+        [GetSpellInfo(11399)] = 1,      -- Mind-numbing Poison III
+        [GetSpellInfo(13227)] = 1,      -- Wound Poison
+        [GetSpellInfo(13228)] = 1,      -- Wound Poison II
+        [GetSpellInfo(13229)] = 1,      -- Wound Poison III
+        [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
 
--- Player spells that can't be interrupted
-namespace.uninterruptibleList = {
-    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
-    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
-    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
-    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
-    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
-    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
-    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
-    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
-    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
-    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
-    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
-    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
-    [GetSpellInfo(23041)] = 1,      -- Call Anathema
-    [GetSpellInfo(20589)] = 1,      -- Escape Artist
-    [GetSpellInfo(20549)] = 1,      -- War Stomp
-    [GetSpellInfo(1510)] = 1,       -- Volley
-    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
-    --@version-bcc@
-    [GetSpellInfo(34120)] = 1,      -- Steady Shot
-    --@end-version-bcc@
-    [GetSpellInfo(11605)] = 1,      -- Slam
-    [GetSpellInfo(1804)] = 1,       -- Pick Lock
-    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
-    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
-    --@version-classic@
-    [GetSpellInfo(2480)] = 1,       -- Shoot Bow
-    [GetSpellInfo(7918)] = 1,       -- Shoot Gun
-    [GetSpellInfo(7919)] = 1,       -- Shoot Crossbow
-    --@end-version-classic@
-    [GetSpellInfo(11202)] = 1,      -- Crippling Poison
-    [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
-    [GetSpellInfo(2835)] = 1,       -- Deadly Poison
-    [GetSpellInfo(2837)] = 1,       -- Deadly Poison II
-    [GetSpellInfo(11355)] = 1,      -- Deadly Poison III
-    [GetSpellInfo(11356)] = 1,      -- Deadly Poison IV
-    [GetSpellInfo(25347)] = 1,      -- Deadly Poison V
-    [GetSpellInfo(8681)] = 1,       -- Instant Poison
-    [GetSpellInfo(8686)] = 1,       -- Instant Poison II
-    [GetSpellInfo(8688)] = 1,       -- Instant Poison III
-    [GetSpellInfo(11338)] = 1,      -- Instant Poison IV
-    [GetSpellInfo(11339)] = 1,      -- Instant Poison V
-    [GetSpellInfo(11343)] = 1,      -- Instant Poison VI
-    [GetSpellInfo(5761)] = 1,       -- Mind-numbing Poison
-    [GetSpellInfo(8693)] = 1,       -- Mind-numbing Poison II
-    [GetSpellInfo(11399)] = 1,      -- Mind-numbing Poison III
-    [GetSpellInfo(13227)] = 1,      -- Wound Poison
-    [GetSpellInfo(13228)] = 1,      -- Wound Poison II
-    [GetSpellInfo(13229)] = 1,      -- Wound Poison III
-    [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
-
-    -- these are technically uninterruptible but breaks on dmg
-    [GetSpellInfo(22999)] = 1,      -- Defibrillate
-    [GetSpellInfo(746)] = 1,        -- First Aid
-    [GetSpellInfo(20577)] = 1,      -- Cannibalize
-}
+        -- these are technically uninterruptible but breaks on dmg
+        [GetSpellInfo(22999)] = 1,      -- Defibrillate
+        [GetSpellInfo(746)] = 1,        -- First Aid
+        [GetSpellInfo(20577)] = 1,      -- Cannibalize
+    }
+end -- CLIENT_PRE_WOTLK
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
@@ -1982,10 +1991,10 @@ namespace.defaultConfig = {
         autoPosition = false, -- luacheck: ignore
         position = { "TOPLEFT", 275, -260 }, -- luacheck: ignore
         --@end-version-classic@
-        --@version-bcc@
+        --@non-version-classic@
         autoPosition = true,
         position = { "CENTER", -19, -112 },
-        --@end-version-bcc@
+        --@end-non-version-classic@
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
@@ -2038,7 +2047,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
     },
 
-    --@version-bcc@
+    --@non-version-classic@
     arena = {
         enabled = false,
         width = 150,
@@ -2072,7 +2081,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
     },
-    --@end-version-bcc@
+    --@end-non-version-classic@
 
     player = {
         enabled = false,
