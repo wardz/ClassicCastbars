@@ -10,7 +10,6 @@
 ## Version: @project-version@
 ## X-Curse-Project-ID: 322865
 ## X-Wago-ID: vEGPdkG1
-## X-WoWI-ID: 24925
 
 core/PoolManager.lua
 core/AnchorManager.lua
