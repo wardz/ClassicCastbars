@@ -151,9 +151,15 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     castbar._data = castbar._data or {}
     local cast = castbar._data
 
-    local GetCastingInfo = isChanneled and UnitChannelInfo or UnitCastingInfo
-    local spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, _, _, spellID = GetCastingInfo(unitID)
+    local spellName, iconTexturePath, startTimeMS, endTimeMS, notInterruptible, spellID, _
+    if not isChanneled then
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, _, notInterruptible, spellID = UnitCastingInfo(unitID)
+    else
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
+    end
+
     if not spellName then return end
+
     cast.maxValue = (endTimeMS - startTimeMS) / 1000
     cast.endTime = endTimeMS / 1000
     cast.spellName = spellName
