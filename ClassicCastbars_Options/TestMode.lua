@@ -112,7 +112,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
         return false
     end
 
-    local castbar = ClassicCastbars:GetCastbarFrame(unitID)
+    local castbar = unitID == "player" and _G.CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
     if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames in TBC :(
         castbar:SetMovable(true)
         castbar:SetClampedToScreen(true)
@@ -177,7 +177,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
 end
 
 function TestMode:SetCastbarImmovable(unitID)
-    local castbar = ClassicCastbars:GetCastbarFrame(unitID)
+    local castbar = unitID == "player" and _G.CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
     castbar:Hide()
     if castbar.tooltip then
         castbar.tooltip:Hide()

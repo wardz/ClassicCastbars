@@ -30,7 +30,7 @@ end
 
 function addon:GetCastbarFrame(unitID)
     -- PoolManager:DebugInfo()
-    if unitID == "player" then return end
+    if unitID == "player" then return end -- no point returning CastingBarFrame here, we only skin it, not replace it and its events
 
     if activeFrames[unitID] then
         return activeFrames[unitID]
