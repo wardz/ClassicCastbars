@@ -89,14 +89,14 @@ function TestMode:ToggleCastbarMovable(unitID)
     if self.isTesting[unitID] then
         self:SetCastbarImmovable(unitID)
         self.isTesting[unitID] = false
-        if unitID == "nameplate-testmode" then
-            self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-        end
+        --if unitID == "nameplate-testmode" then
+            --self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        --end
     else
         if self:SetCastbarMovable(unitID) then
             self.isTesting[unitID] = true
 
-            if ClassicCastbars.db.nameplate.enabled and unitID == "nameplate-testmode" then
+            if (ClassicCastbars.db.nameplate.enabled and unitID == "nameplate-testmode") or (ClassicCastbars.db.target.enabled and unitID == "target") then
                 self:RegisterEvent("PLAYER_TARGET_CHANGED")
             end
         end
@@ -223,12 +223,13 @@ TestMode:SetScript("OnEvent", function(self)
     if self.isTesting["nameplate-testmode"] then
         C_Timer.After(0.2, TestMode.ReanchorOnNameplateTargetSwitch)
     end
-end)
 
-if date("%d.%m") == "01.04" then -- April Fools :)
-    C_Timer.After(1800, function()
-        if not UnitIsDeadOrGhost("player") and not IsInRaid() then
-            DoEmote(math.random(0, 1) == 1 and "fart" or "nosepick")
+    if self.isTesting["target"] and ClassicCastbars.db.target.enabled then
+        local anchor = ClassicCastbars.AnchorManager:GetAnchor("target")
+        if anchor then
+            TestMode:SetCastbarMovable("target", anchor)
+        else
+            TestMode:SetCastbarImmovable("target")
         end
-    end)
-end
+    end
+end)
