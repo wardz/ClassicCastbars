@@ -569,7 +569,7 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = CreateUnitTabGroup("player", L.PLAYER, 4),
+            player = WOW_PROJECT_ID ~= 1 and CreateUnitTabGroup("player", L.PLAYER, 4) or nil,
             focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
             arena = not isClassic and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 

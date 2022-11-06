@@ -531,7 +531,11 @@ function addon:PLAYER_LOGIN()
     end
 
     if self.db.player.enabled then
-        self:SkinPlayerCastbar()
+        if WOW_PROJECT_ID ~= 1 then
+            self:SkinPlayerCastbar()
+        else
+            self.db.player.enabled = false
+        end
     end
 
     self:DisableBlizzardCastbar("target", self.db.target.enabled)
