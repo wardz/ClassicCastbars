@@ -55,6 +55,7 @@ function PoolManager:InitializeNewFrame(frame)
     if WOW_PROJECT_ID == 1 then
         frame.TextBorder:SetAlpha(0)
         frame.BorderShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield")
+        frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
     end
 
     -- Clear any scripts inherited from frame template

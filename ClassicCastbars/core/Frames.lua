@@ -191,17 +191,17 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
             castbar.BorderFrameLSM:SetAlpha(0)
         end
 
-        if WOW_PROJECT_ID == 1 then -- is Dragonflight / retail
+        --[[if WOW_PROJECT_ID == 1 then -- is Dragonflight / retail
             castbar.Border:ClearAllPoints()
             castbar.Border:SetPoint("TOPLEFT", -1, 1)
             castbar.Border:SetPoint("BOTTOMRIGHT", 1, -1)
-        else
+        else]]
             -- Update border to match castbar size
             local width, height = ceil(castbar:GetWidth() * 1.16), ceil(castbar:GetHeight() * 1.16)
             castbar.Border:ClearAllPoints()
             castbar.Border:SetPoint("TOPLEFT", width, height+1)
             castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
-        end
+        --end
     else
         -- Using border sat by LibSharedMedia
         self:SetLSMBorders(castbar, cast, db)
