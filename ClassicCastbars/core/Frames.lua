@@ -14,6 +14,7 @@ local InCombatLockdown = _G.InCombatLockdown
 local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
     ["Interface\\CastingBar\\UI-CastingBar-Border"] = true,
+    [130873] = true,
 }
 
 local isClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
@@ -307,10 +308,10 @@ function addon:DisplayCastbar(castbar, unitID)
     -- Note: since frames are recycled and we also allow having different styles
     -- between castbars for all the unitframes, we need to always update the style here
     -- incase it was modified to something else on last recycle
-    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
     self:SetCastbarStyle(castbar, cast, db, unitID)
     self:SetCastbarIconAndText(castbar, cast, db)
     self:SetCastbarFonts(castbar, cast, db)
+    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
 
     if unitID == "target" and self.db.target.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
@@ -337,6 +338,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
         if castbar.animationGroup then
             castbar.animationGroup:Stop()
         end
+        castbar.BorderShield:Hide()
         castbar:SetAlpha(0)
         castbar:Hide()
         return
@@ -356,7 +358,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
 
         if cast.isCastComplete then -- SPELL_CAST_SUCCESS
             if castbar.Border:GetAlpha() == 1 or cast.isUninterruptible then
-                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] then
+                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] or nonLSMBorders[castbar.Border:GetTexture() or ""] then
                     if cast.isUninterruptible then
                         castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
                     elseif cast.isChanneled then

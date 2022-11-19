@@ -56,6 +56,7 @@ function PoolManager:InitializeNewFrame(frame)
         frame.TextBorder:SetAlpha(0)
         frame.BorderShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield")
         frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
+        frame.Flash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
     end
 
     -- Clear any scripts inherited from frame template

@@ -160,15 +160,16 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     castbar._data = castbar._data or {}
     local cast = castbar._data
 
-    local spellName, iconTexturePath, startTimeMS, endTimeMS, notInterruptible, spellID, _
+    local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
     if not isChanneled then
-        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, _, notInterruptible, spellID = UnitCastingInfo(unitID)
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
     end
 
     if not spellName then return end
 
+    cast.castID = castID
     cast.maxValue = (endTimeMS - startTimeMS) / 1000
     cast.endTime = endTimeMS / 1000
     cast.spellName = spellName
@@ -394,12 +395,13 @@ function addon:UNIT_SPELLCAST_INTERRUPTED(unitID)
     castbar._data = nil
 end
 
-function addon:UNIT_SPELLCAST_SUCCEEDED(unitID)
+function addon:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
     if not castbar.isTesting then
         if castbar._data then
+            if castbar._data.castID ~= castID then return end
             castbar._data.isCastComplete = true
             if castbar._data.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
         end
