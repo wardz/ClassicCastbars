@@ -400,10 +400,11 @@ function addon:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     if not castbar then return end
 
     if not castbar.isTesting then
-        if castbar._data then
-            if castbar._data.castID ~= castID then return end
-            castbar._data.isCastComplete = true
-            if castbar._data.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
+        local data = castbar._data
+        if data then
+            if not data.isChanneled and data.castID ~= castID then return end
+            data.isCastComplete = true
+            if data.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
         end
         self:HideCastbar(castbar, unitID)
     end
