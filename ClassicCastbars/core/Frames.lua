@@ -424,12 +424,12 @@ local function ColorPlayerCastbar()
     CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
     CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
     --if CastingBarFrame.isTesting then
-        CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))
+    CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))
     --end
 
     CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
     CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
-	CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
+    CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
 
     CastingBarFrame.Background = CastingBarFrame.Background or GetStatusBarBackgroundTexture(CastingBarFrame)
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
@@ -455,9 +455,17 @@ function addon:SkinPlayerCastbar()
                 end
 
                 if not frame.channeling then
-                    frame.Timer:SetFormattedText("%.1f", frame.maxValue - frame.value)
+                    if db.showTotalTimer then
+                        frame.Timer:SetFormattedText("%.1f/%.1f", frame.maxValue - frame.value, frame.maxValue)
+                    else
+                        frame.Timer:SetFormattedText("%.1f", frame.maxValue - frame.value)
+                    end
                 else
-                    frame.Timer:SetFormattedText("%.1f", frame.value)
+                    if db.showTotalTimer then
+                        frame.Timer:SetFormattedText("%.1f/%.1f", frame.value, frame.maxValue)
+                    else
+                        frame.Timer:SetFormattedText("%.1f", frame.value)
+                    end
                 end
             end
         end)
