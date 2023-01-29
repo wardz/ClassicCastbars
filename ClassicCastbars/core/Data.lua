@@ -2090,6 +2090,7 @@ namespace.defaultConfig = {
         iconSize = 22,
         showBorderShield = false,
         showTimer = false,
+        showTotalTimer = false,
         showIcon = true,
         showSpark = true,
         autoPosition = true,

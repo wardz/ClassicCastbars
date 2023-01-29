@@ -131,6 +131,15 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
+                    showTotalTimer = {
+                        order = 5,
+                        width = "full",
+                        name = L.SHOW_TOTAL_TIMER,
+                        desc = L.SHOW_TOTAL_TIMER_TOOLTIP,
+                        type = "toggle",
+                        hidden = unitID ~= "player",
+                        disabled = ModuleIsDisabled,
+                    },
                     showSpark = {
                         order = 6,
                         width = "full",
