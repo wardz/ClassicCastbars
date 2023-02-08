@@ -59,7 +59,7 @@ local castEvents = {
     "UNIT_SPELLCAST_SUCCEEDED",
     "UNIT_SPELLCAST_DELAYED",
     "UNIT_SPELLCAST_FAILED",
-    "UNIT_SPELLCAST_FAILED_QUIET",
+--    "UNIT_SPELLCAST_FAILED_QUIET",
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
@@ -662,6 +662,11 @@ addon:SetScript("OnUpdate", function(self)
                 castbar.Timer:SetFormattedText("%.1f", castTime)
                 local sparkPosition = (value / maxValue) * (castbar.currWidth or castbar:GetWidth())
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+            else
+                if castbar.fade and not castbar.fade:IsPlaying() then
+                    self:HideCastbar(castbar, unit, true)
+                    castbar._data = nil
+                end
             end
         end
     end

@@ -50,6 +50,8 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Icon:ClearAllPoints()
     frame.Text:ClearAllPoints()
     frame.Icon:SetPoint("LEFT", frame, -15, 0)
+    frame.Border:SetDrawLayer("OVERLAY", 6)
+    frame.Text:SetDrawLayer("OVERLAY", 7)
 
     -- Dragonflight / retail
     if WOW_PROJECT_ID == 1 then
