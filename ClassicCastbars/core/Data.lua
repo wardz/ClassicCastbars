@@ -1937,8 +1937,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
 
     target = {
@@ -1973,8 +1973,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
 
     focus = {
@@ -2015,8 +2015,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
 
     party = {
@@ -2051,8 +2051,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
 
     --@non-version-classic@
@@ -2088,8 +2088,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
     --@end-non-version-classic@
 
@@ -2126,8 +2126,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
-        borderPaddingHeight = 1.16,
-        borderPaddingWidth = 1.16,
+        borderPaddingHeight = 1.3,
+        borderPaddingWidth = 1.17,
     },
 }
 
