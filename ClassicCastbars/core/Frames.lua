@@ -109,10 +109,10 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
         end
 
         -- Update border shield to match current castbar size
-        local width, height = ceil(castbar:GetWidth() * 1.19), ceil(castbar:GetHeight() * 1.19)
+        local width, height = ceil(castbar:GetWidth() * db.borderPaddingWidth + 0.3), ceil(castbar:GetHeight() * db.borderPaddingHeight + 0.3)
         castbar.BorderShield:ClearAllPoints()
         castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
-        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.16), -height+4)
+        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.16), -height + 4)
 
         if not castbar.IconShield then
             castbar.BorderShield:SetTexCoord(0.16, 0, 0.118, 1, 1, 0, 1, 1) -- cut left side of texture away
@@ -198,10 +198,10 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
             castbar.Border:SetPoint("BOTTOMRIGHT", 1, -1)
         else]]
             -- Update border to match castbar size
-            local width, height = ceil(castbar:GetWidth() * 1.16), ceil(castbar:GetHeight() * 1.16)
+            local width, height = ceil(castbar:GetWidth() * db.borderPaddingWidth), ceil(castbar:GetHeight() * db.borderPaddingHeight)
             castbar.Border:ClearAllPoints()
-            castbar.Border:SetPoint("TOPLEFT", width, height+1)
-            castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
+            castbar.Border:SetPoint("TOPLEFT", width + 1, height + 3)
+            castbar.Border:SetPoint("BOTTOMRIGHT", -width - 2, -height - 1)
         --end
     else
         -- Using border sat by LibSharedMedia

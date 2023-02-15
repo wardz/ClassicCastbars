@@ -1898,7 +1898,7 @@ end -- CLIENT_PRE_WOTLK
 
 -- Addon Savedvariables
 namespace.defaultConfig = {
-    version = "30", -- settings version
+    version = "31", -- settings version
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
@@ -1937,6 +1937,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
 
     target = {
@@ -1971,6 +1973,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
 
     focus = {
@@ -2011,6 +2015,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
 
     party = {
@@ -2045,6 +2051,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
 
     --@non-version-classic@
@@ -2080,6 +2088,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
     --@end-non-version-classic@
 
@@ -2116,6 +2126,8 @@ namespace.defaultConfig = {
         frameLevel = 10,
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
+        borderPaddingHeight = 1.16,
+        borderPaddingWidth = 1.16,
     },
 }
 
