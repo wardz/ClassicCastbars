@@ -157,6 +157,9 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
     castbar.currWidth = db.width -- avoids having to use a function call later on
     castbar:SetIgnoreParentAlpha(db.ignoreParentAlpha)
+    castbar.Border:SetDrawLayer("OVERLAY", 6)
+    castbar.Text:SetDrawLayer("OVERLAY", 7)
+    castbar.Spark:SetDrawLayer("OVERLAY", 7)
 
     if cast and cast.isChanneled then
         castbar.Spark:SetAlpha(0)
