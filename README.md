@@ -1,6 +1,8 @@
 # ClassicCastbars
 
-World of Warcraft Classic addon that brings back the target & nameplate castbars. Casting times in Classic Era are always based on highest spell rank due to API restrictions.
+World of Warcraft Classic addon that brings back the target & nameplate castbars. Casting times in Classic Era are always based on highest spell rank due to API restrictions. TBC & Wrath works like usual. (Dragonflight should technically work too but is not really supported at the moment)
+
+Note: This addon is now in maintenance mode.
 
 ## Links
 
