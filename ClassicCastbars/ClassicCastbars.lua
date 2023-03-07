@@ -416,6 +416,13 @@ function addon:PLAYER_LOGIN()
         self.db.npcCastUninterruptibleCache = CopyTable(namespace.defaultConfig.npcCastUninterruptibleCache)
     end
 
+    -- Reset certain stuff on savedvariables file copied from different expansion
+    if self.db.arena.enabled or self.db.focus.autoPosition then -- not supported in classic era
+        self.db.arena.enabled = false
+        self.db.focus.autoPosition = false
+        self.db.focus.position = { "TOPLEFT", 275, -260 }
+    end
+
     if self.db.player.enabled then
         self:SkinPlayerCastbar()
     end
