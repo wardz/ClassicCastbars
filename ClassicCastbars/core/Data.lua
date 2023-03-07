@@ -1195,7 +1195,6 @@ if CLIENT_IS_CLASSIC_ERA then
     local castedSpells = {}
     namespace.castedSpells = castedSpells
 
-    -- TODO: cleanup
     local function BuildSpellNameToSpellIDTable()
         counter = 0
 
@@ -1207,13 +1206,13 @@ if CLIENT_IS_CLASSIC_ERA then
 
             cursor = i + 1
             counter = counter + 1
-            if counter > 400 then
+            if counter > 250 then
                 break
             end
         end
 
         if cursor < castSpellIDsLen then
-            C_Timer.After(2, BuildSpellNameToSpellIDTable)
+            C_Timer.After(1, BuildSpellNameToSpellIDTable)
         else
             castSpellIDs = nil
         end
