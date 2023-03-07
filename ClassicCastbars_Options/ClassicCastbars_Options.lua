@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local isClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
+local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 local TEXT_POINTS = {
     ["CENTER"] = "CENTER",
@@ -80,7 +80,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         desc = L.TOGGLE_CASTBAR_TOOLTIP,
                         width = "full", -- these have to be full to not truncate text in non-english locales
                         type = "toggle",
-                        hidden = isClassic and unitID == "focus",
+                        hidden = isClassicEra and unitID == "focus",
                         confirm = function()
                             return unitID == "player" and ClassicCastbars.db[unitID].enabled and L.REQUIRES_RESTART or false
                         end,
@@ -598,9 +598,9 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = WOW_PROJECT_ID ~= 1 and CreateUnitTabGroup("player", L.PLAYER, 4) or nil,
+            player = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and CreateUnitTabGroup("player", L.PLAYER, 4) or nil,
             focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
-            arena = not isClassic and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
+            arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
             resetAllSettings = {
                 order = 6,

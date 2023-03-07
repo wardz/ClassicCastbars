@@ -41,7 +41,6 @@ local anchors = {
         "CompactRaidGroup1Member%d",
     },
 
-    --@non-version-classic@
     focus = {
         "SUFUnitfocus",
         "XPerl_Focushighlight",
@@ -63,17 +62,10 @@ local anchors = {
     },
 
     arena = {
-        "ElvUF_Arena%d",
-        "oUF_TukuiArena%d",
-        "barena%dUnitFrame",
-        "oUF_Arena%d",
-        "oUF_Adirelle_Arena%d",
-        "Stuf.units.arena%d",
         "sArenaEnemyFrame%d",
-        "oUF_LumenArena%d",
         "ArenaEnemyFrame%d",
+        "ArenaEnemyMatchFrame%d",
     },
-    --@end-non-version-classic@
 }
 
 local _G = _G
@@ -96,7 +88,7 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
 
         local unitFrame = _G[name]
         if unitFrame then
-            if unitFrame:IsVisible() then -- unit frame exists and also is in use (for party/arena we need to ignore this check)
+            if unitFrame:IsVisible() then -- unit frame exists and also is in use
                 return unitFrame, name
             end
         end
@@ -135,8 +127,8 @@ local function GetPartyFrameForUnit(unitID)
 end
 
 local anchorCache = {
-    player = UIParent,  -- special case for player/focus casting bar
-    focus = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC) and UIParent or nil,
+    player = UIParent, -- special case for player/focus casting bar
+    focus = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and UIParent or nil,
     target = nil, -- will be set later
 }
 
@@ -160,14 +152,13 @@ function AnchorManager:GetAnchor(unitID)
         frame = GetUnitFrameForUnit(unitType, unitID, count > 0)
     end
 
-    if frame and unitType == "target" then
-        anchors[unitID] = nil
-        anchorCache[unitID] = frame
-    end
+    if not frame then return end
 
-    if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC then
-        if frame and unitType == "focus" then
-            anchors[unitID] = nil
+    -- cache frequently used unitframes
+    if unitType == "target" then
+        anchorCache[unitID] = frame
+    elseif unitType == "focus" then
+        if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
             anchorCache[unitID] = frame
         end
     end

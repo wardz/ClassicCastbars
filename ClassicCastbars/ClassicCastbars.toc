@@ -14,11 +14,7 @@
 core/PoolManager.lua
 core/AnchorManager.lua
 core/Data.lua
-#@version-classic@
 ClassicCastbars.lua
-#@end-version-classic@
-#@non-version-classic@
 ClassicCastbars_NonClassic.lua
-#@end-non-version-classic@
 core/Frames.lua
 core/LoadOptions.lua

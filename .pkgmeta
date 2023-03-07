@@ -1,4 +1,5 @@
 package-as: ClassicCastbars
+enable-toc-creation: yes
 
 externals:
   ClassicCastbars_Options/Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0

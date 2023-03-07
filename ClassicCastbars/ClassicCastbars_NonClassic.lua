@@ -1,14 +1,4 @@
-if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
-    return (_G.message or print)("[ERROR] You're using the vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
-end
-
-local CLIENT_IS_TBC = _G.WOW_PROJECT_ID == (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
-
--- FIXME: WOW_PROJECT_ID is currently equal to TBC in wrath, this is a temp override fix until blizz adds the new constants
-local tocVersion = select(4, GetBuildInfo())
-if tocVersion >= 30400 and tocVersion < 40000 then
-    CLIENT_IS_TBC = false
-end
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
@@ -25,6 +15,8 @@ end)
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
+
+local CLIENT_IS_TBC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
 
 local GetSchoolString = _G.GetSchoolString
 local strformat = _G.string.format

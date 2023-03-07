@@ -42,8 +42,6 @@ function PoolManager:ReleaseFrame(frame)
 end
 
 function PoolManager:InitializeNewFrame(frame)
-    frame:Hide() -- New frames are always shown, hide it while we're updating it
-
     -- Some of the points set by SmallCastingBarFrameTemplate doesn't
     -- work well when user modify castbar size, so set our own points instead
     frame.Border:ClearAllPoints()
@@ -52,7 +50,7 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Icon:SetPoint("LEFT", frame, -15, 0)
 
     -- Dragonflight / retail
-    if WOW_PROJECT_ID == 1 then
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         frame.TextBorder:SetAlpha(0)
         frame.BorderShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield")
         frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")

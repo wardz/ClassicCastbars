@@ -1,6 +1,4 @@
-if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC then
-    return (_G.message or print)("[ERROR] You're using the Vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
-end
+if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
