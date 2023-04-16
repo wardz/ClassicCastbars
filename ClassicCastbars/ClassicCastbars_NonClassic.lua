@@ -656,8 +656,10 @@ addon:SetScript("OnUpdate", function(self)
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
                 if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
-                    self:HideCastbar(castbar, unit, true)
-                    castbar._data = nil
+                    if castbar:GetAlpha() == 1 then -- sanity check
+                        self:HideCastbar(castbar, unit)
+                        --castbar._data = nil
+                    end
                 end
             end
         end

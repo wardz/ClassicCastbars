@@ -272,10 +272,16 @@ function addon:SetCastbarFonts(castbar, cast, db)
     castbar.Text:SetPoint(db.textPoint, db.textPositionX, yOff)
 end
 
+local function OnFadeOutFinish(self)
+    local castingBar = self:GetParent()
+    castingBar:Hide()
+end
+
 function addon:CreateFadeAnimationGroup(frame)
     if frame.animationGroup then return frame.animationGroup end
     frame.animationGroup = frame:CreateAnimationGroup()
     frame.animationGroup:SetToFinalAlpha(true)
+    frame.animationGroup:SetScript("OnFinished", OnFadeOutFinish)
 
     frame.fade = frame.animationGroup:CreateAnimation("Alpha")
     frame.fade:SetOrder(1)
