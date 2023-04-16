@@ -161,6 +161,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar.Border:SetDrawLayer("OVERLAY", 6)
     castbar.Text:SetDrawLayer("OVERLAY", 7)
     castbar.Spark:SetDrawLayer("OVERLAY", 7)
+    castbar.Flash:SetDrawLayer("OVERLAY", 7)
 
     if cast and cast.isChanneled then
         castbar.Spark:SetAlpha(0)
