@@ -87,10 +87,8 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
         end
 
         local unitFrame = _G[name]
-        if unitFrame then
-            if unitFrame:IsVisible() then -- unit frame exists and also is in use
-                return unitFrame, name
-            end
+        if unitFrame and unitFrame:IsVisible() then -- unit frame exists and also is in use
+            return unitFrame, name
         end
     end
 end
@@ -114,12 +112,21 @@ local function GetPartyFrameForUnit(unitID)
     for i = 1, 40 do
         local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
 
-        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsShown() then
+        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsVisible() then
             if useCompact then
                 if strfind(frameName, "PartyMemberFrame") == nil then
                     return frame
                 end
             else
+                return frame
+            end
+        end
+    end
+
+    -- Check new retail party frames
+    if PartyFrame and PartyFrame.PartyMemberFramePool then
+        for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+            if frame.layoutIndex and frame:IsVisible() and UnitGUID("party" .. frame.layoutIndex) == guid then
                 return frame
             end
         end
