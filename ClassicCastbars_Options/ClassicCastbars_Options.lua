@@ -14,7 +14,12 @@ local TEXT_OUTLINES = {
     ["OUTLINE"] = "OUTLINE",
     ["THICKOUTLINE"] = "THICKOUTLINE",
     ["MONOCHROME"] = "MONOCHROME",
-    ["MONOCHROME,OUTLINE"] = "MONOCHROME OUTLINE"
+
+local CASTBAR_FRAME_STRATAS = {
+    ["HIGH"] = "HIGH",
+    ["MEDIUM"] = "MEDIUM",
+    ["LOW"] = "LOW",
+    ["BACKGROUND"] = "BACKGROUND",
 }
 
 local function GetLSMTable(lsmType)
@@ -555,6 +560,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         min = 0,
                         max = 99,
                         bigStep = 5,
+                    },
+                    frameStrata = {
+                        order = 8,
+                        name = L.FRAME_STRATA,
+                        desc = L.FRAME_STRATA_DESC,
+                        type = "select",
+                        values = CASTBAR_FRAME_STRATAS,
                     },
                 },
            },

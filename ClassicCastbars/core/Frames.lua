@@ -153,6 +153,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar:SetSize(db.width, db.height)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
+    castbar:SetFrameStrata(db.frameStrata)
     castbar:SetFrameLevel(db.frameLevel)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
     castbar.currWidth = db.width -- avoids having to use a function call later on
