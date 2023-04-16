@@ -9,11 +9,15 @@ local TEXT_POINTS = {
     ["LEFT"] = "LEFT",
 }
 
-local TEXT_OUTLINES = {
+local TEXT_OUTLINES = { -- font flags
     [""] = L.DEFAULT,
     ["OUTLINE"] = "OUTLINE",
-    ["THICKOUTLINE"] = "THICKOUTLINE",
+    ["THICK"] = "THICK",
+    ["THICK,OUTLINE"] = "THICK OUTLINE",
     ["MONOCHROME"] = "MONOCHROME",
+    ["MONOCHROME,OUTLINE"] = "MONOCHROME OUTLINE",
+    ["MONOCHROME,THICK"] = "MONOCHROME THICK",
+}
 
 local CASTBAR_FRAME_STRATAS = {
     ["HIGH"] = "HIGH",
@@ -61,11 +65,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
         type = "group",
-        get = function(info)
+
+        get = function(info) -- db.unit.key
             return ClassicCastbars.db[info[1]][info[3]]
         end,
-        set = function(info, value)
-            ClassicCastbars.db[info[1]][info[3]] = value -- db.unit.x = value
+        set = function(info, value) -- db.unit.key = value
+            ClassicCastbars.db[info[1]][info[3]] = value
             ClassicCastbars_TestMode:OnOptionChanged(unitID)
         end,
 
@@ -77,8 +82,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                 inline = false,
 
                 args = {
-                    -- keys here has to match savedvariables key
-                    -- or else you have to set a new 'get' and 'set' func
+                    -- WARN: Keys here has to match savedvariables/db key names,
+                    -- or else you have to set a new 'get' and 'set' func to override the main ones above
                     enabled = {
                         order = 1,
                         name = GetStatusColoredEnableText(unitID),
@@ -171,6 +176,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "player",
                     },
                     posX = {
+                        -- Position slider X for nameplate castbars only
+                        -- TODO: is there a better way to do this after nameplate GetPoint() changes?
                         order = 9,
                         name = "Position X",
                         desc = "Position X",
@@ -190,6 +197,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         end,
                     },
                     posY = {
+                        -- Position slider Y for nameplate castbars only
+                        -- TODO: is there a better way to do this after nameplate GetPoint() changes?
                         order = 10,
                         name = "Position Y",
                         desc = "Position Y",

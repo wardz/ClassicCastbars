@@ -417,7 +417,6 @@ local function ColorPlayerCastbar()
     if not db.enabled then return end
 
     if CastingBarFrame_SetNonInterruptibleCastColor then
-        -- TODO: fix me
         CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, unpack(db.statusColorUninterruptible))
     else
         CastingBarFrame.iconWhenNoninterruptible = false
@@ -438,6 +437,7 @@ local function ColorPlayerCastbar()
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 end
 
+-- TODO: recreate castbar instead of skinning
 function addon:SkinPlayerCastbar()
     local db = self.db.player
     if not db.enabled then return end
