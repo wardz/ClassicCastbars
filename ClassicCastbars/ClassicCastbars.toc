@@ -11,10 +11,11 @@
 ## X-Curse-Project-ID: 322865
 ## X-Wago-ID: vEGPdkG1
 
-core/PoolManager.lua
-core/AnchorManager.lua
-core/Data.lua
+Core/ClassicSpellData.lua
+Core/PoolManager.lua
+Core/AnchorManager.lua
+Core/SavedVariables.lua
 ClassicCastbars.lua
 ClassicCastbars_NonClassic.lua
-core/Frames.lua
-core/LoadOptions.lua
+Core/Frames.lua
+Core/LoadOptions.lua
