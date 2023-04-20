@@ -51,10 +51,14 @@ local castEvents = {
     "UNIT_SPELLCAST_SUCCEEDED",
     "UNIT_SPELLCAST_DELAYED",
     "UNIT_SPELLCAST_FAILED",
---    "UNIT_SPELLCAST_FAILED_QUIET",
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
+    not CLIENT_IS_TBC and "UNIT_SPELLCAST_INTERRUPTIBLE" or nil,
+    not CLIENT_IS_TBC and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_START" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_UPDATE" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_STOP" or nil,
 }
 
 function addon:GetFirstAvailableUnitIDByGUID(unitGUID)
@@ -434,7 +438,6 @@ function addon:UNIT_SPELLCAST_FAILED(unitID)
 
     castbar._data = nil
 end
-addon.UNIT_SPELLCAST_FAILED_QUIET = addon.UNIT_SPELLCAST_FAILED
 
 function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     local castbar = activeFrames[unitID]
@@ -445,6 +448,30 @@ function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     end
 
     castbar._data = nil
+end
+
+function addon:UNIT_SPELLCAST_INTERRUPTIBLE()
+    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    if not castbar then return end
+
+    castbar._data.isUninterruptible = true
+    if castbar._data.isChanneled then
+        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+    else
+        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    end
+end
+
+function addon:UNIT_SPELLCAST_NOT_INTERRUPTIBLE()
+    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    if not castbar then return end
+
+    castbar._data.isUninterruptible = false
+    if castbar._data.isChanneled then
+        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+    else
+        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    end
 end
 
 function addon:ToggleUnitEvents(shouldReset)
