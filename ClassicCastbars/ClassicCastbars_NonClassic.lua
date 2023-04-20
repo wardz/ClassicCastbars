@@ -112,7 +112,7 @@ function addon:DisableBlizzardCastbar(unitID, disable)
             FocusFrameSpellBar.showCastbar = true
         elseif self:GetUnitType(unitID) == "arena" then
             for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"]
+                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
                 if frame then
                     frame.showCastbar = true
                     for j = 1, #castEvents do
@@ -140,7 +140,7 @@ function addon:DisableBlizzardCastbar(unitID, disable)
             end
         elseif self:GetUnitType(unitID) == "arena" then
             for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"]
+                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
                 if frame then
                     frame.showCastbar = false
                     for j = 1, #castEvents do
