@@ -17,6 +17,7 @@ addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 
 local CLIENT_IS_TBC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
+local CLIENT_IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 
 local GetSchoolString = _G.GetSchoolString
 local strformat = _G.string.format
@@ -54,8 +55,8 @@ local castEvents = {
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
-    not CLIENT_IS_TBC and "UNIT_SPELLCAST_INTERRUPTIBLE" or nil,
-    not CLIENT_IS_TBC and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or nil,
+    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_INTERRUPTIBLE" or nil,
+    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or nil,
     --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_START" or nil,
     --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_UPDATE" or nil,
     --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_STOP" or nil,
