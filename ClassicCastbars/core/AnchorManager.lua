@@ -108,7 +108,11 @@ local function GetPartyFrameForUnit(unitID)
                 return PartyFrame.MemberFrame1
             end
         else
-            return GetUnitFrameForUnit("party", "party1", true, true)
+            local useCompact = GetCVarBool("useCompactPartyFrames")
+            if useCompact and not IsInGroup() then
+                return print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)) -- luacheck: ignore
+            end
+            return GetUnitFrameForUnit("party", "party1", true, not useCompact)
         end
     end
 
