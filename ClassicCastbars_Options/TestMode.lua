@@ -52,6 +52,29 @@ local function OnDragStop(self)
     self:SetPoint("CENTER", self.parent, x, y)
 end
 
+function TestMode:ToggleArenaContainer(showFlag)
+    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight
+        EditModeManagerFrame.AccountSettings:SetArenaFramesShown(showFlag)
+        EditModeManagerFrame.AccountSettings:RefreshArenaFrames()
+    elseif ArenaEnemyFrames then
+        ArenaEnemyFrames:SetShown(showFlag)
+    end
+end
+
+function TestMode:TogglePartyContainer(showFlag)
+    if EditModeManagerFrame then
+        if showFlag then
+            ShowUIPanel(EditModeManagerFrame)
+        else
+            HideUIPanel(EditModeManagerFrame)
+        end
+
+        --EditModeManagerFrame.AccountSettings:SetPartyFramesShown(showFlag)
+        --EditModeManagerFrame.AccountSettings:SetRaidFramesShown(showFlag)
+        --EditModeManagerFrame.AccountSettings:RefreshPartyFrames()
+    end
+end
+
 function TestMode:OnOptionChanged(unitID)
     if unitID == "nameplate" then
         unitID = "nameplate-testmode"
@@ -146,7 +169,8 @@ function TestMode:SetCastbarMovable(unitID, parent)
     end
 
     if unitID == "party-testmode" or unitID == "arena-testmode" then
-        if unitID == "arena-testmode" and ArenaEnemyFrames then ArenaEnemyFrames:Show() end
+        if unitID == "arena-testmode" then TestMode:ToggleArenaContainer(true) end
+        if unitID == "party-testmode" then TestMode:TogglePartyContainer(true) end
         parentFrame:SetAlpha(1)
         parentFrame:Show()
     end
@@ -192,12 +216,13 @@ function TestMode:SetCastbarImmovable(unitID)
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
         if parentFrame and not UnitExists("party1") then
+            TestMode:TogglePartyContainer(false)
             parentFrame:Hide()
         end
     elseif unitID == "arena-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
         if parentFrame and not UnitExists("arena1") then
-            if ArenaEnemyFrames then ArenaEnemyFrames:Hide() end
+            TestMode:ToggleArenaContainer(false)
             parentFrame:Hide()
         end
     end

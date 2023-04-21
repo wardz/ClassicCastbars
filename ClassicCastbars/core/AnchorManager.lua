@@ -36,8 +36,8 @@ local anchors = {
         "GwPartyFrame%d",
         "gUI4_GroupFramesGroup5UnitButton%d",
         "PartyMemberFrame%d",
-        "CompactRaidFrame%d",
         "CompactPartyFrameMember%d",
+        "CompactRaidFrame%d",
         "CompactRaidGroup1Member%d",
     },
 
@@ -76,7 +76,7 @@ local UnitGUID = _G.UnitGUID
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local GetNumGroupMembers = _G.GetNumGroupMembers
 
-local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
+local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex, skipVisibleCheck)
     local anchorNames = anchors[unitType]
     if not anchorNames then return end
 
@@ -87,15 +87,29 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex)
         end
 
         local unitFrame = _G[name]
-        if unitFrame and unitFrame:IsVisible() then -- unit frame exists and also is in use
-            return unitFrame, name
+        if unitFrame then
+            if not skipVisibleCheck then
+                if unitFrame:IsVisible() then
+                    return unitFrame, name
+                end
+            else
+                return unitFrame, name
+            end
         end
     end
 end
 
 local function GetPartyFrameForUnit(unitID)
     if unitID == "party-testmode" then
-        return GetUnitFrameForUnit("party", "party1", true)
+        if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+            if EditModeManagerFrame:UseRaidStylePartyFrames() then
+                return GetUnitFrameForUnit("party", "party1", true, true)
+            else
+                return PartyFrame.MemberFrame1
+            end
+        else
+            return GetUnitFrameForUnit("party", "party1", true, true)
+        end
     end
 
     -- Dont show party castbars in raid
@@ -124,7 +138,7 @@ local function GetPartyFrameForUnit(unitID)
     end
 
     -- Check new retail party frames
-    if PartyFrame and PartyFrame.PartyMemberFramePool then
+    if PartyFrame and PartyFrame.PartyMemberFramePool and not EditModeManagerFrame:UseRaidStylePartyFrames() then
         for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
             if frame.layoutIndex and frame:IsVisible() and UnitGUID("party" .. frame.layoutIndex) == guid then
                 return frame
@@ -154,7 +168,7 @@ function AnchorManager:GetAnchor(unitID)
     elseif unitType == "party" or unitType == "party-testmode" then
         frame = GetPartyFrameForUnit(unitID)
     elseif unitType == "arena-testmode" then
-        frame = GetUnitFrameForUnit("arena", "arena1", true)
+        frame = GetUnitFrameForUnit("arena", "arena1", true, true)
     else -- target/focus
         frame = GetUnitFrameForUnit(unitType, unitID, count > 0)
     end
