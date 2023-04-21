@@ -98,58 +98,39 @@ function addon:GetCastbarFrameIfEnabled(unitID)
     end
 end
 
--- TODO: cleanup
-function addon:DisableBlizzardCastbar(unitID, disable)
-    if not disable then
-        if unitID == "target" then
-            for i = 1, #castEvents do
-                TargetFrameSpellBar:RegisterEvent(castEvents[i])
-            end
-            TargetFrameSpellBar.showCastbar = true
-        elseif unitID == "focus" then
-            for i = 1, #castEvents do
-                FocusFrameSpellBar:RegisterEvent(castEvents[i])
-            end
-            FocusFrameSpellBar.showCastbar = true
-        elseif self:GetUnitType(unitID) == "arena" then
-            for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
-                if frame then
-                    frame.showCastbar = true
-                    for j = 1, #castEvents do
-                        frame:RegisterEvent(castEvents[j])
-                    end
-                end
-            end
-        end
-    else
-        if unitID == "target" then
-            TargetFrameSpellBar.showCastbar = false
-            TargetFrameSpellBar:SetAlpha(0)
-            TargetFrameSpellBar:SetValue(0)
-            TargetFrameSpellBar:Hide()
-            for i = 1, #castEvents do
-                TargetFrameSpellBar:UnregisterEvent(castEvents[i])
-            end
-        elseif unitID == "focus" then
-            FocusFrameSpellBar.showCastbar = false
-            FocusFrameSpellBar:SetAlpha(0)
-            FocusFrameSpellBar:SetValue(0)
-            FocusFrameSpellBar:Hide()
-            for i = 1, #castEvents do
-                FocusFrameSpellBar:UnregisterEvent(castEvents[i])
-            end
-        elseif self:GetUnitType(unitID) == "arena" then
-            for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
-                if frame then
-                    frame.showCastbar = false
-                    for j = 1, #castEvents do
-                        frame:UnregisterEvent(castEvents[j])
-                    end
-                end
+local function HideBlizzardSpellbar(spellbar)
+    if spellbar.barType and spellbar.barType == "empowered" then return end -- dont hide empowered casts for now
+
+    local cfg = addon.db[addon:GetUnitType(spellbar.unit)]
+    if cfg and cfg.enabled then
+        spellbar:Hide()
+    end
+end
+
+function addon:DisableBlizzardCastbar()
+    if not self.isSpellbarsHooked then
+        self.isSpellbarsHooked = true
+        TargetFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
+        FocusFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
+    end
+
+    -- arena frames are load on demand, hook if available
+    if not self.isArenaSpellbarsHooked then
+        for i = 1, 5 do
+            local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
+            if frame then
+                frame:HookScript("OnShow", HideBlizzardSpellbar)
+                self.isArenaSpellbarsHooked = true
             end
         end
+    end
+end
+
+function addon:ADDON_LOADED(addonName)
+    if addonName == "Blizzard_ArenaUI" then
+        self:DisableBlizzardCastbar()
+        self:UnregisterEvent("ADDON_LOADED")
+        self.ADDON_LOADED = nil
     end
 end
 
@@ -561,14 +542,12 @@ function addon:PLAYER_LOGIN()
         end
     end
 
-    self:DisableBlizzardCastbar("target", self.db.target.enabled)
-    self:DisableBlizzardCastbar("focus", self.db.focus.enabled)
-    self:DisableBlizzardCastbar("arena", self.db.arena.enabled)
-
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
+    self:DisableBlizzardCastbar()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("ADDON_LOADED")
     self:UnregisterEvent("PLAYER_LOGIN")
     self.PLAYER_LOGIN = nil
 end
