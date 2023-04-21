@@ -684,8 +684,9 @@ addon:SetScript("OnUpdate", function(self)
             else
                 if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
                     if castbar:GetAlpha() == 1 then -- sanity check
+                        castbar._data.isCastComplete = true
                         self:HideCastbar(castbar, unit)
-                        --castbar._data = nil
+                        castbar._data = nil
                     end
                 end
             end
