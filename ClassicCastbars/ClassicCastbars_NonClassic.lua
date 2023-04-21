@@ -432,7 +432,7 @@ function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     castbar._data = nil
 end
 
-function addon:UNIT_SPELLCAST_INTERRUPTIBLE()
+function addon:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
@@ -444,7 +444,7 @@ function addon:UNIT_SPELLCAST_INTERRUPTIBLE()
     end
 end
 
-function addon:UNIT_SPELLCAST_NOT_INTERRUPTIBLE()
+function addon:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
