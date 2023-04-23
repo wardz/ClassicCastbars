@@ -687,8 +687,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         local buffCacheHit = libCD.buffCache[dstGUID]
                         if buffCacheHit then
                             for i = 1, #buffCacheHit do
-                                local spellName = buffCacheHit[i].name
-                                if castImmunityBuffs[spellName] then
+                                local name = buffCacheHit[i].name
+                                if castImmunityBuffs[name] then
                                     return
                                 end
                             end
