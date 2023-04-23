@@ -1833,6 +1833,27 @@ if CLIENT_PRE_WOTLK then
         namespace.playerSilences = {}
     end
 
+    -- Cast immunity auras that gives physical or magical interrupt protection (Classic Era / TBC)
+    namespace.castImmunityBuffs = {
+        [GetSpellInfo(642)] = true, -- Divine Shield
+        [GetSpellInfo(498)] = true, -- Divine Protection
+    }
+
+    local _, playerClass = UnitClass("player")
+    if playerClass == "WARRIOR" or playerClass == "ROGUE" or playerClass == "DRUID" or playerClass == "HUNTER" or playerClass == "PALADIN" then
+        -- Immunity against physical classes only
+        namespace.castImmunityBuffs[GetSpellInfo(1022)] = true -- Blessing of Protection
+        if CLIENT_IS_CLASSIC_ERA then
+            namespace.castImmunityBuffs[GetSpellInfo(3169)] = true -- Limited Invulnerability Potion
+        end
+    else
+        -- Immunity against magical classes only
+        namespace.castImmunityBuffs[GetSpellInfo(24021)] = true -- Anti Magic Shield
+        if not CLIENT_IS_CLASSIC_ERA then
+            namespace.castImmunityBuffs[GetSpellInfo(41451)] = true -- Blessing of Spell Warding
+        end
+    end
+
     -- Player spells that can't be interrupted
     namespace.uninterruptibleList = {
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade

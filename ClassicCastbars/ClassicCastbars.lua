@@ -47,12 +47,10 @@ local pushbackBlacklist = namespace.pushbackBlacklist
 local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
 local uninterruptibleList = namespace.uninterruptibleList
 local castModifiers = namespace.castModifiers
+local castImmunityBuffs = namespace.castImmunityBuffs
 
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
-local DIVINE_SHIELD = GetSpellInfo(642)
-local DIVINE_PROTECTION = GetSpellInfo(498)
-local ANTI_MAGIC_SHIELD = GetSpellInfo(24021)
 
 function addon:GetUnitType(unitID)
     local unit = gsub(unitID or "", "%d", "") -- remove numbers
@@ -123,7 +121,7 @@ function addon:CheckCastModifiers(unitID, cast)
         -- Special cases
         if name == FOCUSED_CASTING or name == BARKSKIN then
             cast.hasPushbackImmuneModifier = true
-        elseif (name == DIVINE_PROTECTION or name == DIVINE_SHIELD or name == ANTI_MAGIC_SHIELD) and not cast.isUninterruptible then
+        elseif castImmunityBuffs[name] and not cast.isUninterruptible then
             cast.origIsUninterruptibleValue = cast.isUninterruptible
             cast.isUninterruptible = true
         elseif cast.origIsUninterruptibleValue then
@@ -516,7 +514,6 @@ local stopCastOnDamageList = namespace.stopCastOnDamageList
 local playerInterrupts = namespace.playerInterrupts
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
-local BLESSING_OF_PROTECTION = GetSpellInfo(1022)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, srcGUID, srcName, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
@@ -626,7 +623,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no proper event for channel stop,
         -- so check if aura is gone instead since most channels has an aura effect.
-        if spellName == DIVINE_SHIELD or spellName == DIVINE_PROTECTION or spellName == BLESSING_OF_PROTECTION or spellName == ANTI_MAGIC_SHIELD then
+        if castImmunityBuffs[spellName] then
             local cast = activeTimers[srcGUID]
             if cast then
                 cast.isUninterruptible = cast.origIsUninterruptibleValue or false
@@ -690,8 +687,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         local buffCacheHit = libCD.buffCache[dstGUID]
                         if buffCacheHit then
                             for i = 1, #buffCacheHit do
-                                local spell = buffCacheHit[i].name
-                                if spell == DIVINE_SHIELD or spell == DIVINE_PROTECTION or spell == BLESSING_OF_PROTECTION or spell == ANTI_MAGIC_SHIELD then
+                                local spellName = buffCacheHit[i].name
+                                if castImmunityBuffs[spellName] then
                                     return
                                 end
                             end
