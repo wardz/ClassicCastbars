@@ -1209,7 +1209,7 @@ if CLIENT_IS_CLASSIC_ERA then
 
             cursor = i + 1
             counter = counter + 1
-            if counter > 250 then
+            if counter > 300 then
                 break
             end
         end
