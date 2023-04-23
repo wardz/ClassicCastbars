@@ -270,8 +270,7 @@ function addon:CastPushback(unitGUID)
     end
 end
 
-SLASH_CCFOCUS1 = "/focus"
-SlashCmdList["CCFOCUS"] = function(msg)
+hooksecurefunc("FocusUnit", function(msg)
     local unitID = msg
     if unitID ~= "mouseover" then
         -- always redirect to target
@@ -285,18 +284,17 @@ SlashCmdList["CCFOCUS"] = function(msg)
         addon:StartCast(tarGUID, "focus")
         addon:SetFocusDisplay(UnitName(unitID), unitID)
     else
-        SlashCmdList["CCFOCUSCLEAR"]()
+        SlashCmdList["CLEARFOCUS"]()
     end
-end
+end)
 
-SLASH_CCFOCUSCLEAR1 = "/clearfocus"
-SlashCmdList["CCFOCUSCLEAR"] = function()
+hooksecurefunc("ClearFocus", function()
     if activeGUIDs.focus then
         activeGUIDs.focus = nil
         addon:StopCast("focus", true)
         addon:SetFocusDisplay(nil)
     end
-end
+end)
 
 local function GetSpellCastInfo(spellID)
     local _, _, icon, castTime = GetSpellInfo(spellID)
