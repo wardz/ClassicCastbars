@@ -66,11 +66,11 @@ end
 function addon:CheckCastModifiers(unitID, cast)
     if not cast then return end
     if unitID == "focus" then return end
-    if cast.unitGUID == self.PLAYER_GUID then return end -- modifiers already taken into account with CastingInfo()
-    if unaffectedCastModsSpells[cast.spellID] then return end
+
+    local shouldCheckHasteModifiers = not unaffectedCastModsSpells[cast.spellID] and cast.unitGUID ~= self.PLAYER_GUID
 
     -- Debuffs
-    if not cast.isChanneled and not cast.hasCastSlowModified then
+    if shouldCheckHasteModifiers and not cast.isChanneled and not cast.hasCastSlowModified then
         for i = 1, 40 do -- 16 in classic era but 40 in season of mastery
             local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
             if not spellID then break end -- no more debuffs
@@ -94,26 +94,28 @@ function addon:CheckCastModifiers(unitID, cast)
     end
 
     -- Buffs
-    local libCD = LibStub and LibStub("LibClassicDurations", true)
+    local libCD = LibStub and LibStub("LibClassicDurations", true) -- For enemy buffs if available
     local GetUnitAura = libCD and libCD.UnitAuraDirect or UnitAura
     for i = 1, 40 do
         local name = GetUnitAura(unitID, i, "HELPFUL")
         if not name then break end -- no more buffs
 
-        local modifier = castModifiers[name]
-        if modifier and not cast.activeModifiers[name] then
-            local continue = true
-            if modifier.condition then
-                continue = modifier.condition(cast)
-            end
+        if shouldCheckHasteModifiers then
+            local modifier = castModifiers[name]
+            if modifier and not cast.activeModifiers[name] then
+                local continue = true
+                if modifier.condition then
+                    continue = modifier.condition(cast)
+                end
 
-            if continue then
-                cast.activeModifiers[name] = true
+                if continue then
+                    cast.activeModifiers[name] = true
 
-                if modifier.percentage then
-                    cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * modifier.value / 100)
-                else
-                    cast.endTime = cast.endTime + modifier.value
+                    if modifier.percentage then
+                        cast.endTime = cast.endTime - ((cast.endTime - cast.timeStart) * modifier.value / 100)
+                    else
+                        cast.endTime = cast.endTime + modifier.value
+                    end
                 end
             end
         end
