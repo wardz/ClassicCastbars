@@ -423,19 +423,29 @@ function addon:PLAYER_LOGIN()
         self:SkinPlayerCastbar()
     end
 
-    local libCD = LibStub and LibStub("LibClassicDurations", true)
-    if libCD and not libCD.enableEnemyBuffTracking then
-        libCD.enableEnemyBuffTracking = true
-    end
-
     npcCastUninterruptibleCache = self.db.npcCastUninterruptibleCache -- set local ref for faster access
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
+    self:ADDON_LOADED("LibClassicDurations") -- incase its already loaded
+    self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     self:UnregisterEvent("PLAYER_LOGIN")
     self.PLAYER_LOGIN = nil
+end
+
+-- Enable enemy buff tracking in LibClassicDurations if available
+function addon:ADDON_LOADED(addonName)
+    if addonName == "LibClassicDurations" or addonName == "ClassicAuraDurations" then
+        local LibClassicDurations = LibStub and LibStub("LibClassicDurations", true)
+        if LibClassicDurations and not self.LibClassicDurationsInitialized then
+            LibClassicDurations:Register("ClassicCastbars")
+            LibClassicDurations.RegisterCallback("ClassicCastbars", "UNIT_BUFF", function() end) -- ensure .OnUsed() is triggered
+            self.LibClassicDurationsInitialized = true
+            self:UnregisterEvent("ADDON_LOADED")
+        end
+    end
 end
 
 local auraRows = 0
