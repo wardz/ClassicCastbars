@@ -32,7 +32,6 @@ local UnitGUID = _G.UnitGUID
 local UnitAura = _G.UnitAura
 local GetSpellTexture = _G.GetSpellTexture
 local GetSpellInfo = _G.GetSpellInfo
-local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetTime = _G.GetTime
 local max = _G.math.max
 local abs = _G.math.abs
@@ -140,6 +139,8 @@ function addon:StartCast(unitGUID, unitID)
 
     local cast = activeTimers[unitGUID]
     if not cast then return end
+
+    if cast.endTime - GetTime() <= 0 then return end -- expired
 
     local castbar = self:GetCastbarFrame(unitID)
     if not castbar then return end
@@ -266,6 +267,7 @@ function addon:CastPushback(unitGUID)
     end
 end
 
+-- custom focus castbar for classic era
 hooksecurefunc("FocusUnit", function(msg)
     local unitID = msg
     if unitID ~= "mouseover" then
@@ -385,7 +387,7 @@ function addon:PLAYER_LOGIN()
     end
     self.db.version = namespace.defaultConfig.version
 
-    -- Reset certain stuff on game locale switched
+    -- Reset locale specific settings on game locale switched
     if self.db.locale ~= GetLocale() then
         self.db.locale = GetLocale()
         self.db.target.castFont = _G.STANDARD_TEXT_FONT
@@ -462,13 +464,14 @@ function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     local unitGUID = UnitGUID(namePlateUnitToken)
     activeGUIDs[namePlateUnitToken] = unitGUID
 
+    self:StopCast(namePlateUnitToken, true) -- sanity check
     self:StartCast(unitGUID, namePlateUnitToken)
 end
 
 function addon:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     activeGUIDs[namePlateUnitToken] = nil
 
-    -- Release frame, but do not delete cast data
+    -- Hide & release frame
     local castbar = activeFrames[namePlateUnitToken]
     if castbar then
         PoolManager:ReleaseFrame(castbar)
@@ -497,14 +500,15 @@ end
 
 -- Upvalues for combat log events
 local bit_band = _G.bit.band
+local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local COMBATLOG_OBJECT_CONTROL_PLAYER = _G.COMBATLOG_OBJECT_CONTROL_PLAYER
 local COMBATLOG_OBJECT_TYPE_PLAYER = _G.COMBATLOG_OBJECT_TYPE_PLAYER
-local channeledSpells = namespace.channeledSpells
 local castTimeTalentDecreases = namespace.castTimeTalentDecreases
 local crowdControls = namespace.crowdControls
-local castedSpells = namespace.castedSpells
 local stopCastOnDamageList = namespace.stopCastOnDamageList
 local playerInterrupts = namespace.playerInterrupts
+local channeledSpells = namespace.channeledSpells
+local castedSpells = namespace.castedSpells
 local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
 
@@ -539,14 +543,13 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     npcCastTimeCacheStart[srcGUID] = GetTime()
                 end
             end
-        else
+        else -- player/self
             local _, _, _, startTime, endTime = CastingInfo()
             if endTime and startTime then
                 castTime = endTime - startTime
             end
         end
 
-        -- Note: using return here will make the next function (StoreCast) reuse the current stack frame which is slightly more performant
         return self:StoreCast(srcGUID, spellName, spellID, icon, castTime, isSrcPlayer)
     elseif eventType == "SPELL_CAST_SUCCESS" then
         local channelCast = channeledSpells[spellName]
@@ -589,10 +592,10 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Channeled spells are started on SPELL_CAST_SUCCESS instead of stopped.
         -- Also there's no castTime returned from GetSpellInfo for channeled spells so we need to get it from our own list
         if channelCast then
-            local cast = activeTimers[srcGUID]
-            if cast and (spellName == ARCANE_MISSILES or spellName == ARCANE_MISSILE) then
+            if spellName == ARCANE_MISSILES or spellName == ARCANE_MISSILE then
                 -- Arcane Missiles triggers this event for every tick so ignore after first tick has been detected
-                if cast.spellName == ARCANE_MISSILES or cast.spellName == ARCANE_MISSILE then return end
+                local cast = activeTimers[srcGUID]
+                if cast and (cast.spellName == ARCANE_MISSILES or cast.spellName == ARCANE_MISSILE) then return end
             end
 
             return self:StoreCast(srcGUID, spellName, spellID, GetSpellTexture(spellID), channelCast, isSrcPlayer, true)
@@ -622,53 +625,45 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no proper event for channel stop,
         -- so check if aura is gone instead since most channels has an aura effect.
-        if castImmunityBuffs[spellName] then
-            local cast = activeTimers[srcGUID]
-            if cast then
-                cast.isUninterruptible = cast.origIsUninterruptibleValue or false
-                self:StartAllCasts(srcGUID) -- Hack: Restart cast to update border shield
-            end
-        end
-
         if srcGUID == dstGUID and channeledSpells[spellName] then
             return self:DeleteCast(srcGUID, nil, nil, true)
         end
+
+        -- Aura that give uninterruptible cast expired
+        if castImmunityBuffs[spellName] then
+            local cast = activeTimers[srcGUID]
+            if not cast then return end
+
+            cast.isUninterruptible = cast.origIsUninterruptibleValue or false
+            return self:StartAllCasts(srcGUID) -- Hack: Restart cast to update border shield
+        end
     elseif eventType == "SPELL_CAST_FAILED" then
         local cast = activeTimers[srcGUID]
-        if cast then
-            if srcGUID == self.PLAYER_GUID then
-                -- Spamming cast keybinding triggers SPELL_CAST_FAILED so check if actually casting or not for the player.
-                -- Using Arcane Missiles on a target that is currenly LoS also seem to trigger SPELL_CAST_FAILED for some reason...
-                if not CastingInfo() and not ChannelInfo() then
-                    if not cast.isChanneled then
-                         -- channels shows finish anim on cast failed
-                        cast.isFailed = true
-                    end
-                    return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled)
-                end
-            else
-                if not cast.isChanneled then
-                    cast.isFailed = true
-                end
-                return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled)
-            end
+        if not cast then return end
+
+        if srcGUID == self.PLAYER_GUID then
+            if CastingInfo() or ChannelInfo() then return end
         end
+
+        -- channels shows finish anim on cast failed
+        cast.isFailed = not cast.isChanneled and true or false
+        return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled)
     elseif eventType == "PARTY_KILL" or eventType == "UNIT_DIED" or eventType == "SPELL_INTERRUPT" then
         return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player, and not pet
             local cast = activeTimers[dstGUID]
-            if cast then
-                if stopCastOnDamageList[cast.spellName] then
-                    cast.isFailed = true
-                    return self:DeleteCast(dstGUID)
-                end
+            if not cast then return end
 
-                return self:CastPushback(dstGUID)
+            if stopCastOnDamageList[cast.spellName] then
+                cast.isFailed = true
+                return self:DeleteCast(dstGUID)
             end
+
+            return self:CastPushback(dstGUID)
         end
     elseif eventType == "SPELL_MISSED" then
-        -- TODO: magical vs physical interrupts
+        -- TODO: proper magical vs physical interrupts
         -- Auto learn if a spell is uninterruptible for NPCs by checking if an interrupt was immuned
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             local cast = activeTimers[dstGUID]
@@ -680,7 +675,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     if not npcID or npcID == "12457" or npcID == "11830" then return end -- Blackwing Spellbinder or Hakkari Priest
                     if self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] then return end -- already added
 
-                    -- Check for bubble immunity
+                    -- Check for temp immunity like bubble
                     local libCD = LibStub and LibStub("LibClassicDurations", true)
                     if libCD and libCD.buffCache then
                         local buffCacheHit = libCD.buffCache[dstGUID]
@@ -770,13 +765,9 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 -- Delete cast incase stop event wasn't detected in CLEU
                 if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
                     if cast.isChanneled and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
-                        -- show finish animation on channels that doesnt have CLEU stop event
-                        -- Note: channels always have finish animations on stop, even if it was an early stop
-                        local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.4) -- skips fade anim on castbar being RESHOWN if the cast is expired
-                        self:DeleteCast(cast.unitGUID, false, true, true, skipFade)
+                        self:DeleteCast(cast.unitGUID, false, true, true, true)
                     else
-                        local skipFade = ((currTime - cast.timeStart) > cast.maxValue + 0.25)
-                        self:DeleteCast(cast.unitGUID, false, true, false, skipFade)
+                        self:DeleteCast(cast.unitGUID, false, true, false, false)
                     end
                 end
             end
