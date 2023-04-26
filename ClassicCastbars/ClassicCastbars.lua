@@ -621,16 +621,22 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:DeleteCast(srcGUID, nil, nil, true)
         end
     elseif eventType == "SPELL_AURA_APPLIED" then
-        if activeTimers[dstGUID] then
-            if crowdControls[spellName] then
-                -- Aura that interrupts cast was applied
-                activeTimers[dstGUID].isFailed = true
-                return self:DeleteCast(dstGUID)
-            elseif castTimeIncreases[spellName] then
-                -- cast modifiers doesnt modify already active casts, only the next time the player casts.
-                -- So we force set this to true here to prevent modifying current cast
-                activeTimers[dstGUID].hasCastSlowModified = true
-            end
+        local cast = activeTimers[dstGUID]
+        if not cast then return end
+
+        if crowdControls[spellName] then
+            -- Aura that interrupts cast was applied
+            cast.isFailed = true
+            return self:DeleteCast(dstGUID)
+        elseif castTimeIncreases[spellName] then
+            -- cast modifiers doesnt modify already active casts, only the next time the player casts.
+            -- So we force set this to true here to prevent modifying current cast later on
+            cast.hasCastSlowModified = true
+        elseif castImmunityBuffs[spellName] and not cast.isUninterruptible then
+            -- Aura that give uninterruptible cast gained
+            cast.origIsUninterruptibleValue = cast.isUninterruptible
+            cast.isUninterruptible = true
+            return self:StartAllCasts(srcGUID) -- Hack: Restart cast to update border shield
         end
     elseif eventType == "SPELL_AURA_REMOVED" then
         -- Channeled spells has no proper event for channel stop,
