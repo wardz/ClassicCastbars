@@ -1833,14 +1833,22 @@ if CLIENT_PRE_WOTLK then
         namespace.playerSilences = {}
     end
 
+    -- List of (mostly) physical classes for classic era
+    namespace.physicalClasses = {
+        ["WARRIOR"] = true,
+        ["ROGUE"] = true,
+        ["DRUID"] = true,
+        ["HUNTER"] = true,
+        ["PALADIN"] = true,
+    }
+
     -- Cast immunity auras that gives physical or magical interrupt protection (Classic Era / TBC)
     namespace.castImmunityBuffs = {
         [GetSpellInfo(642)] = true, -- Divine Shield
         [GetSpellInfo(498)] = true, -- Divine Protection
     }
 
-    local _, playerClass = UnitClass("player")
-    if playerClass == "WARRIOR" or playerClass == "ROGUE" or playerClass == "DRUID" or playerClass == "HUNTER" or playerClass == "PALADIN" then
+    if namespace.physicalClasses[select(2, UnitClass("player"))] then
         -- Immunity against physical classes only
         namespace.castImmunityBuffs[GetSpellInfo(1022)] = true -- Blessing of Protection
         if CLIENT_IS_CLASSIC_ERA then

@@ -633,11 +633,8 @@ local function GetOptionsTable()
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
                     -- Reset savedvariables to default
-                    local oldUninterruptibleData = CopyTable(ClassicCastbars.db.npcCastUninterruptibleCache)
                     ClassicCastbarsCharDB = {}
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
-                    ClassicCastbarsDB.npcCastUninterruptibleCache = oldUninterruptibleData -- no reason to reset this data
-                    ClassicCastbars.npcCastUninterruptibleCache = ClassicCastbarsDB.npcCastUninterruptibleCache -- update pointer
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
 
                     ClassicCastbars_TestMode:OnOptionChanged("target")

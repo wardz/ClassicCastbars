@@ -8,8 +8,10 @@ local activeTimers = {} -- active cast data
 local activeFrames = {} -- visible castbar frames
 
 local npcCastTimeCacheStart = {}
-local npcCastTimeCache = {}
-local npcCastUninterruptibleCache = {}
+local npcCastTimeCache = {
+    ["15990"..GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
+    ["15989"..GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
+}
 
 local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -20,7 +22,6 @@ addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
 addon.activeTimers = activeTimers
-addon.npcCastUninterruptibleCache = npcCastUninterruptibleCache
 
 -- upvalues for speed
 local strsplit = _G.string.split
@@ -48,6 +49,7 @@ local unaffectedCastModsSpells = namespace.unaffectedCastModsSpells
 local uninterruptibleList = namespace.uninterruptibleList
 local castModifiers = namespace.castModifiers
 local castImmunityBuffs = namespace.castImmunityBuffs
+local playerIsPhysical = namespace.physicalClasses[select(2, UnitClass("player"))]
 
 local BARKSKIN = GetSpellInfo(22812)
 local FOCUSED_CASTING = GetSpellInfo(14743)
@@ -206,16 +208,10 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     if not cast.isUninterruptible and not isPlayer then
         local _, _, _, _, _, npcID = strsplit("-", unitGUID)
         if npcID then
-            cast.isUninterruptible = npcCastUninterruptibleCache[npcID .. spellName]
-            -- HACK: force show 2s cast time for Kel'Thuzad's Frostbolt
-            if npcID == "15990" and (cast.spellID == 28478 or cast.spellID == 10181) then
-                cast.maxValue = 2
-                cast.endTime = currTime + 2
-            end
-            -- HACK: force show 7s cast time for Sapphiron's Frost Breath
-            if npcID == "15989" and (cast.spellID == 3131 or cast.spellID == 28524) then
-                cast.maxValue = 7
-                cast.endTime = currTime + 7
+            if npcID == "12457" then -- Blackwing Spellbinder, immune magic only
+                cast.isUninterruptible = not playerIsPhysical
+            else
+                cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. spellName]
             end
         end
     end
@@ -381,20 +377,6 @@ end
 function addon:PLAYER_LOGIN()
     ClassicCastbarsDB = ClassicCastbarsDB or {}
 
-    -- Delete some old invalid settings
-    if ClassicCastbarsDB.version and tonumber(ClassicCastbarsDB.version) <= 19 then
-        if ClassicCastbarsDB.party then
-            ClassicCastbarsDB.party.position = nil
-        end
-        ClassicCastbarsDB.player = nil
-        ClassicCastbarsDB.npcCastUninterruptibleCache = {}
-    end
-
-    if ClassicCastbarsDB.npcCastUninterruptibleCache then
-        ClassicCastbarsDB.npcCastUninterruptibleCache["11830"..GetSpellInfo(6063)] = nil
-        ClassicCastbarsDB.npcCastUninterruptibleCache["11359"..GetSpellInfo(22678)] = nil
-    end
-
     -- Copy any settings from defaults if they don't exist in current profile
     if ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings then
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsCharDB)
@@ -425,7 +407,6 @@ function addon:PLAYER_LOGIN()
         self:SkinPlayerCastbar()
     end
 
-    npcCastUninterruptibleCache = self.db.npcCastUninterruptibleCache -- set local ref for faster access
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
     self:ADDON_LOADED("LibClassicDurations") -- incase its already loaded
@@ -697,7 +678,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     local _, _, _, _, _, npcID = strsplit("-", dstGUID)
                     if not npcID or npcID == "12457" or npcID == "11830" then return end -- Blackwing Spellbinder or Hakkari Priest
-                    if npcCastUninterruptibleCache[npcID .. cast.spellName] then return end -- already added
+                    if self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] then return end -- already added
 
                     -- Check for bubble immunity
                     local libCD = LibStub and LibStub("LibClassicDurations", true)
@@ -713,7 +694,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     end
 
-                    npcCastUninterruptibleCache[npcID .. cast.spellName] = true
+                    self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] = true
                 end
             end
         end
