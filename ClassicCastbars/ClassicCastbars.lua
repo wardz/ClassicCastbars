@@ -188,15 +188,8 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     end
 
     local cast = activeTimers[unitGUID]
-
-    if isPlayer then
-        cast.maxValue = (castTime / 1000) - 0.1 -- reduce cast time slightly to account for latency (makes interrupting feel smoother)
-        cast.endTime = currTime + ((castTime / 1000) - 0.1)
-    else
-        cast.maxValue = castTime / 1000
-        cast.endTime = currTime + (castTime / 1000)
-    end
-
+    cast.maxValue = castTime / 1000
+    cast.endTime = currTime + (castTime / 1000)
     cast.spellName = spellName
     cast.spellID = spellID
     cast.icon = iconTexturePath
