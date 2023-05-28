@@ -740,27 +740,23 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                 local sparkPosition = (value / maxValue) * (castbar.currWidth or castbar:GetWidth())
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
-                -- slightly adjust color of the castbar when its not 100% sure if the cast is casted or failed
-                -- (gotta put it here to run before fadeout anim but in the future we should move this into Frames.lua)
-                if not cast.isUnknownState and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
+                if not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
                     castbar.Spark:SetAlpha(0)
-                    if not cast.isChanneled then
-                        local c = self.db[self:GetUnitType(unit)].statusColor
-                        castbar:SetStatusBarColor(c[1], c[2] + 0.1, c[3], c[4])
+                    if cast.isChanneled then
+                        castbar:SetValue(0)
+                    else
                         castbar:SetMinMaxValues(0, 1)
                         castbar:SetValue(1)
-                    else
-                        castbar:SetValue(0)
                     end
-                    cast.isUnknownState = true
-                end
 
-                -- Delete cast incase stop event wasn't detected in CLEU
-                if castTime <= -0.25 then -- wait atleast 0.25s before deleting incase CLEU stop event is happening at same time
-                    if cast.isChanneled and not cast.isCastComplete and not cast.isInterrupted and not cast.isFailed then
-                        self:DeleteCast(cast.unitGUID, false, true, true, true)
-                    else
-                        self:DeleteCast(cast.unitGUID, false, true, false, false)
+                    -- Delete cast incase stop event wasn't detected in CLEU
+                    if castTime < -0.1 then
+                        if not cast.isChanneled then
+                            cast.isFailed = true
+                            self:DeleteCast(cast.unitGUID, false, true, false, false)
+                        else
+                            self:DeleteCast(cast.unitGUID, false, true, true, false)
+                        end
                     end
                 end
             end
