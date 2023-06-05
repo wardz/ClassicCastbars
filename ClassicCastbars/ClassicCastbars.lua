@@ -6,12 +6,7 @@ local PoolManager = namespace.PoolManager
 local activeGUIDs = {} -- unitID to unitGUID mappings
 local activeTimers = {} -- active cast data
 local activeFrames = {} -- visible castbar frames
-
 local npcCastTimeCacheStart = {}
-local npcCastTimeCache = {
-    ["15990"..GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
-    ["15989"..GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
-}
 
 local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -236,7 +231,7 @@ function addon:DeleteCast(unitGUID, isInterrupted, skipDeleteCache, isCastComple
         activeTimers[unitGUID] = nil
     end
 
-    -- Weak tables doesn't work with literal values so we need to manually handle memory for this cache
+    -- Always delete cache unless ran from OnUpdate script
     if not skipDeleteCache and npcCastTimeCacheStart[unitGUID] then
         npcCastTimeCacheStart[unitGUID] = nil
     end
@@ -348,9 +343,7 @@ function addon:PLAYER_ENTERING_WORLD(isInitialLogin)
 end
 
 function addon:ZONE_CHANGED_NEW_AREA()
-    -- Reset mob caches when changing whole zone (not map area)
     wipe(npcCastTimeCacheStart)
-    wipe(npcCastTimeCache)
 end
 
 -- Copies table values from src to dst if they don't exist in dst
@@ -389,6 +382,7 @@ function addon:PLAYER_LOGIN()
         self.db.arena.castFont = _G.STANDARD_TEXT_FONT
         self.db.party.castFont = _G.STANDARD_TEXT_FONT
         self.db.npcCastUninterruptibleCache = CopyTable(namespace.defaultConfig.npcCastUninterruptibleCache)
+        self.db.npcCastTimeCache = CopyTable(namespace.defaultConfig.npcCastTimeCache)
     end
 
     -- Reset certain stuff on savedvariables file copied from different expansion
@@ -526,7 +520,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     castTime = reducedTime
                 end
             else
-                local cachedTime = npcCastTimeCache[srcName .. spellName]
+                local cachedTime = self.db.npcCastTimeCache[srcName .. spellName]
                 if cachedTime then
                     -- Use cached time stored from earlier sightings for NPCs.
                     -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
@@ -562,7 +556,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Auto correct cast times for mobs (only non-channels)
         if not isSrcPlayer and not channelCast then
             if not strfind(srcGUID, "Player-") then -- just incase player is mind controlled by an NPC
-                local cachedTime = npcCastTimeCache[srcName .. spellName]
+                local cachedTime = self.db.npcCastTimeCache[srcName .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
                     if not cast or (cast and not cast.hasCastSlowModified and not next(cast.activeModifiers)) then
@@ -573,8 +567,9 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
                             -- Whatever time was detected between SPELL_CAST_START and SPELL_CAST_SUCCESS will be the new cast time
                             local castTimeDiff = abs(castTime - origCastTime)
-                            if castTimeDiff <= 4000 and castTimeDiff > 250 then -- take lag into account
-                                npcCastTimeCache[srcName .. spellName] = castTime
+                            if castTimeDiff <= 5000 and castTimeDiff > 250 then -- take lag into account
+                                self.db.npcCastTimeCache[srcName .. spellName] = castTime
+                                npcCastTimeCacheStart[srcGUID] = nil
                             end
                         end
                     end

@@ -3,9 +3,10 @@ local _, namespace = ...
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 namespace.defaultConfig = {
-    version = "33",
+    version = "34",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
+    npcCastTimeCache = {},
     usePerCharacterSettings = false,
 
     nameplate = {
@@ -234,8 +235,9 @@ namespace.defaultConfig = {
     },
 }
 
--- NPC spells that can't be interrupted. (Sensible defaults, doesn't include all)
 if CLIENT_IS_CLASSIC_ERA then
+    -- NPC spells that can't be interrupted. (Sensible defaults, doesn't include all)
+    -- TODO: if we ever add profiles both npcCastTimeCache and npcCastUninterruptibleCache should be in a separate 'savedvariable'
     namespace.defaultConfig.npcCastUninterruptibleCache = {
         ["11981" .. GetSpellInfo(18500)] = true, -- Flamegor Wing Buffet
         ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
@@ -338,5 +340,11 @@ if CLIENT_IS_CLASSIC_ERA then
         ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
         ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
+    }
+
+    -- Storage for auto-corrected cast times
+    namespace.defaultConfig.npcCastTimeCache = {
+        ["15990"..GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
+        ["15989"..GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
     }
 end
