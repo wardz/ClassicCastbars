@@ -22,8 +22,11 @@ local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
+    -- Get the actual statusbar background, not statusbar texture from statusbar:GetStatusBarTexture()
     for _, v in pairs({ statusbar:GetRegions() }) do
-        if v.GetTexture and strfind("UI-StatusBar", v:GetTexture() or "") then
+        --if v.GetTexture and (strfind("UI-StatusBar", v:GetTexture() or "") or v:GetTexture() == 137012) then
+        -- WARN: this is currently a hacky fix untill we create our own frame templates in PoolManager.lua
+        if v.GetDrawLayer and v:GetDrawLayer() == "BACKGROUND" then
             return v
         end
     end
