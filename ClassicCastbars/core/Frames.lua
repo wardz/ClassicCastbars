@@ -4,7 +4,6 @@ local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
 local activeFrames = addon.activeFrames
 
-local strfind = _G.string.find
 local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
