@@ -519,8 +519,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     castTime = reducedTime
                 end
             else
-                local _, _, _, _, _, srcNpcID = strsplit("-", srcGUID)
-                local cachedTime = self.db.npcCastTimeCache[srcNpcID .. spellName]
+                local _, _, _, _, _, npcID = strsplit("-", srcGUID)
+                local cachedTime = npcID and self.db.npcCastTimeCache[npcID .. spellName]
                 if cachedTime then
                     -- Use cached time stored from earlier sightings for NPCs.
                     -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
@@ -556,7 +556,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Auto correct cast times for mobs (only non-channels)
         if not isSrcPlayer and not channelCast then
             local unitType, _, _, _, _, srcNpcID = strsplit("-", srcGUID)
-            if unitType ~= "Player" then -- just incase player is mind controlled by an NPC
+            if srcNpcID and unitType ~= "Player" then
                 local cachedTime = self.db.npcCastTimeCache[srcNpcID .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
@@ -569,7 +569,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                             -- Whatever time was detected between SPELL_CAST_START and SPELL_CAST_SUCCESS will be the new cast time
                             local castTimeDiff = abs(castTime - origCastTime)
                             if castTimeDiff <= 5000 and castTimeDiff > 285 then -- take lag into account
-                                self.db.npcCastTimeCache[srcNpcID .. spellName] = castTime
+                                self.db.npcCastTimeCache[srcNpcID .. spellName] = floor(castTime)
                                 npcCastTimeCacheStart[srcGUID] = nil
                             end
                         end
