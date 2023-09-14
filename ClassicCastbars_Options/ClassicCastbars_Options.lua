@@ -219,6 +219,12 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             end
                         end,
                     },
+                    notes = {
+                        order = 11,
+                        hidden = not isClassicEra or unitID ~= "focus",
+                        name = "\n\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r (won't update unit if /focus used in combat)",
+                        type = "description",
+                    },
                 },
             },
 
