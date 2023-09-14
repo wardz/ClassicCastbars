@@ -370,6 +370,11 @@ function addon:PLAYER_LOGIN()
     else
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     end
+
+    if self.db.version and tonumber(self.db.version) < 35 then
+        -- Reset npcCastTimeCache when updating from old version as structure changed
+        self.db.npcCastTimeCache = CopyTable(namespace.defaultConfig.npcCastTimeCache)
+    end
     self.db.version = namespace.defaultConfig.version
 
     -- Reset locale specific settings on game locale switched

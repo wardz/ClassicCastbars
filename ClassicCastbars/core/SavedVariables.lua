@@ -3,7 +3,7 @@ local _, namespace = ...
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 namespace.defaultConfig = {
-    version = "34",
+    version = "35",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     npcCastTimeCache = {},
