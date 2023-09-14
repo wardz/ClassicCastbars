@@ -340,11 +340,17 @@ if CLIENT_IS_CLASSIC_ERA then
         ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
         ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
+        ["8607" .. GetSpellInfo(7279)] = true, -- Rotting Sludge Black Sludge
+        ["8212" .. GetSpellInfo(7279)] = true, -- The Reak Black Sludge
+        ["3295" .. GetSpellInfo(7279)] = true, -- Sludge Beast Black Sludge
+        ["6518" .. GetSpellInfo(7279)] = true, -- Tar Lurker Black Sludge
+        ["785" .. GetSpellInfo(4979)] = true, -- Skeletal Warder Quick Flame Ward
+        ["785" .. GetSpellInfo(4980)] = true, -- Skeletal Warder Quick Frost Ward
     }
 
     -- Storage for auto-corrected cast times
     namespace.defaultConfig.npcCastTimeCache = {
-        ["15990"..GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
-        ["15989"..GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
+        ["15990" .. GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
+        ["15989" .. GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
     }
 end
