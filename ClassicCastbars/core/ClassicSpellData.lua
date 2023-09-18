@@ -1156,6 +1156,7 @@ if CLIENT_IS_CLASSIC_ERA then
         28478, -- Frostbolt 2 (Has different spelling on Chinese clients)
         10181, -- Frostbolt (Needs to be last for chinese clients, see issue #16)
         2764, -- Throw
+        8995, -- Shoot
 
         -- Channeled casts in random order. These are used to retrieve spell icon later on (namespace.channeledSpells only stores spell name)
         -- Commented out IDs are duplicates that also has a normal cast already listed above.
@@ -1914,6 +1915,7 @@ if CLIENT_PRE_WOTLK then
 
         -- NPC spells that doesn't need to be tied to npcIDs
         [GetSpellInfo(2764)] = 1, -- Throw
+        [GetSpellInfo(8995)] = 1, -- Shoot
         [GetSpellInfo(6925)] = 1, -- Gift of the Xavian
     }
 
