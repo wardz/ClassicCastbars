@@ -3,7 +3,7 @@ local _, namespace = ...
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 namespace.defaultConfig = {
-    version = "35",
+    version = "36",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     npcCastTimeCache = {},
@@ -45,7 +45,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 
     target = {
@@ -82,7 +82,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 
     focus = {
@@ -119,7 +119,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 
     party = {
@@ -156,7 +156,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 
     arena = {
@@ -193,7 +193,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 
     player = {
@@ -231,7 +231,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.17,
+        borderPaddingWidth = 1.175,
     },
 }
 
