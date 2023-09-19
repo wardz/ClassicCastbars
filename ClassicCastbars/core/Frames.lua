@@ -210,7 +210,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
             -- Update border to match castbar size
             local width, height = ceil(castbar:GetWidth() * db.borderPaddingWidth), ceil(castbar:GetHeight() * db.borderPaddingHeight)
             castbar.Border:ClearAllPoints()
-            castbar.Border:SetPoint("TOPLEFT", width - 1, height)
+            castbar.Border:SetPoint("TOPLEFT", width, height)
             castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
         --end
     else

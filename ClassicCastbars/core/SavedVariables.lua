@@ -45,7 +45,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 
     target = {
@@ -82,7 +82,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 
     focus = {
@@ -119,7 +119,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 
     party = {
@@ -156,7 +156,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 
     arena = {
@@ -193,7 +193,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 
     player = {
@@ -231,7 +231,7 @@ namespace.defaultConfig = {
         statusBackgroundColor = { 0, 0, 0, 0.535 },
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
-        borderPaddingWidth = 1.175,
+        borderPaddingWidth = 1.17,
     },
 }
 
