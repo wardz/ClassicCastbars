@@ -573,7 +573,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
                             -- Whatever time was detected between SPELL_CAST_START and SPELL_CAST_SUCCESS will be the new cast time
                             local castTimeDiff = abs(castTime - origCastTime)
-                            if castTimeDiff <= 4000 and castTimeDiff > 250 then -- take lag into account
+                            if castTimeDiff <= 4000 and castTimeDiff >= 200 then -- take lag into account
                                 self.db.npcCastTimeCache[srcNpcID .. spellName] = floor(castTime)
                                 npcCastTimeCacheStart[srcGUID] = nil
                             end
@@ -751,9 +751,9 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     end
 
                     -- Delete cast incase stop event wasn't detected in CLEU
-                    if castTime <= -0.15 then
+                    if castTime < -0.16 then
                         if not cast.isChanneled then
-                            cast.isFailed = true
+                            cast.isFailed = not cast.isPlayer -- show failed for npcs only
                             self:DeleteCast(cast.unitGUID, false, true, false, false)
                         else
                             self:DeleteCast(cast.unitGUID, false, true, true, false)
