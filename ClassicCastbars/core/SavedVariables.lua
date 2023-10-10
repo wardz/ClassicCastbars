@@ -344,8 +344,7 @@ if CLIENT_IS_CLASSIC_ERA then
         ["8212" .. GetSpellInfo(7279)] = true, -- The Reak Black Sludge
         ["3295" .. GetSpellInfo(7279)] = true, -- Sludge Beast Black Sludge
         ["6518" .. GetSpellInfo(7279)] = true, -- Tar Lurker Black Sludge
-        ["785" .. GetSpellInfo(4979)] = true, -- Skeletal Warder Quick Flame Ward
-        ["785" .. GetSpellInfo(4980)] = true, -- Skeletal Warder Quick Frost Ward
+        ["11560" .. GetSpellInfo(18159)] = true, -- Magrami Spectre Curse of the Fallen Magic
     }
 
     -- Storage for auto-corrected cast times

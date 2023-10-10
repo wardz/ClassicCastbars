@@ -1864,7 +1864,7 @@ if CLIENT_PRE_WOTLK then
         end
     end
 
-    -- Player spells that can't be interrupted
+    -- Spells that can't be interrupted
     namespace.uninterruptibleList = {
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade
         [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
@@ -1877,6 +1877,13 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
         [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
         [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+        [GetSpellInfo(4061)] = 1,       -- Coarse Dynamite
+        [GetSpellInfo(4054)] = 1,       -- Rough Dynamite
+        [GetSpellInfo(8331)] = 1,       -- EZ-Thro Dynamite
+        [GetSpellInfo(23000)] = 1,      -- EZ-Thro Dynamite II
+        [GetSpellInfo(4062)] = 1,       -- Heavy Dynamite
+        [GetSpellInfo(23063)] = 1,      -- Dense Dynamite
+        [GetSpellInfo(12419)] = 1,      -- Solid Dynamite
         [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
         [GetSpellInfo(23041)] = 1,      -- Call Anathema
         [GetSpellInfo(20589)] = 1,      -- Escape Artist
@@ -1907,16 +1914,22 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(13228)] = 1,      -- Wound Poison II
         [GetSpellInfo(13229)] = 1,      -- Wound Poison III
         [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
+        [GetSpellInfo(10436)] = 1,      -- Attack (Totems)
 
         -- these are technically uninterruptible but breaks on dmg
         [GetSpellInfo(22999)] = 1,      -- Defibrillate
         [GetSpellInfo(746)] = 1,        -- First Aid
         [GetSpellInfo(20577)] = 1,      -- Cannibalize
 
-        -- NPC spells that doesn't need to be tied to npcIDs
+        -- NPC spells that doesn't need to be tied to npcIDs (see npcCastUninterruptibleCache)
         [GetSpellInfo(2764)] = 1, -- Throw
         [GetSpellInfo(8995)] = 1, -- Shoot
         [GetSpellInfo(6925)] = 1, -- Gift of the Xavian
+        [GetSpellInfo(4979)] = 1, -- Quick Flame Ward
+        [GetSpellInfo(4980)] = 1, -- Quick Frost Ward
+        [GetSpellInfo(8800)] = 1, -- Dynamite
+        [GetSpellInfo(9483)] = 1, -- Boulder
+        [GetSpellInfo(5106)] = 1, -- Crystal Flash
     }
 
     if CLIENT_IS_TBC then
