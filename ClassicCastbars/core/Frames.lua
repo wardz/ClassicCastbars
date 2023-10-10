@@ -411,7 +411,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
             end
 
             if isClassicEra then
-                castbar.fade:SetDuration(cast and cast.isInterrupted and 1.2 or 0.3)
+                castbar.fade:SetDuration(cast and cast.isInterrupted and 1 or 0.3)
             else
                 castbar.fade:SetDuration(0.6)
             end
