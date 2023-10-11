@@ -759,7 +759,7 @@ addon:SetScript("OnUpdate", function(self, elapsed)
                     end
 
                     -- Delete cast incase stop event wasn't detected in CLEU
-                    if castTime < -0.16 then
+                    if castTime < -0.165 then
                         if not cast.isChanneled then
                             cast.isFailed = not cast.isPlayer -- show failed for npcs only
                             self:DeleteCast(cast.unitGUID, false, true, false, false)
