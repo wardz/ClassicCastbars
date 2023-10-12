@@ -340,10 +340,6 @@ if CLIENT_IS_CLASSIC_ERA then
         ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
         ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
-        ["8607" .. GetSpellInfo(7279)] = true, -- Rotting Sludge Black Sludge
-        ["8212" .. GetSpellInfo(7279)] = true, -- The Reak Black Sludge
-        ["3295" .. GetSpellInfo(7279)] = true, -- Sludge Beast Black Sludge
-        ["6518" .. GetSpellInfo(7279)] = true, -- Tar Lurker Black Sludge
         ["11560" .. GetSpellInfo(18159)] = true, -- Magrami Spectre Curse of the Fallen Magic
     }
 

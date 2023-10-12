@@ -1930,6 +1930,7 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(8800)] = 1, -- Dynamite
         [GetSpellInfo(9483)] = 1, -- Boulder
         [GetSpellInfo(5106)] = 1, -- Crystal Flash
+        [GetSpellInfo(7279)] = 1, -- Black Sludge
     }
 
     if CLIENT_IS_TBC then
