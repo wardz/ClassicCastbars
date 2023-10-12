@@ -1928,6 +1928,7 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(4979)] = 1, -- Quick Flame Ward
         [GetSpellInfo(4980)] = 1, -- Quick Frost Ward
         [GetSpellInfo(8800)] = 1, -- Dynamite
+        [GetSpellInfo(8858)] = 1, -- Bomb
         [GetSpellInfo(9483)] = 1, -- Boulder
         [GetSpellInfo(5106)] = 1, -- Crystal Flash
         [GetSpellInfo(7279)] = 1, -- Black Sludge
