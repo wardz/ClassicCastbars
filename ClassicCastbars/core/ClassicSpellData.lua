@@ -1932,6 +1932,8 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(9483)] = 1, -- Boulder
         [GetSpellInfo(5106)] = 1, -- Crystal Flash
         [GetSpellInfo(7279)] = 1, -- Black Sludge
+        [GetSpellInfo(14146)] = 1, -- Clone
+        [GetSpellInfo(13692)] = 1, -- Dire Growl
     }
 
     if CLIENT_IS_TBC then
