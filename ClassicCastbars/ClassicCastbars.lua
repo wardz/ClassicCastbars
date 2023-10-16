@@ -532,8 +532,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                     castTime = reducedTime
                 end
             else
-                local _, _, _, _, _, npcID = strsplit("-", srcGUID)
-                if npcID then
+                local unitType, _, _, _, _, npcID = strsplit("-", srcGUID)
+                if npcID and (unitType == "Creature" or unitType == "Pet") then
                     local cachedTime = self.db.npcCastTimeCache[npcID .. spellName]
                     if cachedTime then
                         -- Use cached time stored from earlier sightings for NPCs.
@@ -571,12 +571,13 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Auto correct cast times for mobs (only non-channels)
         if not isSrcPlayer and not channelCast then
             local unitType, _, _, _, _, srcNpcID = strsplit("-", srcGUID)
-            if srcNpcID and unitType == "Creature" then
+            if srcNpcID and (unitType == "Creature" or unitType == "Pet") then
                 local cachedTime = self.db.npcCastTimeCache[srcNpcID .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
                     if not cast or (cast and not cast.hasCastSlowModified and not next(cast.activeModifiers)) then
                         -- TODO: if the cast speed is modified we can prob just subtract it instead of skipping cast
+                        -- TODO: since we're no longer using npc names, we should switch to the 'fake' spellID aswell so localization check is not needed
                         local restoredStartTime = npcCastTimeCacheStart[srcGUID]
                         if restoredStartTime then
                             local castTime = (GetTime() - restoredStartTime) * 1000
@@ -668,8 +669,8 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             return self:CastPushback(dstGUID)
         end
     elseif eventType == "SPELL_MISSED" then
-        -- TODO: proper magical vs physical interrupts
         -- Auto learn if a spell is uninterruptible for NPCs by checking if an interrupt was immuned
+        -- FIXME: as of patch 14.4.4 this seems to no longer work, atleast not with basic Counterspell on low lvl mobs
         if missType == "IMMUNE" and playerInterrupts[spellName] then
             local cast = activeTimers[dstGUID]
             if not cast then return end
