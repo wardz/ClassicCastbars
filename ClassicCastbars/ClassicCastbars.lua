@@ -533,14 +533,16 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
                 end
             else
                 local _, _, _, _, _, npcID = strsplit("-", srcGUID)
-                local cachedTime = npcID and self.db.npcCastTimeCache[npcID .. spellName]
-                if cachedTime then
-                    -- Use cached time stored from earlier sightings for NPCs.
-                    -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
-                    -- 3.5 cast time but another lvl 40 mob might have 2.5 cast time instead for Frostbolt.
-                    castTime = cachedTime
-                else
-                    npcCastTimeCacheStart[srcGUID] = GetTime()
+                if npcID then
+                    local cachedTime = self.db.npcCastTimeCache[npcID .. spellName]
+                    if cachedTime then
+                        -- Use cached time stored from earlier sightings for NPCs.
+                        -- This is because mobs have various cast times, e.g a lvl 20 mob casting Frostbolt might have
+                        -- 3.5 cast time but another lvl 40 mob might have 2.5 cast time instead for Frostbolt.
+                        castTime = cachedTime
+                    else
+                        npcCastTimeCacheStart[srcGUID] = GetTime()
+                    end
                 end
             end
         else -- player/self
@@ -569,11 +571,12 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         -- Auto correct cast times for mobs (only non-channels)
         if not isSrcPlayer and not channelCast then
             local unitType, _, _, _, _, srcNpcID = strsplit("-", srcGUID)
-            if srcNpcID and unitType ~= "Player" then
+            if srcNpcID and unitType == "Creature" then
                 local cachedTime = self.db.npcCastTimeCache[srcNpcID .. spellName]
                 if not cachedTime then
                     local cast = activeTimers[srcGUID]
                     if not cast or (cast and not cast.hasCastSlowModified and not next(cast.activeModifiers)) then
+                        -- TODO: if the cast speed is modified we can prob just subtract it instead of skipping cast
                         local restoredStartTime = npcCastTimeCacheStart[srcGUID]
                         if restoredStartTime then
                             local castTime = (GetTime() - restoredStartTime) * 1000
