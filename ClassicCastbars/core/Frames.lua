@@ -111,7 +111,7 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
         end
 
         -- Update border shield to match current castbar size
-        local width, height = ceil(castbar:GetWidth() * db.borderPaddingWidth + 0.3), ceil(castbar:GetHeight() * db.borderPaddingHeight + 0.3)
+        local width, height = castbar:GetWidth() * db.borderPaddingWidth + 0.3, castbar:GetHeight() * db.borderPaddingHeight + 0.3
         castbar.BorderShield:ClearAllPoints()
         castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
         castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.15), -height + 4)
@@ -158,7 +158,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
     castbar:SetFrameStrata(db.frameStrata)
     castbar:SetFrameLevel(db.frameLevel)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
-    castbar.currWidth = db.width -- avoids having to use a function call later on
+    castbar.currWidth = db.width -- avoids having to use a function call later on in OnUpdate
     castbar:SetIgnoreParentAlpha(db.ignoreParentAlpha)
 
     castbar.Border:SetDrawLayer("ARTWORK", 1)
@@ -208,7 +208,7 @@ function addon:SetCastbarStyle(castbar, cast, db, unitID)
             castbar.Border:SetPoint("BOTTOMRIGHT", 1, -1)
         else]]
             -- Update border to match castbar size
-            local width, height = ceil(castbar:GetWidth() * db.borderPaddingWidth), ceil(castbar:GetHeight() * db.borderPaddingHeight)
+            local width, height = castbar:GetWidth() * db.borderPaddingWidth, castbar:GetHeight() * db.borderPaddingHeight
             castbar.Border:ClearAllPoints()
             castbar.Border:SetPoint("TOPLEFT", width, height)
             castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
