@@ -129,8 +129,10 @@ end
 function TestMode:SetCastbarMovable(unitID, parent)
     local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
     if not parentFrame then
-        if unitID == "target" or unitID == "nameplate-testmode" or unitID == "focus" then
+        if unitID == "target" or unitID == "focus" then
             print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_GENERIC_NO_TARGET)) -- luacheck: ignore
+        elseif unitID == "nameplate-testmode" then
+            print(format("|cFFFF0000[ClassicCastbars] %s|r", L.NO_NAMEPLATE_VISIBLE)) -- luacheck: ignore
         end
         return false
     end
