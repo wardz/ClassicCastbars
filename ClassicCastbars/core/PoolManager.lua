@@ -6,6 +6,7 @@ local function ResetterFunc(pool, frame)
     frame:Hide()
     frame:SetParent(nil)
     frame:ClearAllPoints()
+    frame.isTesting = false
 
     if frame.animationGroup and frame.animationGroup:IsPlaying() then
         frame.animationGroup:Stop()
