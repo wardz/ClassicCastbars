@@ -180,8 +180,8 @@ function TestMode:SetCastbarMovable(unitID, parent)
         castbar.Icon:SetTexture(dummySpellData.icon)
         castbar.Flash:SetAlpha(0)
         castbar.casting = nil
-		castbar.channeling = nil
-		castbar.holdTime = 0
+        castbar.channeling = nil
+        castbar.holdTime = 0
         castbar.fadeOut = nil
         castbar.flash = nil
 
@@ -209,7 +209,7 @@ function TestMode:SetCastbarImmovable(unitID)
 
     castbar.unitID = nil
     castbar.parent = nil
-    castbar.isTesting = nil
+    castbar.isTesting = false
     castbar.holdTime = 0
     castbar:EnableMouse(false)
 
