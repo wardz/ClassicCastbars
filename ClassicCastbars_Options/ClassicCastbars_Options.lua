@@ -219,8 +219,16 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             end
                         end,
                     },
-                    notes = {
+                    showInterruptSchool = {
                         order = 11,
+                        name = L.SHOW_INTERRUPT_SCHOOL,
+                        width = "full",
+                        type = "toggle",
+                        hidden = unitID == "player" or not isClassicEra,
+                        disabled = ModuleIsDisabled,
+                    },
+                    notes = {
+                        order = 12,
                         hidden = not isClassicEra or unitID ~= "focus",
                         name = "\n\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r (won't update unit if /focus used in combat)",
                         type = "description",

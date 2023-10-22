@@ -213,6 +213,7 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
     end
 
     -- just nil previous values to avoid overhead of wiping() table
+    cast.interruptedSchool = nil
     cast.origIsUninterruptibleValue = nil
     cast.hasCastSlowModified = nil
     cast.hasPushbackImmuneModifier = nil
@@ -514,7 +515,7 @@ local ARCANE_MISSILES = GetSpellInfo(5143)
 local ARCANE_MISSILE = GetSpellInfo(7268)
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType = CombatLogGetCurrentEventInfo()
+    local _, eventType, _, srcGUID, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType, _, extraSchool = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_CAST_START" then
         local spellID = castedSpells[spellName]
@@ -659,6 +660,14 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         cast.isFailed = not cast.isChanneled and true or false
         return self:DeleteCast(srcGUID, nil, nil, cast.isChanneled)
     elseif eventType == "SPELL_INTERRUPT" or eventType == "UNIT_DIED" or eventType == "UNIT_DESTROYED" or eventType == "UNIT_DISSIPATES" then
+        if eventType == "SPELL_INTERRUPT" then
+            local cast = activeTimers[dstGUID]
+            if cast then
+                --cast.isInterrupted = true
+                cast.interruptedSchool = extraSchool or nil
+            end
+        end
+
         return self:DeleteCast(dstGUID, eventType == "SPELL_INTERRUPT")
     elseif eventType == "SWING_DAMAGE" or eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "RANGE_DAMAGE" or eventType == "SPELL_DAMAGE" then
         if bit_band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then -- is player, and not pet

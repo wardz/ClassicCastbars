@@ -4,6 +4,8 @@ local AnchorManager = namespace.AnchorManager
 local PoolManager = namespace.PoolManager
 local activeFrames = addon.activeFrames
 
+local GetSchoolString = _G.GetSchoolString
+local strformat = _G.string.format
 local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
@@ -365,7 +367,11 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
     local cast = castbar._data
     if cast then
         if cast.isInterrupted or cast.isFailed then
-            castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
+            if cast.isInterrupted and cast.interruptedSchool and self.db[self:GetUnitType(unitID)].showInterruptSchool then
+                castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(cast.interruptedSchool) or ""))
+            else
+                castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
+            end
             castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorFailed))
             castbar:SetMinMaxValues(0, 1)
             castbar:SetValue(1)
