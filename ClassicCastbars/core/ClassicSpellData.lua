@@ -1446,6 +1446,7 @@ if CLIENT_IS_CLASSIC_ERA then
         21330,      -- Corrupted Fear (Deathmist Raiment set)
 
         -- NPCS
+        16803,      -- Flash Freeze
         3242,       -- Ravage
         3271,       -- Fatigued
         5708,       -- Swoop
