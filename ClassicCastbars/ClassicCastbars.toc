@@ -1,8 +1,7 @@
 ## Interface: 11404
-## Interface-Retail: 100107
 ## Interface-Classic: 11404
 ## Interface-BCC: 20504
-## Interface-Wrath: 30402
+## Interface-Wrath: 30403
 ## Title: ClassicCastbars
 ## Notes: Adds customizable castbars to various unitframes.
 ## IconTexture: Interface\Icons\spell_holy_heal02
