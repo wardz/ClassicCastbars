@@ -656,9 +656,28 @@ local function GetOptionsTable()
                 end,
             },
 
+            resetCastCache = {
+                order = 7,
+                name = _G.BROWSER_CLEAR_CACHE,
+                desc = L.CLEAR_CACHE_DESC,
+                confirm = function()
+                    return L.CLEAR_CACHE_DESC
+                end,
+                type = "execute",
+                func = function()
+                    ClassicCastbarsDB.npcCastTimeCache = CopyTable(ClassicCastbars.defaultConfig.npcCastTimeCache)
+                    ClassicCastbarsDB.npcCastUninterruptibleCache = CopyTable(ClassicCastbars.defaultConfig.npcCastUninterruptibleCache)
+                    if ClassicCastbarsCharDB then
+                        ClassicCastbarsCharDB.npcCastTimeCache = CopyTable(ClassicCastbars.defaultConfig.npcCastTimeCache)
+                        ClassicCastbarsCharDB.npcCastUninterruptibleCache = CopyTable(ClassicCastbars.defaultConfig.npcCastUninterruptibleCache)
+                    end
+                    print(_G.BROWSER_CACHE_CLEARED) -- luacheck: ignore
+                end,
+            },
+
             -- Character specific savedvariables
             usePerCharacterSettings = {
-                order = 7,
+                order = 8,
                 width = 2,
                 type = "toggle",
                 name = L.PER_CHARACTER,
