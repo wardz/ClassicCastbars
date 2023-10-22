@@ -115,7 +115,7 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
         -- Update border shield to match current castbar size
         local width, height = castbar:GetWidth() * db.borderPaddingWidth + 0.3, castbar:GetHeight() * db.borderPaddingHeight + 0.3
         castbar.BorderShield:ClearAllPoints()
-        castbar.BorderShield:SetPoint("TOPLEFT", width-10, height+1)
+        castbar.BorderShield:SetPoint("TOPLEFT", width-5, height+1) -- texture offsets, just doing "1" and "-1" doesnt work here
         castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.15), -height + 4)
 
         if not castbar.IconShield then
