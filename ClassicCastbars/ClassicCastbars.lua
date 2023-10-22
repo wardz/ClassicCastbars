@@ -379,9 +379,11 @@ function addon:PLAYER_LOGIN()
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     end
 
-    if self.db.version and tonumber(self.db.version) < 35 then
+    if self.db.version and tonumber(self.db.version) < 36 then
         -- Reset npcCastTimeCache when updating from old version as structure changed
         self.db.npcCastTimeCache = CopyTable(namespace.defaultConfig.npcCastTimeCache)
+        --self.db.npcCastUninterruptibleCache = CopyTable(namespace.defaultConfig.npcCastUninterruptibleCache)
+        print("ClassicCastbars: " .. _G.BROWSER_CACHE_CLEARED or "") -- luacheck: ignore
     end
     self.db.version = namespace.defaultConfig.version
 
