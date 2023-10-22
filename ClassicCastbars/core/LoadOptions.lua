@@ -35,7 +35,7 @@ SlashCmdList["CLASSICCASTBARS"] = function()
     else
         LibStub("AceConfigDialog-3.0"):Open("ClassicCastbars")
         if LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"] then
-            LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("https://www.curseforge.com/wow/addons/classiccastbars")
+            LibStub("AceConfigDialog-3.0").OpenFrames["ClassicCastbars"]:SetStatusText("https://github.com/wardz/ClassicCastbars/")
         end
     end
 end
