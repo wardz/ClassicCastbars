@@ -1580,6 +1580,8 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(635)] = 1,        -- Holy Light
         -- Druid heals are afaik many times not talented so ignoring them for now
 
+        [GetSpellInfo(10562)] = 1,      -- Hi-Explosive Bomb
+        [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb TODO: guessing every single bomb/dynamite should be added here, but needs double checking
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade
         [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
         [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
