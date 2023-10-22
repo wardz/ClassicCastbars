@@ -1,5 +1,12 @@
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 
+--[[
+    Currently missing features for retail after Dragonflight's UI changes:
+    - Empowered evoker castbars
+    - Personal player castbar
+    - Uninterruptible checks should be rewritten with new unit aura system (TBC)
+]]
+
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
 local activeFrames = {}
@@ -59,7 +66,7 @@ end
 
 function addon:GetUnitType(unitID)
     local unit = gsub(unitID or "", "%d", "") -- remove numbers
-    if unit == "nameplate-testmode" then
+    if unit == "nameplate-testmode" then -- doing this manually just for performance reasons
         unit = "nameplate"
     elseif unit == "arena-testmode" then
         unit = "arena"
@@ -293,7 +300,7 @@ function addon:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
         self:UNIT_SPELLCAST_CHANNEL_START(namePlateUnitToken)
     else
         local castbar = activeFrames[namePlateUnitToken]
-        if castbar then -- this seems to be needed for race conditions
+        if castbar then
             self:HideCastbar(castbar, namePlateUnitToken, true)
         end
     end
@@ -573,8 +580,9 @@ local playerInterrupts = namespace.playerInterrupts
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, _, _, srcFlags, _, dstGUID, _, dstFlags, _, _, spellName, _, missType, _, extraSchool = CombatLogGetCurrentEventInfo()
+
     if eventType == "SPELL_MISSED" and CLIENT_IS_TBC then
-        if missType == "IMMUNE" and playerInterrupts[spellName] then
+        if missType == "IMMUNE" and playerInterrupts[spellName] then -- FIXME: event no longer generated for interrupts in latest builds?
             if bit_band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) <= 0 then -- dest unit is not a player
                 if bit_band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) > 0 then -- source unit is player
                     local unitID = self:GetFirstAvailableUnitIDByGUID(dstGUID)
@@ -617,7 +625,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     elseif eventType == "SPELL_INTERRUPT" then
         -- TODO: check channeled
-        for unitID, castbar in pairs(activeFrames) do -- have to scan for it due to race conditions with UNIT_SPELLCAST_*
+        for unitID, castbar in pairs(activeFrames) do
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then
                     castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))

@@ -402,7 +402,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
     end
 
     if castbar.fade then
-        if not castbar.fade:IsPlaying() then
+        if not castbar.animationGroup:IsPlaying() then
             castbar.fade:SetStartDelay(0) -- reset
             if cast then
                 if cast.isInterrupted or cast.isFailed then

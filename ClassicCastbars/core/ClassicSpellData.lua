@@ -1197,10 +1197,13 @@ if CLIENT_IS_CLASSIC_ERA then
 
     local castSpellIDsLen = #castSpellIDs
     local counter, cursor = 0, 1
-    local castedSpells = {}
-    namespace.castedSpells = castedSpells
+    namespace.castedSpells = {}
 
+    -- Build the spell database in increments. ({[Localized spell name] = spellID})
+    -- SpellID payload is gone from the classic era combat log, so we need to track the spellname instead.
+    -- (The spellID is still needed for GetSpellInfo calls later on)
     local function BuildSpellNameToSpellIDTable()
+        local castedSpells = namespace.castedSpells
         counter = 0
 
         for i = cursor, castSpellIDsLen do
@@ -1322,8 +1325,9 @@ if CLIENT_IS_CLASSIC_ERA then
     -- Store both spellID and spell name in this table since UnitAura returns spellIDs but combat log doesn't.
     C_Timer.After(10, function()
         for spellID, slowPercentage in pairs(namespace.castTimeIncreases) do
-            if GetSpellInfo(spellID) then
-                namespace.castTimeIncreases[GetSpellInfo(spellID)] = slowPercentage
+            local name = GetSpellInfo(spellID)
+            if name then
+                namespace.castTimeIncreases[name] = slowPercentage
             end
         end
     end)
@@ -1550,6 +1554,7 @@ if CLIENT_IS_CLASSIC_ERA then
         16838,      -- Banshee Shriek
     }
 
+    -- Wait 10s after login before building CC table
     C_Timer.After(10, function()
         for i = 1, #crowdControls do
             local name = GetSpellInfo(crowdControls[i])
@@ -1612,6 +1617,7 @@ if CLIENT_IS_CLASSIC_ERA then
     }
 
     -- Casts that can't be slowed or speed up
+    -- Key is the spellID from UnitAura()
     namespace.unaffectedCastModsSpells = {
         -- Player Spells
         [11605] = 1, -- Slam
