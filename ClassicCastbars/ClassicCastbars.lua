@@ -204,12 +204,9 @@ function addon:StoreCast(unitGUID, spellName, spellID, iconTexturePath, castTime
         end
     end
 
-    -- Quick hack for Darkmist Spider's Deadly Poison
+    -- Quick hack for NPC's Deadly Poison vs Rogue Deadly Poison
     if cast.isUninterruptible and spellID == 2835 and not isPlayer then
-        local _, _, _, _, _, npcID = strsplit("-", unitGUID)
-        if npcID == "4376" or npcID == "4378" then
-            cast.isUninterruptible = false
-        end
+        cast.isUninterruptible = false
     end
 
     -- just nil previous values to avoid overhead of wiping() table
