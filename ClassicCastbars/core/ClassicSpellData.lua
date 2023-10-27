@@ -1944,6 +1944,7 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(14146)] = 1, -- Clone
         [GetSpellInfo(13692)] = 1, -- Dire Growl
         [GetSpellInfo(9612)] = 1, -- Ink Spray
+        [GetSpellInfo(16075)] = 1, -- Throw Axe
     }
 
     if CLIENT_IS_TBC then
