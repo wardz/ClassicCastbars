@@ -1581,10 +1581,27 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(635)] = 1,        -- Holy Light
         -- Druid heals are afaik many times not talented so ignoring them for now
 
-        [GetSpellInfo(10562)] = 1,      -- Hi-Explosive Bomb
-        [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb TODO: guessing every single bomb/dynamite should be added here, but needs double checking
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade
         [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+        [GetSpellInfo(19821)] = 1,      -- Arcane Bomb
+        [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+        [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+        [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+        [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+        [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+        [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+        [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+        [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+        [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+        [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+        [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+        [GetSpellInfo(4061)] = 1,       -- Coarse Dynamite
+        [GetSpellInfo(4054)] = 1,       -- Rough Dynamite
+        [GetSpellInfo(8331)] = 1,       -- EZ-Thro Dynamite
+        [GetSpellInfo(23000)] = 1,      -- EZ-Thro Dynamite II
+        [GetSpellInfo(4062)] = 1,       -- Heavy Dynamite
+        [GetSpellInfo(23063)] = 1,      -- Dense Dynamite
+        [GetSpellInfo(12419)] = 1,      -- Solid Dynamite
         [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
         [GetSpellInfo(20589)] = 1,      -- Escape Artist
     }
@@ -1875,6 +1892,7 @@ if CLIENT_PRE_WOTLK then
 
     -- Spells that can't be interrupted
     namespace.uninterruptibleList = {
+        [GetSpellInfo(19821)] = 1,      -- Arcane Bomb
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade
         [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
         [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
@@ -1893,7 +1911,7 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(4062)] = 1,       -- Heavy Dynamite
         [GetSpellInfo(23063)] = 1,      -- Dense Dynamite
         [GetSpellInfo(12419)] = 1,      -- Solid Dynamite
-        [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray TODO: verify
+        [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
         [GetSpellInfo(23041)] = 1,      -- Call Anathema
         [GetSpellInfo(20589)] = 1,      -- Escape Artist
         [GetSpellInfo(20549)] = 1,      -- War Stomp
