@@ -3,7 +3,7 @@ local _, namespace = ...
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 namespace.defaultConfig = {
-    version = "38",
+    version = "39",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     npcCastTimeCache = {},
@@ -347,6 +347,7 @@ if CLIENT_IS_CLASSIC_ERA then
         ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
         ["11560" .. GetSpellInfo(18159)] = true, -- Magrami Spectre Curse of the Fallen Magic
+        ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
     }
 
     -- Storage for auto-corrected cast times
