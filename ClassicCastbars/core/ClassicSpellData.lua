@@ -1581,8 +1581,6 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(635)] = 1,        -- Holy Light
         -- Druid heals are afaik many times not talented so ignoring them for now
 
-        [GetSpellInfo(4068)] = 1,       -- Iron Grenade
-        [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
         [GetSpellInfo(19821)] = 1,      -- Arcane Bomb
         [GetSpellInfo(4068)] = 1,       -- Iron Grenade
         [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
