@@ -1340,7 +1340,7 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(116)] = 2500,      -- Frostbolt
         [GetSpellInfo(133)] = 3000,      -- Fireball
         [GetSpellInfo(686)] = 2500,      -- Shadow Bolt
-        [GetSpellInfo(348)] = 1500,      -- Immolate
+        [GetSpellInfo(348)] = 1800,      -- Immolate
         [GetSpellInfo(331)] = 2500,      -- Healing Wave
         [GetSpellInfo(585)] = 2000,      -- Smite
         [GetSpellInfo(14914)] = 3000,    -- Holy Fire
@@ -1963,6 +1963,7 @@ if CLIENT_PRE_WOTLK then
         [GetSpellInfo(13692)] = 1, -- Dire Growl
         [GetSpellInfo(9612)] = 1, -- Ink Spray
         [GetSpellInfo(16075)] = 1, -- Throw Axe
+        [GetSpellInfo(16594)] = 1, -- Crypt Scarabs
     }
 
     if CLIENT_IS_TBC then
