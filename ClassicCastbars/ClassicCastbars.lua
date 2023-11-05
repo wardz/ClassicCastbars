@@ -349,6 +349,9 @@ end
 
 function addon:ZONE_CHANGED_NEW_AREA()
     wipe(npcCastTimeCacheStart)
+    if self.db.clearCastTimeCachePerZone then
+        self.db.npcCastTimeCache = CopyTable(namespace.defaultConfig.npcCastTimeCache)
+    end
 end
 
 -- Copies table values from src to dst if they don't exist in dst

@@ -685,10 +685,16 @@ local function GetOptionsTable()
                 end,
             },
 
+            spacer = {
+                order = 8,
+                type = "description",
+                name = "\n",
+            },
+
             -- Character specific savedvariables Checkbox
             usePerCharacterSettings = {
-                order = 8,
-                width = 2,
+                order = 9,
+                width = 1.3,
                 type = "toggle",
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,
@@ -703,6 +709,20 @@ local function GetOptionsTable()
                     end
                     ClassicCastbarsCharDB.usePerCharacterSettings = value
                     ReloadUI()
+                end,
+            },
+
+            clearCastTimeCachePerZone = {
+                order = 10,
+                width = 1.4,
+                type = "toggle",
+                name = "Clear CastTime Cache Per Zone",
+                desc = "Delete cached NPC cast times every time you change a major zone.",
+                get = function()
+                    return ClassicCastbars.db.clearCastTimeCachePerZone
+                end,
+                set = function(_, value)
+                    ClassicCastbars.db.clearCastTimeCachePerZone = value
                 end,
             },
         },
