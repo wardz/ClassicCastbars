@@ -589,7 +589,7 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
 
                             -- Whatever time was detected between SPELL_CAST_START and SPELL_CAST_SUCCESS will be the new cast time
                             local castTimeDiff = abs(castTime - origCastTime)
-                            if castTimeDiff <= 4000 and castTimeDiff >= 200 then -- take lag into account
+                            if castTimeDiff <= 4000 and castTimeDiff >= 225 then -- take lag into account
                                 self.db.npcCastTimeCache[srcNpcID .. spellName] = floor(castTime)
                                 npcCastTimeCacheStart[srcGUID] = nil
                             end
