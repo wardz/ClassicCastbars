@@ -689,6 +689,7 @@ local function GetOptionsTable()
                 order = 8,
                 type = "description",
                 name = "\n",
+                hidden = not isClassicEra,
             },
 
             -- Character specific savedvariables Checkbox
@@ -716,6 +717,7 @@ local function GetOptionsTable()
                 order = 10,
                 width = 1.4,
                 type = "toggle",
+                hidden = not isClassicEra,
                 name = "Clear CastTime Cache Per Zone",
                 desc = "Delete cached NPC cast times every time you change a major zone.",
                 get = function()
