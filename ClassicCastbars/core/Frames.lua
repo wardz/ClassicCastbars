@@ -50,36 +50,52 @@ function addon:GetCastbarFrame(unitID)
 end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
-    if not isClassicEra and (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
-        if ( parentFrame.haveToT ) then
-            if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
-                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 )
-            else
-                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
-            end
-        elseif ( parentFrame.haveElite ) then
-            if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
-                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5 )
-            else
-                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
-            end
-        else
-            if ( (not parentFrame.buffsOnTop) and parentFrame.auraRows > 0 ) then
-                castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
-            else
-                castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7 )
-            end
-        end
-    else -- for classic era or unknown parent frame
-        local auraRows = parentFrame.auraRows or 0
+    if isRetail then
+        -- Copy paste from retail wow ui source
+        local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0));
 
-        if parentFrame.buffsOnTop or auraRows <= 1 then
-            castbar:SetPoint("CENTER", parentFrame, -18, -75)
-        else
-            if castbar.BorderShield:IsShown() then
-                castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -45 * auraRows), -200))
+        local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame;
+        local pointX = useSpellbarAnchor and 18 or  (parentFrame.smallSize and 38 or 43);
+        local pointY = useSpellbarAnchor and -10 or (parentFrame.smallSize and 3 or 5);
+
+        if ((not useSpellbarAnchor) and parentFrame.haveToT) then
+            pointY = parentFrame.smallSize and -48 or -46;
+        end
+
+        castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY);
+    else
+        if not isClassicEra and (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
+            -- copy paste from wotlk wow ui source
+            if ( parentFrame.haveToT ) then
+                if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 )
+                else
+                    castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+                end
+            elseif ( parentFrame.haveElite ) then
+                if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5 )
+                else
+                    castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+                end
             else
-                castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -41 * auraRows), -200))
+                if ( (not parentFrame.buffsOnTop) and parentFrame.auraRows > 0 ) then
+                    castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+                else
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7 )
+                end
+            end
+        else -- for classic era or unknown parent frame
+            local auraRows = parentFrame.auraRows or 0
+
+            if parentFrame.buffsOnTop or auraRows <= 1 then
+                castbar:SetPoint("CENTER", parentFrame, -18, -75)
+            else
+                if castbar.BorderShield:IsShown() then
+                    castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -45 * auraRows), -200))
+                else
+                    castbar:SetPoint("CENTER", parentFrame, -18, max(min(-75, -41 * auraRows), -200))
+                end
             end
         end
     end
