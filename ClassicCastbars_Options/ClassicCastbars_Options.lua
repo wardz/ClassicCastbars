@@ -104,6 +104,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                                 if value == false then
                                     return ReloadUI()
                                 end
+                                if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+                                    print("ClassicCastbars: Do a /reload if player castbar doesn't work properly on first time enabling.") -- luacheck: ignore
+                                    PlayerCastingBarFrame:SetLook("CLASSIC")
+                                end
                                 ClassicCastbars:SkinPlayerCastbar()
                             end
                         end,
@@ -633,7 +637,7 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and CreateUnitTabGroup("player", L.PLAYER, 4) or nil,
+            player = CreateUnitTabGroup("player", L.PLAYER, 4),
             focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
             arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
@@ -670,6 +674,7 @@ local function GetOptionsTable()
                 order = 7,
                 name = _G.BROWSER_CLEAR_CACHE,
                 desc = L.CLEAR_CACHE_DESC,
+                hidden = not isClassicEra,
                 confirm = function()
                     return L.CLEAR_CACHE_DESC
                 end,

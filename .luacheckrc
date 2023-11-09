@@ -34,6 +34,8 @@ read_globals = {
     "WOW_PROJECT_CLASSIC",
     "WOW_PROJECT_BURNING_CRUSADE_CLASSIC",
     "WOW_PROJECT_MAINLINE",
+    "PlayerCastingBarFrame",
+    "UIParentBottomManagedFrameContainer",
     "PartyFrame",
     "EditModeManagerFrame",
     "ShowUIPanel",

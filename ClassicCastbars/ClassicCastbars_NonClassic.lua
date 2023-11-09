@@ -537,11 +537,10 @@ function addon:PLAYER_LOGIN()
     end
 
     if self.db.player.enabled then
-        if WOW_PROJECT_ID ~= 1 then
-            self:SkinPlayerCastbar()
-        else
-            self.db.player.enabled = false
+        if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+            PlayerCastingBarFrame:SetLook("CLASSIC")
         end
+        self:SkinPlayerCastbar()
     end
 
     self.PLAYER_GUID = UnitGUID("player")
