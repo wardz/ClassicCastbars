@@ -51,18 +51,22 @@ end
 
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     if isRetail then
+        if parentFrame.auraRows == nil then
+            parentFrame.auraRows = 0
+        end
+
         -- Copy paste from retail wow ui source
         local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0));
 
         local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame;
-        local pointX = useSpellbarAnchor and 18 or  (parentFrame.smallSize and 38 or 43);
+        local pointX = useSpellbarAnchor and 18 or (parentFrame.smallSize and 38 or 43);
         local pointY = useSpellbarAnchor and -10 or (parentFrame.smallSize and 3 or 5);
 
         if ((not useSpellbarAnchor) and parentFrame.haveToT) then
             pointY = parentFrame.smallSize and -48 or -46;
         end
 
-        castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY);
+        castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY - 4);
     else
         if not isClassicEra and (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
             -- copy paste from wotlk wow ui source
@@ -609,7 +613,7 @@ if isRetail then
         local db = addon.db and addon.db.player
         if not db or not db.enabled then return end
 
-        if not (self.barType == "empowered") then
+        if self.barType ~= "empowered" then
             self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
             self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
             self.Spark:SetSize(32, 32)
@@ -666,7 +670,7 @@ if isRetail then
         local db = addon.db and addon.db.player
         if not db or not db.enabled then return end
 
-        if not (self.barType == "empowered") then
+        if self.barType ~= "empowered" then
             self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
             self:SetStatusBarColor(unpack(db.statusColorSuccess))
         end
