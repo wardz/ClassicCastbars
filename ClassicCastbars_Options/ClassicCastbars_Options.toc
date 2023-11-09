@@ -1,4 +1,5 @@
 ## Interface: 11404
+## Interface-Retail: 100200
 ## Interface-Classic: 11404
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
