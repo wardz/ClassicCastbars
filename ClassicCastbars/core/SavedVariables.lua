@@ -3,7 +3,7 @@ local _, namespace = ...
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 namespace.defaultConfig = {
-    version = "40",
+    version = "41",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     npcCastTimeCache = {},
@@ -224,7 +224,7 @@ namespace.defaultConfig = {
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
         statusColor = { 1, 0.7, 0, 1 },
-        statusColorSuccess = { 1, 0.7, 0, 1 },
+        statusColorSuccess = { 0, 1, 0, 1 },
         statusColorFailed = { 1, 0, 0 },
         statusColorChannel = { 0, 1, 0, 1 },
         statusColorUninterruptible = { 0.7, 0.7, 0.7, 1 },

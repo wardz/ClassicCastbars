@@ -516,6 +516,14 @@ function addon:PLAYER_LOGIN()
     else
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     end
+
+    if self.db.version then
+        if tonumber(self.db.version) < 41 then
+            if self.db.player.statusColorSuccess[2] == 0.7 then
+                self.db.player.statusColorSuccess = { 0, 1, 0, 1 }
+            end
+        end
+    end
     self.db.version = namespace.defaultConfig.version
 
     -- Reset certain stuff on game locale switched
