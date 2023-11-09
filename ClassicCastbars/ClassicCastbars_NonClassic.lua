@@ -190,6 +190,17 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     end
 end
 
+function addon:UNIT_TARGET(unitID) -- detect target of target
+    if self.db[unitID] and self.db[unitID].autoPosition then
+        if activeFrames[unitID] then
+            local parentFrame = self.AnchorManager:GetAnchor(unitID)
+            if parentFrame then
+                self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
+            end
+        end
+    end
+end
+
 -- Check UNIT_AURA aswell for cast immunites since CLEU range in classic is very short
 function addon:UNIT_AURA(unitID)
     if self.db[unitID] and self.db[unitID].autoPosition then
@@ -454,6 +465,7 @@ function addon:ToggleUnitEvents(shouldReset)
     self:RegisterEvent("PLAYER_TARGET_CHANGED")
     self:RegisterEvent("PLAYER_FOCUS_CHANGED")
     self:RegisterEvent("UNIT_AURA")
+    self:RegisterUnitEvent("UNIT_TARGET", "target", "focus")
 
     if self.db.party.enabled then
         self:RegisterEvent("GROUP_ROSTER_UPDATE")

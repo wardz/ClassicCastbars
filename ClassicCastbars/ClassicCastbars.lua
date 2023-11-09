@@ -305,11 +305,13 @@ end
 function addon:ToggleUnitEvents(shouldReset)
     if self.db.target.enabled then
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self:RegisterUnitEvent("UNIT_TARGET", "target")
         if self.db.target.autoPosition then
             self:RegisterUnitEvent("UNIT_AURA", "target")
         end
     else
         self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        self:UnregisterEvent("UNIT_TARGET")
         self:UnregisterEvent("UNIT_AURA")
     end
 
@@ -435,6 +437,17 @@ function addon:ADDON_LOADED(addonName)
             LibClassicDurations.RegisterCallback("ClassicCastbars", "UNIT_BUFF", function() end) -- ensure .OnUsed() is triggered
             self.LibClassicDurationsInitialized = true
             self:UnregisterEvent("ADDON_LOADED")
+        end
+    end
+end
+
+function addon:UNIT_TARGET(unitID) -- detect target of target
+    if self.db[unitID] and self.db[unitID].autoPosition then
+        if activeFrames[unitID] then
+            local parentFrame = self.AnchorManager:GetAnchor(unitID)
+            if parentFrame then
+                self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
+            end
         end
     end
 end
