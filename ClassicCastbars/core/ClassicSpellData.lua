@@ -8,7 +8,7 @@ local CLIENT_PRE_WOTLK = (CLIENT_IS_TBC or CLIENT_IS_CLASSIC_ERA)
 -- Spell data for wotlk / pre-wotlk era.
 -- Feel free to reuse any of this data.
 
-if CLIENT_IS_CLASSIC_ERA then
+if CLIENT_IS_CLASSIC_ERA and select(7, GetBuildInfo()) < 11500 then
 
     local castSpellIDs = {
         25262, -- Abomination Spit
@@ -1847,6 +1847,11 @@ if CLIENT_PRE_WOTLK then
         namespace.playerInterrupts[GetSpellInfo(32747)] = 1 -- Deadly Throw Interrupt Effect
     end
 
+    if CLIENT_IS_CLASSIC_ERA and select(7, GetBuildInfo()) >= 11500 then
+        namespace.playerInterrupts[GetSpellInfo(410176)] = 1 -- Skull Bash
+        namespace.playerInterrupts[GetSpellInfo(425609)] = 1 -- Rebuke
+    end
+
     if CLIENT_IS_TBC then
         namespace.playerSilences = {
             [GetSpellInfo(18469)] = 1, -- Counterspell - Silenced
@@ -1854,6 +1859,13 @@ if CLIENT_PRE_WOTLK then
             [GetSpellInfo(24259)] = 1, -- Spell Lock
             [GetSpellInfo(15487)] = 1, -- Silence
             [GetSpellInfo(34490)] = 1, -- Silencing Shot
+        }
+    elseif CLIENT_IS_CLASSIC_ERA and select(7, GetBuildInfo()) >= 11500 then
+        namespace.playerSilences = {
+            [GetSpellInfo(18469)] = 1, -- Counterspell - Silenced
+            [GetSpellInfo(18425)] = 1, -- Kick - Silenced
+            [GetSpellInfo(24259)] = 1, -- Spell Lock
+            [GetSpellInfo(15487)] = 1, -- Silence
         }
     else
         namespace.playerSilences = {}

@@ -1,4 +1,5 @@
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
+if select(7, GetBuildInfo()) >= 11500 then return end -- Patch 1.15.0 now has built in castbars
 
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
