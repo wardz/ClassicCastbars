@@ -385,7 +385,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
         return
     end
 
-    if castbar:GetAlpha() <= 0 then return end
+    --if castbar:GetAlpha() <= 0 then return end
 
     local cast = castbar._data
     if cast then
@@ -395,7 +395,8 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
             else
                 castbar.Text:SetText(cast.isInterrupted and _G.INTERRUPTED or _G.FAILED)
             end
-            castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorFailed))
+            local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorFailed)
+            castbar:SetStatusBarColor(r, g, b) -- Skipping alpha channel as it messes with fade out animations
             castbar:SetMinMaxValues(0, 1)
             castbar:SetValue(1)
             castbar.Spark:SetAlpha(0)
@@ -419,9 +420,10 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
             castbar:SetMinMaxValues(0, 1)
             if not cast.isChanneled then
                 if cast.isUninterruptible then
-                    castbar:SetStatusBarColor(0.7, 0.7, 0.7, 1)
+                    castbar:SetStatusBarColor(0.7, 0.7, 0.7)
                 else
-                    castbar:SetStatusBarColor(unpack(self.db[self:GetUnitType(unitID)].statusColorSuccess))
+                    local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorSuccess)
+                    castbar:SetStatusBarColor(r, g, b)  -- Skipping alpha channel as it messes with fade out animations
                 end
                 castbar:SetValue(1)
             else
@@ -440,7 +442,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
             end
 
             if isClassicEra then
-                castbar.fade:SetDuration(cast and cast.isInterrupted and 1 or 0.3)
+                castbar.fade:SetDuration(cast and cast.isInterrupted and 1 or 0.4)
             else
                 castbar.fade:SetDuration(0.4)
             end
