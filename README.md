@@ -1,8 +1,15 @@
 # ClassicCastbars
 
-World of Warcraft Classic addon that brings back the target & nameplate castbars. Casting times for players in Classic Era are always based on highest spell rank due to API restrictions. TBC & Wrath works like usual.
+Customizable castbars for Classic Era, Wrath and Retail World of Warcraft. Type "/castbar" to open the options panel.  
+Includes optional party castbars, school lockout alerts, and uninterruptible cast state tracking for Classic Era.  
 
 **Note: This addon is now in maintenance mode, expect less frequent updates.**
+
+## Classic Era 1.15.0+
+
+This addon is no longer needed for Classic Era to see target castbars. You may safely disable this addon now and enable castbars in Blizzard Options -> Interface -> Show Enemy Cast Bar instead.  
+
+For anyone still using it for castbar customizations, make sure you're using version 1.7.1+ to support the new built in cast events.
 
 ## Links
 
@@ -11,14 +18,9 @@ World of Warcraft Classic addon that brings back the target & nameplate castbars
 - [Submit Translations](https://www.curseforge.com/wow/addons/classiccastbars/localization)
 - [Submit Bugs or Issues](https://github.com/wardz/ClassicCastbars/issues)
 
-## Configuration
+### Support
 
-Castbars have configurable size, textures, positioning and more.  
-Type `/castbar` or go to "Escape -> Interface Options -> AddOns -> ClassicCastbars" to open the options panel.
-  
-If for some reason the addon stopped working, try temporarily disabling all other addons too see if there's any conflicts, or run this macro ingame twice: (Will reset all castbar settings to default)
-
-`/run ClassicCastbarsDB=nil;ClassicCastbarsCharDB=nil;EnableAddOn("ClassicCastbars");EnableAddOn("ClassicCastbars_Options")ReloadUI();`
+Donations are turned off. If you're feeling generous consider donating to the nonprofit TorProject organization instead, or running the intermediate TorProject Snowflake browser extension to help people in censored countries circumvent internet censorship. Big thanks to everyone who donated back in 2019/2020! Also big thanks to everyone who helped translate & contribute to the addon over the years!
 
 ### License
 
