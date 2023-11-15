@@ -638,7 +638,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED()
             end
         end
     elseif eventType == "SPELL_INTERRUPT" then
-        -- TODO: check channeled
         for unitID, castbar in pairs(activeFrames) do
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then
@@ -655,7 +654,7 @@ addon:SetScript("OnUpdate", function(self)
     -- Update all shown castbars in a single OnUpdate call
     for unit, castbar in next, activeFrames do
         local cast = castbar._data
-        if cast then
+        if cast and cast.endTime ~= nil then
             local castTime = cast.endTime - currTime
 
             if (castTime > 0) then

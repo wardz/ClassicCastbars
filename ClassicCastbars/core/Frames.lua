@@ -335,6 +335,7 @@ end
 function addon:DisplayCastbar(castbar, unitID)
     local cast = castbar._data
     if not cast then return end
+    if cast.endTime == nil then return end
 
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end
@@ -388,7 +389,7 @@ function addon:HideCastbar(castbar, unitID, skipFadeOut)
     --if castbar:GetAlpha() <= 0 then return end
 
     local cast = castbar._data
-    if cast then
+    if cast and cast.endTime ~= nil then
         if cast.isInterrupted or cast.isFailed then
             if cast.isInterrupted and cast.interruptedSchool and self.db[self:GetUnitType(unitID)].showInterruptSchool then
                 castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(cast.interruptedSchool) or ""))
