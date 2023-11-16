@@ -669,34 +669,6 @@ local function GetOptionsTable()
                 end,
             },
 
-            -- Reset Cache Button
-            resetCastCache = {
-                order = 7,
-                name = _G.BROWSER_CLEAR_CACHE,
-                desc = L.CLEAR_CACHE_DESC,
-                hidden = select(7, GetBuildInfo()) >= 11500,
-                confirm = function()
-                    return L.CLEAR_CACHE_DESC
-                end,
-                type = "execute",
-                func = function()
-                    ClassicCastbarsDB.npcCastTimeCache = CopyTable(ClassicCastbars.defaultConfig.npcCastTimeCache)
-                    ClassicCastbarsDB.npcCastUninterruptibleCache = CopyTable(ClassicCastbars.defaultConfig.npcCastUninterruptibleCache)
-                    if ClassicCastbarsCharDB then
-                        ClassicCastbarsCharDB.npcCastTimeCache = CopyTable(ClassicCastbars.defaultConfig.npcCastTimeCache)
-                        ClassicCastbarsCharDB.npcCastUninterruptibleCache = CopyTable(ClassicCastbars.defaultConfig.npcCastUninterruptibleCache)
-                    end
-                    print(_G.BROWSER_CACHE_CLEARED) -- luacheck: ignore
-                end,
-            },
-
-            spacer = {
-                order = 8,
-                type = "description",
-                name = "\n",
-                hidden = select(7, GetBuildInfo()) >= 11500,
-            },
-
             -- Character specific savedvariables Checkbox
             usePerCharacterSettings = {
                 order = 9,
@@ -715,21 +687,6 @@ local function GetOptionsTable()
                     end
                     ClassicCastbarsCharDB.usePerCharacterSettings = value
                     ReloadUI()
-                end,
-            },
-
-            clearCastTimeCachePerZone = {
-                order = 10,
-                width = 1.4,
-                type = "toggle",
-                hidden = select(7, GetBuildInfo()) >= 11500,
-                name = "Clear CastTime Cache Per Zone",
-                desc = "Delete cached NPC cast times every time you change a major zone.",
-                get = function()
-                    return ClassicCastbars.db.clearCastTimeCachePerZone
-                end,
-                set = function(_, value)
-                    ClassicCastbars.db.clearCastTimeCachePerZone = value
                 end,
             },
         },
