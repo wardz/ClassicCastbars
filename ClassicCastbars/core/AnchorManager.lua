@@ -1,4 +1,5 @@
 local _, namespace = ...
+
 local AnchorManager = {}
 namespace.AnchorManager = AnchorManager
 
@@ -101,7 +102,7 @@ end
 
 local function GetPartyFrameForUnit(unitID)
     if unitID == "party-testmode" then
-        if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then -- TODO: check if still needed
             if EditModeManagerFrame:UseRaidStylePartyFrames() then
                 return GetUnitFrameForUnit("party", "party1", true, true)
             else
@@ -123,6 +124,7 @@ local function GetPartyFrameForUnit(unitID)
     if not guid then return end
 
     local useCompact = GetCVarBool("useCompactPartyFrames")
+    -- TODO: EditModeManagerFrame:UseRaidStylePartyFrames()
 
     -- raid frames are recycled so frame10 might be party2 and so on, so we need
     -- to loop through them all and check if the unit matches. Same thing with party
@@ -152,9 +154,7 @@ local function GetPartyFrameForUnit(unitID)
 end
 
 local anchorCache = {
-    player = UIParent, -- special case for player/focus casting bar
-    focus = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and UIParent or nil,
-    target = nil, -- will be set later
+    player = UIParent
 }
 
 function AnchorManager:GetAnchor(unitID)
@@ -165,27 +165,23 @@ function AnchorManager:GetAnchor(unitID)
     local unitType, count = gsub(unitID, "%d", "") -- party1 -> party etc
 
     local frame
-    if unitType == "nameplate" then
-        frame = GetNamePlateForUnit(unitID)
-    elseif unitID == "nameplate-testmode" then
+    if unitType == "nameplate-testmode" then
         frame = GetNamePlateForUnit("target")
+    elseif unitType == "nameplate" then
+        frame = GetNamePlateForUnit(unitID)
     elseif unitType == "party" or unitType == "party-testmode" then
         frame = GetPartyFrameForUnit(unitID)
     elseif unitType == "arena-testmode" then
         frame = GetUnitFrameForUnit("arena", "arena1", true, true)
-    else -- target/focus
+    else -- target/focus/arena
         frame = GetUnitFrameForUnit(unitType, unitID, count > 0)
     end
 
     if not frame then return end
 
-    -- cache frequently used unitframes
-    if unitType == "target" then
+    -- Cache frequently used unitframes
+    if unitType == "target" or unitType == "focus" then
         anchorCache[unitID] = frame
-    elseif unitType == "focus" then
-        if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-            anchorCache[unitID] = frame
-        end
     end
 
     return frame

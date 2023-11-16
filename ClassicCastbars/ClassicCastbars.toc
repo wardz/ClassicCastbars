@@ -19,4 +19,4 @@ Core/SavedVariables.lua
 ClassicCastbars.lua
 ClassicCastbars_NonClassic.lua
 Core/Frames.lua
-Core/LoadOptions.lua
+Core/LoadOptionsOnDemand.lua

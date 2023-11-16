@@ -61,6 +61,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         end
     end
 
+    -- https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables
     return {
         name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
@@ -230,12 +231,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                                 bar:SetPoint("CENTER", bar.parent, ClassicCastbars.db[unitID].position[2], value)
                             end
                         end,
-                    },
-                    notes = {
-                        order = 12,
-                        hidden = not isClassicEra or unitID ~= "focus",
-                        name = "\n\nSlash Commands:\n\n|cffffff00 - /focus\n\n - /clearfocus\n\n - /click FocusCastbar|r (won't update unit if /focus used in combat)",
-                        type = "description",
                     },
                 },
             },
@@ -638,12 +633,12 @@ local function GetOptionsTable()
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", L.PARTY, 3),
             player = CreateUnitTabGroup("player", L.PLAYER, 4),
-            focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
+            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
             arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
             -- Reset Button
             resetAllSettings = {
-                order = 6,
+                order = 7,
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = function()
@@ -671,7 +666,7 @@ local function GetOptionsTable()
 
             -- Character specific savedvariables Checkbox
             usePerCharacterSettings = {
-                order = 9,
+                order = 8,
                 width = 1.3,
                 type = "toggle",
                 name = L.PER_CHARACTER,

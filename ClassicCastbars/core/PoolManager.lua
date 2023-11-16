@@ -1,4 +1,5 @@
 local _, namespace = ...
+
 local PoolManager = {}
 namespace.PoolManager = PoolManager
 
@@ -17,7 +18,7 @@ local function ResetterFunc(pool, frame)
     end
 end
 
--- TODO: with retails changes to SmallCastingBarFrameTemplate we should look into creating our own template soon
+-- TODO: with Retails changes to SmallCastingBarFrameTemplate we should look into creating our own template soon, this'd also help cleanup Frames.lua a lot.
 local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
 local framesCreated = 0
 local framesActive = 0
@@ -45,7 +46,7 @@ end
 
 function PoolManager:InitializeNewFrame(frame)
     -- Some of the points set by SmallCastingBarFrameTemplate doesn't
-    -- work well when user modify castbar size, so set our own points instead
+    -- work well when user modify castbar size (not scale), so set our own points instead
     frame.Border:ClearAllPoints()
     frame.Icon:ClearAllPoints()
     frame.Text:ClearAllPoints()

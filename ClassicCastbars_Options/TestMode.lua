@@ -34,19 +34,11 @@ end
 local function OnDragStop(self)
     self:StopMovingOrSizing()
 
-    local unit = self.unitID
-    if strfind(unit, "nameplate") then
-        unit = "nameplate" -- make it match our DB key
-    elseif strfind(unit, "arena") then
-        unit = "arena"
-    elseif strfind(unit, "party") then
-        unit = "party"
-    end
-
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
+    local unit = ClassicCastbars:GetUnitType(self.unitID)
     local x, y = CalcScreenGetPoint(self)
-    ClassicCastbars.db[unit].position = { "CENTER", x, y }  -- has to be center for CalcScreenGetPoint to work
+    ClassicCastbars.db[unit].position = { "CENTER", x, y } -- Has to be center for CalcScreenGetPoint to work
     ClassicCastbars.db[unit].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
@@ -71,10 +63,6 @@ function TestMode:TogglePartyContainer(showFlag)
         else
             HideUIPanel(EditModeManagerFrame)
         end
-
-        --EditModeManagerFrame.AccountSettings:SetPartyFramesShown(showFlag)
-        --EditModeManagerFrame.AccountSettings:SetRaidFramesShown(showFlag)
-        --EditModeManagerFrame.AccountSettings:RefreshPartyFrames()
     end
 end
 

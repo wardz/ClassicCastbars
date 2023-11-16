@@ -1,14 +1,10 @@
 local _, namespace = ...
 
-local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-
 namespace.defaultConfig = {
-    version = "41",
+    version = "42",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
-    npcCastTimeCache = {},
     usePerCharacterSettings = false,
-    clearCastTimeCachePerZone = true,
 
     nameplate = {
         enabled = true,
@@ -98,13 +94,13 @@ namespace.defaultConfig = {
         showTimer = false,
         showIcon = true,
         showSpark = true,
-        autoPosition = CLIENT_IS_CLASSIC_ERA and false or true,
+        autoPosition = true,
         castFont = _G.STANDARD_TEXT_FONT,
         castFontSize = 10,
         castStatusBar = "Interface\\TargetingFrame\\UI-StatusBar",
         castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small",
         hideIconBorder = false,
-        position = (CLIENT_IS_CLASSIC_ERA and { "TOPLEFT", 275, -260 } or { "CENTER", -19, -112 }),
+        position = { "CENTER", -19, -112 },
         iconPositionX = -5,
         iconPositionY = 0,
         borderColor = { 1, 1, 1, 1 },
@@ -242,9 +238,8 @@ namespace.defaultConfig = {
     },
 }
 
-if CLIENT_IS_CLASSIC_ERA then
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
     -- NPC spells that can't be interrupted. (Sensible defaults, doesn't include all)
-    -- TODO: if we ever add profiles both npcCastTimeCache and npcCastUninterruptibleCache should be in a separate 'savedvariable'
     namespace.defaultConfig.npcCastUninterruptibleCache = {
         ["11981" .. GetSpellInfo(18500)] = true, -- Flamegor Wing Buffet
         ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
@@ -350,81 +345,4 @@ if CLIENT_IS_CLASSIC_ERA then
         ["11560" .. GetSpellInfo(18159)] = true, -- Magrami Spectre Curse of the Fallen Magic
         ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
     }
-
-    -- Storage for auto-corrected cast times
-    namespace.defaultConfig.npcCastTimeCache = {
-        ["15990" .. GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
-        ["15989" .. GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
-    }
-
-    if GetLocale() ~= "enUS" then
-        namespace.defaultConfig.npcCastTimeCache = {
-            ["15990" .. GetSpellInfo(28478)] = 2000, -- Kel Thuzad Frostbolt
-            ["15989" .. GetSpellInfo(3131)] = 7000, -- Sapphiron Frost Breath
-        }
-    else
-        -- Add some defaults collected from gameplay over time. I'm lazy so atm this data is english only sry.
-        -- In the future format will be 'npcID-spellID ref' so we can avoid GetSpellInfo calls here.
-        namespace.defaultConfig.npcCastTimeCache = {
-            ["15990Frostbolt"] = 2000,
-            ["15989Frost Breath"] = 7000,
-            ["441Fireball"] = 2970,
-            ["548Healing Wave"] = 2440,
-            ["476Fireball"] = 3040,
-            ["4463Fireball"] = 3010,
-            ["2338Heal"] = 3000,
-            ["2203Healing Wave"] = 2425,
-            ["430Healing Wave"] = 2425,
-            ["2180Heal"] = 3580,
-            ["548Frostbolt"] = 3010,
-            ["699Shoot"] = 587,
-            ["2548Shoot"] = 501,
-            ["696Throw"] = 479,
-            ["1794Shadow Bolt Volley"] = 3011,
-            ["5336Frostbolt"] = 3002,
-            ["4665Fireball"] = 2917,
-            ["759Shoot"] = 421,
-            ["4378Deadly Poison"] = 2079,
-            ["2554Throw"] = 505,
-            ["1562Fireball"] = 3001,
-            ["8338Marksman Hit"] = 2503,
-            ["7115Fireball"] = 3062,
-            ["4684Frostbolt"] = 3002,
-            ["674Dynamite"] = 1288,
-            ["1489Throw"] = 441,
-            ["8566Shoot"] = 501,
-            ["741Acid Spit"] = 3014,
-            ["2649Throw"] = 514,
-            ["6195Shoot"] = 484,
-            ["760Plague Cloud"] = 1998,
-            ["5646Throw"] = 513,
-            ["7155Shoot"] = 569,
-            ["1831Shoot"] = 504,
-            ["9318Fireball"] = 2966,
-            ["879Throw"] = 502,
-            ["979Poisoned Shot"] = 2507,
-            ["6199Fireball"] = 3000,
-            ["1097Shoot"] = 410,
-            ["5862Fireball"] = 3009,
-            ["781Throw"] = 483,
-            ["5462Frostbolt"] = 3006,
-            ["784Shoot"] = 502,
-            ["740Acid Spit"] = 3002,
-            ["694Throw"] = 444,
-            ["6199Heal"] = 3514,
-            ["1784Frostbolt"] = 3095,
-            ["2573Frostbolt"] = 3014,
-            ["979Shoot"] = 544,
-            ["677Fireball"] = 2926,
-            ["727Shoot"] = 414,
-            ["595Throw"] = 593,
-            ["7856Shoot"] = 502,
-            ["4716Throw"] = 490,
-            ["671Throw"] = 491,
-            ["6117Frostbolt"] = 3014,
-            ["5858Fireball"] = 3000,
-            ["5839Fireball"] = 2999,
-            ["1653Fireball"] = 3006,
-        }
-    end
 end
