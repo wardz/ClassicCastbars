@@ -539,6 +539,7 @@ function addon:PLAYER_LOGIN()
         self.db.focus.castFont = _G.STANDARD_TEXT_FONT
         self.db.arena.castFont = _G.STANDARD_TEXT_FONT
         self.db.party.castFont = _G.STANDARD_TEXT_FONT
+        self.db.player.castFont = _G.STANDARD_TEXT_FONT
     end
 
     if self.db.player.enabled then
