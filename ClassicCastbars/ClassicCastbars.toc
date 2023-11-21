@@ -17,6 +17,5 @@ Core/PoolManager.lua
 Core/AnchorManager.lua
 Core/SavedVariables.lua
 ClassicCastbars.lua
-ClassicCastbars_NonClassic.lua
 Core/Frames.lua
 Core/LoadOptionsOnDemand.lua

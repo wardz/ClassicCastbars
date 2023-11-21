@@ -5,6 +5,7 @@ local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local CLIENT_PRE_WOTLK = (CLIENT_IS_TBC or CLIENT_IS_CLASSIC_ERA)
 
 if CLIENT_PRE_WOTLK then
+    -- TODO: now that classic era fully supports spellIDs again, these should be converted from names to IDs (also gotta add every rank)
 
     -- List of player interrupts that can lock out a school (not silences)
     namespace.playerInterrupts = {
@@ -20,7 +21,7 @@ if CLIENT_PRE_WOTLK then
         namespace.playerInterrupts[GetSpellInfo(32747)] = 1 -- Deadly Throw Interrupt Effect
     end
 
-    if CLIENT_IS_CLASSIC_ERA and select(7, GetBuildInfo()) >= 11500 then
+    if CLIENT_IS_CLASSIC_ERA then
         namespace.playerInterrupts[GetSpellInfo(410176)] = 1 -- Skull Bash
         namespace.playerInterrupts[GetSpellInfo(425609)] = 1 -- Rebuke
     end
@@ -33,7 +34,7 @@ if CLIENT_PRE_WOTLK then
             [GetSpellInfo(15487)] = 1, -- Silence
             [GetSpellInfo(34490)] = 1, -- Silencing Shot
         }
-    elseif CLIENT_IS_CLASSIC_ERA and select(7, GetBuildInfo()) >= 11500 then
+    elseif CLIENT_IS_CLASSIC_ERA then
         namespace.playerSilences = {
             [GetSpellInfo(18469)] = 1, -- Counterspell - Silenced
             [GetSpellInfo(18425)] = 1, -- Kick - Silenced
