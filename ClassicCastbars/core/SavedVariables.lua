@@ -1,7 +1,7 @@
 local _, namespace = ...
 
 namespace.defaultConfig = {
-    version = "42",
+    version = "43",
     locale = GetLocale(),
     npcCastUninterruptibleCache = {},
     usePerCharacterSettings = false,
