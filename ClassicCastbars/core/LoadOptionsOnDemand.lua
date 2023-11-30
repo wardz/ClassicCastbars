@@ -25,7 +25,7 @@ SlashCmdList["CLASSICCASTBARS"] = function()
             local loaded, reason = LoadAddOn("ClassicCastbars_Options")
             if not loaded and reason == "DISABLED" then
                 isLoaded = true -- disabled, dont attempt to load it anymore
-                return
+                return print(string.format(_G.ADDON_LOAD_FAILED, "ClassicCastbars_Options", _G["ADDON_" .. reason] or _G.ADDON_UNKNOWN_ERROR)) -- luacheck: ignore
             end
             isLoaded = loaded
             if isLoaded then
