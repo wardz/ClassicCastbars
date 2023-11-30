@@ -12,119 +12,126 @@ local physicalClasses = {
     ["PALADIN"] = true,
 }
 
--- Player silence effects, not interrupts
+-- Player silence effects (not interrupts)
 namespace.playerSilences = {
-    [GetSpellInfo(18469)] = 1, -- Counterspell - Silenced
-    [GetSpellInfo(18425)] = 1, -- Kick - Silenced
-    [GetSpellInfo(24259)] = 1, -- Spell Lock
-    [GetSpellInfo(15487)] = 1, -- Silence
+    [18469] = true, -- Counterspell - Silenced
+    [18425] = true, -- Kick - Silenced
+    [24259] = true, -- Spell Lock
+    [15487] = true, -- Silence
+    [34490] = CLIENT_IS_TBC or nil, -- Silencing Shot
 }
-if CLIENT_IS_TBC then
-    namespace.playerSilences[GetSpellInfo(34490)] = 1 -- Silencing Shot
-end
 
--- Cast immunity auras that gives physical or magical interrupt protection
+-- Cast immunity auras that gives full interrupt protection
 namespace.castImmunityBuffs = {
-    [GetSpellInfo(642)] = true, -- Divine Shield
-    [GetSpellInfo(498)] = true, -- Divine Protection
+    [642] = true, -- Divine Shield (Rank 1)
+    [1020] = true, -- Divine Shield (Rank 2)
+    [13874] = true, -- Divine Shield (PvE)
+    [498] = true, -- Divine Protection (Rank 1)
+    [5573] = true, -- Divine Protection (Rank 2)
+    [13007] = true, -- Divine Protection (PvE)
 }
 
--- Immunity against physical classes only
+-- Cast immunity against physical classes only
 if physicalClasses[select(2, UnitClass("player"))] then
-    namespace.castImmunityBuffs[GetSpellInfo(1022)] = true -- Blessing of Protection
-
-    if CLIENT_IS_CLASSIC_ERA then
-        namespace.castImmunityBuffs[GetSpellInfo(3169)] = true -- Limited Invulnerability Potion
-    end
+    namespace.castImmunityBuffs[1022] = true -- Blessing of Protection (Rank 1)
+    namespace.castImmunityBuffs[5599] = true -- Blessing of Protection (Rank 2)
+    namespace.castImmunityBuffs[10278] = true -- Blessing of Protection (Rank 3)
+    namespace.castImmunityBuffs[3169] = CLIENT_IS_CLASSIC_ERA or nil -- Limited Invulnerability Potion
 else
-    -- Immunity against magical classes only
-    namespace.castImmunityBuffs[GetSpellInfo(24021)] = true -- Anti Magic Shield
-
-    if CLIENT_IS_TBC then
-        namespace.castImmunityBuffs[GetSpellInfo(41451)] = true -- Blessing of Spell Warding
-    end
+    -- Cast immunity against magical classes only
+    namespace.castImmunityBuffs[7121] = true -- Anti-Magic Shield (PvE 1)
+    namespace.castImmunityBuffs[24021] = true -- Anti-Magic Shield (PvE 2)
+    namespace.castImmunityBuffs[19645] = true -- Anti-Magic Shield (PvE 3)
+    namespace.castImmunityBuffs[41451] = CLIENT_IS_TBC or nil -- Blessing of Spell Warding
 end
 
--- Spells that can't be interrupted
+-- Spells that can't be interrupted.
+-- This table accepts both spellIDs and spellNames.
 namespace.uninterruptibleList = {
-    [GetSpellInfo(19821)] = 1,      -- Arcane Bomb
-    [GetSpellInfo(4068)] = 1,       -- Iron Grenade
-    [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
-    [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
-    [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
-    [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
-    [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
-    [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
-    [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
-    [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
-    [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
-    [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
-    [GetSpellInfo(4061)] = 1,       -- Coarse Dynamite
-    [GetSpellInfo(4054)] = 1,       -- Rough Dynamite
-    [GetSpellInfo(8331)] = 1,       -- EZ-Thro Dynamite
-    [GetSpellInfo(23000)] = 1,      -- EZ-Thro Dynamite II
-    [GetSpellInfo(4062)] = 1,       -- Heavy Dynamite
-    [GetSpellInfo(23063)] = 1,      -- Dense Dynamite
-    [GetSpellInfo(12419)] = 1,      -- Solid Dynamite
-    [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
-    [GetSpellInfo(23041)] = 1,      -- Call Anathema
-    [GetSpellInfo(20589)] = 1,      -- Escape Artist
-    [GetSpellInfo(20549)] = 1,      -- War Stomp
-    [GetSpellInfo(1510)] = 1,       -- Volley
-    [GetSpellInfo(20904)] = 1,      -- Aimed Shot
-    [GetSpellInfo(11605)] = 1,      -- Slam
-    [GetSpellInfo(1804)] = 1,       -- Pick Lock
-    [GetSpellInfo(1842)] = 1,       -- Disarm Trap
-    [GetSpellInfo(2641)] = 1,       -- Dismiss Pet
-    [GetSpellInfo(11202)] = 1,      -- Crippling Poison
-    [GetSpellInfo(3421)] = 1,       -- Crippling Poison II
-    [GetSpellInfo(2835)] = 1,       -- Deadly Poison
-    [GetSpellInfo(2837)] = 1,       -- Deadly Poison II
-    [GetSpellInfo(11355)] = 1,      -- Deadly Poison III
-    [GetSpellInfo(11356)] = 1,      -- Deadly Poison IV
-    [GetSpellInfo(25347)] = 1,      -- Deadly Poison V
-    [GetSpellInfo(8681)] = 1,       -- Instant Poison
-    [GetSpellInfo(8686)] = 1,       -- Instant Poison II
-    [GetSpellInfo(8688)] = 1,       -- Instant Poison III
-    [GetSpellInfo(11338)] = 1,      -- Instant Poison IV
-    [GetSpellInfo(11339)] = 1,      -- Instant Poison V
-    [GetSpellInfo(11343)] = 1,      -- Instant Poison VI
-    [GetSpellInfo(5761)] = 1,       -- Mind-numbing Poison
-    [GetSpellInfo(8693)] = 1,       -- Mind-numbing Poison II
-    [GetSpellInfo(11399)] = 1,      -- Mind-numbing Poison III
-    [GetSpellInfo(13227)] = 1,      -- Wound Poison
-    [GetSpellInfo(13228)] = 1,      -- Wound Poison II
-    [GetSpellInfo(13229)] = 1,      -- Wound Poison III
-    [GetSpellInfo(13230)] = 1,      -- Wound Poison IV
-    [GetSpellInfo(10436)] = 1,      -- Attack (Totems)
+    [19821] = true,      -- Arcane Bomb
+    [4068] = true,       -- Iron Grenade
+    [19769] = true,      -- Thorium Grenade
+    [13808] = true,      -- M73 Frag Grenade
+    [4069] = true,       -- Big Iron Bomb
+    [12543] = true,      -- Hi-Explosive Bomb
+    [4064] = true,       -- Rough Copper Bomb
+    [12421] = true,      -- Mithril Frag Bomb
+    [19784] = true,      -- Dark Iron Bomb
+    [4067] = true,       -- Big Bronze Bomb
+    [4066] = true,       -- Small Bronze Bomb
+    [4065] = true,       -- Large Copper Bomb
+    [4061] = true,       -- Coarse Dynamite
+    [4054] = true,       -- Rough Dynamite
+    [8331] = true,       -- EZ-Thro Dynamite
+    [23000] = true,      -- EZ-Thro Dynamite II
+    [4062] = true,       -- Heavy Dynamite
+    [23063] = true,      -- Dense Dynamite
+    [12419] = true,      -- Solid Dynamite
+    [13278] = true,      -- Gnomish Death Ray
+    [23041] = true,      -- Call Anathema
+    [20589] = true,      -- Escape Artist
+    [20549] = true,      -- War Stomp
+    [1510] = true,       -- Volley
+    [20904] = true,      -- Aimed Shot
+    [11605] = true,      -- Slam
+    [1804] = true,       -- Pick Lock
+    [1842] = true,       -- Disarm Trap
+    [2641] = true,       -- Dismiss Pet
+    [11202] = true,      -- Crippling Poison
+    [3421] = true,       -- Crippling Poison II
+    [2835] = true,       -- Deadly Poison
+    [2837] = true,       -- Deadly Poison II
+    [11355] = true,      -- Deadly Poison III
+    [11356] = true,      -- Deadly Poison IV
+    [25347] = true,      -- Deadly Poison V
+    [8681] = true,       -- Instant Poison
+    [8686] = true,       -- Instant Poison II
+    [8688] = true,       -- Instant Poison III
+    [11338] = true,      -- Instant Poison IV
+    [11339] = true,      -- Instant Poison V
+    [11343] = true,      -- Instant Poison VI
+    [5761] = true,       -- Mind-numbing Poison
+    [8693] = true,       -- Mind-numbing Poison II
+    [11399] = true,      -- Mind-numbing Poison III
+    [13220] = true,      -- Wound Poison
+    [13228] = true,      -- Wound Poison II
+    [13229] = true,      -- Wound Poison III
+    [13230] = true,      -- Wound Poison IV
+    [34120] = CLIENT_IS_TBC or nil, -- Steady Shot
 
-    -- these are technically uninterruptible but breaks on dmg
-    [GetSpellInfo(22999)] = 1,      -- Defibrillate
-    [GetSpellInfo(746)] = 1,        -- First Aid
-    [GetSpellInfo(20577)] = 1,      -- Cannibalize
+    -- These are technically uninterruptible but breaks on dmg
+    [22999] = true,      -- Defibrillate
+    [746] = true,        -- First Aid
+    [20577] = true,      -- Cannibalize
 
-    -- NPC spells that doesn't need to be tied to npcIDs (see npcCastUninterruptibleCache)
-    [GetSpellInfo(2764)] = 1, -- Throw
-    [GetSpellInfo(8995)] = 1, -- Shoot
-    [GetSpellInfo(6925)] = 1, -- Gift of the Xavian
-    [GetSpellInfo(4979)] = 1, -- Quick Flame Ward
-    [GetSpellInfo(4980)] = 1, -- Quick Frost Ward
-    [GetSpellInfo(8800)] = 1, -- Dynamite
-    [GetSpellInfo(8858)] = 1, -- Bomb
-    [GetSpellInfo(9483)] = 1, -- Boulder
-    [GetSpellInfo(5106)] = 1, -- Crystal Flash
-    [GetSpellInfo(7279)] = 1, -- Black Sludge
-    [GetSpellInfo(14146)] = 1, -- Clone
-    [GetSpellInfo(13692)] = 1, -- Dire Growl
-    [GetSpellInfo(9612)] = 1, -- Ink Spray
-    [GetSpellInfo(16075)] = 1, -- Throw Axe
-    [GetSpellInfo(16594)] = 1, -- Crypt Scarabs
+    -- Uninterruptible NPC spells.
+    -- Spellname is used so we can avoid listing every different rank/version.
+    -- If a spellname is not always uninterruptible between different NPCs (or doesnt have ranks), list the correct spellIDs instead.
+    -- (When using spellnames, make sure it exists in both classic era & TBC, or you need to add it further below)
+    [GetSpellInfo(10436)] = true,-- Attack (Totems)
+    [GetSpellInfo(8858)] = true, -- Bomb
+    [GetSpellInfo(9483)] = true, -- Boulder
+    [GetSpellInfo(14146)] = true, -- Clone
+    [GetSpellInfo(16594)] = true, -- Crypt Scarabs
+    [GetSpellInfo(8995)] = true, -- Shoot
+    [GetSpellInfo(2764)] = true, -- Throw
+    [16075] = true, -- Throw Axe
+    [6925] = true, -- Gift of the Xavian
+    [4979] = true, -- Quick Flame Ward
+    [4980] = true, -- Quick Frost Ward
+    [8800] = true, -- Dynamite
+    [7978] = true, -- Throw Dynamite
+    [5106] = true, -- Crystal Flash
+    [7279] = true, -- Black Sludge
+    [13692] = true, -- Dire Growl
+    [9612] = true, -- Ink Spray
 }
 
-if CLIENT_IS_TBC then
-    namespace.uninterruptibleList[GetSpellInfo(34120)] = 1 -- Steady Shot
-else
-    namespace.uninterruptibleList[GetSpellInfo(2480)] = 1 -- Shoot Bow
-    namespace.uninterruptibleList[GetSpellInfo(7918)] = 1 -- Shoot Gun
-    namespace.uninterruptibleList[GetSpellInfo(7919)] = 1 -- Shoot Crossbow
+if CLIENT_IS_CLASSIC_ERA then
+    namespace.uninterruptibleList[GetSpellInfo(2480)] = true -- Shoot Bow
+    namespace.uninterruptibleList[GetSpellInfo(7918)] = true -- Shoot Gun
+    namespace.uninterruptibleList[GetSpellInfo(7919)] = true -- Shoot Crossbow
+elseif CLIENT_IS_TBC then
+    namespace.uninterruptibleList[GetSpellInfo(29121)] = true -- Shoot Bow
+    namespace.uninterruptibleList[GetSpellInfo(33808)] = true -- Shoot Gun
 end

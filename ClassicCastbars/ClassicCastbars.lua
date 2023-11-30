@@ -157,7 +157,7 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
     if not cast or cast.endTime == nil then return end
 
     -- Always start with our initial boolean state
-    cast.isUninterruptible = uninterruptibleList[cast.spellName] or false
+    cast.isUninterruptible = uninterruptibleList[cast.spellID] or uninterruptibleList[cast.spellName] or false
     if not cast.isUninterruptible and not cast.unitIsPlayer then
         local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
         if npcID then
@@ -169,10 +169,10 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
 
     -- Check for any temp BUFF immunities
     for i = 1, 40 do
-        local buffName = UnitAura(unitID, i, "HELPFUL")
-        if not buffName then break end
+        local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HELPFUL")
+        if not spellID then break end
 
-        if castImmunityBuffs[buffName] then
+        if castImmunityBuffs[spellID] then
             cast.isUninterruptible = true
 
             if ranFromUnitAuraEvent then
@@ -189,10 +189,10 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
     -- Previously we also checked for SPELL_IMMUNE event on interrupts, but this no longer works.
     if not cast.unitIsPlayer then
         for i = 1, 40 do
-            local debuffName = UnitAura(unitID, i, "HARMFUL")
-            if not debuffName then break end
+            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
+            if not spellID then break end
 
-            if playerSilences[debuffName] then
+            if playerSilences[spellID] then
                 local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
                 cast.isUninterruptible = true
                 if npcID then
