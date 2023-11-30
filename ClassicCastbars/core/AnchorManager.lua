@@ -3,6 +3,8 @@ local _, namespace = ...
 local AnchorManager = {}
 namespace.AnchorManager = AnchorManager
 
+ -- Anchors for custom unitframes
+ -- Blizzard frame should always be listed last
 local anchors = {
     target = {
         "SUFUnittarget",
@@ -101,30 +103,30 @@ local function GetUnitFrameForUnit(unitType, unitID, hasNumberIndex, skipVisible
 end
 
 local function GetPartyFrameForUnit(unitID)
+    if GetNumGroupMembers() > 5 then return end -- Dont show party castbars in raid
+
+    local guid = UnitGUID(unitID)
+    if not guid then return end
+
+    local useBlizzCompact = GetCVarBool("useCompactPartyFrames")
+    if EditModeManagerFrame.UseRaidStylePartyFrames then
+        useBlizzCompact = EditModeManagerFrame:UseRaidStylePartyFrames()
+    end
+
     if unitID == "party-testmode" then
         if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then -- TODO: check if still needed
-            if EditModeManagerFrame:UseRaidStylePartyFrames() then
+            if useBlizzCompact then
                 return GetUnitFrameForUnit("party", "party1", true, true)
             else
                 return PartyFrame.MemberFrame1
             end
         else
-            local useCompact = GetCVarBool("useCompactPartyFrames")
-            if useCompact and not IsInGroup() then
+            if useBlizzCompact and not IsInGroup() then
                 return print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)) -- luacheck: ignore
             end
-            return GetUnitFrameForUnit("party", "party1", true, not useCompact)
+            return GetUnitFrameForUnit("party", "party1", true, not useBlizzCompact)
         end
     end
-
-    -- Dont show party castbars in raid
-    if GetNumGroupMembers() > 5 then return end
-
-    local guid = UnitGUID(unitID)
-    if not guid then return end
-
-    local useCompact = GetCVarBool("useCompactPartyFrames")
-    -- TODO: EditModeManagerFrame:UseRaidStylePartyFrames()
 
     -- raid frames are recycled so frame10 might be party2 and so on, so we need
     -- to loop through them all and check if the unit matches. Same thing with party
@@ -133,7 +135,7 @@ local function GetPartyFrameForUnit(unitID)
         local frame, frameName = GetUnitFrameForUnit("party", "party"..i, true)
 
         if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsVisible() then
-            if useCompact then
+            if useBlizzCompact then
                 if strfind(frameName, "PartyMemberFrame") == nil then
                     return frame
                 end
@@ -144,7 +146,7 @@ local function GetPartyFrameForUnit(unitID)
     end
 
     -- Check new retail party frames
-    if PartyFrame and PartyFrame.PartyMemberFramePool and not EditModeManagerFrame:UseRaidStylePartyFrames() then
+    if PartyFrame and PartyFrame.PartyMemberFramePool and not useBlizzCompact then
         for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
             if frame.layoutIndex and frame:IsVisible() and UnitGUID("party" .. frame.layoutIndex) == guid then
                 return frame
@@ -153,10 +155,7 @@ local function GetPartyFrameForUnit(unitID)
     end
 end
 
-local anchorCache = {
-    player = UIParent
-}
-
+local anchorCache = { player = UIParent }
 function AnchorManager:GetAnchor(unitID)
     if anchorCache[unitID] then
         return anchorCache[unitID]
@@ -179,7 +178,7 @@ function AnchorManager:GetAnchor(unitID)
 
     if not frame then return end
 
-    -- Cache frequently used unitframes
+    -- Cache frequently used static unitframes permanently
     if unitType == "target" or unitType == "focus" then
         anchorCache[unitID] = frame
     end
