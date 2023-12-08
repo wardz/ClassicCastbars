@@ -311,15 +311,16 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
     if not castbar.isTesting then
-        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end -- TODO: check me
-        if castbar._data then
-            if not castbar._data.isInterrupted then
-                castbar._data.isFailed = true
+        local cast = castbar._data
+        if cast then
+            if not cast.isChanneled and cast.castID ~= castID then return end -- required for player
+            if not cast.isInterrupted then
+                cast.isFailed = true
             end
         end
         self:HideCastbar(castbar, unitID)
@@ -328,15 +329,16 @@ function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID)
     castbar._data = nil
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
     if not castbar.isTesting then
-        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
-        if castbar._data then
-            castbar._data.isInterrupted = true
-            castbar._data.isFailed = false
+        local cast = castbar._data
+        if cast then
+            if not cast.isChanneled and cast.castID ~= castID then return end -- required for player
+            cast.isInterrupted = true
+            cast.isFailed = false
         end
         self:HideCastbar(castbar, unitID)
     end
@@ -353,7 +355,7 @@ function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
         if cast then
             if not cast.isChanneled and cast.castID ~= castID then return end
             cast.isCastComplete = true
-            if cast.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
+            if cast.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled, let OnUpdate handle it instead
         end
         self:HideCastbar(castbar, unitID)
     end
@@ -361,9 +363,14 @@ function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     castbar._data = nil
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_DELAYED(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_DELAYED(unitID, castID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
+
+    local cast = castbar._data
+    if cast then
+        if not cast.isChanneled and cast.castID ~= castID then return end
+    end
 
     self:BindCurrentCastData(castbar, unitID, false)
 end
@@ -375,13 +382,14 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID)
     self:BindCurrentCastData(castbar, unitID, true)
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
     if not castbar.isTesting then
-        if UnitIsUnit("player", unitID) and UnitCastingInfo("player") or UnitChannelInfo("player") then return end
-        if castbar._data then
+        local cast = castbar._data
+        if cast then
+            if not cast.isChanneled and cast.castID ~= castID then return end -- required for player
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
             end
