@@ -336,6 +336,9 @@ function addon:DisplayCastbar(castbar, unitID)
     local cast = castbar._data
     if not cast then return end
     if cast.endTime == nil then return end
+    if not castbar.isTesting then
+        if cast.endTime - GetTime() <= 0 then return end -- expired
+    end
 
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end

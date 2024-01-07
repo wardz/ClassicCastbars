@@ -229,30 +229,31 @@ end
 function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own target
     activeGUIDs.target = UnitGUID("target") or nil
 
+    -- Always hide first, then reshow after
+    local castbar = activeFrames["target"]
+    if castbar then
+        self:HideCastbar(castbar, "target", true)
+    end
+
     if UnitCastingInfo("target") then
         self:UNIT_SPELLCAST_START("target")
     elseif UnitChannelInfo("target") then
         self:UNIT_SPELLCAST_CHANNEL_START("target")
-    else
-        local castbar = activeFrames["target"]
-        if castbar then
-            self:HideCastbar(castbar, "target", true)
-        end
     end
 end
 
 function ClassicCastbars:PLAYER_FOCUS_CHANGED()
     activeGUIDs.focus = UnitGUID("target") or nil
 
+    local castbar = activeFrames["focus"]
+    if castbar then
+        self:HideCastbar(castbar, "focus", true)
+    end
+
     if UnitCastingInfo("focus") then
         self:UNIT_SPELLCAST_START("focus")
     elseif UnitChannelInfo("focus") then
         self:UNIT_SPELLCAST_CHANNEL_START("focus")
-    else
-        local castbar = activeFrames["focus"]
-        if castbar then
-            self:HideCastbar(castbar, "focus", true)
-        end
     end
 end
 
@@ -271,15 +272,15 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
         end
     end
 
+    local castbar = activeFrames[namePlateUnitToken]
+    if castbar then
+        self:HideCastbar(castbar, namePlateUnitToken, true)
+    end
+
     if UnitCastingInfo(namePlateUnitToken) then
         self:UNIT_SPELLCAST_START(namePlateUnitToken)
     elseif UnitChannelInfo(namePlateUnitToken) then
         self:UNIT_SPELLCAST_CHANNEL_START(namePlateUnitToken)
-    else
-        local castbar = activeFrames[namePlateUnitToken]
-        if castbar then
-            self:HideCastbar(castbar, namePlateUnitToken, true)
-        end
     end
 end
 
@@ -590,7 +591,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self)
         if cast and cast.endTime ~= nil then
             local castTime = cast.endTime - currTime
 
-            if (castTime > 0) then
+            if (castTime >= 0) then
                 local maxValue = cast.endTime - cast.timeStart
                 local value = currTime - cast.timeStart
                 if cast.isChanneled then -- inverse
@@ -603,11 +604,13 @@ ClassicCastbars:SetScript("OnUpdate", function(self)
                 local sparkPosition = (value / maxValue) * (castbar.currWidth or castbar:GetWidth())
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
-                if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
-                    if castbar:GetAlpha() == 1 then -- sanity check
-                        cast.isCastComplete = true
-                        self:HideCastbar(castbar, unit)
-                        castbar._data = nil
+                if castTime <= -0.18 then -- FIXME: delay stop, shouldnt be needed but blizz pushback calculations seems bugged in patch 1.15.0
+                    if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
+                        if castbar:GetAlpha() == 1 then -- sanity check
+                            cast.isCastComplete = true
+                            self:HideCastbar(castbar, unit)
+                            castbar._data = nil
+                        end
                     end
                 end
             end
