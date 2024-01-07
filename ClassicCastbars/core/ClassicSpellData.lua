@@ -159,6 +159,9 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(7951)] = true, -- Toxic Spit
     [GetSpellInfo(7054)] = true, -- Forsaken Skills
     [GetSpellInfo(433797)] = true, -- Bladestorm
+    [GetSpellInfo(404373)] = true,  -- Bubble Beam
+    [GetSpellInfo(404316)] = true,  -- Greater Frostbolt
+    [GetSpellInfo(414370)] = true, -- Aqua Shell
 }
 
 if CLIENT_IS_CLASSIC_ERA then
@@ -187,6 +190,7 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(27177)] = 10000,   -- Defile
         [GetSpellInfo(27286)] = 1000,    -- Shadow Wrath (see issue #59)
         [GetSpellInfo(433797)] = 7000,   -- Bladestorm
+        [GetSpellInfo(404373)] = 10000,  -- Bubble Beam
 
         -- DRUID
         [GetSpellInfo(17401)] = 10000,   -- Hurricane

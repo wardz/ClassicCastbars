@@ -30,6 +30,8 @@ local gsub = _G.string.gsub
 local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
 local next = _G.next
+local UnitHealth = _G.UnitHealth
+local UnitHealthMax = _G.UnitHealthMax
 
 local castEvents = {
     "UNIT_SPELLCAST_START",
@@ -170,7 +172,15 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
     if not cast.isUninterruptible and not cast.unitIsPlayer then
         local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
         if npcID then
-            cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] or false
+            if npcID == "209678" and not ranFromUnitAuraEvent then -- Twilight Lord Kelris is immune at 35% hp (phase2)
+                if ((UnitHealth(unitID) / UnitHealthMax(unitID)) * 100) <= 35 then
+                    cast.isUninterruptible = true
+                else
+                    cast.isUninterruptible = false
+                end
+            else
+                cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] or false
+            end
         end
     end
 

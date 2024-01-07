@@ -296,5 +296,7 @@ if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
         ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
         ["212969" .. GetSpellInfo(429825)] = true, -- Kazragore Chain Lightning
+        ["213334" .. GetSpellInfo(429168)] = true, -- Aku'mai Corrosive Blast
+        ["213334" .. GetSpellInfo(429356)] = true, -- Aku'mai Void Blast
     }
 end
