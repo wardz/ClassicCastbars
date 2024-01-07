@@ -57,7 +57,7 @@ function TestMode:ToggleArenaContainer(showFlag)
 end
 
 function TestMode:TogglePartyContainer(showFlag)
-    if EditModeManagerFrame then -- Dragonflight UI
+    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight UI
         if showFlag then
             ShowUIPanel(EditModeManagerFrame)
         else
