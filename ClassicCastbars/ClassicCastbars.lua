@@ -224,6 +224,18 @@ end
 
 function ClassicCastbars:UNIT_AURA(unitID) -- Note: updateInfo payload doesn't exist in classic
     self:CheckCastModifiers(unitID, true)
+
+    -- Sadly need to run this here aswell as other events arent ran fast enough always
+    if unitID == "target" or unitID == "focus" then
+        if self.db[unitID] and self.db[unitID].autoPosition then
+            if activeFrames[unitID] then
+                local parentFrame = self.AnchorManager:GetAnchor(unitID)
+                if parentFrame then
+                    self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
+                end
+            end
+        end
+    end
 end
 
 function ClassicCastbars:UNIT_TARGET(unitID) -- detect when your target changes his target (for positioning around targetoftarget frame)
