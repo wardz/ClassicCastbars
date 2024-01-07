@@ -3,6 +3,7 @@ local PoolManager = namespace.PoolManager
 local uninterruptibleList = namespace.uninterruptibleList
 local playerSilences = namespace.playerSilences
 local castImmunityBuffs = namespace.castImmunityBuffs
+local channeledSpells = namespace.channeledSpells
 
 local activeFrames = {}
 local activeGUIDs = {}
@@ -111,12 +112,20 @@ function ClassicCastbars:ADDON_LOADED(addonName)
     end
 end
 
-function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled)
+function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, channelSpellID)
     local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
     if not isChanneled then
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
+        if channelSpellID and not spellName then -- UnitChannelInfo is bugged for classic era, tmp fallback method
+            spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+            local channelCastTime = spellName and channeledSpells[spellName]
+            if not channelCastTime then return end
+            spellID = channelSpellID
+            endTimeMS = (GetTime() * 1000) + channelCastTime
+            startTimeMS = GetTime() * 1000
+        end
     end
 
     if not spellName then return end
@@ -177,7 +186,8 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
 
             if ranFromUnitAuraEvent then
                 if cast.isChanneled then
-                    return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
+                    return -- TODO: readd once UnitChannelInfo is fixed by blizz
+                    --return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
                 else
                     return self:UNIT_SPELLCAST_START(unitID) -- Exit & restart cast to update border shield
                 end
@@ -201,7 +211,8 @@ function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
 
                 if ranFromUnitAuraEvent then
                     if cast.isChanneled then
-                        return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
+                        return -- TODO: readd once UnitChannelInfo is fixed by blizz
+                        --return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
                     else
                         return self:UNIT_SPELLCAST_START(unitID) -- Exit & restart cast to update border shield
                     end
@@ -304,11 +315,11 @@ function ClassicCastbars:UNIT_SPELLCAST_START(unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID, _, spellID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    self:BindCurrentCastData(castbar, unitID, true)
+    self:BindCurrentCastData(castbar, unitID, true, spellID)
     self:DisplayCastbar(castbar, unitID)
 end
 
@@ -376,11 +387,11 @@ function ClassicCastbars:UNIT_SPELLCAST_DELAYED(unitID, castID)
     self:BindCurrentCastData(castbar, unitID, false)
 end
 
-function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID)
+function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID, _, spellID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    self:BindCurrentCastData(castbar, unitID, true)
+    self:BindCurrentCastData(castbar, unitID, true, spellID)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
@@ -391,6 +402,7 @@ function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
         local cast = castbar._data
         if cast then
             if not cast.isChanneled and cast.castID ~= castID then return end -- required for player
+            if cast.isChanneled and castID ~= nil then return end
             if not castbar._data.isInterrupted then
                 castbar._data.isFailed = true
             end

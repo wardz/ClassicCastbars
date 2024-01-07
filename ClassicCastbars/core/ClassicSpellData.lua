@@ -169,3 +169,59 @@ elseif CLIENT_IS_TBC then
     namespace.uninterruptibleList[GetSpellInfo(29121)] = true -- Shoot Bow
     namespace.uninterruptibleList[GetSpellInfo(33808)] = true -- Shoot Gun
 end
+
+if CLIENT_IS_CLASSIC_ERA then
+    -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0 due to a Blizzard bug(?)
+    -- We use this data to retrieve spell cast time
+    namespace.channeledSpells = {
+        -- MISC
+        [GetSpellInfo(746)] = 8000,      -- First Aid
+        [GetSpellInfo(13278)] = 4000,    -- Gnomish Death Ray
+        [GetSpellInfo(20577)] = 10000,   -- Cannibalize
+        [GetSpellInfo(10797)] = 6000,    -- Starshards
+        [GetSpellInfo(16430)] = 12000,   -- Soul Tap
+        [GetSpellInfo(24323)] = 8000,    -- Blood Siphon
+        [GetSpellInfo(27640)] = 3000,    -- Baron Rivendare's Soul Drain
+        [GetSpellInfo(7290)] = 10000,    -- Soul Siphon
+        [GetSpellInfo(24322)] = 8000,    -- Blood Siphon
+        [GetSpellInfo(27177)] = 10000,   -- Defile
+        [GetSpellInfo(27286)] = 1000,    -- Shadow Wrath (see issue #59)
+        [GetSpellInfo(433797)] = 7000,   -- Bladestorm
+
+        -- DRUID
+        [GetSpellInfo(17401)] = 10000,   -- Hurricane
+        [GetSpellInfo(740)] = 10000,     -- Tranquility
+        [GetSpellInfo(20687)] = 10000,   -- Starfall
+
+        -- HUNTER
+        [GetSpellInfo(6197)] = 60000,     -- Eagle Eye
+        [GetSpellInfo(1002)] = 60000,     -- Eyes of the Beast
+        [GetSpellInfo(1510)] = 6000,      -- Volley
+        [GetSpellInfo(136)] = 5000,       -- Mend Pet
+
+        -- MAGE
+        [GetSpellInfo(5143)] = 5000,      -- Arcane Missiles
+        [GetSpellInfo(7268)] = 3000,      -- Arcane Missile
+        [GetSpellInfo(10)] = 8000,        -- Blizzard
+        [GetSpellInfo(12051)] = 8000,     -- Evocation
+        [GetSpellInfo(401417)] = 3000,    -- Regeneration
+        [GetSpellInfo(412510)] = 3000,    -- Mass Regeneration
+
+        -- PRIEST
+        [GetSpellInfo(15407)] = 3000,     -- Mind Flay
+        [GetSpellInfo(2096)] = 60000,     -- Mind Vision
+        [GetSpellInfo(605)] = 3000,       -- Mind Control
+        [GetSpellInfo(402174)] = 2000,    -- Penance
+
+        -- WARLOCK
+        [GetSpellInfo(126)] = 45000,      -- Eye of Kilrogg
+        [GetSpellInfo(689)] = 5000,       -- Drain Life
+        [GetSpellInfo(5138)] = 5000,      -- Drain Mana
+        [GetSpellInfo(1120)] = 15000,     -- Drain Soul
+        [GetSpellInfo(5740)] = 8000,      -- Rain of Fire
+        [GetSpellInfo(1949)] = 15000,     -- Hellfire
+        [GetSpellInfo(755)] = 10000,      -- Health Funnel
+        [GetSpellInfo(17854)] = 10000,    -- Consume Shadows
+        [GetSpellInfo(6358)] = 15000,     -- Seduction Channel
+    }
+end
