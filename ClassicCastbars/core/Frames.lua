@@ -68,7 +68,7 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
 
         castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY - 4);
     else
-        if not isClassicEra and (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
+        if (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
             -- copy paste from wotlk wow ui source
             if ( parentFrame.haveToT ) then
                 if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
@@ -89,7 +89,7 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
                     castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7 )
                 end
             end
-        else -- for classic era or unknown parent frame
+        else -- unknown parent frame
             local auraRows = parentFrame.auraRows or 0
 
             if parentFrame.buffsOnTop or auraRows <= 1 then
