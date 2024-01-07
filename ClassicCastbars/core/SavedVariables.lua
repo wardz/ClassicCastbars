@@ -295,5 +295,6 @@ if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
         ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
         ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
+        ["212969" .. GetSpellInfo(429825)] = true, -- Kazragore Chain Lightning
     }
 end

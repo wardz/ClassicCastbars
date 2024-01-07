@@ -156,6 +156,9 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(27794)] = true, -- Cleave
     [GetSpellInfo(28995)] = true, -- Stoneskin
     [GetSpellInfo(28783)] = true, -- Impale
+    [GetSpellInfo(7951)] = true, -- Toxic Spit
+    [GetSpellInfo(7054)] = true, -- Forsaken Skills
+    [GetSpellInfo(433797)] = true, -- Bladestorm
 }
 
 if CLIENT_IS_CLASSIC_ERA then
