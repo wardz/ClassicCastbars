@@ -106,6 +106,7 @@ local function GetPartyFrameForUnit(unitID)
     if GetNumGroupMembers() > 5 then return end -- Dont show party castbars in raid
 
     local guid = UnitGUID(unitID)
+    if unitID == "party-testmode" then guid = UnitGUID("player") end
     if not guid then return end
 
     local useBlizzCompact = GetCVarBool("useCompactPartyFrames")

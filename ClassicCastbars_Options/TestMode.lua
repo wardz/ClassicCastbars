@@ -48,7 +48,7 @@ local function OnDragStop(self)
 end
 
 function TestMode:ToggleArenaContainer(showFlag)
-    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight
+    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight UI
         EditModeManagerFrame.AccountSettings:SetArenaFramesShown(showFlag)
         EditModeManagerFrame.AccountSettings:RefreshArenaFrames()
     elseif ArenaEnemyFrames then
@@ -57,7 +57,7 @@ function TestMode:ToggleArenaContainer(showFlag)
 end
 
 function TestMode:TogglePartyContainer(showFlag)
-    if EditModeManagerFrame then
+    if EditModeManagerFrame then -- Dragonflight UI
         if showFlag then
             ShowUIPanel(EditModeManagerFrame)
         else
@@ -211,9 +211,11 @@ function TestMode:SetCastbarImmovable(unitID)
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
-        if parentFrame and not UnitExists("party1") then
+        if parentFrame then
             TestMode:TogglePartyContainer(false)
-            parentFrame:Hide()
+            if not UnitExists("party1") then
+                parentFrame:Hide()
+            end
         end
     elseif unitID == "arena-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
