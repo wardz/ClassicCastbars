@@ -192,6 +192,7 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(27286)] = 1000,    -- Shadow Wrath (see issue #59)
         [GetSpellInfo(433797)] = 7000,   -- Bladestorm
         [GetSpellInfo(404373)] = 10000,  -- Bubble Beam
+        [GetSpellInfo(407077)] = 3500,   -- Triple Chomp
 
         -- DRUID
         [GetSpellInfo(17401)] = 10000,   -- Hurricane
