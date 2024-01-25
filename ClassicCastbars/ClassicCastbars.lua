@@ -25,6 +25,7 @@ local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local UnitIsFriend = _G.UnitIsFriend
 local UnitCastingInfo = _G.UnitCastingInfo
 local UnitChannelInfo = _G.UnitChannelInfo
+local CastingInfo = _G.CastingInfo
 local UnitIsUnit = _G.UnitIsUnit
 local gsub = _G.string.gsub
 local strsplit = _G.string.split
@@ -119,7 +120,11 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     if not isChanneled then
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
-        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
+        if CastingInfo and UnitIsUnit("player", unitID) then
+            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo("player") -- UnitChannelInfo is bugged for classic era, tmp fallback method
+        else
+            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
+        end
         if channelSpellID and not spellName then -- UnitChannelInfo is bugged for classic era, tmp fallback method
             spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
             local channelCastTime = spellName and channeledSpells[spellName]
@@ -271,6 +276,10 @@ function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own tar
     if UnitCastingInfo("target") then
         self:UNIT_SPELLCAST_START("target")
     elseif UnitChannelInfo("target") then
+        self:UNIT_SPELLCAST_CHANNEL_START("target")
+    end
+
+    if UnitIsUnit("player", "target") and UnitChannelInfo("player") then -- UnitChannelInfo is bugged, tmp fallback method for when player is target
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     end
 end
