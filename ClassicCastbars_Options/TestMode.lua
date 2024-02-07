@@ -81,8 +81,10 @@ function TestMode:OnOptionChanged(unitID)
 
     -- Immediately update castbar display after changing an option
     local castbar = ClassicCastbars.activeFrames[unitID]
-    if castbar and castbar.isTesting then
-        castbar._data = CopyTable(dummySpellData)
+    if castbar and castbar:IsVisible() then
+        if castbar.isTesting then
+            castbar._data = CopyTable(dummySpellData)
+        end
         ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
 end
@@ -129,7 +131,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     end
 
     local castbar = unitID == "player" and CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
-    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames in TBC :(
+    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames :(
         castbar:SetMovable(true)
         castbar:SetClampedToScreen(true)
         castbar:EnableMouse(true)
