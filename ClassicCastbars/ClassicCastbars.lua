@@ -1,10 +1,7 @@
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
-local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
-local uninterruptibleList = namespace.uninterruptibleList
 local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
-
 local activeFrames = {}
 local activeGUIDs = {}
 
@@ -17,24 +14,6 @@ ClassicCastbars.AnchorManager = namespace.AnchorManager
 ClassicCastbars.defaultConfig = namespace.defaultConfig
 ClassicCastbars.activeFrames = activeFrames
 
-local CLIENT_IS_PRE_WRATH = (WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) or WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-local CLIENT_IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local CLIENT_IS_CLASSIC_ERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-
-local ceil = _G.math.ceil
-local strformat = _G.string.format
-local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
-local UnitIsFriend = _G.UnitIsFriend
-local UnitCastingInfo = _G.UnitCastingInfo
-local UnitChannelInfo = _G.UnitChannelInfo
-local UnitIsUnit = _G.UnitIsUnit
-local gsub = _G.string.gsub
-local strsplit = _G.string.split
-local UnitAura = _G.UnitAura
-local next = _G.next
-local UnitHealth = _G.UnitHealth
-local UnitHealthMax = _G.UnitHealthMax
-
 local castEvents = {
     "UNIT_SPELLCAST_START",
     "UNIT_SPELLCAST_STOP",
@@ -45,9 +24,12 @@ local castEvents = {
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
-    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_INTERRUPTIBLE" or nil,
-    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or nil,
+    "UNIT_SPELLCAST_INTERRUPTIBLE",
+    "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
 }
+
+local UnitAura = _G.UnitAura
+local next = _G.next
 
 -- UnitTokenFromGUID() doesn't exist in classic
 function ClassicCastbars:GetFirstAvailableUnitIDByGUID(unitGUID)
@@ -58,8 +40,21 @@ function ClassicCastbars:GetFirstAvailableUnitIDByGUID(unitGUID)
     end
 end
 
+local gsub = _G.string.gsub
 function ClassicCastbars:GetUnitType(unitID)
     return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
+end
+
+function ClassicCastbars:GetCastbarFrame(unitID)
+    if unitID == "player" then return end
+
+    if activeFrames[unitID] then
+        return activeFrames[unitID]
+    end
+
+    activeFrames[unitID] = PoolManager:AcquireFrame()
+
+    return activeFrames[unitID]
 end
 
 function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
@@ -91,7 +86,7 @@ function ClassicCastbars:DisableBlizzardCastbar()
         self.isSpellbarsHooked = true
 
         TargetFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
-        if FocusFrameSpellBar then -- not available in classic era
+        if FocusFrameSpellBar then
             FocusFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
         end
     end
@@ -116,30 +111,10 @@ function ClassicCastbars:ADDON_LOADED(addonName)
     end
 end
 
-function ClassicCastbars:RefreshBorderShield(castbar, unitID) -- aka uninterruptible shield
-    local cast = castbar._data
-    if not cast or cast.endTime == nil then return end
-
-    local db = self.db[self:GetUnitType(unitID)]
-    if not db then return end
-
-    -- Update displays related to border shield
-    self:SetCastbarIconAndText(castbar, cast, db)
-    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
-    self:SetCastbarFonts(castbar, cast, db)
-    self:SetBorderShieldStyle(castbar, cast, db, unitID)
-
-    castbar.Flash:ClearAllPoints()
-    if cast and cast.isUninterruptible then
-        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
-        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
-    else
-        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height)
-        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
-    end
-end
-
-local function GetDefaultUninterruptibleState(cast, unitID) -- pre-wrath
+local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
+local uninterruptibleList = namespace.uninterruptibleList
+local strsplit = _G.string.split
+local function GetDefaultUninterruptibleState(cast, unitID) -- needed pre-wrath only
     local isUninterruptible = uninterruptibleList[cast.spellID] or uninterruptibleList[cast.spellName] or false
 
     if not isUninterruptible and not cast.unitIsPlayer then
@@ -165,7 +140,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     if not isChanneled then
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
-        if CLIENT_IS_CLASSIC_ERA and UnitIsUnit("player", unitID) then
+        if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and UnitIsUnit("player", unitID) then
             -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
             spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo("player")
         else
@@ -206,7 +181,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     cast.isCastComplete = nil
 
     -- Check if cast is uninterruptible on start
-    if CLIENT_IS_PRE_WRATH then
+    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         cast.isUninterruptible = GetDefaultUninterruptibleState(cast, unitID)
 
         if not cast.isUninterruptible then
@@ -238,7 +213,7 @@ function ClassicCastbars:UNIT_AURA(unitID)
     end
 
     -- Check if cast is uninterruptible on buff faded or gained (i.e bubble)
-    if CLIENT_IS_PRE_WRATH then
+    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         local castbar = self:GetCastbarFrameIfEnabled(unitID)
         if not castbar then return end
 
@@ -295,7 +270,7 @@ function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own tar
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     end
 
-    if UnitIsUnit("player", "target") and UnitChannelInfo("player") then -- UnitChannelInfo is bugged, tmp fallback method for when player is target
+    if UnitIsUnit("player", "target") and UnitChannelInfo("player") then -- HACK: UnitChannelInfo is bugged, tmp fallback method for when player is target
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     end
 end
@@ -320,7 +295,7 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
 
     activeGUIDs[namePlateUnitToken] = UnitGUID(namePlateUnitToken) or nil
 
-    local plate = GetNamePlateForUnit(namePlateUnitToken)
+    local plate = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken)
     local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
     if plateCastbar then
         plateCastbar.showCastbar = not self.db.nameplate.enabled
@@ -532,8 +507,10 @@ function ClassicCastbars:ToggleUnitEvents(shouldReset)
         self:UnregisterEvent("GROUP_ROSTER_UPDATE")
     end
 
-    for i = 1, #castEvents do
-        self:RegisterEvent(castEvents[i])
+    for _, event in ipairs(castEvents) do
+        if C_EventUtils.IsEventValid(event) then
+            self:RegisterEvent(event)
+        end
     end
 
     if shouldReset then
@@ -620,24 +597,22 @@ function ClassicCastbars:PLAYER_LOGIN()
     self.PLAYER_LOGIN = nil
 end
 
-local LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL = _G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
-local GetSchoolString = _G.GetSchoolString
-
 function ClassicCastbars:COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, _, _, _, _, dstGUID, _, _, _, _, _, _, _, _, extraSchool = CombatLogGetCurrentEventInfo()
 
     if eventType == "SPELL_INTERRUPT" then
-        for unitID, castbar in pairs(activeFrames) do
+        for unitID, castbar in next, activeFrames do
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then
-                    castbar.Text:SetText(strformat(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
+                    castbar.Text:SetText(string.format(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
                 end
             end
         end
     end
 end
 
+local GetTime = _G.GetTime
 ClassicCastbars:SetScript("OnUpdate", function(self)
     local currTime = GetTime() -- TODO: use elapsed calculations instead
 
@@ -660,14 +635,10 @@ ClassicCastbars:SetScript("OnUpdate", function(self)
                 local sparkPosition = (value / maxValue) * (castbar.currWidth or castbar:GetWidth())
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
-                if castTime <= -0.18 then -- FIXME: delay stop, shouldnt be needed but blizz pushback calculations seems bugged in patch 1.15.0
-                    if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
-                        if castbar:GetAlpha() == 1 then -- sanity check
-                            cast.isCastComplete = true
-                            self:HideCastbar(castbar, unit)
-                            castbar._data = nil
-                        end
-                    end
+                if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
+                    cast.isCastComplete = true
+                    self:HideCastbar(castbar, unit)
+                    castbar._data = nil
                 end
             end
         end

@@ -1,12 +1,9 @@
 local _, namespace = ...
-
-local addon = ClassicCastbars
+local addon = _G.ClassicCastbars
 local AnchorManager = namespace.AnchorManager
-local PoolManager = namespace.PoolManager
-local activeFrames = addon.activeFrames
 
+local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local GetSchoolString = _G.GetSchoolString
 local strformat = _G.string.format
 local unpack = _G.unpack
 local min = _G.math.min
@@ -21,8 +18,6 @@ local nonLSMBorders = {
     [130873] = true,
 }
 
-local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-
 local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
@@ -36,19 +31,6 @@ local function GetStatusBarBackgroundTexture(statusbar)
     end
 end
 
-function addon:GetCastbarFrame(unitID)
-    -- PoolManager:DebugInfo()
-    if unitID == "player" then return end -- no point returning CastingBarFrame here, we only skin it, not replace it and its events
-
-    if activeFrames[unitID] then
-        return activeFrames[unitID]
-    end
-
-    activeFrames[unitID] = PoolManager:AcquireFrame()
-
-    return activeFrames[unitID]
-end
-
 function addon:SetTargetCastbarPosition(castbar, parentFrame)
     if isRetail then
         if parentFrame.auraRows == nil then
@@ -56,37 +38,37 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
         end
 
         -- Copy paste from retail wow ui source
-        local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0));
+        local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0))
 
-        local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame;
-        local pointX = useSpellbarAnchor and 18 or (parentFrame.smallSize and 38 or 43);
-        local pointY = useSpellbarAnchor and -10 or (parentFrame.smallSize and 3 or 5);
+        local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame
+        local pointX = useSpellbarAnchor and 18 or (parentFrame.smallSize and 38 or 43)
+        local pointY = useSpellbarAnchor and -10 or (parentFrame.smallSize and 3 or 5)
 
         if ((not useSpellbarAnchor) and parentFrame.haveToT) then
-            pointY = parentFrame.smallSize and -48 or -46;
+            pointY = parentFrame.smallSize and -48 or -46
         end
 
-        castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY - 4);
+        castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY - 4)
     else
-        if (parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame) then
+        if parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame then
             -- copy paste from wotlk wow ui source
-            if ( parentFrame.haveToT ) then
-                if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21 )
+            if parentFrame.haveToT then
+                if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21)
                 else
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 end
-            elseif ( parentFrame.haveElite ) then
-                if ( parentFrame.buffsOnTop or parentFrame.auraRows <= 1 ) then
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5 )
+            elseif parentFrame.haveElite then
+                if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5)
                 else
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 end
             else
-                if ( (not parentFrame.buffsOnTop) and parentFrame.auraRows > 0 ) then
+                if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 else
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7 )
+                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7)
                 end
             end
         else -- unknown parent frame
@@ -173,6 +155,29 @@ function addon:SetBorderShieldStyle(castbar, cast, db, unitID)
             castbar.IconShield:Hide()
         end
         castbar.Icon:SetPoint("LEFT", castbar, db.iconPositionX - db.iconSize, db.iconPositionY)
+    end
+end
+
+function ClassicCastbars:RefreshBorderShield(castbar, unitID)
+    local cast = castbar._data
+    if not cast or cast.endTime == nil then return end
+
+    local db = self.db[self:GetUnitType(unitID)]
+    if not db then return end
+
+    -- Update displays related to border shield
+    self:SetCastbarIconAndText(castbar, cast, db)
+    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
+    self:SetCastbarFonts(castbar, cast, db)
+    self:SetBorderShieldStyle(castbar, cast, db, unitID)
+
+    castbar.Flash:ClearAllPoints()
+    if cast and cast.isUninterruptible then
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
+    else
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
     end
 end
 

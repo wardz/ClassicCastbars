@@ -1,4 +1,4 @@
-## Interface: 11500
+## Interface: 11501
 ## Interface-Retail: 100205
 ## Interface-Classic: 11501
 ## Interface-BCC: 20504
@@ -10,14 +10,14 @@
 ## Dependencies: ClassicCastbars
 ## LoadOnDemand: 1
 
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceConfig-3.0\AceConfig-3.0.xml
-Libs\LibSharedMedia-3.0\lib.xml
-Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
+Libs/LibStub/LibStub.lua
+Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+Libs/AceLocale-3.0/AceLocale-3.0.xml
+Libs/AceGUI-3.0/AceGUI-3.0.xml
+Libs/AceConfig-3.0/AceConfig-3.0.xml
+Libs/LibSharedMedia-3.0/lib.xml
+Libs/AceGUI-3.0-SharedMediaWidgets/widget.xml
 
-Locales\Locales.xml
+Locales/Locales.xml
 TestMode.lua
 ClassicCastbars_Options.lua

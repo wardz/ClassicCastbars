@@ -1,4 +1,4 @@
-## Interface: 11500
+## Interface: 11501
 ## Interface-Retail: 100205
 ## Interface-Classic: 11501
 ## Interface-BCC: 20504
@@ -16,6 +16,6 @@ Core/ClassicSpellData.lua
 Core/PoolManager.lua
 Core/AnchorManager.lua
 Core/SavedVariables.lua
+Core/LoadOptionsOnDemand.lua
 ClassicCastbars.lua
 Core/Frames.lua
-Core/LoadOptionsOnDemand.lua
