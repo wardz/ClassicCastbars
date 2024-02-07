@@ -190,10 +190,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posX = {
                         -- Position slider X for nameplate castbars only
-                        -- TODO: is there a better way to do this after nameplate GetPoint() being protected?
                         order = 10,
-                        name = "Position X (Left/Right)",
-                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
+                        name = L.POS_X,
+                        desc = L.POSXY_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = -999,
@@ -211,10 +210,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posY = {
                         -- Position slider Y for nameplate castbars only
-                        -- TODO: is there a better way to do this after nameplate GetPoint() changes?
                         order = 11,
-                        name = "Position Y (Up/Down)",
-                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
+                        name = L.POS_Y,
+                        desc = L.POSXY_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = -999,
@@ -326,7 +324,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     iconPositionX = {
                         order = 4,
-                        name = L.ICON_POS_X,
+                        name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -335,7 +333,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     iconPositionY = {
                         order = 5,
-                        name = L.ICON_POS_Y,
+                        name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -464,7 +462,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     textPositionX = {
                         order = 4,
-                        name = L.TEXT_POS_X,
+                        name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -473,7 +471,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     textPositionY = {
                         order = 5,
-                        name = L.TEXT_POS_Y,
+                        name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
