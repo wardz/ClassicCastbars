@@ -2,6 +2,7 @@ local _, namespace = ...
 
 local CLIENT_IS_TBC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
 local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+
 if not CLIENT_IS_TBC and not CLIENT_IS_CLASSIC_ERA then return end
 
 local physicalClasses = {
@@ -10,15 +11,6 @@ local physicalClasses = {
     ["DRUID"] = true,
     ["HUNTER"] = true,
     ["PALADIN"] = true,
-}
-
--- Player silence effects (not interrupts)
-namespace.playerSilences = {
-    [18469] = true, -- Counterspell - Silenced
-    [18425] = true, -- Kick - Silenced
-    [24259] = true, -- Spell Lock
-    [15487] = true, -- Silence
-    [34490] = CLIENT_IS_TBC or nil, -- Silencing Shot
 }
 
 -- Cast immunity auras that gives full interrupt protection
@@ -45,9 +37,8 @@ else
     namespace.castImmunityBuffs[41451] = CLIENT_IS_TBC or nil -- Blessing of Spell Warding
 end
 
--- Spells that can't be interrupted.
+-- Spells that can't be interrupted, not tied to npcIDs.
 -- This table accepts both spellIDs and spellNames.
--- See also npcCastUninterruptibleCache in SavedVariables.lua for NPC tied spells.
 namespace.uninterruptibleList = {
     [34120] = CLIENT_IS_TBC or nil, -- Steady Shot
     [19821] = true, -- Arcane Bomb
@@ -158,25 +149,85 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(28783)] = true, -- Impale
     [GetSpellInfo(7951)] = true, -- Toxic Spit
     [GetSpellInfo(7054)] = true, -- Forsaken Skills
-    [GetSpellInfo(433797)] = true, -- Bladestorm
-    [GetSpellInfo(404373)] = true,  -- Bubble Beam
-    [GetSpellInfo(404316)] = true,  -- Greater Frostbolt
-    [GetSpellInfo(414370)] = true, -- Aqua Shell
-    [GetSpellInfo(407819)] = true, -- Frost Arrow
 }
 
-if CLIENT_IS_CLASSIC_ERA then
+if CLIENT_IS_CLASSIC_ERA then -- these ids only exists in classic era build
     namespace.uninterruptibleList[GetSpellInfo(2480)] = true -- Shoot Bow
     namespace.uninterruptibleList[GetSpellInfo(7918)] = true -- Shoot Gun
     namespace.uninterruptibleList[GetSpellInfo(7919)] = true -- Shoot Crossbow
+    namespace.uninterruptibleList[GetSpellInfo(433797)] = true -- Bladestorm
+    namespace.uninterruptibleList[GetSpellInfo(404373)] = true -- Bubble Beam
+    namespace.uninterruptibleList[GetSpellInfo(404316)] = true -- Greater Frostbolt
+    namespace.uninterruptibleList[GetSpellInfo(414370)] = true -- Aqua Shell
+    namespace.uninterruptibleList[GetSpellInfo(407819)] = true -- Frost Arrow
+    namespace.uninterruptibleList[GetSpellInfo(407568)] = true -- Freezing Arrow
 elseif CLIENT_IS_TBC then
     namespace.uninterruptibleList[GetSpellInfo(29121)] = true -- Shoot Bow
     namespace.uninterruptibleList[GetSpellInfo(33808)] = true -- Shoot Gun
 end
 
 if CLIENT_IS_CLASSIC_ERA then
-    -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0 due to a Blizzard bug,
-    -- but the channel events still work. We use this data to retrieve spell cast time.
+    -- NPC spells that can't be interrupted, tied to npcIDs unlike `uninterruptibleList` above.
+    -- Atm this only accepts npcID + spellName, not spellIDs as idk the correct ones.
+    namespace.npcID_uninterruptibleList = {
+        ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
+        ["12264" .. GetSpellInfo(1449)] = true, -- Shazzrah Arcane Explosion
+        ["11983" .. GetSpellInfo(18500)] = true, -- Firemaw Wing Buffet
+        ["12265" .. GetSpellInfo(133)] = true, -- Lava Spawn Fireball
+        ["10438" .. GetSpellInfo(116)] = true, -- Maleki the Pallid Frostbolt
+        ["12465" .. GetSpellInfo(22425)] = true, -- Death Talon Wyrmkin Fireball Volley
+        ["14020" .. GetSpellInfo(23310)] = true, -- Chromaggus Time Lapse
+        ["14020" .. GetSpellInfo(23316)] = true, -- Chromaggus Ignite Flesh
+        ["14020" .. GetSpellInfo(23309)] = true, -- Chromaggus Incinerate
+        ["14020" .. GetSpellInfo(23187)] = true, -- Chromaggus Frost Burn
+        ["14020" .. GetSpellInfo(23314)] = true, -- Chromaggus Corrosive Acid
+        ["12468" .. GetSpellInfo(2120)] = true, -- Death Talon Hatcher Flamestrike
+        ["13020" .. GetSpellInfo(9573)] = true, -- Vaelastrasz the Corrupt Flame Breath
+        ["12435" .. GetSpellInfo(22425)] = true, -- Razorgore the Untamed Fireball Volley
+        ["12118" .. GetSpellInfo(20604)] = true, -- Lucifron Dominate Mind
+        ["10184" .. GetSpellInfo(9573)] = true, -- Onyxia Flame Breath
+        ["10184" .. GetSpellInfo(133)] = true, -- Onyxia Fireball
+        ["11492" .. GetSpellInfo(9616)] = true, -- Alzzin the Wildshaper Wild Regeneration
+        ["11359" .. GetSpellInfo(16430)] = true, -- Soulflayer Soul Tap
+        ["11372" .. GetSpellInfo(24011)] = true, -- Razzashi Adder Venom Spit
+        ["14834" .. GetSpellInfo(24322)] = true, -- Hakkar Blood Siphon
+        ["12259" .. GetSpellInfo(686)] = true, -- Gehennas Shadow Bolt
+        ["14507" .. GetSpellInfo(14914)] = true, -- High Priest Venoxis Holy Fire
+        ["12119" .. GetSpellInfo(20604)] = true, -- Flamewaker Protector Dominate Mind
+        ["12557" .. GetSpellInfo(14515)] = true, -- Grethok the Controller Dominate Mind
+        ["15276" .. GetSpellInfo(26006)] = true, -- Emperor Vek'lor Shadow Bolt
+        ["12397" .. GetSpellInfo(15245)] = true, -- Lord Kazzak Shadow Bolt Volley
+        ["14887" .. GetSpellInfo(16247)] = true, -- Ysondre Curse of Thorns
+        ["15246" .. GetSpellInfo(11981)] = true, -- Qiraji Mindslayer Mana Burn
+        ["15246" .. GetSpellInfo(17194)] = true, -- Qiraji Mindslayer Mind Blast
+        ["15246" .. GetSpellInfo(22919)] = true, -- Qiraji Mindslayer Mind Flay
+        ["15311" .. GetSpellInfo(26069)] = true, -- Anubisath Warder Silence
+        ["15311" .. GetSpellInfo(11922)] = true, -- Anubisath Warder Entangling Roots
+        ["15311" .. GetSpellInfo(12542)] = true, -- Anubisath Warder Fear
+        ["15311" .. GetSpellInfo(26072)] = true, -- Anubisath Warder Dust Cloud
+        ["15335" .. GetSpellInfo(21067)] = true, -- Flesh Hunter Poison Bolt
+        ["15247" .. GetSpellInfo(11981)] = true, -- Qiraji Brainwasher Mana Burn
+        ["15247" .. GetSpellInfo(16568)] = true, -- Qiraji Brainwasher Mind Flay
+        ["11729" .. GetSpellInfo(19452)] = true, -- Hive'Zora Hive Sister Toxic Spit
+        ["16146" .. GetSpellInfo(17473)] = true, -- Death Knight Raise Dead
+        ["16368" .. GetSpellInfo(9081)] = true, -- Necropolis Acolyte Shadow Bolt Volley
+        ["16022" .. GetSpellInfo(16568)] = true, -- Surgical Assistant Mind Flay
+        ["16021" .. GetSpellInfo(1397)] = true, -- Living Monstrosity Fear
+        ["16021" .. GetSpellInfo(1339)] = true, -- Living Monstrosity Chain Lightning
+        ["16021" .. GetSpellInfo(28294)] = true, -- Living Monstrosity Lightning Totem
+        ["16215" .. GetSpellInfo(1467)] = true, -- Unholy Staff Arcane Explosion
+        ["16452" .. GetSpellInfo(1467)] = true, -- Necro Knight Guardian Arcane Explosion
+        ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
+        ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
+        ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
+        ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
+        ["212969" .. GetSpellInfo(429825)] = true, -- Kazragore Chain Lightning
+        ["213334" .. GetSpellInfo(429168)] = true, -- Aku'mai Corrosive Blast
+        ["213334" .. GetSpellInfo(429356)] = true, -- Aku'mai Void Blast
+    }
+
+    -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0, but the channel events still work for the current target.
+    -- We use this table data to retrieve spell cast times inside the channel events.
     namespace.channeledSpells = {
         -- MISC
         [GetSpellInfo(746)] = 8000,      -- First Aid

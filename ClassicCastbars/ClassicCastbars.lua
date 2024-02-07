@@ -1,7 +1,7 @@
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
+local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
 local uninterruptibleList = namespace.uninterruptibleList
-local playerSilences = namespace.playerSilences
 local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
 
@@ -19,13 +19,14 @@ ClassicCastbars.activeFrames = activeFrames
 
 local CLIENT_IS_PRE_WRATH = (WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) or WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local CLIENT_IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local CLIENT_IS_CLASSIC_ERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
+local ceil = _G.math.ceil
 local strformat = _G.string.format
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 local UnitIsFriend = _G.UnitIsFriend
 local UnitCastingInfo = _G.UnitCastingInfo
 local UnitChannelInfo = _G.UnitChannelInfo
-local CastingInfo = _G.CastingInfo
 local UnitIsUnit = _G.UnitIsUnit
 local gsub = _G.string.gsub
 local strsplit = _G.string.split
@@ -115,20 +116,67 @@ function ClassicCastbars:ADDON_LOADED(addonName)
     end
 end
 
+function ClassicCastbars:RefreshBorderShield(castbar, unitID) -- aka uninterruptible shield
+    local cast = castbar._data
+    if not cast or cast.endTime == nil then return end
+
+    local db = self.db[self:GetUnitType(unitID)]
+    if not db then return end
+
+    -- Update displays related to border shield
+    self:SetCastbarIconAndText(castbar, cast, db)
+    self:SetCastbarStatusColorsOnDisplay(castbar, cast, db)
+    self:SetCastbarFonts(castbar, cast, db)
+    self:SetBorderShieldStyle(castbar, cast, db, unitID)
+
+    castbar.Flash:ClearAllPoints()
+    if cast and cast.isUninterruptible then
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 5.45) + 5, db.height+6)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 5.45) - 5, -db.height-1)
+    else
+        castbar.Flash:SetPoint("TOPLEFT", ceil(-db.width / 6.25), db.height)
+        castbar.Flash:SetPoint("BOTTOMRIGHT", ceil(db.width / 6.25), -db.height)
+    end
+end
+
+local function GetDefaultUninterruptibleState(cast, unitID) -- pre-wrath
+    local isUninterruptible = uninterruptibleList[cast.spellID] or uninterruptibleList[cast.spellName] or false
+
+    if not isUninterruptible and not cast.unitIsPlayer then
+        local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
+        if npcID then
+            if npcID == "209678" then -- Twilight Lord Kelris is immune at 35% hp (phase2)
+                if ((UnitHealth(unitID) / UnitHealthMax(unitID)) * 100) <= 35 then
+                    isUninterruptible = true
+                else
+                    isUninterruptible = false
+                end
+            else
+                isUninterruptible = npcID_uninterruptibleList[npcID .. cast.spellName] or false
+            end
+        end
+    end
+
+    return isUninterruptible
+end
+
 function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, channelSpellID)
     local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
     if not isChanneled then
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
-        if CastingInfo and UnitIsUnit("player", unitID) then
-            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo("player") -- UnitChannelInfo is bugged for classic era, tmp fallback method
+        if CLIENT_IS_CLASSIC_ERA and UnitIsUnit("player", unitID) then
+            -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
+            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo("player")
         else
             spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
         end
-        if channelSpellID and not spellName then -- UnitChannelInfo is bugged for classic era, tmp fallback method
+
+        if channelSpellID and not spellName then -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
             spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
             local channelCastTime = spellName and channeledSpells[spellName]
             if not channelCastTime then return end
+
             spellID = channelSpellID
             endTimeMS = (GetTime() * 1000) + channelCastTime
             startTimeMS = GetTime() * 1000
@@ -157,90 +205,27 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     cast.isInterrupted = nil
     cast.isCastComplete = nil
 
+    -- Check if cast is uninterruptible on start
     if CLIENT_IS_PRE_WRATH then
-        self:CheckCastModifiers(unitID, false)
-    end
-end
+        cast.isUninterruptible = GetDefaultUninterruptibleState(cast, unitID)
 
--- Check UNIT_AURA for applied cast immunites in TBC/Classic Era
-function ClassicCastbars:CheckCastModifiers(unitID, ranFromUnitAuraEvent)
-    if not CLIENT_IS_PRE_WRATH then return end
+        if not cast.isUninterruptible then
+            -- Check for any temp cast BUFF immunities
+            for i = 1, 40 do
+                local _, _, _, _, _, _, _, _, _, id = UnitAura(unitID, i, "HELPFUL") -- FIXME: deprecated
+                if not id then break end -- no more buffs
 
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
-    if not castbar then return end
-
-    local cast = castbar._data
-    if not cast or cast.endTime == nil then return end
-
-    -- Always start with our initial boolean state
-    cast.isUninterruptible = uninterruptibleList[cast.spellID] or uninterruptibleList[cast.spellName] or false
-    if not cast.isUninterruptible and not cast.unitIsPlayer then
-        local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
-        if npcID then
-            if npcID == "209678" and not ranFromUnitAuraEvent then -- Twilight Lord Kelris is immune at 35% hp (phase2)
-                if ((UnitHealth(unitID) / UnitHealthMax(unitID)) * 100) <= 35 then
+                if castImmunityBuffs[id] then
                     cast.isUninterruptible = true
-                else
-                    cast.isUninterruptible = false
-                end
-            else
-                cast.isUninterruptible = self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] or false
-            end
-        end
-    end
-
-    if cast.isUninterruptible then return end -- no point checking further if its found above
-
-    -- Check for any temp BUFF immunities
-    for i = 1, 40 do
-        local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HELPFUL")
-        if not spellID then break end
-
-        if castImmunityBuffs[spellID] then
-            cast.isUninterruptible = true
-
-            if ranFromUnitAuraEvent then
-                if cast.isChanneled then
-                    return -- TODO: readd once UnitChannelInfo is fixed by blizz
-                    --return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
-                else
-                    return self:UNIT_SPELLCAST_START(unitID) -- Exit & restart cast to update border shield
-                end
-            end
-        end
-    end
-
-    -- Check for debuff silences. If mob is still casting while silenced he's most likely interrupt immune.
-    -- Previously we also checked for SPELL_IMMUNE event on interrupts, but this no longer works.
-    if not cast.unitIsPlayer then
-        for i = 1, 40 do
-            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HARMFUL")
-            if not spellID then break end
-
-            if playerSilences[spellID] then
-                local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
-                cast.isUninterruptible = true
-                if npcID then
-                    self.db.npcCastUninterruptibleCache[npcID .. cast.spellName] = true -- store for later use
-                end
-
-                if ranFromUnitAuraEvent then
-                    if cast.isChanneled then
-                        return -- TODO: readd once UnitChannelInfo is fixed by blizz
-                        --return self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Exit & restart cast to update border shield
-                    else
-                        return self:UNIT_SPELLCAST_START(unitID) -- Exit & restart cast to update border shield
-                    end
+                    break
                 end
             end
         end
     end
 end
 
-function ClassicCastbars:UNIT_AURA(unitID) -- Note: updateInfo payload doesn't exist in classic
-    self:CheckCastModifiers(unitID, true)
-
-    -- Sadly need to run this here aswell as other events arent ran fast enough always
+function ClassicCastbars:UNIT_AURA(unitID)
+    -- Auto position castbar around auras shown
     if unitID == "target" or unitID == "focus" then
         if self.db[unitID] and self.db[unitID].autoPosition then
             if activeFrames[unitID] then
@@ -248,6 +233,37 @@ function ClassicCastbars:UNIT_AURA(unitID) -- Note: updateInfo payload doesn't e
                 if parentFrame then
                     self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
                 end
+            end
+        end
+    end
+
+    -- Check if cast is uninterruptible on buff faded or gained (i.e bubble)
+    if CLIENT_IS_PRE_WRATH then
+        local castbar = self:GetCastbarFrameIfEnabled(unitID)
+        if not castbar then return end
+
+        local cast = castbar._data
+        if not cast or cast.endTime == nil then return end
+
+        -- Set initial bool state
+        local prevValue = cast.isUninterruptible
+        cast.isUninterruptible = GetDefaultUninterruptibleState(cast, unitID)
+        if prevValue ~= cast.isUninterruptible then
+            self:RefreshBorderShield(castbar, unitID)
+        end
+
+        if cast.isUninterruptible then return end -- no point checking further if its found above
+
+        -- Check for any temp cast BUFF immunities
+        -- FIXME: use updateInfo payload instead once all classic clients support it
+        for i = 1, 40 do
+            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HELPFUL")
+            if not spellID then break end -- no more buffs
+
+            if castImmunityBuffs[spellID] then
+                cast.isUninterruptible = true
+
+                return self:RefreshBorderShield(castbar, unitID)
             end
         end
     end
@@ -459,11 +475,9 @@ function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    castbar._data.isUninterruptible = true
-    if castbar._data.isChanneled then
-        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
-    else
-        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    if castbar._data then
+        castbar._data.isUninterruptible = true
+        self:RefreshBorderShield(castbar, unitID)
     end
 end
 
@@ -471,11 +485,9 @@ function ClassicCastbars:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    castbar._data.isUninterruptible = false
-    if castbar._data.isChanneled then
-        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
-    else
-        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    if castbar._data then
+        castbar._data.isUninterruptible = false
+        self:RefreshBorderShield(castbar, unitID)
     end
 end
 
@@ -573,8 +585,9 @@ function ClassicCastbars:PLAYER_LOGIN()
             if self.db.player.statusColorSuccess[2] == 0.7 then
                 self.db.player.statusColorSuccess = { 0, 1, 0, 1 }
             end
-            self.db.npcCastTimeCache = nil
         end
+        self.db.npcCastTimeCache = nil
+        self.db.npcCastUninterruptibleCache = nil
     end
     self.db.version = namespace.defaultConfig.version
 
