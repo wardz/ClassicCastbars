@@ -98,15 +98,15 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
-                            if ClassicCastbars.DisableBlizzardCastbar then -- is TBC+
+                            if ClassicCastbars.DisableBlizzardCastbar then
                                 ClassicCastbars:DisableBlizzardCastbar()
                             end
+
                             if unitID == "player" then
                                 if value == false then
                                     return ReloadUI()
                                 end
                                 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-                                    print("ClassicCastbars: Do a /reload if player castbar doesn't work properly on first time enabling.") -- luacheck: ignore
                                     PlayerCastingBarFrame:SetLook("CLASSIC")
                                 end
                                 ClassicCastbars:SkinPlayerCastbar()
@@ -117,6 +117,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         width = "full",
                         name = L.SHOW_FOR_FRIENDLY,
+                        desc = "Note: does NOT work inside dungeons or raids due to Blizzard API limitations.",
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                         hidden = unitID ~= "nameplate",
@@ -605,6 +606,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         width = 1.4,
                         name = format("%s %s", L.TEST, localizedUnit),
+                        desc = string.match(L.BORDERSHIELD_TOOLTIP, "|cffffff00(.*)|r"),
                         type = "execute",
                         disabled = function() return not ClassicCastbars.db[unitID].enabled end,
                         func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitID) end,
@@ -640,7 +642,7 @@ local function GetOptionsTable()
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = function()
-                    return ClassicCastbars.db.player.enabled and L.REQUIRES_RESTART or true
+                    return ClassicCastbars.db.player.enabled and L.REQUIRES_RESTART or _G.CONFIRM_RESET_SETTINGS
                 end,
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
