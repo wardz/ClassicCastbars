@@ -76,7 +76,7 @@ local format = _G.string.format
 local strmatch = _G.string.match
 local strfind = _G.string.find
 local gsub = _G.string.gsub
-local UnitGUID = _G.UnitGUID
+local GetNamePlateForUnit = _.G.C_NamePlate.GetNamePlateForUnit
 
 local function GetUnitFrame(unitType, unitID, hasNumberIndex, skipVisibleCheck)
     local anchorNames = anchors[unitType]
@@ -167,9 +167,9 @@ function AnchorManager:GetAnchor(unitID)
 
     local anchorFrame
     if unitType == "nameplate-testmode" then
-        anchorFrame = C_NamePlate.GetNamePlateForUnit("target")
+        anchorFrame = GetNamePlateForUnit("target")
     elseif unitType == "nameplate" then
-        anchorFrame = C_NamePlate.GetNamePlateForUnit(unitID)
+        anchorFrame = GetNamePlateForUnit(unitID)
     elseif unitType == "party" or unitType == "party-testmode" then
         anchorFrame = GetPartyFrameForUnit(unitID)
     elseif unitType == "arena-testmode" then
@@ -180,7 +180,7 @@ function AnchorManager:GetAnchor(unitID)
 
     if not anchorFrame then return end
 
-    -- Cache frequent static unitframes permanently
+    -- Cache static unitframes permanently
     if unitType == "target" or unitType == "focus" then
         anchorCache[unitID] = anchorFrame
     end

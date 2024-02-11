@@ -290,12 +290,13 @@ function ClassicCastbars:PLAYER_FOCUS_CHANGED()
     end
 end
 
+local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
 
     activeGUIDs[namePlateUnitToken] = UnitGUID(namePlateUnitToken) or nil
 
-    local plate = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken)
+    local plate = GetNamePlateForUnit(namePlateUnitToken)
     local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
     if plateCastbar then
         plateCastbar.showCastbar = not self.db.nameplate.enabled
