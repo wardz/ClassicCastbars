@@ -328,6 +328,56 @@ function ClassicCastbars:SetCastbarStatusColorsOnDisplay(castbar, db)
     end
 end
 
+function ClassicCastbars:SetFinishCastStyle(castbar, unitID)
+    if not castbar.isActiveCast or castbar.value == nil then return end
+
+    -- Failed cast
+    if castbar.isInterrupted or castbar.isFailed then
+        if castbar.isInterrupted and castbar.interruptedSchool then
+            castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(castbar.interruptedSchool) or ""))
+        else
+            castbar.Text:SetText(castbar.isInterrupted and _G.INTERRUPTED or _G.FAILED)
+        end
+
+        local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorFailed)
+        castbar:SetStatusBarColor(r, g, b) -- Skipping alpha channel as it messes with fade out animations
+        castbar:SetMinMaxValues(0, 1)
+        castbar:SetValue(1)
+        castbar.Spark:SetAlpha(0)
+    end
+
+    -- Successfull cast
+    if castbar.isCastComplete then
+        if castbar.Border:GetAlpha() == 1 or castbar.isUninterruptible then
+            if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] or nonLSMBorders[castbar.Border:GetTexture() or ""] then
+                if castbar.isUninterruptible then
+                    castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
+                elseif castbar.isChanneled then
+                    castbar.Flash:SetVertexColor(0, 1, 0, 1)
+                else
+                    castbar.Flash:SetVertexColor(1, 1, 1, 1)
+                end
+                castbar.Flash:Show()
+            end
+        end
+
+        castbar.Spark:SetAlpha(0)
+        castbar:SetMinMaxValues(0, 1)
+
+        if not castbar.isChanneled then
+            if castbar.isUninterruptible then
+                castbar:SetStatusBarColor(0.7, 0.7, 0.7)
+            else
+                local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorSuccess)
+                castbar:SetStatusBarColor(r, g, b)
+            end
+            castbar:SetValue(1)
+        else
+            castbar:SetValue(0)
+        end
+    end
+end
+
 function ClassicCastbars:DisplayCastbar(castbar, unitID)
     if not castbar.isActiveCast or castbar.value == nil then return end
 
@@ -389,51 +439,7 @@ function ClassicCastbars:HideCastbar(castbar, unitID, skipFadeOut)
         return
     end
 
-    if castbar.isActiveCast and castbar.value ~= nil then
-        if castbar.isInterrupted or castbar.isFailed then
-            if castbar.isInterrupted and castbar.interruptedSchool then
-                castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(castbar.interruptedSchool) or ""))
-            else
-                castbar.Text:SetText(castbar.isInterrupted and _G.INTERRUPTED or _G.FAILED)
-            end
-
-            local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorFailed)
-            castbar:SetStatusBarColor(r, g, b) -- Skipping alpha channel as it messes with fade out animations
-            castbar:SetMinMaxValues(0, 1)
-            castbar:SetValue(1)
-            castbar.Spark:SetAlpha(0)
-        end
-
-        if castbar.isCastComplete then -- SPELL_CAST_SUCCESS
-            if castbar.Border:GetAlpha() == 1 or castbar.isUninterruptible then
-                if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] or nonLSMBorders[castbar.Border:GetTexture() or ""] then
-                    if castbar.isUninterruptible then
-                        castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
-                    elseif castbar.isChanneled then
-                        castbar.Flash:SetVertexColor(0, 1, 0, 1)
-                    else
-                        castbar.Flash:SetVertexColor(1, 1, 1, 1)
-                    end
-                    castbar.Flash:Show()
-                end
-            end
-
-            castbar.Spark:SetAlpha(0)
-            castbar:SetMinMaxValues(0, 1)
-
-            if not castbar.isChanneled then
-                if castbar.isUninterruptible then
-                    castbar:SetStatusBarColor(0.7, 0.7, 0.7)
-                else
-                    local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorSuccess)
-                    castbar:SetStatusBarColor(r, g, b)  -- Skipping alpha channel as it messes with fade out animations
-                end
-                castbar:SetValue(1)
-            else
-                castbar:SetValue(0)
-            end
-        end
-    end
+    self:SetFinishCastStyle(castbar, unitID)
 
     if castbar.fade then
         if not castbar.animationGroup:IsPlaying() then
