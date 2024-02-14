@@ -62,7 +62,6 @@ L["REQUIRES_RESTART"] = "Toggling this castbar module requires a reload of your 
 L["RESET_ALL"] = "Reset All Settings"
 L["SHOW_FOR_ENEMY"] = "Show Enemy Casts"
 L["SHOW_FOR_FRIENDLY"] = "Show Friendly Casts"
-L["SHOW_INTERRUPT_SCHOOL"] = "Show which magic school was interrupted"
 L["SHOW_SPARK"] = "Show Castbar Spark Effect"
 L["SHOW_TIMER"] = "Show Timer Text"
 L["SHOW_TIMER_TOOLTIP"] = "Display a timer countdown for the current cast."

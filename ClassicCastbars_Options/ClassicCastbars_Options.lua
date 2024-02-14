@@ -181,14 +181,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
-                    showInterruptSchool = {
-                        order = 9,
-                        name = L.SHOW_INTERRUPT_SCHOOL,
-                        width = "full",
-                        type = "toggle",
-                        hidden = unitID == "player" or not isClassicEra,
-                        disabled = ModuleIsDisabled,
-                    },
                     posX = {
                         -- Position slider X for nameplate castbars only
                         order = 10,
