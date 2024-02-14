@@ -4,9 +4,7 @@ local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
 local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
 local uninterruptibleList = namespace.uninterruptibleList
-
 local activeFrames = {}
-local activeGUIDs = {}
 
 local ClassicCastbars = CreateFrame("Frame", "ClassicCastbars")
 ClassicCastbars:RegisterEvent("PLAYER_LOGIN")
@@ -36,17 +34,8 @@ local castEvents = {
 
 local UnitAura = _G.UnitAura
 local next = _G.next
-
--- UnitTokenFromGUID() doesn't exist in classic
-function ClassicCastbars:GetFirstAvailableUnitIDByGUID(unitGUID)
-    for unitID, guid in next, activeGUIDs do
-        if guid == unitGUID then
-            return unitID
-        end
-    end
-end
-
 local gsub = _G.string.gsub
+
 function ClassicCastbars:GetUnitType(unitID)
     return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
 end
@@ -244,8 +233,6 @@ function ClassicCastbars:UNIT_TARGET(unitID) -- detect when your target changes 
 end
 
 function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own target
-    activeGUIDs.target = UnitGUID("target") or nil
-
     -- Always hide first, then reshow after
     local castbar = activeFrames["target"]
     if castbar then
@@ -264,8 +251,6 @@ function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own tar
 end
 
 function ClassicCastbars:PLAYER_FOCUS_CHANGED()
-    activeGUIDs.focus = UnitGUID("target") or nil
-
     local castbar = activeFrames["focus"]
     if castbar then
         self:HideCastbar(castbar, "focus", true)
@@ -281,8 +266,6 @@ end
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
-
-    activeGUIDs[namePlateUnitToken] = UnitGUID(namePlateUnitToken) or nil
 
     local plate = GetNamePlateForUnit(namePlateUnitToken)
     local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
@@ -307,10 +290,6 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
 end
 
 function ClassicCastbars:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
-    if activeGUIDs[namePlateUnitToken] then
-        activeGUIDs[namePlateUnitToken] = nil
-    end
-
     local castbar = activeFrames[namePlateUnitToken]
     if castbar then
         PoolManager:ReleaseFrame(castbar)
@@ -456,7 +435,6 @@ function ClassicCastbars:GROUP_ROSTER_UPDATE()
     for i = 1, 5 do
         local unitID = "party"..i
         local castbar = activeFrames[unitID]
-        activeGUIDs[unitID] = UnitGUID(unitID) or nil
 
         if castbar then
             if UnitExists(unitID) then
@@ -509,7 +487,6 @@ function ClassicCastbars:PLAYER_ENTERING_WORLD(isInitialLogin)
 
     -- Reset all data on loading screens
     wipe(activeFrames)
-    wipe(activeGUIDs)
     PoolManager:GetFramePool():ReleaseAll()
 
     if self.db.party.enabled then
