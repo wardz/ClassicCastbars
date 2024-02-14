@@ -83,4 +83,5 @@ read_globals = {
     "UnitCastingInfo",
     "UnitChannelInfo",
     "UnitIsFriend",
+    "strsplit",
 }

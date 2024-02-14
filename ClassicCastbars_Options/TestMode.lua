@@ -5,10 +5,10 @@ TestMode.isTesting = {}
 local dummySpellData = {
     spellName = GetSpellInfo(118),
     icon = GetSpellTexture(118),
-    maxValue = 10.0,
-    timeStart = GetTime(),
-    endTime = GetTime() + 10.0,
+    maxValue = 10,
+    value = 5,
     isChanneled = false,
+    isActiveCast = true,
 }
 
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
@@ -83,7 +83,9 @@ function TestMode:OnOptionChanged(unitID)
     local castbar = ClassicCastbars.activeFrames[unitID]
     if castbar and castbar:IsVisible() then
         if castbar.isTesting then
-            castbar._data = CopyTable(dummySpellData)
+            for key, value in pairs(dummySpellData) do
+                castbar[key] = value
+            end
         end
         ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
@@ -146,21 +148,25 @@ function TestMode:SetCastbarMovable(unitID, parent)
         castbar:SetScript("OnMouseUp", OnDragStop)
     end
 
-    castbar._data = CopyTable(dummySpellData) -- Set test data for :DisplayCastbar()
+    -- Set test data for :DisplayCastbar()
+    for key, value in pairs(dummySpellData) do
+        castbar[key] = value
+    end
     castbar.parent = parentFrame
     castbar.unitID = unitID
     castbar.isTesting = true
 
-    local maxValue = castbar._data.maxValue
-    castbar:SetMinMaxValues(1, maxValue)
-    castbar:SetValue(maxValue / 2)
-    castbar.Timer:SetFormattedText("%.1f", maxValue / 2)
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (((maxValue / 2) / maxValue) * castbar:GetWidth()) - 6, 0)
+    castbar:SetMinMaxValues(0, castbar.maxValue)
+    castbar:SetValue(castbar.value)
+    castbar.Timer:SetFormattedText("%.1f", castbar.isChanneled and castbar.value or not castbar.isChanneled and castbar.maxValue - castbar.value)
+
+    local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
 
     if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
-        castbar._data.isUninterruptible = true
+        castbar.isUninterruptible = true
     else
-        castbar._data.isUninterruptible = false
+        castbar.isUninterruptible = false
     end
 
     if unitID == "party-testmode" or unitID == "arena-testmode" then

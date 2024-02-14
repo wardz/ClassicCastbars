@@ -8,13 +8,10 @@ local function ResetterFunc(pool, frame)
     frame:SetParent(nil)
     frame:ClearAllPoints()
     frame.isTesting = false
+    frame.isActiveCast = false
 
     if frame.animationGroup and frame.animationGroup:IsPlaying() then
         frame.animationGroup:Stop()
-    end
-
-    if frame._data then
-        frame._data = nil
     end
 end
 
