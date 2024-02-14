@@ -76,7 +76,7 @@ local format = _G.string.format
 local strmatch = _G.string.match
 local strfind = _G.string.find
 local gsub = _G.string.gsub
-local GetNamePlateForUnit = _.G.C_NamePlate.GetNamePlateForUnit
+local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 
 local function GetUnitFrame(unitType, unitID, hasNumberIndex, skipVisibleCheck)
     local anchorNames = anchors[unitType]
