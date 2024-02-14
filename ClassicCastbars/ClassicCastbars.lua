@@ -388,7 +388,7 @@ function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
 
     if not castbar.isTesting then
         if castbar.isActiveCast then
-            if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for playe
+            if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
             if castbar.isChanneled and castID ~= nil then return end
             if not castbar.isInterrupted then
                 castbar.isFailed = true
@@ -597,7 +597,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
                 if castbar.fade and not castbar.fade:IsPlaying() then
                     castbar.isCastComplete = true
                     self:HideCastbar(castbar, unit)
-                    castbar.isActive = false
+                    castbar.isActiveCast = false
                 end
             end
         end
