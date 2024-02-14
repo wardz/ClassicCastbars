@@ -1,6 +1,6 @@
 local _, namespace = ...
-local addon = _G.ClassicCastbars
 local AnchorManager = namespace.AnchorManager
+local ClassicCastbars = _G.ClassicCastbars
 
 local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
@@ -31,7 +31,7 @@ local function GetStatusBarBackgroundTexture(statusbar)
     end
 end
 
-function addon:SetTargetCastbarPosition(castbar, parentFrame)
+function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
     if isRetail then
         if parentFrame.auraRows == nil then
             parentFrame.auraRows = 0
@@ -87,7 +87,7 @@ function addon:SetTargetCastbarPosition(castbar, parentFrame)
     end
 end
 
-function addon:SetCastbarIconAndText(castbar, db)
+function ClassicCastbars:SetCastbarIconAndText(castbar, db)
     local spellName = castbar.spellName
     if not castbar.isTesting and castbar.Text:GetText() == spellName then return end
 
@@ -110,7 +110,7 @@ function addon:SetCastbarIconAndText(castbar, db)
     end
 end
 
-function addon:SetBorderShieldStyle(castbar, db, unitID)
+function ClassicCastbars:SetBorderShieldStyle(castbar, db, unitID)
     if db.showBorderShield and castbar.isUninterruptible then
         castbar.Border:SetAlpha(0)
         if castbar.BorderFrameLSM then
@@ -178,7 +178,7 @@ function ClassicCastbars:RefreshBorderShield(castbar, unitID)
     end
 end
 
-function addon:SetCastbarStyle(castbar, db, unitID)
+function ClassicCastbars:SetCastbarStyle(castbar, db, unitID)
     castbar:SetSize(db.width, db.height)
     castbar.Timer:SetShown(db.showTimer)
     castbar:SetStatusBarTexture(db.castStatusBar)
@@ -247,7 +247,7 @@ local textureFrameLevels = {
     ["Interface\\Tooltips\\ChatBubble-Backdrop"] = 1,
 }
 
-function addon:SetLSMBorders(castbar, db)
+function ClassicCastbars:SetLSMBorders(castbar, db)
     -- Create new frame to contain our LSM backdrop
     if not castbar.BorderFrameLSM then
         castbar.BorderFrameLSM = CreateFrame("Frame", nil, castbar, _G.BackdropTemplateMixin and "BackdropTemplate")
@@ -272,7 +272,7 @@ function addon:SetLSMBorders(castbar, db)
     castbar.BorderFrameLSM:SetBackdropBorderColor(unpack(db.borderColor))
 end
 
-function addon:SetCastbarFonts(castbar, db)
+function ClassicCastbars:SetCastbarFonts(castbar, db)
     local fontName, fontHeight, fontFlags = castbar.Text:GetFont()
     if fontName ~= db.castFont or db.castFontSize ~= fontHeight or db.textOutline ~= fontFlags then
         castbar.Text:SetFont(db.castFont, db.castFontSize, db.textOutline)
@@ -300,7 +300,7 @@ local function OnFadeOutFinish(self)
     castingBar:Hide()
 end
 
-function addon:CreateFadeAnimationGroup(frame)
+function ClassicCastbars:CreateFadeAnimationGroup(frame)
     if frame.animationGroup then return frame.animationGroup end
     frame.animationGroup = frame:CreateAnimationGroup()
     frame.animationGroup:SetToFinalAlpha(true)
@@ -315,7 +315,7 @@ function addon:CreateFadeAnimationGroup(frame)
     return frame.animationGroup
 end
 
-function addon:SetCastbarStatusColorsOnDisplay(castbar, db)
+function ClassicCastbars:SetCastbarStatusColorsOnDisplay(castbar, db)
     castbar.Background = castbar.Background or GetStatusBarBackgroundTexture(castbar)
     castbar.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 
@@ -328,7 +328,7 @@ function addon:SetCastbarStatusColorsOnDisplay(castbar, db)
     end
 end
 
-function addon:DisplayCastbar(castbar, unitID)
+function ClassicCastbars:DisplayCastbar(castbar, unitID)
     if not castbar.isActiveCast or castbar.value == nil then return end
 
     if not castbar.isTesting then
@@ -377,7 +377,7 @@ function addon:DisplayCastbar(castbar, unitID)
     castbar:Show()
 end
 
-function addon:HideCastbar(castbar, unitID, skipFadeOut)
+function ClassicCastbars:HideCastbar(castbar, unitID, skipFadeOut)
     if skipFadeOut then
         if castbar.animationGroup then
             castbar.animationGroup:Stop()
@@ -460,7 +460,7 @@ end
 --------------------------------------------------------------
 
 local function ColorPlayerCastbar()
-    local db = addon.db.player
+    local db = ClassicCastbars.db.player
     if not db.enabled then return end
 
     if CastingBarFrame_SetNonInterruptibleCastColor then
@@ -486,7 +486,7 @@ end
 
 -- TODO: recreate castbar instead of skinning
 -- This spaghetti code just got worse and worse after retails 10.0+ changes :/
-function addon:SkinPlayerCastbar()
+function ClassicCastbars:SkinPlayerCastbar()
     if not self.db then return end
 
     local db = self.db.player
@@ -539,11 +539,11 @@ function addon:SkinPlayerCastbar()
         end)
 
         hooksecurefunc("PlayerFrame_DetachCastBar", function()
-            addon:SkinPlayerCastbar()
+            ClassicCastbars:SkinPlayerCastbar()
         end)
 
         hooksecurefunc("PlayerFrame_AttachCastBar", function()
-            addon:SkinPlayerCastbar()
+            ClassicCastbars:SkinPlayerCastbar()
         end)
 
         hooksecurefunc("PlayerFrame_AdjustAttachments", function()
@@ -616,7 +616,7 @@ if isRetail then
     -- Modified code from Classic Frames, some parts might be redundant for us.
     -- This is mostly just quick *hacks* to get the player castbar customizations working for retail after patch 10.0.0.
     hooksecurefunc(PlayerCastingBarFrame, 'UpdateShownState', function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         if self.barType ~= "empowered" then
@@ -629,26 +629,26 @@ if isRetail then
             if self.channeling then
                 self.Spark:Hide()
             end
-            addon:SkinPlayerCastbar()
+            ClassicCastbars:SkinPlayerCastbar()
         end
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "FinishSpell", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         self:SetStatusBarColor(unpack(db.statusColorSuccess))
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "SetAndUpdateShowCastbar", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "PlayInterruptAnims", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
@@ -656,7 +656,7 @@ if isRetail then
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "GetTypeInfo", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         if ( self.barType == "interrupted") then
@@ -673,7 +673,7 @@ if isRetail then
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "PlayFinishAnim", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         if self.barType ~= "empowered" then
@@ -683,7 +683,7 @@ if isRetail then
     end)
 
     hooksecurefunc(PlayerCastingBarFrame.Flash, "SetAtlas", function(self)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         local statusbar = self:GetParent()
@@ -707,11 +707,11 @@ if isRetail then
             self:SetPoint("TOP", 0, 28);
             self:SetBlendMode("ADD")
         end
-        addon:SkinPlayerCastbar()
+        ClassicCastbars:SkinPlayerCastbar()
     end)
 
     hooksecurefunc(PlayerCastingBarFrame, "SetLook", function(self, look)
-        local db = addon.db and addon.db.player
+        local db = ClassicCastbars.db and ClassicCastbars.db.player
         if not db or not db.enabled then return end
 
         if (look == "CLASSIC") then
@@ -731,7 +731,7 @@ if isRetail then
             self.Text:SetHeight(16)
             self.Text:SetFontObject("GameFontHighlight")
             self.Spark.offsetY = 2;
-            addon:SkinPlayerCastbar()
+            ClassicCastbars:SkinPlayerCastbar()
         end
     end)
 end
