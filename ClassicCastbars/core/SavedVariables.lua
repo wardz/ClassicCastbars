@@ -198,7 +198,7 @@ namespace.defaultConfig = {
     },
 
     player = {
-        enabled = false,
+        enabled = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE),
         width = 190,
         height = 20,
         iconSize = 22,
