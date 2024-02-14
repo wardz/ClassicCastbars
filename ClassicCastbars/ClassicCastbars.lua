@@ -2,6 +2,9 @@ local _, namespace = ...
 local PoolManager = namespace.PoolManager
 local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
+local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
+local uninterruptibleList = namespace.uninterruptibleList
+
 local activeFrames = {}
 local activeGUIDs = {}
 
@@ -26,6 +29,9 @@ local castEvents = {
     "UNIT_SPELLCAST_CHANNEL_STOP",
     "UNIT_SPELLCAST_INTERRUPTIBLE",
     "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+    "UNIT_SPELLCAST_EMPOWER_START",
+    "UNIT_SPELLCAST_EMPOWER_STOP",
+    "UNIT_SPELLCAST_EMPOWER_UPDATE",
 }
 
 local UnitAura = _G.UnitAura
@@ -73,8 +79,6 @@ function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
 end
 
 local function HideBlizzardSpellbar(spellbar)
-    if spellbar.barType and spellbar.barType == "empowered" then return end -- special evoker castbar
-
     local cfg = ClassicCastbars.db[ClassicCastbars:GetUnitType(spellbar.unit)]
     if cfg and cfg.enabled then
         spellbar:Hide()
@@ -111,8 +115,6 @@ function ClassicCastbars:ADDON_LOADED(addonName)
     end
 end
 
-local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
-local uninterruptibleList = namespace.uninterruptibleList
 local strsplit = _G.string.split
 local function GetDefaultUninterruptibleState(cast, unitID) -- needed pre-wrath only
     local isUninterruptible = uninterruptibleList[cast.spellID] or uninterruptibleList[cast.spellName] or false
@@ -345,6 +347,7 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID, _, spellID)
     self:BindCurrentCastData(castbar, unitID, true, spellID)
     self:DisplayCastbar(castbar, unitID)
 end
+ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_START
 
 function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID, castID)
     local castbar = activeFrames[unitID]
@@ -416,6 +419,7 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID, _, spellID)
 
     self:BindCurrentCastData(castbar, unitID, true, spellID)
 end
+ClassicCastbars.UNIT_SPELLCAST_EMPOWER_UPDATE = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_UPDATE
 
 function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
     local castbar = activeFrames[unitID]
@@ -446,6 +450,7 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
 
     castbar._data = nil
 end
+ClassicCastbars.UNIT_SPELLCAST_EMPOWER_STOP = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_STOP
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
