@@ -1,7 +1,7 @@
 local _, namespace = ...
 
 namespace.defaultConfig = {
-    version = "44",
+    version = "45",
     locale = GetLocale(),
     usePerCharacterSettings = false,
 
@@ -42,6 +42,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 
     target = {
@@ -79,6 +80,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 
     focus = {
@@ -116,6 +118,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 
     party = {
@@ -153,6 +156,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 
     arena = {
@@ -190,6 +194,7 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 
     player = {
@@ -228,5 +233,6 @@ namespace.defaultConfig = {
         ignoreParentAlpha = false,
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
+        edgeSizeLSM = 18,
     },
 }

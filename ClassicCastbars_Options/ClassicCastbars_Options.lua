@@ -558,13 +558,25 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
-                    spacer3 = {
+                    edgeSizeLSM = {
                         order = 6,
+                        name = L.EDGE_SIZE_LSM,
+                        type = "range",
+                        width = "double",
+                        min = 3,
+                        max = 32,
+                        bigStep = 1,
+                        disabled = function()
+                            return ClassicCastbars.db[unitID].castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+                        end,
+                    },
+                    spacer3 = {
+                        order = 7,
                         type = "description",
                         name = "\n\n",
                     },
                     frameLevel = {
-                        order = 7,
+                        order = 8,
                         name = L.FRAME_LEVEL,
                         desc = L.FRAME_LEVEL_DESC,
                         type = "range",
@@ -573,7 +585,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 5,
                     },
                     frameStrata = {
-                        order = 8,
+                        order = 9,
                         name = L.FRAME_STRATA,
                         desc = L.FRAME_STRATA_DESC,
                         type = "select",

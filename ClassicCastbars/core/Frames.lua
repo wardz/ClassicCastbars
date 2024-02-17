@@ -256,14 +256,15 @@ function ClassicCastbars:SetLSMBorders(castbar, db)
     end
 
     -- Apply backdrop if it isn't already active
-    if castbar.BorderFrameLSM.currentTexture ~= db.castBorder then
+    if castbar.BorderFrameLSM.currentTexture ~= db.castBorder or castbar.BorderFrameLSM.currentSize ~= db.edgeSizeLSM then
         castbar.BorderFrameLSM:SetBackdrop({
             edgeFile = db.castBorder,
-            tile = true, tileSize = 16,
-            edgeSize = 16,
+            tile = true, tileSize = db.edgeSizeLSM,
+            edgeSize = db.edgeSizeLSM,
             insets = { left = 4, right = 4, top = 4, bottom = 4 }
         })
         castbar.BorderFrameLSM.currentTexture = db.castBorder
+        castbar.BorderFrameLSM.currentSize = db.edgeSizeLSM
     end
 
     castbar.Border:SetAlpha(0) -- hide default border
