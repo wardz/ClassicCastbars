@@ -295,7 +295,7 @@ ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CH
 
 function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID, castID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
     if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
 
     if not castbar.isInterrupted then
@@ -306,7 +306,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID, castID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
     if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
 
     castbar.isInterrupted = true
@@ -316,7 +316,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
     if not castbar.isChanneled and castbar.castID ~= castID then return end
 
     castbar.isCastComplete = true
@@ -327,7 +327,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_DELAYED(unitID, castID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
     if not castbar.isChanneled and castbar.castID ~= castID then return end
 
     self:BindCurrentCastData(castbar, unitID, false)
@@ -335,7 +335,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID, _, spellID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
 
     self:BindCurrentCastData(castbar, unitID, true, spellID)
 end
@@ -343,7 +343,7 @@ ClassicCastbars.UNIT_SPELLCAST_EMPOWER_UPDATE = ClassicCastbars.UNIT_SPELLCAST_C
 
 function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
 
     if not castbar.isChanneled and castbar.castID ~= castID then return end
     if castbar.isChanneled and castID ~= nil then return end
@@ -356,7 +356,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
 
     castbar.isCastComplete = true
     self:HideCastbar(castbar, unitID)
@@ -365,7 +365,7 @@ ClassicCastbars.UNIT_SPELLCAST_EMPOWER_STOP = ClassicCastbars.UNIT_SPELLCAST_CHA
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
 
     castbar.isUninterruptible = true
     self:RefreshBorderShield(castbar, unitID)
@@ -373,7 +373,7 @@ end
 
 function ClassicCastbars:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
     local castbar = activeFrames[unitID]
-    if not castbar then return end
+    if not castbar or not castbar.isActiveCast then return end
 
     castbar.isUninterruptible = false
     self:RefreshBorderShield(castbar, unitID)
