@@ -148,7 +148,9 @@ function ClassicCastbars:SetBorderShieldStyle(castbar, db, unitID)
         if nonLSMBorders[db.castBorder] then
             castbar.Border:SetAlpha(db.borderColor[4])
         else
-            castbar.BorderFrameLSM:SetAlpha(db.borderColor[4])
+            if castbar.BorderFrameLSM then
+                castbar.BorderFrameLSM:SetAlpha(db.borderColor[4])
+            end
         end
         castbar.BorderShield:Hide()
         if castbar.IconShield then
