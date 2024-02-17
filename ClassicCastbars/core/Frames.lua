@@ -407,6 +407,7 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
     self:SetCastbarFonts(castbar, db)
     self:SetCastbarStatusColorsOnDisplay(castbar, db)
 
+    castbar:ClearAllPoints()
     if unitID == "target" and self.db.target.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
     elseif unitID == "focus" and self.db.focus.autoPosition then
@@ -428,12 +429,12 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
 end
 
 function ClassicCastbars:HideCastbar(castbar, unitID, skipFadeOut)
+    if castbar.isTesting then return end
+
     if skipFadeOut then
         if castbar.animationGroup then
             castbar.animationGroup:Stop()
         end
-        castbar.BorderShield:Hide()
-        castbar:SetAlpha(0)
         castbar:Hide()
         castbar.isActiveCast = false
         return

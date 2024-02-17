@@ -63,7 +63,7 @@ function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
             if UnitIsUnit("player", unitID) then return end -- personal resource display nameplate
         end
 
-        return ClassicCastbars:GetCastbarFrame(unitID)
+        return self:GetCastbarFrame(unitID)
     end
 end
 
@@ -150,7 +150,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
 
     if not spellName then return end
 
-    castbar.isActiveCast = true
+    castbar.isActiveCast = true -- is currently casting/channeling, data is not stale
     castbar.value = isChanneled and ((endTimeMS / 1000) - GetTime()) or (GetTime() - (startTimeMS / 1000))
     castbar.maxValue = (endTimeMS - startTimeMS) / 1000
     castbar.castID = castID
@@ -187,12 +187,12 @@ end
 function ClassicCastbars:UNIT_AURA(unitID)
     -- Auto position castbar around auras shown
     if unitID == "target" or unitID == "focus" then
-        ClassicCastbars:UNIT_TARGET(unitID)
+        self:UNIT_TARGET(unitID)
     end
 
     -- Check if cast is uninterruptible on buff faded or gained (i.e bubble)
     if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        local castbar = self:GetCastbarFrameIfEnabled(unitID)
+        local castbar = activeFrames[unitID]
         if not castbar then return end
 
         if not castbar.isActiveCast or castbar.endTime == nil then return end
@@ -317,65 +317,45 @@ ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CH
 function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
+    if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
 
-    if not castbar.isTesting then
-        if castbar.isActiveCast then
-            if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
-            if not castbar.isInterrupted then
-                castbar.isFailed = true
-            end
-        end
-        self:HideCastbar(castbar, unitID)
+    if not castbar.isInterrupted then
+        castbar.isFailed = true
     end
-
-    castbar.isActiveCast = false
+    self:HideCastbar(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
+    if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
 
-    if not castbar.isTesting then
-        if castbar.isActiveCast then
-            if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
-            castbar.isInterrupted = true
-            castbar.isFailed = false
-        end
-        self:HideCastbar(castbar, unitID)
-    end
-
-    castbar.isActiveCast = false
+    castbar.isInterrupted = true
+    castbar.isFailed = false
+    self:HideCastbar(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
+    if not castbar.isChanneled and castbar.castID ~= castID then return end
 
-    if not castbar.isTesting then
-        if castbar.isActiveCast then
-            if not castbar.isChanneled and castbar.castID ~= castID then return end
-            castbar.isCastComplete = true
-            if castbar.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled, let OnUpdate handle it instead
-        end
+    castbar.isCastComplete = true
+    if not castbar.isChanneled then -- _SUCCEEDED triggered every tick for channeled, let OnUpdate handle it instead
         self:HideCastbar(castbar, unitID)
     end
-
-    castbar.isActiveCast = false
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_DELAYED(unitID, castID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = activeFrames[unitID]
     if not castbar then return end
-
-    if castbar.isActiveCast then
-        if not castbar.isChanneled and castbar.castID ~= castID then return end
-    end
+    if not castbar.isChanneled and castbar.castID ~= castID then return end
 
     self:BindCurrentCastData(castbar, unitID, false)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_UPDATE(unitID, _, spellID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = activeFrames[unitID]
     if not castbar then return end
 
     self:BindCurrentCastData(castbar, unitID, true, spellID)
@@ -386,51 +366,38 @@ function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
-    if not castbar.isTesting then
-        if castbar.isActiveCast then
-            if not castbar.isChanneled and castbar.castID ~= castID then return end -- required for player
-            if castbar.isChanneled and castID ~= nil then return end
-            if not castbar.isInterrupted then
-                castbar.isFailed = true
-            end
-        end
-        self:HideCastbar(castbar, unitID)
-    end
+    if not castbar.isChanneled and castbar.castID ~= castID then return end
+    if castbar.isChanneled and castID ~= nil then return end
 
-    castbar.isActiveCast = false
+    if not castbar.isInterrupted then
+        castbar.isFailed = true
+    end
+    self:HideCastbar(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
-    if not castbar.isTesting then
-        castbar.isCastComplete = true
-        self:HideCastbar(castbar, unitID)
-    end
-
-    castbar.isActiveCast = false
+    castbar.isCastComplete = true
+    self:HideCastbar(castbar, unitID)
 end
 ClassicCastbars.UNIT_SPELLCAST_EMPOWER_STOP = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_STOP
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = activeFrames[unitID]
     if not castbar then return end
 
-    if castbar.isActiveCast then
-        castbar.isUninterruptible = true
-        self:RefreshBorderShield(castbar, unitID)
-    end
+    castbar.isUninterruptible = true
+    self:RefreshBorderShield(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = activeFrames[unitID]
     if not castbar then return end
 
-    if castbar.isActiveCast then
-        castbar.isUninterruptible = false
-        self:RefreshBorderShield(castbar, unitID)
-    end
+    castbar.isUninterruptible = false
+    self:RefreshBorderShield(castbar, unitID)
 end
 
 function ClassicCastbars:GROUP_ROSTER_UPDATE()
@@ -440,9 +407,7 @@ function ClassicCastbars:GROUP_ROSTER_UPDATE()
 
         if castbar then
             if UnitExists(unitID) then
-                castbar:Hide()
-                castbar:ClearAllPoints()
-                castbar.isActiveCast = false
+                self:HideCastbar(castbar, unitID, true)
             else
                 -- party member no longer exists, release castbar completely
                 PoolManager:ReleaseFrame(castbar)
@@ -597,7 +562,6 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
                 if castbar.fade and not castbar.fade:IsPlaying() then
                     castbar.isCastComplete = true
                     self:HideCastbar(castbar, unit)
-                    castbar.isActiveCast = false
                 end
             end
         end
