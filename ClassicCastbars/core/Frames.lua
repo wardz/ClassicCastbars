@@ -416,12 +416,10 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
         castbar:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
     end
 
-    if not castbar.isTesting then
-        castbar:SetMinMaxValues(0, castbar.maxValue)
-        castbar:SetValue(0)
-        castbar.Spark:SetPoint("CENTER", castbar, "LEFT", 0, 0)
-    end
-
+    local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+    castbar:SetMinMaxValues(0, castbar.maxValue)
+    castbar:SetValue(castbar.value)
     castbar:SetParent(parentFrame)
     castbar.Flash:Hide()
     castbar:SetAlpha(1)
