@@ -98,9 +98,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
-                            if ClassicCastbars.DisableBlizzardCastbar then
-                                ClassicCastbars:DisableBlizzardCastbar()
-                            end
+                            ClassicCastbars:DisableBlizzardCastbar()
 
                             if unitID == "player" then
                                 if value == false then
