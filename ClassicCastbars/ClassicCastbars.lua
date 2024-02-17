@@ -32,7 +32,7 @@ local castEvents = {
     "UNIT_SPELLCAST_EMPOWER_UPDATE",
 }
 
-local UnitAura = _G.UnitAura
+local GetBuffDataByIndex = _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
 local gsub = _G.string.gsub
 
@@ -107,7 +107,7 @@ end
 local function GetDefaultUninterruptibleState(castbar, unitID) -- needed pre-wrath only
     local isUninterruptible = uninterruptibleList[castbar.spellID] or uninterruptibleList[castbar.spellName] or false
 
-    if not isUninterruptible and not castbar.unitIsPlayer then
+    if not isUninterruptible and not UnitIsPlayer(unitID) then
         local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
         if npcID then
             if npcID == "209678" then -- Twilight Lord Kelris is immune at 35% hp (phase2)
@@ -158,76 +158,53 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     castbar.spellID = spellID
     castbar.icon = iconTexturePath
     castbar.isChanneled = isChanneled
-    castbar.unitIsPlayer = UnitIsPlayer(unitID)
-    castbar.isUninterruptible = notInterruptible or nil
     castbar.isFailed = nil
     castbar.isInterrupted = nil
     castbar.isCastComplete = nil
+
+    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+        castbar.isUninterruptible = notInterruptible
+    end
+
     castbar:SetMinMaxValues(0, castbar.maxValue)
+end
 
-    -- Check if cast is uninterruptible on start
-    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        castbar.isUninterruptible = GetDefaultUninterruptibleState(castbar, unitID)
+-- Check if cast is uninterruptible on buff faded or gained
+function ClassicCastbars:CheckAuraModifiers(unitID)
+    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-        if not castbar.isUninterruptible then
-            -- Check for any temp cast BUFF immunities
-            for i = 1, 40 do
-                local _, _, _, _, _, _, _, _, _, id = UnitAura(unitID, i, "HELPFUL") -- FIXME: deprecated
-                if not id then break end -- no more buffs
+    local castbar = activeFrames[unitID]
+    if not castbar or not castbar.isActiveCast then return end
 
-                if castImmunityBuffs[id] then
-                    castbar.isUninterruptible = true
-                    break
-                end
-            end
+    local immunityFound = false
+    for i = 1, 40 do
+        local auraData = GetBuffDataByIndex(unitID, i, "HELPFUL")
+        if not auraData then break end -- no more buffs
+
+        if castImmunityBuffs[auraData.spellId] then
+            immunityFound = true
+            break
         end
     end
+
+    castbar.isUninterruptible = immunityFound or GetDefaultUninterruptibleState(castbar, unitID)
+    self:RefreshBorderShield(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_AURA(unitID)
+    self:CheckAuraModifiers(unitID)
+
     -- Auto position castbar around auras shown
     if unitID == "target" or unitID == "focus" then
         self:UNIT_TARGET(unitID)
     end
-
-    -- Check if cast is uninterruptible on buff faded or gained (i.e bubble)
-    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        local castbar = activeFrames[unitID]
-        if not castbar then return end
-
-        if not castbar.isActiveCast or castbar.endTime == nil then return end
-
-        -- Set initial bool state
-        local prevValue = castbar.isUninterruptible
-        castbar.isUninterruptible = GetDefaultUninterruptibleState(castbar, unitID)
-        if prevValue ~= castbar.isUninterruptible then
-            self:RefreshBorderShield(castbar, unitID)
-        end
-
-        if castbar.isUninterruptible then return end -- no point checking further if its found above
-
-        -- Check for any temp cast BUFF immunities
-        -- FIXME: use updateInfo payload instead once all classic clients support it
-        for i = 1, 40 do
-            local _, _, _, _, _, _, _, _, _, spellID = UnitAura(unitID, i, "HELPFUL")
-            if not spellID then break end -- no more buffs
-
-            if castImmunityBuffs[spellID] then
-                castbar.isUninterruptible = true
-
-                return self:RefreshBorderShield(castbar, unitID)
-            end
-        end
-    end
 end
 
 function ClassicCastbars:UNIT_TARGET(unitID) -- detect when your target changes his target (for positioning around targetoftarget frame)
-    if self.db[unitID] and self.db[unitID].autoPosition then
-        if activeFrames[unitID] then
-            local parentFrame = self.AnchorManager:GetAnchor(unitID)
-            if parentFrame then
-                self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
-            end
+    if activeFrames[unitID] and self.db[unitID] and self.db[unitID].autoPosition then
+        local parentFrame = self.AnchorManager:GetAnchor(unitID)
+        if parentFrame then
+            self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
         end
     end
 end
@@ -302,6 +279,7 @@ function ClassicCastbars:UNIT_SPELLCAST_START(unitID)
     if not castbar then return end
 
     self:BindCurrentCastData(castbar, unitID, false)
+    self:CheckAuraModifiers(unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 
@@ -310,6 +288,7 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID, _, spellID)
     if not castbar then return end
 
     self:BindCurrentCastData(castbar, unitID, true, spellID)
+    self:CheckAuraModifiers(unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_START
