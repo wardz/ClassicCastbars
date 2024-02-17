@@ -4,7 +4,6 @@ local ClassicCastbars = _G.ClassicCastbars
 
 local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local strformat = _G.string.format
 local unpack = _G.unpack
 local min = _G.math.min
 local max = _G.math.max
@@ -336,11 +335,7 @@ function ClassicCastbars:SetFinishCastStyle(castbar, unitID)
 
     -- Failed cast
     if castbar.isInterrupted or castbar.isFailed then
-        if castbar.isInterrupted and castbar.interruptedSchool then
-            castbar.Text:SetText(strformat(_G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(castbar.interruptedSchool) or ""))
-        else
-            castbar.Text:SetText(castbar.isInterrupted and _G.INTERRUPTED or _G.FAILED)
-        end
+        castbar.Text:SetText(castbar.isInterrupted and _G.INTERRUPTED or _G.FAILED)
 
         local r, g, b = unpack(self.db[self:GetUnitType(unitID)].statusColorFailed)
         castbar:SetStatusBarColor(r, g, b) -- Skipping alpha channel as it messes with fade out animations
