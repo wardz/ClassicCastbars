@@ -32,7 +32,7 @@ local castEvents = {
     "UNIT_SPELLCAST_EMPOWER_UPDATE",
 }
 
-local GetBuffDataByIndex = _G.C_UnitAuras.GetBuffDataByIndex
+local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
 local gsub = _G.string.gsub
 
