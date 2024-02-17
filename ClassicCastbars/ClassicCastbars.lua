@@ -123,7 +123,7 @@ local function GetDefaultUninterruptibleState(castbar, unitID) -- needed pre-wra
     return isUninterruptible
 end
 
-function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, channelSpellID)
+function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, channelSpellID, isStartEvent)
     local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
 
     if not isChanneled then
@@ -164,17 +164,22 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
 
     if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
         castbar.isUninterruptible = notInterruptible
+    else
+        if isStartEvent then -- ensure that its only triggered once per cast
+            castbar.isDefaultUninterruptible = GetDefaultUninterruptibleState(castbar, unitID)
+            castbar.isUninterruptible = castbar.isDefaultUninterruptible
+        end
     end
 
     castbar:SetMinMaxValues(0, castbar.maxValue)
 end
 
--- Check if cast is uninterruptible on buff faded or gained
-function ClassicCastbars:CheckAuraModifiers(unitID)
+-- Check if cast is uninterruptible on buff faded or gained (needed pre-wrath)
+function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
     if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
-
-    local castbar = activeFrames[unitID]
     if not castbar or not castbar.isActiveCast then return end
+
+    if castbar.isDefaultUninterruptible then return end -- always immune, no point checking further
 
     local immunityFound = false
     for i = 1, 40 do
@@ -187,12 +192,12 @@ function ClassicCastbars:CheckAuraModifiers(unitID)
         end
     end
 
-    castbar.isUninterruptible = immunityFound or GetDefaultUninterruptibleState(castbar, unitID)
+    castbar.isUninterruptible = immunityFound
     self:RefreshBorderShield(castbar, unitID)
 end
 
 function ClassicCastbars:UNIT_AURA(unitID)
-    self:CheckAuraModifiers(unitID)
+    self:CheckAuraModifiers(activeFrames[unitID], unitID)
 
     -- Auto position castbar around auras shown
     if unitID == "target" or unitID == "focus" then
@@ -278,8 +283,8 @@ function ClassicCastbars:UNIT_SPELLCAST_START(unitID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    self:BindCurrentCastData(castbar, unitID, false)
-    self:CheckAuraModifiers(unitID)
+    self:BindCurrentCastData(castbar, unitID, false, nil, true)
+    self:CheckAuraModifiers(castbar, unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 
@@ -287,8 +292,8 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID, _, spellID)
     local castbar = self:GetCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
-    self:BindCurrentCastData(castbar, unitID, true, spellID)
-    self:CheckAuraModifiers(unitID)
+    self:BindCurrentCastData(castbar, unitID, true, spellID, true)
+    self:CheckAuraModifiers(castbar, unitID)
     self:DisplayCastbar(castbar, unitID)
 end
 ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_START
