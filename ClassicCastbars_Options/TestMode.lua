@@ -5,10 +5,12 @@ TestMode.isTesting = {}
 local dummySpellData = {
     spellName = GetSpellInfo(118),
     icon = GetSpellTexture(118),
+    spellID = 118,
     maxValue = 10,
     value = 5,
     isChanneled = false,
     isActiveCast = true,
+    castID = nil,
 }
 
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
@@ -211,6 +213,7 @@ function TestMode:SetCastbarImmovable(unitID)
         castbar.tooltip:Hide()
     end
 
+    castbar.isActiveCast = false
     castbar.unitID = nil
     castbar.parent = nil
     castbar.isTesting = false
