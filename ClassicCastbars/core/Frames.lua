@@ -88,8 +88,7 @@ function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
 end
 
 function ClassicCastbars:SetCastbarIconAndText(castbar, db)
-    local spellName = castbar.spellName
-    if not castbar.isTesting and castbar.Text:GetText() == spellName then return end
+    local spellName = castbar.spellName or ""
 
     if castbar.icon == 136235 then -- unknown texture
         castbar.icon = 136243
