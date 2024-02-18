@@ -15,6 +15,7 @@ local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
     ["Interface\\CastingBar\\UI-CastingBar-Border"] = true,
     [130873] = true,
+    [130874] = true,
 }
 
 local function GetStatusBarBackgroundTexture(statusbar)
