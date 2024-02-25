@@ -238,7 +238,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     width = {
                         order = 1,
                         name = L.WIDTH,
-                        desc = L.WIDTH_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = 1,
@@ -249,7 +248,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     height = {
                         order = 2,
                         name = L.HEIGHT,
-                        desc = L.HEIGHT_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = 1,
