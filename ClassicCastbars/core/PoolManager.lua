@@ -9,13 +9,25 @@ local function ResetterFunc(pool, frame)
     frame:ClearAllPoints()
     frame.isTesting = false
     frame.isActiveCast = false
+    frame.unitID = nil
+    frame.parent = nil
+
+    if frame.tooltip then
+        frame:EnableMouse(false)
+        frame.tooltip:Hide()
+    end
 
     if frame.animationGroup and frame.animationGroup:IsPlaying() then
         frame.animationGroup:Stop()
     end
 end
 
--- TODO: with Retails changes to SmallCastingBarFrameTemplate we should look into creating our own template soon, this'd also help cleanup Frames.lua a lot.
+local function OnFadeOutFinish(self)
+    local castingBar = self:GetParent()
+    castingBar:Hide()
+end
+
+-- TODO: with Retails changes to SmallCastingBarFrameTemplate we should look into creating our own template soon
 local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
 local framesCreated = 0
 local framesActive = 0
@@ -42,19 +54,9 @@ function PoolManager:ReleaseFrame(frame)
 end
 
 function PoolManager:InitializeNewFrame(frame)
-    -- Some of the points set by SmallCastingBarFrameTemplate doesn't
-    -- work well when user modify castbar size (not scale), so set our own points instead
-    frame.Border:ClearAllPoints()
-    frame.Icon:ClearAllPoints()
-    frame.Text:ClearAllPoints()
-    frame.Icon:SetPoint("LEFT", frame, -15, 0)
-
-    -- Dragonflight / retail
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         frame.TextBorder:SetAlpha(0)
         frame.BorderShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield")
-        frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
-        frame.Flash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
         frame.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
         frame.Spark:SetBlendMode("ADD")
         frame.Spark:SetSize(32, 32)
@@ -71,6 +73,27 @@ function PoolManager:InitializeNewFrame(frame)
     frame.Timer:SetTextColor(1, 1, 1)
     frame.Timer:SetFontObject("SystemFont_Shadow_Small")
     frame.Timer:SetPoint("RIGHT", frame, -6, 0)
+
+    frame.animationGroup = frame:CreateAnimationGroup()
+    frame.animationGroup:SetToFinalAlpha(true)
+    frame.animationGroup:SetScript("OnFinished", OnFadeOutFinish)
+
+    frame.fade = frame.animationGroup:CreateAnimation("Alpha")
+    frame.fade:SetOrder(1)
+    frame.fade:SetFromAlpha(1)
+    frame.fade:SetToAlpha(0)
+    frame.fade:SetSmoothing("OUT")
+
+    if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then
+        for _, v in pairs({ frame:GetRegions() }) do
+            --if v.GetTexture and (strfind("UI-StatusBar", v:GetTexture() or "") or v:GetTexture() == 137012) then
+            -- WARN: this is currently a hacky fix after the above method broke
+            if v.GetDrawLayer and v:GetDrawLayer() == "BACKGROUND" then
+                frame.Background = v
+                break
+            end
+        end
+    end
 end
 
 function PoolManager:GetFramePool()

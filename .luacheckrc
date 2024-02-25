@@ -84,4 +84,7 @@ read_globals = {
     "UnitChannelInfo",
     "UnitIsFriend",
     "strsplit",
+    "strfind",
+    "strlower",
+    "Mixin",
 }
