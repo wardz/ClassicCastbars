@@ -10,7 +10,7 @@ local TEXT_POINTS = {
 }
 
 local TEXT_OUTLINES = { -- font flags
-    [""] = L.DEFAULT,
+    [""] = _G.DEFAULT,
     ["OUTLINE"] = "OUTLINE",
     ["THICK"] = "THICK",
     ["THICK,OUTLINE"] = "THICK OUTLINE",
@@ -32,9 +32,9 @@ local function GetLSMTable(lsmType)
     -- Add custom media to LSM options that'll be used only in our addon.
     -- These are the default borders/fonts etc for ClassicCastbars
     if lsmType == "border" then
-        tbl[L.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+        tbl[_G.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
     elseif lsmType == "font" then
-        tbl[L.DEFAULT] = _G.STANDARD_TEXT_FONT
+        tbl[_G.DEFAULT] = _G.STANDARD_TEXT_FONT
     end
 
     return tbl
@@ -629,12 +629,12 @@ local function GetOptionsTable()
         name = "ClassicCastbars " .. GetAddOnMetadata("ClassicCastbars", "version"),
 
         args = {
-            target = CreateUnitTabGroup("target", L.TARGET, 1),
-            nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
-            party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = CreateUnitTabGroup("player", L.PLAYER, 4),
-            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
-            arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
+            target = CreateUnitTabGroup("target", _G.TARGET, 1),
+            nameplate = CreateUnitTabGroup("nameplate", _G.UNIT_NAMEPLATES, 2),
+            party = CreateUnitTabGroup("party", _G.PARTY, 3),
+            player = CreateUnitTabGroup("player", _G.PLAYER, 4),
+            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS, 5) or nil,
+            arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA, 6) or nil,
 
             -- Reset Button
             resetAllSettings = {
@@ -642,7 +642,7 @@ local function GetOptionsTable()
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = function()
-                    return ClassicCastbars.db.player.enabled and L.REQUIRES_RESTART or _G.CONFIRM_RESET_SETTINGS
+                    return _G.CONFIRM_RESET_SETTINGS
                 end,
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
@@ -672,7 +672,7 @@ local function GetOptionsTable()
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,
                 confirm = true,
-                confirmText = L.REQUIRES_RESTART,
+                confirmText = _G.VIDEO_OPTIONS_NEED_CLIENTRESTART,
                 get = function()
                     return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
                 end,
