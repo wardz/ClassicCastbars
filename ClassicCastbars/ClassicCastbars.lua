@@ -10,10 +10,13 @@ ClassicCastbars:RegisterEvent("PLAYER_LOGIN")
 ClassicCastbars:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, ...)
 end)
+
+-- Variables used in ClassicCastbars_Options
 ClassicCastbars.AnchorManager = namespace.AnchorManager
 ClassicCastbars.defaultConfig = namespace.defaultConfig
 ClassicCastbars.activeFrames = activeFrames
 
+-- Upvalues
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
@@ -189,7 +192,7 @@ end
 
 function ClassicCastbars:UNIT_TARGET(unitID) -- when your target changes or clears his target (for positioning around targetoftarget frame)
     if activeFrames[unitID] and self.db[unitID] and self.db[unitID].autoPosition then
-        local parentFrame = self.AnchorManager:GetAnchor(unitID)
+        local parentFrame = namespace.AnchorManager:GetAnchor(unitID)
         if parentFrame then
             self:SetTargetCastbarPosition(activeFrames[unitID], parentFrame)
         end
