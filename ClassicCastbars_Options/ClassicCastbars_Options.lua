@@ -180,7 +180,7 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitType].position[2] = value
                             local bar = ClassicCastbars.activeFrames["nameplate-testmode"]
-                            if bar then
+                            if bar and bar.parent then
                                 bar:SetPoint("CENTER", bar.parent, value, ClassicCastbars.db[unitType].position[3])
                             end
                         end,
@@ -203,7 +203,7 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitType].position[3] = value
                             local bar = ClassicCastbars.activeFrames["nameplate-testmode"]
-                            if bar then
+                            if bar and bar.parent then
                                 bar:SetPoint("CENTER", bar.parent, ClassicCastbars.db[unitType].position[2], value)
                             end
                         end,
