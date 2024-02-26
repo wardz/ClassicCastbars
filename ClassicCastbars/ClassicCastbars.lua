@@ -460,7 +460,7 @@ function ClassicCastbars:PLAYER_LOGIN()
         self.db.player.castFont = _G.STANDARD_TEXT_FONT
     end
 
-    local combatEvents = {
+    local events = {
         "UNIT_SPELLCAST_START",
         "UNIT_SPELLCAST_STOP",
         "UNIT_SPELLCAST_INTERRUPTED",
@@ -476,6 +476,7 @@ function ClassicCastbars:PLAYER_LOGIN()
         "UNIT_SPELLCAST_EMPOWER_STOP",
         "UNIT_SPELLCAST_EMPOWER_UPDATE",
         "COMBAT_LOG_EVENT_UNFILTERED",
+        "PLAYER_ENTERING_WORLD",
         "PLAYER_TARGET_CHANGED",
         "PLAYER_FOCUS_CHANGED",
         "NAME_PLATE_UNIT_ADDED",
@@ -484,17 +485,13 @@ function ClassicCastbars:PLAYER_LOGIN()
         "UNIT_AURA",
     }
 
-    -- Register all cast & combat events we care about
+    -- Register all events we care about
     self:RegisterUnitEvent("UNIT_TARGET", "target", "focus")
-    for _, event in ipairs(combatEvents) do
+    for _, event in ipairs(events) do
         if C_EventUtils.IsEventValid(event) then
             self:RegisterEvent(event)
         end
     end
-
-    self:RegisterEvent("PLAYER_ENTERING_WORLD")
-    self:UnregisterEvent("PLAYER_LOGIN")
-    self.PLAYER_LOGIN = nil
 end
 
 function ClassicCastbars:COMBAT_LOG_EVENT_UNFILTERED()

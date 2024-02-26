@@ -618,14 +618,11 @@ local function GetOptionsTable()
                 order = 7,
                 name = L.RESET_ALL,
                 type = "execute",
-                confirm = function()
-                    return _G.CONFIRM_RESET_SETTINGS
-                end,
+                confirm = function() return _G.CONFIRM_RESET_SETTINGS end,
                 func = function()
-                    -- Reset savedvariables to default
                     ClassicCastbarsCharDB = {}
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
-                    ClassicCastbars.db = ClassicCastbarsDB -- update pointer
+                    ClassicCastbars.db = ClassicCastbarsDB
                     ClassicCastbars:ReleaseActiveFrames()
                 end,
             },
@@ -636,17 +633,15 @@ local function GetOptionsTable()
                 type = "toggle",
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,
-                confirm = true,
-                confirmText = _G.VIDEO_OPTIONS_NEED_CLIENTRESTART,
-                get = function()
-                    return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
-                end,
+                get = function() return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings end,
                 set = function(_, value)
                     if not next(ClassicCastbarsCharDB or {}) then
                         ClassicCastbarsCharDB = CopyTable(ClassicCastbarsDB)
                     end
                     ClassicCastbarsCharDB.usePerCharacterSettings = value
-                    ReloadUI()
+
+                    ClassicCastbars:ReleaseActiveFrames()
+                    ClassicCastbars:PLAYER_LOGIN()
                 end,
             },
         },
