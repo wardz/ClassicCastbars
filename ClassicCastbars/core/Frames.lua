@@ -2,12 +2,6 @@ local _, namespace = ...
 local AnchorManager = namespace.AnchorManager
 local ClassicCastbars = _G.ClassicCastbars
 
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local unpack = _G.unpack
-local min = _G.math.min
-local max = _G.math.max
-local ceil = _G.math.ceil
-
 local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
     ["Interface\\CastingBar\\UI-CastingBar-Border"] = true,
@@ -16,7 +10,7 @@ local nonLSMBorders = {
 }
 
 function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
-    if isRetail then
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         if parentFrame.auraRows == nil then
             parentFrame.auraRows = 0
         end
@@ -77,10 +71,10 @@ function ClassicCastbars:SetCastbarIconAndText(castbar, db)
     if castbar.icon == 136235 then -- unknown texture
         castbar.icon = 136243
     end
+    castbar.Icon:SetTexture(castbar.icon)
     castbar.Text:ClearAllPoints()
     castbar.Text:SetPoint(db.textPoint)
     castbar.Text:SetJustifyH(db.textPoint)
-    castbar.Icon:SetTexture(castbar.icon)
     castbar.Text:SetText(spellName)
 
     -- Move timer position depending on spellname length

@@ -87,4 +87,8 @@ read_globals = {
     "strfind",
     "strlower",
     "Mixin",
+    "min",
+    "max",
+    "ceil",
+    "unpack",
 }
