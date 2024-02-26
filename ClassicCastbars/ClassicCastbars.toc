@@ -13,9 +13,9 @@
 ## X-Wago-ID: vEGPdkG1
 
 Core/ClassicSpellData.lua
-Core/PoolManager.lua
-Core/AnchorManager.lua
 Core/SavedVariables.lua
 Core/LoadOptionsOnDemand.lua
+Core/AnchorManager.lua
 ClassicCastbars.lua
-Core/Frames.lua
+Core/Castbar.xml
+Core/Castbar.lua

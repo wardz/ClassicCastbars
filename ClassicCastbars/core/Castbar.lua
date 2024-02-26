@@ -9,6 +9,28 @@ local nonLSMBorders = {
     [130874] = true,
 }
 
+local function FrameResetterFunc(pool, castbar)
+    if castbar.FadeOutAnim:IsPlaying() then
+        castbar.FadeOutAnim:Stop()
+    end
+
+    castbar:Hide()
+    castbar:SetParent(nil)
+    castbar:ClearAllPoints()
+    castbar.isTesting = false
+    castbar.isActiveCast = false
+    castbar.unitID = nil
+    castbar.parent = nil
+
+    if castbar.tooltip then
+        castbar:EnableMouse(false)
+        castbar.tooltip:Hide()
+    end
+end
+
+namespace.framePool = CreateFramePool("Statusbar", nil, "ClassicCastbarsFrameTemplate", FrameResetterFunc)
+namespace.framePool:SetResetDisallowedIfNew(true)
+
 function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         if parentFrame.auraRows == nil then
@@ -100,13 +122,8 @@ function ClassicCastbars:SetBorderShieldStyle(castbar, db, unitID)
         castbar.BorderShield:SetPoint("TOPLEFT", width-5, height+1) -- texture offsets, just doing "1" and "-1" doesnt work here
         castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.15), -height + 4)
 
-        if not castbar.IconShield then
-            castbar.BorderShield:SetTexCoord(0.16, 0, 0.118, 1, 1, 0, 1, 1) -- cut left side of texture away
-
-            castbar.IconShield = castbar:CreateTexture(nil, "OVERLAY")
-            castbar.IconShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Arena-Shield")
-        end
-
+        castbar.BorderShield:SetTexCoord(0.16, 0, 0.118, 1, 1, 0, 1, 1) -- cut left side of texture away
+        castbar.IconShield:ClearAllPoints()
         castbar.IconShield:SetPoint("LEFT", castbar.Icon, "LEFT", -0.44 * db.iconSize, 0)
         castbar.IconShield:SetSize(db.iconSize * 3, db.iconSize * 3)
 
@@ -166,13 +183,6 @@ function ClassicCastbars:SetCastbarStyle(castbar, db, unitID)
     castbar:SetFrameLevel(db.frameLevel)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
     castbar:SetIgnoreParentAlpha(db.ignoreParentAlpha)
-
-    castbar.Border:SetDrawLayer("ARTWORK", 1)
-    castbar.BorderShield:SetDrawLayer("ARTWORK", 2)
-    castbar.Text:SetDrawLayer("ARTWORK", 3)
-    castbar.Icon:SetDrawLayer("OVERLAY", 1)
-    castbar.Spark:SetDrawLayer("OVERLAY", 2)
-    castbar.Flash:SetDrawLayer("OVERLAY", 3)
 
     if castbar.isChanneled then
         castbar.Spark:SetAlpha(0)
@@ -366,8 +376,8 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
     local parentFrame = AnchorManager:GetAnchor(unitID)
     if not parentFrame then return end
 
-    if castbar.animationGroup:IsPlaying() then
-        castbar.animationGroup:Stop()
+    if castbar.FadeOutAnim:IsPlaying() then
+        castbar.FadeOutAnim:Stop()
     end
 
     -- Note: since frames are recycled and we also allow having different styles
@@ -416,22 +426,22 @@ function ClassicCastbars:HideCastbar(castbar, unitID, skipFadeOut)
 
     if skipFadeOut then
         castbar.isActiveCast = false
-        castbar.animationGroup:Stop()
+        castbar.FadeOutAnim:Stop()
         castbar:Hide()
     else
         self:SetFinishCastStyle(castbar, unitID)
 
-        if not castbar.animationGroup:IsPlaying() then
-            castbar.fade:SetStartDelay(0.1)
+        if not castbar.FadeOutAnim:IsPlaying() then
+            castbar.FadeOutAnim.Alpha:SetStartDelay(0.1)
             if castbar.isActiveCast then
                 if castbar.isInterrupted or castbar.isFailed then
-                    castbar.fade:SetStartDelay(unitID == "player" and 1 or 0.6)
+                    castbar.FadeOutAnim.Alpha:SetStartDelay(unitID == "player" and 1 or 0.6)
                 end
             end
 
             castbar.isActiveCast = false
-            castbar.fade:SetDuration(castbar.isActiveCast and castbar.isInterrupted and 1 or 0.4)
-            castbar.animationGroup:Play()
+            castbar.FadeOutAnim.Alpha:SetDuration(castbar.isActiveCast and castbar.isInterrupted and 1 or 0.4)
+            castbar.FadeOutAnim:Play()
         end
     end
 end

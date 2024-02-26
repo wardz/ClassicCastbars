@@ -1,5 +1,4 @@
 local _, namespace = ...
-local PoolManager = namespace.PoolManager
 local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
 local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
@@ -30,7 +29,7 @@ function ClassicCastbars:GetCastbarFrame(unitID)
         return activeFrames[unitID]
     end
 
-    activeFrames[unitID] = PoolManager:AcquireFrame()
+    activeFrames[unitID] = namespace.framePool:Acquire()
 
     return activeFrames[unitID]
 end
@@ -52,7 +51,7 @@ end
 
 function ClassicCastbars:ReleaseActiveFrames()
     wipe(activeFrames)
-    PoolManager:GetFramePool():ReleaseAll()
+    namespace.framePool:ReleaseAll()
 end
 
 local function ToggleBlizzardSpellbar(spellbar)
@@ -255,7 +254,7 @@ function ClassicCastbars:NAME_PLATE_UNIT_REMOVED(namePlateUnitToken)
     local castbar = activeFrames[namePlateUnitToken]
     if not castbar then return end
 
-    PoolManager:ReleaseFrame(castbar)
+    namespace.framePool:Release(castbar)
     activeFrames[namePlateUnitToken] = nil
 end
 
@@ -271,7 +270,7 @@ function ClassicCastbars:GROUP_ROSTER_UPDATE()
                 self:HideCastbar(castbar, unitID, true)
             else
                 -- party member no longer exists, release castbar completely
-                PoolManager:ReleaseFrame(castbar)
+                namespace.framePool:Release(castbar)
                 activeFrames[unitID] = nil
             end
         end
@@ -531,7 +530,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
 
             -- Check if cast has expired
             if (castbar.isChanneled and castbar.value <= 0) or (not castbar.isChanneled and castbar.value >= castbar.maxValue) then
-                if not castbar.fade:IsPlaying() then
+                if not castbar.FadeOutAnim:IsPlaying() then
                     castbar.isCastComplete = true
                     self:HideCastbar(castbar, unitID)
                 end

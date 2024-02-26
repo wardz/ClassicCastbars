@@ -1,0 +1,50 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/.. \FrameXML\UI.xsd">
+    <StatusBar name="ClassicCastbarsFrameTemplate" drawLayer="BORDER" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Background" setAllPoints="true">
+                    <Color r="0" g="0" b="0" a="0.5"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Border"></Texture>
+                <Frame parentKey="BorderFrameLSM" inherits="BackdropTemplate">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-2" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+                    </Anchors>
+                </Frame>
+                <Texture parentKey="BorderShield" file="Interface\CastingBar\UI-CastingBar-Small-Shield" hidden="true"></Texture>
+                <FontString parentKey="Text" inherits="SystemFont_Shadow_Small"></FontString>
+                <FontString parentKey="Timer" inherits="SystemFont_Shadow_Small" hidden="true"></FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="Icon"></Texture>
+                <Texture parentKey="IconShield" file="Interface\CastingBar\UI-CastingBar-Arena-Shield"></Texture>
+                <Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+                    <Size>
+                        <AbsDimension x="32" y="32"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="Flash" alphaMode="ADD" hidden="true">
+                    <Size>
+                        <AbsDimension x="256" y="64"/>
+                    </Size>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Animations>
+            <AnimationGroup parentKey="FadeOutAnim" setToFinalAlpha="true">
+                <Alpha parentKey="Alpha" fromAlpha="1" toAlpha="0" duration="0.6" startDelay="0.1"/>
+                <Scripts>
+                    <OnFinished>
+                        self:GetParent():Hide()
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+        </Animations>
+    </StatusBar>
+</Ui>
