@@ -165,7 +165,6 @@ function ClassicCastbars:SetCastbarStyle(castbar, db, unitID)
     castbar:SetFrameStrata(db.frameStrata)
     castbar:SetFrameLevel(db.frameLevel)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
-    castbar.currWidth = db.width -- avoids having to use a function call later on in OnUpdate
     castbar:SetIgnoreParentAlpha(db.ignoreParentAlpha)
 
     castbar.Border:SetDrawLayer("ARTWORK", 1)
@@ -385,6 +384,7 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
     elseif unitID == "focus" and self.db.focus.autoPosition then
         self:SetTargetCastbarPosition(castbar, parentFrame)
     else
+        -- TODO: autoPosition player
         castbar:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
     end
 

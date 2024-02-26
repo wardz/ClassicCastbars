@@ -487,9 +487,10 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
 
                     return ClassicCastbars.db[unitType][info[3]]
                 end,
+
                 set = function(info, value)
                     if strfind(info.option.dialogControl or "", "LSM30_") then -- LibSharedMedia override
-                        local type = strlower(info.option.dialogControl:gsub("LSM30_", ""))
+                        local type = strlower(info.option.dialogControl:gsub("LSM30_", "")) -- font, border, statusbar
                         ClassicCastbars.db[unitType][info[3]] = GetLSMTable(type)[value]
                     else
                         ClassicCastbars.db[unitType][info[3]] = value
@@ -585,7 +586,7 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                         name = format("%s %s", L.TEST, localizedUnit),
                         desc = string.match(L.BORDERSHIELD_TOOLTIP, "|cffffff00(.*)|r"),
                         type = "execute",
-                        disabled = function() return not ClassicCastbars.db[unitType].enabled end,
+                        disabled = ModuleIsDisabled,
                         func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitType) end,
                     },
                     spacer = {
@@ -601,7 +602,7 @@ end
 
 local optionsTable
 local function GetOptionsTable()
-    optionsTable = optionsTable or {
+    optionsTable = optionsTable or { -- create table on demand
         type = "group",
         childGroups = "tab",
         name = "ClassicCastbars " .. GetAddOnMetadata("ClassicCastbars", "version"),

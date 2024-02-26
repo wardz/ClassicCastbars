@@ -525,7 +525,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
                 end
             end
 
-            local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
+            local sparkPosition = (castbar.value / castbar.maxValue) * castbar:GetWidth()
             castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             castbar:SetValue(castbar.value)
 

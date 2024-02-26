@@ -74,12 +74,8 @@ function TestMode:PrintErrNoTarget(unitID)
 end
 
 function TestMode:OnOptionChanged(unitID)
-    if unitID == "nameplate" then
-        unitID = "nameplate-testmode"
-    elseif unitID == "arena" then
-        unitID = "arena-testmode"
-    elseif unitID == "party" then
-        unitID = "party-testmode"
+    if unitID == "nameplate" or unitID == "arena" or unitID == "party" then
+        unitID = format("%s-testmode", unitID)
     end
 
     local castbar = activeFrames[unitID]
@@ -90,12 +86,8 @@ function TestMode:OnOptionChanged(unitID)
 end
 
 function TestMode:ToggleCastbarMovable(unitID)
-    if unitID == "nameplate" then
-        unitID = "nameplate-testmode"
-    elseif unitID == "arena" then
-        unitID = "arena-testmode"
-    elseif unitID == "party" then
-        unitID = "party-testmode"
+    if unitID == "nameplate" or unitID == "arena" or unitID == "party" then
+        unitID = format("%s-testmode", unitID)
     end
 
     if unitID == "arena-testmode" and not IsAddOnLoaded("Blizzard_ArenaUI") then
@@ -193,6 +185,4 @@ TestMode:SetScript("OnEvent", function(self)
             self:ReanchorOnTargetSwitch("nameplate-testmode")
         end)
     end
-
-    --self:ReanchorOnTargetSwitch("target")
 end)
