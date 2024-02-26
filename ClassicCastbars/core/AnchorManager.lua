@@ -3,8 +3,8 @@ local _, namespace = ...
 local AnchorManager = {}
 namespace.AnchorManager = AnchorManager
 
- -- Anchors for custom unitframes
- -- Blizzard frame should always be listed last
+-- Anchors for custom unitframes.
+-- Blizzard frame should always be listed last.
 local anchors = {
     target = {
         "SUFUnittarget",
@@ -57,7 +57,6 @@ local anchors = {
         "SUI_focusFrame",
         "gUI4_UnitFocus",
         "oUF_Adirelle_Focus",
-        "Stuf.units.focus",
         "oUF_AftermathhFocus",
         "LUFUnitfocus",
         "oUF_LumenFocus",
@@ -117,7 +116,7 @@ local function GetPartyFrameForUnit(unitID)
             if useBlizzCompact then
                 return GetUnitFrame("party", "party1", true, true)
             else
-                return PartyFrame.MemberFrame1
+                return GetUnitFrame("party", "party1", true, false) or PartyFrame and PartyFrame.MemberFrame1
             end
         else
             if useBlizzCompact and not IsInGroup() then
