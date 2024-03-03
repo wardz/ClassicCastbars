@@ -4,13 +4,17 @@ local activeFrames = ClassicCastbars.activeFrames
 
 local dummySpellData = {
     spellName = GetSpellInfo(118),
-    icon = GetSpellTexture(118),
+    castText = GetSpellInfo(118),
+    iconTexturePath = GetSpellTexture(118),
     spellID = 118,
     maxValue = 10,
     value = 5,
     isChanneled = false,
     isActiveCast = true,
-    castID = nil,
+    castID = -1,
+    isFailed = false,
+    isInterrupted = false,
+    isCastComplete = false,
 }
 
 -- Credits to stako & zork for this
@@ -56,6 +60,7 @@ function TestMode:ToggleArenaContainer(showFlag)
 end
 
 function TestMode:TogglePartyContainer(showFlag)
+    -- TODO: possible to show compactraidframe in classic aswell without taint?
     if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then
         if showFlag then
             ShowUIPanel(EditModeManagerFrame)
@@ -83,7 +88,7 @@ function TestMode:OnOptionChanged(unitID)
     local castbar = activeFrames[unitID]
     if castbar and castbar.isTesting then
         Mixin(castbar, dummySpellData)
-        ClassicCastbars:DisplayCastbar(castbar, unitID)
+        castbar:DisplayCastbar(unitID)
     end
 end
 
@@ -120,6 +125,7 @@ function TestMode:SetCastbarMovable(unitID)
     castbar.unitID = unitID
     castbar.isTesting = true
     castbar.isUninterruptible = IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown())
+    castbar.isDefaultUninterruptible = castbar.isUninterruptible
 
     if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames :(
         castbar:SetMovable(true)
@@ -136,7 +142,7 @@ function TestMode:SetCastbarMovable(unitID)
         castbar:SetScript("OnMouseUp", OnDragStop)
     end
 
-    ClassicCastbars:DisplayCastbar(castbar, unitID)
+    castbar:DisplayCastbar(unitID)
 end
 
 function TestMode:SetCastbarImmovable(unitID)
