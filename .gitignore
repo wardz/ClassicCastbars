@@ -1,5 +1,5 @@
 # Project specifics
-release.sh
+*.sh
 /.release
 /.vscode
 /.idea
