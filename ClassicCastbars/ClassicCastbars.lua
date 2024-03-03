@@ -196,10 +196,13 @@ function ClassicCastbars:UNIT_AURA(unitID)
 end
 
 function ClassicCastbars:UNIT_TARGET(unitID) -- when your target changes or clears his target (for positioning around targetoftarget frame)
-    if activeFrames[unitID] and self.db[unitID] and self.db[unitID].autoPosition then
+    local castbar = activeFrames[unitID]
+    if not castbar or not castbar.isActiveCast then return end
+
+    if self.db[unitID] and self.db[unitID].autoPosition then
         local parentFrame = namespace.AnchorManager:GetAnchor(unitID)
         if parentFrame then
-            activeFrames[unitID]:SetTargetOrFocusCastbarPosition(parentFrame)
+            castbar:SetTargetOrFocusCastbarPosition(parentFrame)
         end
     end
 end
