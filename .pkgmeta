@@ -17,3 +17,8 @@ move-folders:
 ignore:
   - ClassicCastbars_Options/Libs/LibStub/LibStub.toc
   - ClassicCastbars_Options/Libs/LibStub/tests
+  - ClassicCastbars_Options/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0
+  - ClassicCastbars_Options/Libs/LibSharedMedia-3.0/CallbackHandler-1.0
+  - ClassicCastbars_Options/Libs/LibSharedMedia-3.0/LibStub
+  - "ClassicCastbars_Options/Libs/LibSharedMedia-3.0/*.txt"
+  - "ClassicCastbars_Options/Libs/LibSharedMedia-3.0/*.toc"
