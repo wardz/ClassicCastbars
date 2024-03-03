@@ -68,6 +68,8 @@ end
 function TestMode:PrintErrNoTarget(unitID)
     if unitID == "target" or unitID == "focus" then
         print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_GENERIC_NO_TARGET)) -- luacheck: ignore
+    elseif unitID == "party-testmode" then
+        print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)) -- luacheck: ignore
     elseif unitID == "nameplate-testmode" then
         print(format("|cFFFF0000[ClassicCastbars] %s|r", L.NO_NAMEPLATE_VISIBLE)) -- luacheck: ignore
     end

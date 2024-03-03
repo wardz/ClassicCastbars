@@ -119,9 +119,7 @@ local function GetPartyFrameForUnit(unitID)
                 return GetUnitFrame("party", "party1", true, false) or PartyFrame and PartyFrame.MemberFrame1
             end
         else
-            if useBlizzCompact and not IsInGroup() then
-                return print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)) -- luacheck: ignore
-            end
+            if useBlizzCompact and not IsInGroup() then return end
             return GetUnitFrame("party", "party1", true, not useBlizzCompact)
         end
     end
