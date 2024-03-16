@@ -139,6 +139,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     end
 
     if not spellName then return end
+
     castbar.isActiveCast = true -- is currently casting/channeling, data is not stale
     castbar.value = isChanneled and ((endTimeMS / 1000) - GetTime()) or (GetTime() - (startTimeMS / 1000))
     castbar.maxValue = (endTimeMS - startTimeMS) / 1000
@@ -454,7 +455,7 @@ function ClassicCastbars:PLAYER_LOGIN()
             if self.db.party.castBorder == "Interface\\CastingBar\\UI-CastingBar-Border" then
                 self.db.party.castBorder = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
             end
-            self.db.player = CopyTable(namespace.defaultConfig.player)
+            self.db.player = CopyTable(namespace.defaultConfig.player) -- TODO: better solution
             self.db.npcCastTimeCache = nil
             self.db.npcCastUninterruptibleCache = nil
         end

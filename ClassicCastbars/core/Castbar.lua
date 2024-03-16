@@ -275,6 +275,7 @@ function CastbarMixin:ApplyCastbarStyle(parentFrame, db, unitID)
     self:SetFrameStrata(db.frameStrata)
     self:SetFrameLevel(db.frameLevel)
     self:SetIgnoreParentAlpha(db.ignoreParentAlpha)
+    self:EnableMouse(self.isTesting)
     self:SetMinMaxValues(0, self.maxValue)
     self:SetValue(self.value)
     self:SetAlpha(1)
@@ -288,11 +289,12 @@ function CastbarMixin:ApplyCastbarStyle(parentFrame, db, unitID)
     self:SetCastbarShield(db)
     self:SetCastbarFlash(db)
     self:SetCastbarSpark(db)
+    -- TODO: castbar ticks, evoker playercastbar
 
     if db.autoPosition and (unitID == "target" or unitID == "focus") then
         self:SetTargetOrFocusCastbarPosition(parentFrame)
     else
-        -- TODO: autoPosition player
+        -- TODO: autoPosition player?
         self:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
     end
 end
@@ -326,6 +328,7 @@ function CastbarMixin:DisplayCastbar(unitID)
         self.FadeOutAnim:Stop()
     end
 
+    -- TODO: self.unitID = unitID?
     self:ApplyCastbarStyle(parentFrame, db, unitID)
     self:Show()
 end

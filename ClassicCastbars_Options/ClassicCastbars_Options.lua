@@ -67,7 +67,6 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
         name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
         type = "group",
-
         get = function(info)
             return ClassicCastbars.db[unitType][info[3]]
         end,
@@ -482,6 +481,7 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                 get = function(info)
                     if strfind(info.option.dialogControl or "", "LSM30_") then -- LibSharedMedia override
                         local type = strlower(info.option.dialogControl:gsub("LSM30_", "")) -- font, border, statusbar
+
                         return GetLSMNameByTexture(type, ClassicCastbars.db[unitType][info[3]])
                     end
 
@@ -491,6 +491,9 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                 set = function(info, value)
                     if strfind(info.option.dialogControl or "", "LSM30_") then -- LibSharedMedia override
                         local type = strlower(info.option.dialogControl:gsub("LSM30_", "")) -- font, border, statusbar
+
+                        -- We store the path instead of name so ClassicCastbars can still work
+                        -- with LibSharedMedia/ClassicCastbars_Options disabled
                         ClassicCastbars.db[unitType][info[3]] = GetLSMTable(type)[value]
                     else
                         ClassicCastbars.db[unitType][info[3]] = value
