@@ -182,8 +182,10 @@ function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
         end
     end
 
-    castbar.isUninterruptible = immunityFound
-    castbar:RefreshBorderShield(unitID)
+    if castbar.isUninterruptible ~= immunityFound then
+        castbar.isUninterruptible = immunityFound
+        castbar:RefreshBorderShield(unitID)
+    end
 end
 
 function ClassicCastbars:UNIT_AURA(unitID)
