@@ -24,11 +24,12 @@ ClassicCastbars.activeFrames = activeFrames
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
+local strmatch = _G.string.match
 local next = _G.next
-local gsub = _G.string.gsub
+
 
 function ClassicCastbars:GetUnitType(unitID)
-    return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
+    return unitID and strmatch(unitID, "^%a+") -- remove numbers and testmode suffix
 end
 
 function ClassicCastbars:GetCastbarFrame(unitID)
