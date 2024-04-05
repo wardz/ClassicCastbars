@@ -16,6 +16,8 @@ local dummySpellData = {
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
 
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
+
 -- Credits to stako & zork for this
 -- https://www.wowinterface.com/forums/showthread.php?t=41819
 local function CalcScreenGetPoint(frame)

@@ -32,6 +32,8 @@ local castEvents = {
     "UNIT_SPELLCAST_EMPOWER_UPDATE",
 }
 
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
+
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
 local gsub = _G.string.gsub

@@ -18,6 +18,8 @@ local nonLSMBorders = {
     [130874] = true,
 }
 
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
+
 local function GetStatusBarBackgroundTexture(statusbar)
     if statusbar.Background then return statusbar.Background end
 
