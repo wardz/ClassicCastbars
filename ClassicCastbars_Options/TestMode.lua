@@ -165,7 +165,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     castbar.Timer:SetFormattedText("%.1f", castbar.isChanneled and castbar.value or not castbar.isChanneled and castbar.maxValue - castbar.value)
 
     local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, castbar.BorderShield:IsShown() and 3 or 0)
 
     if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
         castbar.isUninterruptible = true

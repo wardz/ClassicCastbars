@@ -541,7 +541,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
             castbar.Timer:SetFormattedText("%.1f", castbar.isChanneled and castbar.value or not castbar.isChanneled and castbar.maxValue - castbar.value)
 
             local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
-            castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
+            castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, castbar.BorderShield:IsShown() and 3 or 0)
 
             -- Check if cast is complete
             if (castbar.isChanneled and castbar.value <= 0) or (not castbar.isChanneled and castbar.value >= castbar.maxValue) then
