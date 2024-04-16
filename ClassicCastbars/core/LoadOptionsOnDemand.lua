@@ -29,7 +29,7 @@ SlashCmdList["CLASSICCASTBARS"] = function()
             end
             isLoaded = loaded
             if isLoaded then
-                C_Timer.After(GetTickTime(), SlashCmdList.CLASSICCASTBARS) -- Run again next frame to actually open the options
+                RunNextFrame(SlashCmdList.CLASSICCASTBARS)
             end
         end
     else

@@ -16,6 +16,6 @@ Core/ClassicSpellData.lua
 Core/SavedVariables.lua
 Core/LoadOptionsOnDemand.lua
 Core/AnchorManager.lua
-Core/Castbar.lua
-Core/Castbar.xml
+Core/CastbarStyle.lua
+Core/CastbarStyle.xml
 ClassicCastbars.lua

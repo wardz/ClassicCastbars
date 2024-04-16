@@ -94,6 +94,7 @@ local function CreateUnitTabGroup(unitType, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitType].enabled = value
                             ClassicCastbars:ReleaseActiveFrames()
+                            ClassicCastbars:ToggleBlizzCastbars()
                         end,
                     },
                     showForFriendly = {
@@ -628,6 +629,7 @@ local function GetOptionsTable()
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
                     ClassicCastbars.db = ClassicCastbarsDB
                     ClassicCastbars:ReleaseActiveFrames()
+                    ClassicCastbars:ToggleBlizzCastbars()
                 end,
             },
 
@@ -645,6 +647,7 @@ local function GetOptionsTable()
                     ClassicCastbarsCharDB.usePerCharacterSettings = value
 
                     ClassicCastbars:ReleaseActiveFrames()
+                    ClassicCastbars:ToggleBlizzCastbars()
                     ClassicCastbars:PLAYER_LOGIN()
                 end,
             },

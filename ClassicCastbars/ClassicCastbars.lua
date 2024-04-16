@@ -1,9 +1,6 @@
 local _, namespace = ...
 local castImmunityBuffs = namespace.castImmunityBuffs
 local channeledSpells = namespace.channeledSpells
-local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
-local uninterruptibleList = namespace.uninterruptibleList
-
 local activeFrames = {}
 
 local framePool = CreateFramePool("Statusbar", nil, "ClassicCastbarsFrameTemplate", namespace.FramePoolResetterFunc)
@@ -20,19 +17,34 @@ ClassicCastbars.AnchorManager = namespace.AnchorManager
 ClassicCastbars.defaultConfig = namespace.defaultConfig
 ClassicCastbars.activeFrames = activeFrames
 
--- Upvalues
+-- Upvalues frequently used
 local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local strmatch = _G.string.match
-local next = _G.next
 
+local unitCastEvents = {
+    "UNIT_SPELLCAST_START",
+    "UNIT_SPELLCAST_STOP",
+    "UNIT_SPELLCAST_INTERRUPTED",
+    "UNIT_SPELLCAST_SUCCEEDED",
+    "UNIT_SPELLCAST_DELAYED",
+    "UNIT_SPELLCAST_FAILED",
+    "UNIT_SPELLCAST_CHANNEL_START",
+    "UNIT_SPELLCAST_CHANNEL_UPDATE",
+    "UNIT_SPELLCAST_CHANNEL_STOP",
+    "UNIT_SPELLCAST_INTERRUPTIBLE",
+    "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+    "UNIT_SPELLCAST_EMPOWER_START",
+    "UNIT_SPELLCAST_EMPOWER_STOP",
+    "UNIT_SPELLCAST_EMPOWER_UPDATE",
+}
 
 function ClassicCastbars:GetUnitType(unitID)
     return unitID and strmatch(unitID, "^%a+") -- remove numbers and testmode suffix
 end
 
-function ClassicCastbars:GetCastbarFrame(unitID)
+function ClassicCastbars:AcquireCastbarFrame(unitID)
     if activeFrames[unitID] then
         return activeFrames[unitID]
     end
@@ -42,7 +54,7 @@ function ClassicCastbars:GetCastbarFrame(unitID)
     return activeFrames[unitID]
 end
 
-function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
+function ClassicCastbars:AcquireCastbarFrameIfEnabled(unitID)
     local unitType = self:GetUnitType(unitID)
     local cfg = self.db[unitType]
     if cfg and cfg.enabled then
@@ -53,7 +65,7 @@ function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
             if UnitIsUnit("player", unitID) then return end -- personal resource display nameplate
         end
 
-        return self:GetCastbarFrame(unitID)
+        return self:AcquireCastbarFrame(unitID)
     end
 end
 
@@ -62,37 +74,52 @@ function ClassicCastbars:ReleaseActiveFrames()
     framePool:ReleaseAll()
 end
 
-local function ToggleBlizzardSpellbar(spellbar)
-    local cfg = ClassicCastbars.db[ClassicCastbars:GetUnitType(spellbar.unit)]
-    if cfg and cfg.enabled then
-        --spellbar.showCastbar = false
-        spellbar.casting = nil
-        spellbar.channeling = nil
-        spellbar.reverseChanneling = nil
-        spellbar:Hide()
-    end
-end
+function ClassicCastbars:ToggleBlizzCastEvents(spellbar, unitID)
+    local cfg = self.db[self:GetUnitType(unitID)]
+    if not cfg then return end
 
-function ClassicCastbars:HookBlizzardCastbars()
-    if not self.isSpellbarsHooked then
-        self.isSpellbarsHooked = true
-
-        for _, spellBar in pairs({ TargetFrameSpellBar, FocusFrameSpellBar, PlayerCastingBarFrame, CastingBarFrame }) do
-            spellBar:HookScript("OnShow", ToggleBlizzardSpellbar)
+    if cfg.enabled then
+        if spellbar.showCastbar and spellbar:IsEventRegistered("UNIT_SPELLCAST_START") then
+            spellbar:Hide()
+            for _, event in ipairs(unitCastEvents) do
+                if C_EventUtils.IsEventValid(event) then -- event valid for current game expansion
+                    self:UnregisterEvent(event)
+                end
+            end
         end
-    end
-
-    -- Arena frames are load on demand, hook if available
-    if not self.isArenaSpellbarsHooked then
-        for i = 1, 5 do
-            local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
-            if frame then
-                frame:HookScript("OnShow", ToggleBlizzardSpellbar)
-                self.isArenaSpellbarsHooked = true
+    else
+        if spellbar.showCastbar and not spellbar:IsEventRegistered("UNIT_SPELLCAST_START") then
+            for _, event in ipairs(unitCastEvents) do
+                if C_EventUtils.IsEventValid(event) then
+                    self:RegisterEvent(event)
+                end
             end
         end
     end
 end
+
+function ClassicCastbars:ToggleBlizzCastbars()
+    for _, spellBar in pairs({ TargetFrameSpellBar, FocusFrameSpellBar, PlayerCastingBarFrame, CastingBarFrame }) do
+        self:ToggleBlizzCastEvents(spellBar, spellBar.unit)
+    end
+
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        local nameplateCastbar = nameplate.UnitFrame.CastBar or nameplate.UnitFrame.castBar -- non-retail vs retail
+        if nameplateCastbar then
+            self:ToggleBlizzCastEvents(nameplateCastbar, nameplate.namePlateUnitToken)
+        end
+    end
+
+    for i = 1, 5 do
+        local spellBar = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
+        if spellBar then
+            self:ToggleBlizzCastEvents(spellBar, "arena"..i)
+        end
+    end
+end
+
+local uninterruptibleList = namespace.uninterruptibleList
+local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
 
 local function GetDefaultUninterruptibleState(castbar, unitID) -- needed pre-wrath only
     local isUninterruptible = uninterruptibleList[castbar.spellID] or uninterruptibleList[castbar.spellName] or false
@@ -142,6 +169,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     if not spellName then return end
 
     castbar.isActiveCast = true -- is currently casting/channeling, data is not stale
+    castbar.unitType = self:GetUnitType(unitID)
     castbar.value = isChanneled and ((endTimeMS / 1000) - GetTime()) or (GetTime() - (startTimeMS / 1000))
     castbar.maxValue = (endTimeMS - startTimeMS) / 1000
     castbar.castID = castID
@@ -186,7 +214,7 @@ function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
 
     if castbar.isUninterruptible ~= immunityFound then
         castbar.isUninterruptible = immunityFound
-        castbar:RefreshBorderShield(unitID)
+        castbar:RefreshBorderShield()
     end
 end
 
@@ -249,8 +277,9 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     local nameplate = GetNamePlateForUnit(namePlateUnitToken)
     local nameplateCastbar = nameplate.UnitFrame.CastBar or nameplate.UnitFrame.castBar -- non-retail vs retail
     if nameplateCastbar then
-        nameplateCastbar.showCastbar = not self.db.nameplate.enabled
-        nameplateCastbar:SetShown(nameplateCastbar.showCastbar)
+        -- This seems to cause random taint sadly
+        -- nameplateCastbar.showCastbar = not self.db.nameplate.enabled
+        self:ToggleBlizzCastEvents(nameplateCastbar, namePlateUnitToken)
     end
 
     local castbar = activeFrames[namePlateUnitToken]
@@ -300,21 +329,23 @@ function ClassicCastbars:GROUP_ROSTER_UPDATE()
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_START(unitID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = self:AcquireCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
     self:BindCurrentCastData(castbar, unitID, false, nil, true)
     self:CheckAuraModifiers(castbar, unitID)
-    castbar:DisplayCastbar(unitID)
+
+    castbar:DisplayCastbar()
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_START(unitID, _, spellID)
-    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    local castbar = self:AcquireCastbarFrameIfEnabled(unitID)
     if not castbar then return end
 
     self:BindCurrentCastData(castbar, unitID, true, spellID, true)
     self:CheckAuraModifiers(castbar, unitID)
-    castbar:DisplayCastbar(unitID)
+
+    castbar:DisplayCastbar()
 end
 ClassicCastbars.UNIT_SPELLCAST_EMPOWER_START = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_START
 
@@ -326,7 +357,7 @@ function ClassicCastbars:UNIT_SPELLCAST_STOP(unitID, castID)
     if not castbar.isInterrupted then
         castbar.isFailed = true
     end
-    castbar:HideCastbar(unitID)
+    castbar:HideCastbar()
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID, castID)
@@ -336,7 +367,7 @@ function ClassicCastbars:UNIT_SPELLCAST_INTERRUPTED(unitID, castID)
 
     castbar.isInterrupted = true
     castbar.isFailed = false
-    castbar:HideCastbar(unitID)
+    castbar:HideCastbar()
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
@@ -346,7 +377,7 @@ function ClassicCastbars:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
 
     castbar.isCastComplete = true
     if not castbar.isChanneled then -- This event is triggered every tick for channeled, let OnUpdate handle stop instead
-        castbar:HideCastbar(unitID)
+        castbar:HideCastbar()
     end
 end
 
@@ -376,7 +407,7 @@ function ClassicCastbars:UNIT_SPELLCAST_FAILED(unitID, castID)
     if not castbar.isInterrupted then
         castbar.isFailed = true
     end
-    castbar:HideCastbar(unitID)
+    castbar:HideCastbar()
 end
 
 function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
@@ -384,7 +415,7 @@ function ClassicCastbars:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     if not castbar or not castbar.isActiveCast then return end
 
     castbar.isCastComplete = true
-    castbar:HideCastbar(unitID)
+    castbar:HideCastbar()
 end
 ClassicCastbars.UNIT_SPELLCAST_EMPOWER_STOP = ClassicCastbars.UNIT_SPELLCAST_CHANNEL_STOP
 
@@ -404,8 +435,22 @@ function ClassicCastbars:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
     castbar:RefreshBorderShield(unitID)
 end
 
+function ClassicCastbars:COMBAT_LOG_EVENT_UNFILTERED()
+    local _, eventType, _, _, _, _, _, dstGUID, _, _, _, _, _, _, _, _, extraSchool = CombatLogGetCurrentEventInfo()
+
+    if eventType == "SPELL_INTERRUPT" then
+        for unitID, castbar in pairs(activeFrames) do
+            if castbar:GetAlpha() > 0 then
+                if UnitGUID(unitID) == dstGUID then
+                    castbar.Text:SetText(string.format(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
+                end
+            end
+        end
+    end
+end
+
 function ClassicCastbars:PLAYER_ENTERING_WORLD(isInitialLogin)
-    self:HookBlizzardCastbars() -- Always run here incase arena frames are finally loaded
+    self:ToggleBlizzCastbars() -- Always run here incase arena frames are finally loaded
 
     if not isInitialLogin then
         self:ReleaseActiveFrames()
@@ -474,82 +519,19 @@ function ClassicCastbars:PLAYER_LOGIN()
         self.db.player.castFont = _G.STANDARD_TEXT_FONT
     end
 
-    local events = {
-        "UNIT_SPELLCAST_START",
-        "UNIT_SPELLCAST_STOP",
-        "UNIT_SPELLCAST_INTERRUPTED",
-        "UNIT_SPELLCAST_SUCCEEDED",
-        "UNIT_SPELLCAST_DELAYED",
-        "UNIT_SPELLCAST_FAILED",
-        "UNIT_SPELLCAST_CHANNEL_START",
-        "UNIT_SPELLCAST_CHANNEL_UPDATE",
-        "UNIT_SPELLCAST_CHANNEL_STOP",
-        "UNIT_SPELLCAST_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_EMPOWER_START",
-        "UNIT_SPELLCAST_EMPOWER_STOP",
-        "UNIT_SPELLCAST_EMPOWER_UPDATE",
-        "COMBAT_LOG_EVENT_UNFILTERED",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_TARGET_CHANGED",
-        "PLAYER_FOCUS_CHANGED",
-        "NAME_PLATE_UNIT_ADDED",
-        "NAME_PLATE_UNIT_REMOVED",
-        "GROUP_ROSTER_UPDATE",
-        "UNIT_AURA",
-    }
-
     -- Register all events we care about
     self:RegisterUnitEvent("UNIT_TARGET", "target", "focus")
-    for _, event in ipairs(events) do
+    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    self:RegisterEvent("PLAYER_TARGET_CHANGED")
+    self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+    self:RegisterEvent("GROUP_ROSTER_UPDATE")
+    self:RegisterEvent("UNIT_AURA")
+
+    for _, event in ipairs(unitCastEvents) do
         if C_EventUtils.IsEventValid(event) then
             self:RegisterEvent(event)
         end
     end
 end
-
-function ClassicCastbars:COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, _, _, _, _, dstGUID, _, _, _, _, _, _, _, _, extraSchool = CombatLogGetCurrentEventInfo()
-
-    if eventType == "SPELL_INTERRUPT" then
-        for unitID, castbar in pairs(activeFrames) do
-            if castbar:GetAlpha() > 0 then
-                if UnitGUID(unitID) == dstGUID then
-                    castbar.Text:SetText(string.format(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
-                end
-            end
-        end
-    end
-end
-
-ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
-    for unitID, castbar in next, activeFrames do
-        if castbar.isActiveCast and castbar.value ~= nil and not castbar.isTesting then
-            if castbar.isChanneled then
-                castbar.value = castbar.value - elapsed
-            else
-                castbar.value = castbar.value + elapsed
-            end
-
-            if castbar.timerTextFormat then
-                if castbar.isChanneled then
-                    castbar.Timer:SetFormattedText(castbar.timerTextFormat, castbar.value, castbar.maxValue)
-                else
-                    castbar.Timer:SetFormattedText(castbar.timerTextFormat, castbar.maxValue - castbar.value, castbar.maxValue)
-                end
-            end
-
-            local sparkPosition = (castbar.value / castbar.maxValue) * castbar:GetWidth()
-            castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
-            castbar:SetValue(castbar.value)
-
-            -- Check if cast has expired
-            if (castbar.isChanneled and castbar.value <= 0) or (not castbar.isChanneled and castbar.value >= castbar.maxValue) then
-                if not castbar.FadeOutAnim:IsPlaying() then
-                    castbar.isCastComplete = true
-                    castbar:HideCastbar(unitID)
-                end
-            end
-        end
-    end
-end)

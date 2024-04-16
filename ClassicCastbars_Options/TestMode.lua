@@ -9,13 +9,18 @@ local dummySpellData = {
     spellID = 118,
     maxValue = 10,
     value = 5,
-    isChanneled = false,
-    isActiveCast = true,
     castID = -1,
+    isTesting = true,
+    isActiveCast = true,
+    isChanneled = false,
     isFailed = false,
     isInterrupted = false,
     isCastComplete = false,
 }
+
+local function PrintError(text)
+    print(format("|cFFFF0000[ClassicCastbars] %s|r", text)) -- luacheck: ignore
+end
 
 -- Credits to stako & zork for this
 -- https://www.wowinterface.com/forums/showthread.php?t=41819
@@ -36,33 +41,59 @@ end
 
 local function OnDragStop(self)
     self:StopMovingOrSizing()
+    if not self.unitType then return end
 
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
-    local unitType = ClassicCastbars:GetUnitType(self.unitID)
     local x, y = CalcScreenGetPoint(self)
-    ClassicCastbars.db[unitType].position = { "CENTER", x, y } -- Has to be center for CalcScreenGetPoint to work
-    ClassicCastbars.db[unitType].autoPosition = false
+    ClassicCastbars.db[self.unitType].position = { "CENTER", x, y } -- Has to be center for CalcScreenGetPoint to work
+    ClassicCastbars.db[self.unitType].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
-    self:SetParent(self.parent)
     self:ClearAllPoints()
+    self:SetParent(self.parent)
     self:SetPoint("CENTER", self.parent, x, y)
 end
 
-function TestMode:ToggleArenaContainer(showFlag)
-    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then
+function TestMode:PrintErrNoTarget(unitType)
+    if unitType == "target" or unitType == "focus" then
+        PrintError(_G.ERR_GENERIC_NO_TARGET)
+    elseif unitType == "party-testmode" then
+        PrintError(_G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)
+    elseif unitType == "nameplate-testmode" then
+        PrintError(L.NO_NAMEPLATE_VISIBLE)
+    end
+end
+
+function TestMode:ToggleArenaContainer(showFlag, castbarParent)
+    if UnitExists("arena1") then return end -- Already shown by blizzard
+    if InCombatLockdown() then return PrintError(_G.ERR_NOT_IN_COMBAT) end
+
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         EditModeManagerFrame.AccountSettings:SetArenaFramesShown(showFlag)
         EditModeManagerFrame.AccountSettings:RefreshArenaFrames()
     elseif ArenaEnemyFrames then
         ArenaEnemyFrames:SetShown(showFlag)
+
+        if castbarParent and not castbarParent:IsProtected() then
+            castbarParent:SetShown(showFlag)
+        end
     end
 end
 
-function TestMode:TogglePartyContainer(showFlag)
-    -- TODO: possible to show compactraidframe in classic aswell without taint?
-    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then
-        if showFlag then
+function TestMode:TogglePartyContainer(showFlag, castbarParent)
+    if UnitExists("party1") then return end -- Already shown by blizzard
+    if InCombatLockdown() then return PrintError(_G.ERR_NOT_IN_COMBAT) end
+
+    -- Show normal party frames, wont work with raid frames
+    if castbarParent and not castbarParent:IsProtected() then
+        castbarParent:SetAlpha(1)
+        castbarParent:SetShown(showFlag)
+    end
+
+    -- TODO: show compactraidframe directly
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        if showFlag and not UnitExists("party1") then
             ShowUIPanel(EditModeManagerFrame)
         else
             HideUIPanel(EditModeManagerFrame)
@@ -70,64 +101,52 @@ function TestMode:TogglePartyContainer(showFlag)
     end
 end
 
-function TestMode:PrintErrNoTarget(unitID)
-    if unitID == "target" or unitID == "focus" then
-        print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_GENERIC_NO_TARGET)) -- luacheck: ignore
-    elseif unitID == "party-testmode" then
-        print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_QUEST_PUSH_NOT_IN_PARTY_S)) -- luacheck: ignore
-    elseif unitID == "nameplate-testmode" then
-        print(format("|cFFFF0000[ClassicCastbars] %s|r", L.NO_NAMEPLATE_VISIBLE)) -- luacheck: ignore
-    end
-end
-
-function TestMode:OnOptionChanged(unitID)
-    if unitID == "nameplate" or unitID == "arena" or unitID == "party" then
-        unitID = format("%s-testmode", unitID)
+function TestMode:OnOptionChanged(unitType)
+    if unitType == "nameplate" or unitType == "arena" or unitType == "party" then
+        unitType = format("%s-testmode", unitType)
     end
 
-    local castbar = activeFrames[unitID]
+    local castbar = activeFrames[unitType]
     if castbar and castbar.isTesting then
         Mixin(castbar, dummySpellData)
-        castbar:DisplayCastbar(unitID)
+        castbar.unitType = unitType
+        castbar:DisplayCastbar() -- Refresh full view
     end
 end
 
-function TestMode:ToggleCastbarMovable(unitID)
-    if unitID == "nameplate" or unitID == "arena" or unitID == "party" then
-        unitID = format("%s-testmode", unitID)
+function TestMode:ToggleCastbarMovable(unitType)
+    if unitType == "nameplate" or unitType == "arena" or unitType == "party" then
+        unitType = format("%s-testmode", unitType)
     end
 
-    if unitID == "arena-testmode" and not IsAddOnLoaded("Blizzard_ArenaUI") then
+    if unitType == "arena-testmode" and not IsAddOnLoaded("Blizzard_ArenaUI") then
         LoadAddOn("Blizzard_ArenaUI")
     end
 
-    if activeFrames[unitID] and activeFrames[unitID].isTesting then
-        self:SetCastbarImmovable(unitID)
+    -- Display a movable testbar for the unitType's unitframe
+    if activeFrames[unitType] and activeFrames[unitType].isTesting then
+        self:SetCastbarImmovable(unitType)
     else
-        self:SetCastbarMovable(unitID)
+        self:SetCastbarMovable(unitType)
     end
 end
 
-function TestMode:SetCastbarMovable(unitID)
-    local parentFrame = ClassicCastbars.AnchorManager:GetAnchor(unitID)
-    if not parentFrame then return self:PrintErrNoTarget(unitID) end
+function TestMode:SetCastbarMovable(unitType)
+    local parentFrame = ClassicCastbars.AnchorManager:GetAnchor(unitType)
+    if not parentFrame then return self:PrintErrNoTarget(unitType) end
 
-    if unitID == "party-testmode" or unitID == "arena-testmode" then
-        if unitID == "arena-testmode" then TestMode:ToggleArenaContainer(true) end
-        if unitID == "party-testmode" then TestMode:TogglePartyContainer(true) end
-        parentFrame:SetAlpha(1)
-        parentFrame:Show()
-    end
+    if unitType == "arena-testmode" then TestMode:ToggleArenaContainer(true, parentFrame) end
+    if unitType == "party-testmode" then TestMode:TogglePartyContainer(true, parentFrame) end
 
-    local castbar = ClassicCastbars:GetCastbarFrame(unitID)
+    local castbar = ClassicCastbars:AcquireCastbarFrame(unitType)
     Mixin(castbar, dummySpellData)
     castbar.parent = parentFrame
-    castbar.unitID = unitID
+    castbar.unitType = unitType
     castbar.isTesting = true
     castbar.isUninterruptible = IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown())
     castbar.isDefaultUninterruptible = castbar.isUninterruptible
 
-    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames :(
+    if unitType ~= "nameplate-testmode" then -- drag restricted for nameplates :(
         castbar:SetMovable(true)
         castbar:SetClampedToScreen(true)
         castbar:EnableMouse(true)
@@ -137,37 +156,26 @@ function TestMode:SetCastbarMovable(unitID)
         castbar.tooltip:SetText(L.TEST_MODE_DRAG)
         castbar.tooltip:Show()
 
-        -- Note: we use OnMouseX instead of OnDragX as it's more precise when dragging small distances
         castbar:SetScript("OnMouseDown", castbar.StartMoving)
         castbar:SetScript("OnMouseUp", OnDragStop)
     end
 
-    castbar:DisplayCastbar(unitID)
+    castbar:DisplayCastbar()
 end
 
-function TestMode:SetCastbarImmovable(unitID)
-    local castbar = ClassicCastbars.activeFrames[unitID]
+function TestMode:SetCastbarImmovable(unitType)
+    local castbar = activeFrames[unitType]
     if not castbar then return end
 
-    if unitID == "party-testmode" then
-        TestMode:TogglePartyContainer(false)
-        if castbar.parent and not UnitExists("party1") then
-            castbar.parent:Hide()
-        end
-    elseif unitID == "arena-testmode" then
-        TestMode:ToggleArenaContainer(false)
-        if castbar.parent and not UnitExists("arena1") then
-            castbar.parent:Hide()
-        end
-    end
+    if unitType == "arena-testmode" then TestMode:ToggleArenaContainer(false, castbar.parent) end
+    if unitType == "party-testmode" then TestMode:TogglePartyContainer(false, castbar.parent) end
 
     if castbar.tooltip then
         castbar.tooltip:Hide()
     end
 
-    castbar.isActiveCast = false
-    castbar.unitID = nil
     castbar.parent = nil
+    castbar.isActiveCast = false
     castbar.isTesting = false
     castbar:EnableMouse(false)
     castbar:Hide()
@@ -177,7 +185,7 @@ function TestMode:ReanchorOnTargetSwitch(unitID)
     if not activeFrames[unitID] or not activeFrames[unitID].isTesting then return end
     if not ClassicCastbars.db[ClassicCastbars:GetUnitType(unitID)].enabled then return end
 
-    if ClassicCastbars.AnchorManager:GetAnchor(unitID) then
+    if UnitExists("target") and ClassicCastbars.AnchorManager:GetAnchor(unitID) then
         TestMode:SetCastbarMovable(unitID)
     else
         TestMode:SetCastbarImmovable(unitID)

@@ -3,8 +3,8 @@ local _, namespace = ...
 local AnchorManager = {}
 namespace.AnchorManager = AnchorManager
 
--- Anchors for custom unitframes.
--- Blizzard frame should always be listed last.
+-- Anchor list for unitframes.
+-- Blizzard frame should always be last index.
 local anchors = {
     target = {
         "SUFUnittarget",
@@ -70,31 +70,26 @@ local anchors = {
     },
 }
 
+-- Upvalues frequently used
 local _G = _G
 local format = _G.string.format
-local strmatch = _G.string.match
-local strfind = _G.string.find
+local match = _G.string.match
 local gsub = _G.string.gsub
 local GetNamePlateForUnit = _G.C_NamePlate.GetNamePlateForUnit
 
-local function GetUnitFrame(unitType, unitID, hasNumberIndex, skipVisibleCheck)
+local function GetUnitFrame(unitType, skipVisibleCheck)
     local anchorNames = anchors[unitType]
     if not anchorNames then return end
 
-    for i = 1, #anchorNames do
-        local name = anchorNames[i]
-        if hasNumberIndex then
-            name = format(name, strmatch(unitID, "%d+")) -- add unit index to unitframe name
-        end
+    local unitIndex = match(unitType, "%d+")
 
-        local unitFrame = _G[name]
+    for i = 1, #anchorNames do
+        local frameName = unitIndex and format(anchorNames[i], unitIndex) or anchorNames[i]
+        local unitFrame = _G[frameName]
+
         if unitFrame then
-            if not skipVisibleCheck then
-                if unitFrame:IsVisible() then -- prioritize visible frame to get the correct active one
-                    return unitFrame, name
-                end
-            else
-                return unitFrame, name
+            if skipVisibleCheck or unitFrame:IsVisible() then
+                return unitFrame, frameName
             end
         end
     end
@@ -103,8 +98,8 @@ end
 local function GetPartyFrameForUnit(unitID)
     if GetNumGroupMembers() > 5 then return end -- Dont show party castbars in raid for now
 
-    local guid = UnitGUID(unitID == "party-testmode" and "player" or unitID)
-    if not guid then return end
+    local guid = UnitGUID(unitID)
+    if unitID ~= "party-testmode" and not guid then return end
 
     local useBlizzCompact = GetCVarBool("useCompactPartyFrames")
     if EditModeManagerFrame and EditModeManagerFrame.UseRaidStylePartyFrames then
@@ -114,28 +109,28 @@ local function GetPartyFrameForUnit(unitID)
     if unitID == "party-testmode" then
         if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
             if useBlizzCompact then
-                return GetUnitFrame("party", "party1", true, true)
+                return GetUnitFrame("party1", true)
             else
-                return GetUnitFrame("party", "party1", true, false) or PartyFrame and PartyFrame.MemberFrame1
+                return GetUnitFrame("party1", false) or PartyFrame and PartyFrame.MemberFrame1
             end
         else
-            if useBlizzCompact and not IsInGroup() then return end
-            return GetUnitFrame("party", "party1", true, not useBlizzCompact)
+            if useBlizzCompact and not IsInGroup() then return end -- TODO: fix me
+            return GetUnitFrame("party1", not useBlizzCompact)
         end
     end
 
     -- Compact/custom frames are recycled so frame10 might be party2 and so on, so we need
     -- to loop through them all and check if the unit matches.
     for i = 1, 40 do
-        local frame, frameName = GetUnitFrame("party", "party"..i, true)
+        local frame, frameName = GetUnitFrame("party"..i)
 
-        if frame and ((frame.unit and UnitGUID(frame.unit) == guid) or frame.lastGUID == guid) and frame:IsVisible() then
-            if useBlizzCompact then
-                if strfind(frameName, "PartyMemberFrame") == nil then
+        if frame then
+            local unit = frame.realUnit or frame.displayedUnit or frame.unit or frame.unitID -- depends on addons
+
+            if (unit and UnitGUID(unit) == guid) or (frame.unitGUID == guid or frame.lastGUID == guid) then
+                if useBlizzCompact and frameName ~= "PartyMemberFrame"..i or not useBlizzCompact then
                     return frame
                 end
-            else
-                return frame
             end
         end
     end
@@ -159,27 +154,20 @@ function AnchorManager:GetAnchor(unitID)
         return anchorCache[unitID]
     end
 
-    local unitType, count = gsub(unitID, "%d", "") -- "party1" to "party" etc
+    -- Static frames
+    if unitID == "target" or unitID == "focus" then
+        anchorCache[unitID] = GetUnitFrame(unitID)
 
-    local anchorFrame
-    if unitType == "nameplate-testmode" then
-        anchorFrame = GetNamePlateForUnit("target")
-    elseif unitType == "nameplate" then
-        anchorFrame = GetNamePlateForUnit(unitID)
+        return anchorCache[unitID]
+    end
+
+    local unitType, matchCount = gsub(unitID, "%d", "") -- remove unit index if found
+
+    if unitType == "nameplate" or unitType == "nameplate-testmode" then
+        return GetNamePlateForUnit(matchCount and unitID or "target") -- 'target' for testmode
     elseif unitType == "party" or unitType == "party-testmode" then
-        anchorFrame = GetPartyFrameForUnit(unitID)
-    elseif unitType == "arena-testmode" then
-        anchorFrame = GetUnitFrame("arena", "arena1", true, true)
-    else -- target/focus/arena
-        anchorFrame = GetUnitFrame(unitType, unitID, count > 0)
+        return GetPartyFrameForUnit(matchCount and unitID or "party1")
+    elseif unitType == "arena" or unitType == "arena-testmode" then
+        return GetUnitFrame(matchCount and unitID or "arena1", not matchCount)
     end
-
-    if not anchorFrame then return end
-
-    -- Cache static unitframes permanently
-    if unitType == "target" or unitType == "focus" then
-        anchorCache[unitID] = anchorFrame
-    end
-
-    return anchorFrame
 end

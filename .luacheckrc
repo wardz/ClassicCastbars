@@ -52,7 +52,7 @@ read_globals = {
     "GetLocale",
     "GetSpellInfo",
     "GetSpellTexture",
-    "GetTickTime",
+    "RunNextFrame",
     "GetTime",
     "hooksecurefunc",
     "IsAddOnLoaded",
@@ -89,4 +89,5 @@ read_globals = {
     "max",
     "ceil",
     "unpack",
+    "InCombatLockdown",
 }

@@ -21,18 +21,21 @@ namespace.FramePoolResetterFunc = function(pool, castbar)
         castbar.FadeOutAnim:Stop()
     end
 
+    if castbar.isTesting then
+        castbar:StopMovingOrSizing()
+        castbar:EnableMouse(false)
+        if castbar.tooltip then
+            castbar.tooltip:Hide()
+        end
+    end
+
     castbar:Hide()
     castbar:SetParent(nil)
     castbar:ClearAllPoints()
     castbar.isTesting = false
     castbar.isActiveCast = false
-    castbar.unitID = nil
+    castbar.unitType = nil
     castbar.parent = nil
-
-    if castbar.tooltip then
-        castbar:EnableMouse(false)
-        castbar.tooltip:Hide()
-    end
 end
 
 function CastbarMixin:SetTargetOrFocusCastbarPosition(parentFrame)
@@ -130,7 +133,7 @@ function CastbarMixin:SetCastbarText(db)
     self.Text:SetPoint(db.textPoint, db.textPositionX, yOff)
 end
 
-function CastbarMixin:SetCastbarTimer(db)
+function CastbarMixin:SetCastbarTimer(shouldUpdate)
     self.Timer:SetShown(db.showTimer)
 
     if db.showTimer then
@@ -165,13 +168,17 @@ function CastbarMixin:SetCastbarBorder(db)
         self.Border:SetTexture(db.castBorder)
         self.Border:SetVertexColor(unpack(db.borderColor))
         self.Border:SetAlpha(db.borderColor[4])
-    else -- LibSharedMedia
-        self.BorderFrameLSM:SetBackdrop({
-            edgeFile = db.castBorder,
-            tile = true, tileSize = db.edgeSizeLSM,
-            edgeSize = db.edgeSizeLSM,
-            insets = { left = 4, right = 4, top = 4, bottom = 4 }
-        })
+    else -- LibSharedMedia borders
+        local backdrop = self.BorderFrameLSM.backdropInfo
+        if not backdrop or backdrop.edgeFile ~= db.castBorder or backdrop.edgeSize ~= db.edgeSizeLSM then
+            self.BorderFrameLSM:SetBackdrop({
+                edgeFile = db.castBorder,
+                tile = true, tileSize = db.edgeSizeLSM,
+                edgeSize = db.edgeSizeLSM,
+                insets = { left = 4, right = 4, top = 4, bottom = 4 }
+            })
+        end
+
         self.BorderFrameLSM:SetAlpha(db.borderColor[4])
         self.BorderFrameLSM:SetFrameLevel(textureFrameLevels[db.castBorder] or self:GetFrameLevel() + 1)
         self.BorderFrameLSM:SetBackdropBorderColor(unpack(db.borderColor))
@@ -265,10 +272,8 @@ function CastbarMixin:SetCastbarStatusColors(db, unitID)
     end
 end
 
--- Note: since frames are recycled and we also allow having different styles
--- between castbars for all the unitframes, we need to always update the style here
--- incase it was modified to something else on last recycle.
-function CastbarMixin:ApplyCastbarStyle(parentFrame, db, unitID)
+-- TODO: self.lastConfigType
+function CastbarMixin:ApplyCastbarStyle(config, unitID)
     self.Background:SetColorTexture(unpack(db.statusBackgroundColor))
     self:SetSize(db.width, db.height)
     self:SetStatusBarTexture(db.castStatusBar)
@@ -278,9 +283,6 @@ function CastbarMixin:ApplyCastbarStyle(parentFrame, db, unitID)
     self:EnableMouse(self.isTesting)
     self:SetMinMaxValues(0, self.maxValue)
     self:SetValue(self.value)
-    self:SetAlpha(1)
-    self:ClearAllPoints()
-    self:SetParent(parentFrame)
     self:SetCastbarStatusColors(db, unitID)
     self:SetCastbarIcon(db)
     self:SetCastbarText(db)
@@ -290,13 +292,6 @@ function CastbarMixin:ApplyCastbarStyle(parentFrame, db, unitID)
     self:SetCastbarFlash(db)
     self:SetCastbarSpark(db)
     -- TODO: castbar ticks, evoker playercastbar
-
-    if db.autoPosition and (unitID == "target" or unitID == "focus") then
-        self:SetTargetOrFocusCastbarPosition(parentFrame)
-    else
-        -- TODO: autoPosition player?
-        self:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
-    end
 end
 
 function CastbarMixin:UpdateCastbarStyleFinish(db, unitID)
@@ -308,15 +303,17 @@ function CastbarMixin:UpdateCastbarStyleFinish(db, unitID)
     self.Spark:Hide()
 end
 
-function CastbarMixin:DisplayCastbar(unitID)
+function CastbarMixin:DisplayCastbar()
     if not self.isActiveCast or self.value == nil then return end
     if not self.isTesting and self.isChanneled and self.value <= 0 then return end
     if not self.isTesting and not self.isChanneled and self.value >= self.maxValue then return end
 
-    local db = ClassicCastbars.db[ClassicCastbars:GetUnitType(unitID)]
+    local unitType = self:GetUnitType(unit) -- 'unit' arg can be both unitID and unitType
+
+    local db = ClassicCastbars.db[unitType]
     if not db then return end
 
-    local parentFrame = AnchorManager:GetAnchor(unitID)
+    local parentFrame = AnchorManager:GetAnchor(unitType)
     if not parentFrame then return end
 
     if self.isTesting then
@@ -328,8 +325,19 @@ function CastbarMixin:DisplayCastbar(unitID)
         self.FadeOutAnim:Stop()
     end
 
-    -- TODO: self.unitID = unitID?
-    self:ApplyCastbarStyle(parentFrame, db, unitID)
+    self.unitType = unitType
+    self:ApplyCastbarStyle(db)
+    self:ClearAllPoints()
+    self:SetParent(parentFrame)
+
+    if db.autoPosition and (unitType == "target" or unitType == "focus") then
+        self:SetTargetOrFocusCastbarPosition(parentFrame)
+    else
+        -- TODO: autoPosition player?
+        self:SetPoint(db.position[1], parentFrame, db.position[2], db.position[3])
+    end
+
+    self:SetAlpha(1)
     self:Show()
 end
 
@@ -341,7 +349,7 @@ function CastbarMixin:HideCastbarNoFade()
     self:Hide()
 end
 
-function CastbarMixin:HideCastbar(unitID)
+function CastbarMixin:HideCastbar()
     if self.isTesting then return end
     if self.FadeOutAnim:IsPlaying() then return end
 
@@ -362,4 +370,34 @@ function CastbarMixin:HideCastbar(unitID)
     self.isActiveCast = false
     self.FadeOutAnim.Alpha:SetDuration(self.isActiveCast and self.isInterrupted and 1 or 0.4)
     self.FadeOutAnim:Play()
+end
+
+function CastbarMixin:OnUpdate(elapsed)
+    if not self.isActiveCast or not self.value or self.isTesting then return end
+
+    if self.isChanneled then
+        self.value = self.value - elapsed
+    else
+        self.value = self.value + elapsed
+    end
+
+    -- Check if cast has expired
+    if (self.isChanneled and self.value <= 0) or (not self.isChanneled and self.value >= self.maxValue) then
+        if not self.FadeOutAnim:IsPlaying() then
+            self.isCastComplete = true
+            self:HideCastbar()
+        end
+    else
+        if self.timerTextFormat then
+            if self.isChanneled then
+                self.Timer:SetFormattedText(self.timerTextFormat, self.value, self.maxValue)
+            else
+                self.Timer:SetFormattedText(self.timerTextFormat, self.maxValue - self.value, self.maxValue)
+            end
+        end
+
+        local sparkPosition = (self.value / self.maxValue) * self:GetWidth()
+        self.Spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
+        self:SetValue(self.value)
+    end
 end
