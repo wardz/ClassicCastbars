@@ -8,8 +8,8 @@ SLASH_CLASSICCASTBARS6 = "/classicastbars"
 local isLoaded = false
 
 GameMenuFrame:HookScript("OnShow", function()
-    if not isLoaded and not IsAddOnLoaded("ClassicCastbars_Options") then
-        local loaded, reason = LoadAddOn("ClassicCastbars_Options")
+    if not isLoaded and not C_AddOns.IsAddOnLoaded("ClassicCastbars_Options") then
+        local loaded, reason = C_AddOns.LoadAddOn("ClassicCastbars_Options")
         if not loaded and reason == "DISABLED" then
             isLoaded = true -- disabled, dont attempt to load it anymore
             return
@@ -20,9 +20,9 @@ GameMenuFrame:HookScript("OnShow", function()
 end)
 
 SlashCmdList["CLASSICCASTBARS"] = function()
-    if not IsAddOnLoaded("ClassicCastbars_Options") then
+    if not C_AddOns.IsAddOnLoaded("ClassicCastbars_Options") then
         if not isLoaded then
-            local loaded, reason = LoadAddOn("ClassicCastbars_Options")
+            local loaded, reason = C_AddOns.LoadAddOn("ClassicCastbars_Options")
             if not loaded and reason == "DISABLED" then
                 isLoaded = true -- disabled, dont attempt to load it anymore
                 return print(string.format(_G.ADDON_LOAD_FAILED, "ClassicCastbars_Options", _G["ADDON_" .. reason] or _G.ADDON_UNKNOWN_ERROR)) -- luacheck: ignore

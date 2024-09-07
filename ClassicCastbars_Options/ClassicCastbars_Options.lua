@@ -622,6 +622,8 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
     }
 end
 
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata
+
 local function GetOptionsTable()
     return { -- only create table on demand
         type = "group",

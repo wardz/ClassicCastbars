@@ -84,4 +84,6 @@ read_globals = {
     "UnitChannelInfo",
     "UnitIsFriend",
     "strsplit",
+    "C_AddOns",
+    "C_Spell",
 }

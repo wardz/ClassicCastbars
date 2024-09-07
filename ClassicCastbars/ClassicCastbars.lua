@@ -140,7 +140,13 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
 
         -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
         if channelSpellID and not spellName then
-            spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+            if C_Spell.GetSpellInfo then
+                local info = C_Spell.GetSpellInfo(channelSpellID)
+                spellName = info and info.name
+                iconTexturePath = info and info.iconID
+            else
+                spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+            end
             local channelCastTime = spellName and channeledSpells[spellName]
             if not channelCastTime then return end
 

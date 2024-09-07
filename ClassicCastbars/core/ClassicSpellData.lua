@@ -5,6 +5,8 @@ local CLIENT_IS_CLASSIC_ERA = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 if not CLIENT_IS_TBC and not CLIENT_IS_CLASSIC_ERA then return end
 
+local GetSpellInfo = C_Spell and C_Spell.GetSpellName or _G.GetSpellInfo
+
 local physicalClasses = {
     ["WARRIOR"] = true,
     ["ROGUE"] = true,

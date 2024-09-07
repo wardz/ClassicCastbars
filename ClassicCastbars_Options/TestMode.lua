@@ -2,8 +2,11 @@ local L = LibStub("AceLocale-3.0"):GetLocale("ClassicCastbars")
 local TestMode = CreateFrame("Frame", "ClassicCastbars_TestMode")
 TestMode.isTesting = {}
 
+local GetSpellName = C_Spell and C_Spell.GetSpellName or _G.GetSpellInfo
+local GetSpellTexture = C_Spell and C_Spell.GetSpellTexture or _G.GetSpellTexture
+
 local dummySpellData = {
-    spellName = GetSpellInfo(118),
+    spellName = GetSpellName(118),
     icon = GetSpellTexture(118),
     spellID = 118,
     maxValue = 10,
