@@ -37,6 +37,7 @@ local castEvents = {
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
 local gsub = _G.string.gsub
+local strfind = _G.string.find
 
 function ClassicCastbars:GetUnitType(unitID)
     return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
@@ -260,10 +261,22 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     local plate = GetNamePlateForUnit(namePlateUnitToken)
     local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
     if plateCastbar then
-        plateCastbar.showCastbar = not self.db.nameplate.enabled
-        if self.db.nameplate.enabled then
-            -- Hide blizzard's castbar
-            plateCastbar:Hide()
+        -- This causes taint sadly;
+        -- plateCastbar.showCastbar = not self.db.nameplate.enabled
+
+        -- Hide Blizz castbar
+        if not plateCastbar.ClassicCastbarsHooked then
+            -- Prob an easier way to do this, but this'll have to do for now
+            hooksecurefunc(plateCastbar, "SetShown", function(frame, show)
+                if frame:IsProtected() or frame:IsForbidden() then return end
+                if not frame.unit or not strfind(frame.unit, "nameplate") then return end
+
+                if show and ClassicCastbars.db.nameplate.enabled then
+                    -- Force hide
+                    frame:Hide()
+                end
+            end)
+            plateCastbar.ClassicCastbarsHooked = true
         end
     end
 
