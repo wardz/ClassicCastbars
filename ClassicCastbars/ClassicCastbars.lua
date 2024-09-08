@@ -141,7 +141,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
 
         -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
         if channelSpellID and not spellName then
-            if C_Spell.GetSpellInfo then
+            if C_Spell and C_Spell.GetSpellInfo then
                 local info = C_Spell.GetSpellInfo(channelSpellID)
                 spellName = info and info.name
                 iconTexturePath = info and info.iconID
@@ -254,6 +254,16 @@ function ClassicCastbars:PLAYER_FOCUS_CHANGED()
     end
 end
 
+local function BlizzNameplateCastbar_OnShow(frame)
+    if frame:IsProtected() or frame:IsForbidden() then return end
+    if not frame.unit or not strfind(frame.unit, "nameplate") then return end
+
+    if ClassicCastbars.db.nameplate.enabled then
+        -- Force hide
+        frame:Hide()
+    end
+end
+
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
@@ -266,16 +276,7 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
 
         -- Hide Blizz castbar
         if not plateCastbar.ClassicCastbarsHooked then
-            -- Prob an easier way to do this, but this'll have to do for now
-            hooksecurefunc(plateCastbar, "SetShown", function(frame, show)
-                if frame:IsProtected() or frame:IsForbidden() then return end
-                if not frame.unit or not strfind(frame.unit, "nameplate") then return end
-
-                if show and ClassicCastbars.db.nameplate.enabled then
-                    -- Force hide
-                    frame:Hide()
-                end
-            end)
+            plateCastbar:HookScript("OnShow", BlizzNameplateCastbar_OnShow)
             plateCastbar.ClassicCastbarsHooked = true
         end
     end
