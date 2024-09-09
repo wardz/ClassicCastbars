@@ -276,8 +276,12 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
 
         -- Hide Blizz castbar
         if not plateCastbar.ClassicCastbarsHooked then
-            plateCastbar:HookScript("OnShow", BlizzNameplateCastbar_OnShow)
             plateCastbar.ClassicCastbarsHooked = true
+            plateCastbar:HookScript("OnShow", BlizzNameplateCastbar_OnShow)
+        end
+        if ClassicCastbars.db.nameplate.enabled then
+            -- hide immediately incase its already shown
+            plateCastbar:Hide()
         end
     end
 
