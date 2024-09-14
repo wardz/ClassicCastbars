@@ -128,8 +128,16 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID ~= "nameplate",
                     },
-                    autoPosition = {
+                    showForPets = {
                         order = 4,
+                        width = "full",
+                        name = L.SHOW_FOR_PETS,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID ~= "nameplate",
+                    },
+                    autoPosition = {
+                        order = 5,
                         width = "full",
                         name = L.AUTO_POS_BAR,
                         desc = unitID ~= "player" and L.AUTO_POS_BAR_TOOLTIP or "",
@@ -138,7 +146,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                     },
                     showTimer = {
-                        order = 5,
+                        order = 6,
                         width = "full",
                         name = L.SHOW_TIMER,
                         desc = L.SHOW_TIMER_TOOLTIP,
@@ -146,7 +154,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                     },
                     showTotalTimer = {
-                        order = 5,
+                        order = 7,
                         width = "full",
                         name = L.SHOW_TOTAL_TIMER,
                         desc = L.SHOW_TOTAL_TIMER_TOOLTIP,
@@ -155,14 +163,14 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                     },
                     showSpark = {
-                        order = 6,
+                        order = 8,
                         width = "full",
                         name = L.SHOW_SPARK,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
                     showBorderShield = {
-                        order = 7,
+                        order = 9,
                         width = "full",
                         name = L.BORDERSHIELD,
                         desc = L.BORDERSHIELD_TOOLTIP,
@@ -171,7 +179,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "player",
                     },
                     ignoreParentAlpha = {
-                        order = 8,
+                        order = 10,
                         width = "full",
                         name = L.IGNORE_PARENT_ALPHA,
                         desc = L.IGNORE_PARENT_ALPHA_TOOLTIP,
@@ -179,9 +187,18 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
+                    ignoreParentScale = {
+                        order = 11,
+                        width = "full",
+                        name = L.IGNORE_PARENT_SCALE,
+                        desc = L.IGNORE_PARENT_SCALE_TOOLTIP,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                        hidden = unitID == "player",
+                    },
                     posX = {
                         -- Position slider X for nameplate castbars only
-                        order = 10,
+                        order = 12,
                         name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         width = 2,
@@ -201,7 +218,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posY = {
                         -- Position slider Y for nameplate castbars only
-                        order = 11,
+                        order = 13,
                         name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         width = 2,

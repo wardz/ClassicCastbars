@@ -190,6 +190,7 @@ function ClassicCastbars:SetCastbarStyle(castbar, db, unitID)
     castbar.Text:SetWidth(db.width - 10) -- ensures text gets truncated
     castbar.currWidth = db.width -- avoids having to use a function call later on in OnUpdate
     castbar:SetIgnoreParentAlpha(db.ignoreParentAlpha)
+    castbar:SetIgnoreParentScale(db.ignoreParentScale)
 
     castbar.Border:SetDrawLayer("ARTWORK", 1)
     castbar.BorderShield:SetDrawLayer("ARTWORK", 2)

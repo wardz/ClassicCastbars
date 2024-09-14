@@ -83,6 +83,7 @@ read_globals = {
     "UnitCastingInfo",
     "UnitChannelInfo",
     "UnitIsFriend",
+    "UnitIsOtherPlayersPet",
     "strsplit",
     "C_AddOns",
     "C_Spell",

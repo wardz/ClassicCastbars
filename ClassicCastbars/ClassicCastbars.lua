@@ -64,6 +64,7 @@ function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
             if not self.db.nameplate.showForFriendly and isFriendly then return end
             if not self.db.nameplate.showForEnemy and not isFriendly then return end
             if UnitIsUnit("player", unitID) then return end -- personal resource display nameplate
+            if not self.db.nameplate.showForPets and UnitIsOtherPlayersPet(unitID) then return end
         end
 
         return self:GetCastbarFrame(unitID)

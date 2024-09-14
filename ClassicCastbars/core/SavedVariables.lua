@@ -1,7 +1,7 @@
 local _, namespace = ...
 
 namespace.defaultConfig = {
-    version = "45",
+    version = "46",
     locale = GetLocale(),
     usePerCharacterSettings = false,
 
@@ -9,6 +9,7 @@ namespace.defaultConfig = {
         enabled = true,
         showForFriendly = true,
         showForEnemy = true,
+        showForPets = true,
         width = 106,
         height = 11,
         iconSize = 13,
@@ -43,6 +44,7 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 
     target = {
@@ -81,6 +83,7 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 
     focus = {
@@ -119,6 +122,7 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 
     party = {
@@ -157,6 +161,7 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 
     arena = {
@@ -195,6 +200,7 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 
     player = {
@@ -234,5 +240,6 @@ namespace.defaultConfig = {
         borderPaddingHeight = 1.3,
         borderPaddingWidth = 1.17,
         edgeSizeLSM = 18,
+        ignoreParentScale = false,
     },
 }
