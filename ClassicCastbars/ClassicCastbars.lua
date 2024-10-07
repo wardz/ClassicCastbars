@@ -36,11 +36,11 @@ local castEvents = {
 
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
-local gsub = _G.string.gsub
+local strmatch = _G.string.match
 local strfind = _G.string.find
 
 function ClassicCastbars:GetUnitType(unitID)
-    return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
+    return unitID and strmatch(unitID, "^%a+") -- remove numbers and testmode suffix
 end
 
 function ClassicCastbars:GetCastbarFrame(unitID)
@@ -141,7 +141,7 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
         end
 
         -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
-        if channelSpellID and not spellName then
+        if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and channelSpellID and not spellName then
             if C_Spell and C_Spell.GetSpellInfo then
                 local info = C_Spell.GetSpellInfo(channelSpellID)
                 spellName = info and info.name
