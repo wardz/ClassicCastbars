@@ -349,8 +349,8 @@ function ClassicCastbars:SetFinishCastStyle(castbar, unitID)
 
     -- Successfull cast
     if castbar.isCastComplete then
-        if castbar.Border:GetAlpha() == 1 or castbar.isUninterruptible then
-            if castbar.BorderShield:IsShown() or nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] or nonLSMBorders[castbar.Border:GetTexture() or ""] then
+        if castbar.Border:GetAlpha() == 1 or castbar.BorderShield:IsShown() then
+            if nonLSMBorders[castbar.Border:GetTextureFilePath() or ""] or nonLSMBorders[castbar.Border:GetTexture() or ""] then
                 if castbar.isUninterruptible then
                     castbar.Flash:SetVertexColor(0.7, 0.7, 0.7, 1)
                 elseif castbar.isChanneled then
