@@ -40,6 +40,7 @@ end
 
 local function OnDragStop(self)
     self:StopMovingOrSizing()
+    if not self.unitID then return end
 
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
@@ -49,8 +50,8 @@ local function OnDragStop(self)
     ClassicCastbars.db[unit].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
-    self:SetParent(self.parent)
     self:ClearAllPoints()
+    self:SetParent(self.parent)
     self:SetPoint("CENTER", self.parent, x, y)
 end
 
