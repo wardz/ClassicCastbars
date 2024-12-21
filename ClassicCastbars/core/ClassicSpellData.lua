@@ -226,6 +226,12 @@ if CLIENT_IS_CLASSIC_ERA then
         ["212969" .. GetSpellInfo(429825)] = true, -- Kazragore Chain Lightning
         ["213334" .. GetSpellInfo(429168)] = true, -- Aku'mai Corrosive Blast
         ["213334" .. GetSpellInfo(429356)] = true, -- Aku'mai Void Blast
+        ["4543" .. GetSpellInfo(9613)] = true, -- Bloodmage Thalnos Shadow Bolt
+        ["4543" .. GetSpellInfo(8814)] = true, -- Bloodmage Thalnos Flame Spike
+        ["3977" .. GetSpellInfo(9481)] = true, -- High Inquisitor Whitemane Holy Smite
+        ["3977" .. GetSpellInfo(12039)] = true, -- High Inquisitor Whitemane Heal
+        ["3977" .. GetSpellInfo(9232)] = true, -- High Inquisitor Whitemane Scarlet Resurrection
+        ["7358" .. GetSpellInfo(15530)] = true, -- Amnennar the Coldbringer Frostbolt
     }
 
     -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0, but the channel events still work for the current target.
