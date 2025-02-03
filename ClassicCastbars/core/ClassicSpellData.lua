@@ -169,6 +169,44 @@ elseif CLIENT_IS_TBC then
 end
 
 if CLIENT_IS_CLASSIC_ERA then
+    -- Skip pushback calculation for these spells since they
+    -- have chance to ignore pushback when talented, or is always immune.
+    namespace.pushbackBlacklist = {
+        [GetSpellInfo(1064)] = 1,       -- Chain Heal
+        [GetSpellInfo(25357)] = 1,      -- Healing Wave
+        [GetSpellInfo(8004)] = 1,       -- Lesser Healing Wave
+        [GetSpellInfo(2061)] = 1,       -- Flash Heal
+        [GetSpellInfo(2054)] = 1,       -- Heal
+        [GetSpellInfo(2050)] = 1,       -- Lesser Heal
+        [GetSpellInfo(596)] = 1,        -- Prayer of Healing
+        [GetSpellInfo(25314)] = 1,      -- Greater Heal
+        [GetSpellInfo(19750)] = 1,      -- Flash of Light
+        [GetSpellInfo(635)] = 1,        -- Holy Light
+        -- Druid heals are afaik many times not talented so ignoring them for now
+
+        [GetSpellInfo(19821)] = 1,      -- Arcane Bomb
+        [GetSpellInfo(4068)] = 1,       -- Iron Grenade
+        [GetSpellInfo(19769)] = 1,      -- Thorium Grenade
+        [GetSpellInfo(13808)] = 1,      -- M73 Frag Grenade
+        [GetSpellInfo(4069)] = 1,       -- Big Iron Bomb
+        [GetSpellInfo(12543)] = 1,      -- Hi-Explosive Bomb
+        [GetSpellInfo(4064)] = 1,       -- Rough Copper Bomb
+        [GetSpellInfo(12421)] = 1,      -- Mithril Frag Bomb
+        [GetSpellInfo(19784)] = 1,      -- Dark Iron Bomb
+        [GetSpellInfo(4067)] = 1,       -- Big Bronze Bomb
+        [GetSpellInfo(4066)] = 1,       -- Small Bronze Bomb
+        [GetSpellInfo(4065)] = 1,       -- Large Copper Bomb
+        [GetSpellInfo(4061)] = 1,       -- Coarse Dynamite
+        [GetSpellInfo(4054)] = 1,       -- Rough Dynamite
+        [GetSpellInfo(8331)] = 1,       -- EZ-Thro Dynamite
+        [GetSpellInfo(23000)] = 1,      -- EZ-Thro Dynamite II
+        [GetSpellInfo(4062)] = 1,       -- Heavy Dynamite
+        [GetSpellInfo(23063)] = 1,      -- Dense Dynamite
+        [GetSpellInfo(12419)] = 1,      -- Solid Dynamite
+        [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
+        [GetSpellInfo(20589)] = 1,      -- Escape Artist
+    }
+
     -- NPC spells that can't be interrupted, tied to npcIDs unlike `uninterruptibleList` above.
     -- Atm this only accepts npcID + spellName, not spellIDs as idk the correct ones.
     namespace.npcID_uninterruptibleList = {
