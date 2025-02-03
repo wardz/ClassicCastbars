@@ -139,6 +139,7 @@ namespace.uninterruptibleList = {
     [4962] = true, -- Encasing Webs
     [16418] = true, -- Crypt Scarabs
     [18327] = true, -- Silence
+    [7121] = true, -- Anti-Magic Shield
 
     -- Spells with duplicate versions/ranks that doesn't need to be tied to NPC ids
     [GetSpellInfo(10436)] = true,-- Attack (Totems)
