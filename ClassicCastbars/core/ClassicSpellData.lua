@@ -125,6 +125,15 @@ namespace.uninterruptibleList = {
     [28089] = true, -- Polarity Shift
     [28785] = true, -- Locust Swarm
     [18159] = true, -- Curse of the Fallen Magram
+    [23511] = true, -- Demoralizing Shout
+    [17238] = true, -- Drain Life
+    [17243] = true, -- Drain Mana
+    [17503] = true, -- Frostbolt
+    [16869] = true, -- Ice Tomb
+    [16788] = true, -- Fireball
+    [16419] = true, -- Flamestrike
+    [16390] = true, -- Flame Breath
+    [13899] = true, -- Fire Storm
 
     -- Spells with duplicate versions/ranks that doesn't need to be tied to NPC ids
     [GetSpellInfo(10436)] = true,-- Attack (Totems)
@@ -270,6 +279,17 @@ if CLIENT_IS_CLASSIC_ERA then
         ["3977" .. GetSpellInfo(12039)] = true, -- High Inquisitor Whitemane Heal
         ["3977" .. GetSpellInfo(9232)] = true, -- High Inquisitor Whitemane Scarlet Resurrection
         ["7358" .. GetSpellInfo(15530)] = true, -- Amnennar the Coldbringer Frostbolt
+        ["11487" .. GetSpellInfo(7645)] = true, -- Magister Kalendris Dominate Mind
+        ["11487" .. GetSpellInfo(7645)] = true, -- Magister Kalendris Mind Blast
+        ["11487" .. GetSpellInfo(15407)] = true, -- Magister Kalendris Mind Flay
+        ["1853" .. GetSpellInfo(18702)] = true, -- Darkmaster Gandling Curse of the Darkmaster
+        ["1853" .. GetSpellInfo(5143)] = true, -- Darkmaster Gandling Arcane Missiles
+        ["10502" .. GetSpellInfo(14515)] = true, -- Lady Illucia Barov Dominate Mind
+        ["10502" .. GetSpellInfo(12528)] = true, -- Lady Illucia Barov Silence
+        ["10502" .. GetSpellInfo(12542)] = true, -- Lady Illucia Barov Fear
+        ["10440" .. GetSpellInfo(17393)] = true, -- Baron Rivendare Shadow Bolt
+        ["9029" .. GetSpellInfo(15245)] = true, -- Eviscerator Shadow Bolt Volley
+        ["8983" .. GetSpellInfo(15305)] = true, -- Golem Lord Argelmach Chain Lightning
     }
 
     -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0, but the channel events still work for the current target.
