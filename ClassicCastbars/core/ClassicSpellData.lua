@@ -134,6 +134,11 @@ namespace.uninterruptibleList = {
     [16419] = true, -- Flamestrike
     [16390] = true, -- Flame Breath
     [13899] = true, -- Fire Storm
+    [15668] = true, -- Fiery Burst
+    [17235] = true, -- Raise Undead Scarab
+    [4962] = true, -- Encasing Webs
+    [16418] = true, -- Crypt Scarabs
+    [18327] = true, -- Silence
 
     -- Spells with duplicate versions/ranks that doesn't need to be tied to NPC ids
     [GetSpellInfo(10436)] = true,-- Attack (Totems)
