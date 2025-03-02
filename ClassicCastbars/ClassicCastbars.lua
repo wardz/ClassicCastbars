@@ -211,8 +211,8 @@ function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
     self:RefreshBorderShield(castbar, unitID)
 end
 
-local BARKSKIN = GetSpellInfo(22812)
-local FOCUSED_CASTING = GetSpellInfo(14743)
+local BARKSKIN = _G.GetSpellInfo and GetSpellInfo(22812)
+local FOCUSED_CASTING = _G.GetSpellInfo and GetSpellInfo(14743)
 local pushbackBlacklist = namespace.pushbackBlacklist
 local max = _G.math.max
 local FindAuraByName = AuraUtil.FindAuraByName
