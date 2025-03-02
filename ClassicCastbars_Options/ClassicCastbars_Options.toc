@@ -1,9 +1,9 @@
 ## Interface: 11506
-## Interface-Retail: 110007
+## Interface-Retail: 110100
 ## Interface-Classic: 11506
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
-## Interface-Cata: 40401
+## Interface-Cata: 40402
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## IconTexture: Interface\Icons\spell_holy_heal02
