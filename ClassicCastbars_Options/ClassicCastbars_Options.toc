@@ -1,6 +1,6 @@
-## Interface: 11506
-## Interface-Retail: 110100
-## Interface-Classic: 11506
+## Interface: 11507
+## Interface-Retail: 110105
+## Interface-Classic: 11507
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
 ## Interface-Cata: 40402
