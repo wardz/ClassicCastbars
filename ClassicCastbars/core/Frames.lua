@@ -103,11 +103,11 @@ function ClassicCastbars:SetCastbarIconAndText(castbar, db)
 
     -- Move timer position depending on spellname length
     if db.showTimer then
-        local yOff = 0
+        local yOff = db.timerTextPositionY
         if db.showBorderShield and castbar.isUninterruptible then
             yOff = yOff + 2
         end
-        castbar.Timer:SetPoint("RIGHT", castbar, (spellName:len() >= 19) and 30 or -6, yOff)
+        castbar.Timer:SetPoint("RIGHT", castbar, db.timerTextPositionX, yOff)
     end
 end
 
@@ -510,6 +510,10 @@ function ClassicCastbars:SkinPlayerCastbar()
         CastingBarFrame:HookScript("OnUpdate", function(frame)
             if db.enabled and db.showTimer then
                 if frame.fadeOut or (not frame.casting and not frame.channeling) then
+                    if frame.isTesting then
+                        return frame.Timer:SetText(db.showTotalTimer and "8.0/10.0" or "8.0")
+                    end
+
                     -- just show no text at zero, the numbers looks kinda weird when Flash animation is playing
                     return frame.Timer:SetText("")
                 end
@@ -529,13 +533,9 @@ function ClassicCastbars:SkinPlayerCastbar()
                 end
             end
         end)
-
-        hooksecurefunc(CastingBarFrame.Text, "SetText", function(_, text)
-            if text and text.len then
-                CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, (text:len() >= 19) and 30 or -6, 0)
-            end
-        end)
     end
+
+    CastingBarFrame.Timer:SetPoint("RIGHT", CastingBarFrame, db.timerTextPositionX, db.timerTextPositionY)
     CastingBarFrame.Timer:SetShown(db.showTimer)
 
     if not CastingBarFrame.CC_isHooked and not isRetail then
