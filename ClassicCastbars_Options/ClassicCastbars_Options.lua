@@ -145,32 +145,15 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "nameplate" or unitID == "party" or unitID == "arena",
                         disabled = ModuleIsDisabled,
                     },
-                    showTimer = {
-                        order = 6,
-                        width = "full",
-                        name = L.SHOW_TIMER,
-                        desc = L.SHOW_TIMER_TOOLTIP,
-                        type = "toggle",
-                        disabled = ModuleIsDisabled,
-                    },
-                    showTotalTimer = {
-                        order = 7,
-                        width = "full",
-                        name = L.SHOW_TOTAL_TIMER,
-                        desc = L.SHOW_TOTAL_TIMER_TOOLTIP,
-                        type = "toggle",
-                        hidden = unitID ~= "player",
-                        disabled = ModuleIsDisabled,
-                    },
                     showSpark = {
-                        order = 8,
+                        order = 6,
                         width = "full",
                         name = L.SHOW_SPARK,
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                     },
                     showBorderShield = {
-                        order = 9,
+                        order = 7,
                         width = "full",
                         name = L.BORDERSHIELD,
                         desc = L.BORDERSHIELD_TOOLTIP,
@@ -179,7 +162,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "player",
                     },
                     ignoreParentAlpha = {
-                        order = 10,
+                        order = 8,
                         width = "full",
                         name = L.IGNORE_PARENT_ALPHA,
                         desc = L.IGNORE_PARENT_ALPHA_TOOLTIP,
@@ -188,7 +171,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         hidden = unitID == "player",
                     },
                     ignoreParentScale = {
-                        order = 11,
+                        order = 9,
                         width = "full",
                         name = L.IGNORE_PARENT_SCALE,
                         desc = L.IGNORE_PARENT_SCALE_TOOLTIP,
@@ -198,7 +181,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posX = {
                         -- Position slider X for nameplate castbars only
-                        order = 12,
+                        order = 10,
                         name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         width = 2,
@@ -218,7 +201,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posY = {
                         -- Position slider Y for nameplate castbars only
-                        order = 13,
+                        order = 11,
                         name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         width = 2,
@@ -457,7 +440,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
 
                 args = {
                     castFontSize = {
-                        order = 3,
+                        order = 1,
                         name = L.FONT_SIZE,
                         desc = L.FONT_SIZE_TOOLTIP,
                         type = "range",
@@ -467,7 +450,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 1,
                     },
                     textPositionX = {
-                        order = 4,
+                        order = 2,
                         name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
@@ -476,7 +459,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 1,
                     },
                     textPositionY = {
-                        order = 5,
+                        order = 3,
                         name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
@@ -485,16 +468,56 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 1,
                     },
                     textPoint = {
-                        order = 6,
+                        order = 4,
                         name = L.TEXT_POINT,
                         type = "select",
                         values = TEXT_POINTS,
                     },
                     textOutline = {
-                        order = 7,
+                        order = 5,
                         name = L.TEXT_OUTLINE,
                         type = "select",
                         values = TEXT_OUTLINES,
+                    },
+                    header1 = {
+                        order = 6,
+                        type = "header",
+                        name = "Timer Text",
+                    },
+                    showTimer = {
+                        order = 7,
+                        width = "full",
+                        name = L.SHOW_TIMER,
+                        desc = L.SHOW_TIMER_TOOLTIP,
+                        type = "toggle",
+                        disabled = ModuleIsDisabled,
+                    },
+                    showTotalTimer = {
+                        order = 8,
+                        width = "full",
+                        name = L.SHOW_TOTAL_TIMER,
+                        desc = L.SHOW_TOTAL_TIMER_TOOLTIP,
+                        type = "toggle",
+                        hidden = unitID ~= "player",
+                        disabled = ClassicCastbars.db[unitID].showTimer == false or ModuleIsDisabled,
+                    },
+                    timerTextPositionX = {
+                        order = 9,
+                        name = L.POS_X,
+                        desc = L.POSXY_TOOLTIP,
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 1,
+                    },
+                    timerTextPositionY = {
+                        order = 10,
+                        name = L.POS_Y,
+                        desc = L.POSXY_TOOLTIP,
+                        type = "range",
+                        min = -2000,
+                        max = 2000,
+                        bigStep = 1,
                     },
                 },
             },

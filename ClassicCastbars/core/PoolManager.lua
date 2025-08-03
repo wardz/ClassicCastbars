@@ -4,15 +4,25 @@ local PoolManager = {}
 namespace.PoolManager = PoolManager
 
 local function ResetterFunc(pool, frame)
+    if frame.isTesting then
+        frame:StopMovingOrSizing()
+        frame:EnableMouse(false)
+        if frame.tooltip then
+            frame.tooltip:Hide()
+        end
+    end
+
+    if frame.animationGroup and frame.animationGroup:IsPlaying() then
+        frame.animationGroup:Stop()
+    end
+
     frame:Hide()
     frame:SetParent(nil)
     frame:ClearAllPoints()
     frame.isTesting = false
     frame.isActiveCast = false
-
-    if frame.animationGroup and frame.animationGroup:IsPlaying() then
-        frame.animationGroup:Stop()
-    end
+    frame.parent = nil
+    frame.unitID = nil
 end
 
 -- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
