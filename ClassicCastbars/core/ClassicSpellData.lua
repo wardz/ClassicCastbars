@@ -155,7 +155,6 @@ namespace.uninterruptibleList = {
     [GetSpellInfo(22539)] = true, -- Shadow Flame
     [GetSpellInfo(16868)] = true, -- Banshee Wail
     [GetSpellInfo(22479)] = true, -- Frost Breath
-    [GetSpellInfo(26134)] = true, -- Eye Beam
     [GetSpellInfo(26103)] = true, -- Sweep
     [GetSpellInfo(30732)] = true, -- Worm Sweep
     [GetSpellInfo(15847)] = true, -- Tail Sweep
@@ -296,6 +295,8 @@ if CLIENT_IS_CLASSIC_ERA then
         ["10440" .. GetSpellInfo(17393)] = true, -- Baron Rivendare Shadow Bolt
         ["9029" .. GetSpellInfo(15245)] = true, -- Eviscerator Shadow Bolt Volley
         ["8983" .. GetSpellInfo(15305)] = true, -- Golem Lord Argelmach Chain Lightning
+        ["15589" .. GetSpellInfo(26134)] = true, -- Eye of C'thun Eye Beam
+        ["15727" .. GetSpellInfo(26134)] = true, -- C'thun Eye Beam
     }
 
     -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0, but the channel events still work for the current target.
