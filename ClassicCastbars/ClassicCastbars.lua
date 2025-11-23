@@ -1,9 +1,4 @@
 local _, namespace = ...
-local PoolManager = namespace.PoolManager
-local castImmunityBuffs = namespace.castImmunityBuffs
-local channeledSpells = namespace.channeledSpells
-local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
-local uninterruptibleList = namespace.uninterruptibleList
 local activeFrames = {}
 
 local ClassicCastbars = CreateFrame("Frame", "ClassicCastbars")
@@ -16,6 +11,7 @@ ClassicCastbars.defaultConfig = namespace.defaultConfig
 ClassicCastbars.activeFrames = activeFrames
 
 local isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
 local castEvents = {
     "UNIT_SPELLCAST_START",
@@ -34,14 +30,23 @@ local castEvents = {
     "UNIT_SPELLCAST_EMPOWER_UPDATE",
 }
 
--- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
-
-local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
-local next = _G.next
+-- Upvalues
+local PoolManager = namespace.PoolManager
+local castImmunityBuffs = namespace.castImmunityBuffs
+local channeledSpells = namespace.channeledSpells
+local uninterruptibleList = namespace.uninterruptibleList
+local npcID_uninterruptibleList = namespace.npcID_uninterruptibleList
+local pushbackBlacklist = namespace.pushbackBlacklist
+local GetBuffDataByIndex = _G.C_UnitAuras.GetBuffDataByIndex
+local FindAuraByName = AuraUtil.FindAuraByName
 local strmatch = _G.string.match
 local strfind = _G.string.find
 local UnitGUID = _G.UnitGUID
 local UnitIsUnit = _G.UnitIsUnit
+local max = _G.math.max
+local next = _G.next
+
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
 
 function ClassicCastbars:GetUnitType(unitID)
     return unitID and strmatch(unitID, "^%a+") -- remove numbers and testmode suffix
@@ -62,6 +67,7 @@ end
 function ClassicCastbars:GetCastbarFrameIfEnabled(unitID)
     local unitType = self:GetUnitType(unitID)
     local cfg = self.db[unitType]
+
     if cfg and cfg.enabled then
         if unitType == "nameplate" then
             local isFriendly = UnitIsFriend("player", unitID)
@@ -77,6 +83,7 @@ end
 
 local function HideBlizzardSpellbar(spellbar)
     local cfg = ClassicCastbars.db[ClassicCastbars:GetUnitType(spellbar.unit)]
+
     if cfg and cfg.enabled then
         spellbar:Hide()
     end
@@ -118,13 +125,7 @@ local function GetDefaultUninterruptibleState(castbar, unitID) -- needed pre-wra
     if not isUninterruptible and not UnitIsPlayer(unitID) then
         local _, _, _, _, _, npcID = strsplit("-", UnitGUID(unitID))
         if npcID then
-            if npcID == "209678" then -- Twilight Lord Kelris is immune at 35% hp (phase2)
-                if ((UnitHealth(unitID) / UnitHealthMax(unitID)) * 100) <= 35 then
-                    isUninterruptible = true
-                end
-            else
-                isUninterruptible = npcID_uninterruptibleList[npcID .. castbar.spellName] or false
-            end
+            isUninterruptible = npcID_uninterruptibleList[npcID .. castbar.spellName] or false
         end
     end
 
@@ -132,39 +133,36 @@ local function GetDefaultUninterruptibleState(castbar, unitID) -- needed pre-wra
 end
 
 function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, channelSpellID, isStartEvent)
+    local casterUnit = (isClassicEra and UnitIsUnit("player", unitID)) and "player" or unitID
     local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
 
     if not isChanneled then
-        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(casterUnit)
     else
-        if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and UnitIsUnit("player", unitID) then
-            -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
-            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo("player")
-        else
-            spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
-        end
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(casterUnit)
 
-        -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
-        if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and channelSpellID and not spellName then
-            if C_Spell and C_Spell.GetSpellInfo then
-                local info = C_Spell.GetSpellInfo(channelSpellID)
-                spellName = info and info.name
-                iconTexturePath = info and info.iconID
-            else
-                spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+        -- UnitChannelInfo() doesn't return anything in Classic Era for others, so we get cast time using pre-stored data instead
+        if isClassicEra and channelSpellID and not spellName then
+            local info = C_Spell.GetSpellInfo(channelSpellID)
+            if info then
+                local castTime = channeledSpells[info.name]
+                if castTime then
+                    spellName = info.name
+                    iconTexturePath = info.iconID
+                    spellID = channelSpellID
+
+                    endTimeMS = (GetTime() * 1000) + castTime
+                    startTimeMS = GetTime() * 1000
+                end
             end
-            local channelCastTime = spellName and channeledSpells[spellName]
-            if not channelCastTime then return end
-
-            spellID = channelSpellID
-            endTimeMS = (GetTime() * 1000) + channelCastTime
-            startTimeMS = GetTime() * 1000
         end
     end
 
-    if not spellName then return end
+    if not spellName then
+        return
+    end
 
-    castbar.isActiveCast = true -- is currently casting/channeling, data is not stale
+    castbar.isActiveCast = true
     castbar.value = isChanneled and ((endTimeMS / 1000) - GetTime()) or (GetTime() - (startTimeMS / 1000))
     castbar.maxValue = (endTimeMS - startTimeMS) / 1000
     castbar.castID = castID
@@ -177,21 +175,22 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
     castbar.isCastComplete = nil
     castbar.pushbackValue = nil
 
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-        castbar.isUninterruptible = notInterruptible
-    else
+    if isClassicEra or isTBC then
         if isStartEvent then -- ensure that its only triggered once per cast
             castbar.isDefaultUninterruptible = GetDefaultUninterruptibleState(castbar, unitID)
             castbar.isUninterruptible = castbar.isDefaultUninterruptible
         end
+    else
+        castbar.isUninterruptible = notInterruptible
     end
 
     castbar:SetMinMaxValues(0, castbar.maxValue)
+    castbar:SetValue(castbar.value)
 end
 
 -- Check if cast is uninterruptible on buff faded or gained (needed pre-wrath)
 function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
+    if not isClassicEra and not isTBC then return end
     if not castbar or not castbar.isActiveCast then return end
 
     if castbar.isDefaultUninterruptible then return end -- always immune, no point checking further
@@ -211,18 +210,16 @@ function ClassicCastbars:CheckAuraModifiers(castbar, unitID)
     self:RefreshBorderShield(castbar, unitID)
 end
 
-local BARKSKIN = _G.GetSpellInfo and GetSpellInfo(22812)
-local FOCUSED_CASTING = _G.GetSpellInfo and GetSpellInfo(14743)
-local pushbackBlacklist = namespace.pushbackBlacklist
-local max = _G.math.max
-local FindAuraByName = AuraUtil.FindAuraByName
+local BARKSKIN = C_Spell.GetSpellName(22812)
+local FOCUSED_CASTING = C_Spell.GetSpellName(14743)
 function ClassicCastbars:CastPushback(unitID, castbar)
-    if not castbar or not unitID --[[or unitID == "player"]] then return end
-    if not castbar.isActiveCast then return end
+    if not castbar or not castbar.isActiveCast or not unitID then return end
     if pushbackBlacklist[castbar.spellName] then return end
+
     if UnitIsUnit(unitID, "player") then return end
     if FindAuraByName(BARKSKIN, unitID, "HELPFUL") or FindAuraByName(FOCUSED_CASTING , unitID, "HELPFUL") then return end
 
+    -- Calculate cast pushbacks for Classic Era
     if not castbar.isChanneled then
         -- https://wow.gamepedia.com/index.php?title=Interrupt&oldid=305918
         castbar.pushbackValue = castbar.pushbackValue or 1.0
@@ -252,7 +249,7 @@ function ClassicCastbars:UNIT_TARGET(unitID) -- detect when your target changes 
     end
 end
 
-function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own target
+function ClassicCastbars:PLAYER_TARGET_CHANGED()
     -- Always hide first, then reshow after
     local castbar = activeFrames["target"]
     if castbar then
@@ -265,7 +262,7 @@ function ClassicCastbars:PLAYER_TARGET_CHANGED() -- when you change your own tar
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     end
 
-    if UnitIsUnit("player", "target") and UnitChannelInfo("player") then -- HACK: UnitChannelInfo is bugged, tmp fallback method for when player is target
+    if isClassicEra and UnitIsUnit("player", "target") and UnitChannelInfo("player") then
         self:UNIT_SPELLCAST_CHANNEL_START("target")
     end
 end
@@ -288,7 +285,6 @@ local function BlizzNameplateCastbar_OnShow(frame)
     if not frame.unit or not strfind(frame.unit, "nameplate") then return end
 
     if ClassicCastbars.db.nameplate.enabled then
-        -- Force hide
         frame:Hide()
     end
 end
@@ -526,6 +522,7 @@ function ClassicCastbars:PLAYER_LOGIN()
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     end
 
+    -- Remove old obsolete configs
     if self.db.version then
         if tonumber(self.db.version) < 43 then
             if self.db.player.statusColorSuccess[2] == 0.7 then
@@ -540,12 +537,10 @@ function ClassicCastbars:PLAYER_LOGIN()
     -- Reset locale dependent stuff on game locale switched
     if self.db.locale ~= GetLocale() then
         self.db.locale = GetLocale()
-        self.db.target.castFont = _G.STANDARD_TEXT_FONT
-        self.db.nameplate.castFont = _G.STANDARD_TEXT_FONT
-        self.db.focus.castFont = _G.STANDARD_TEXT_FONT
-        self.db.arena.castFont = _G.STANDARD_TEXT_FONT
-        self.db.party.castFont = _G.STANDARD_TEXT_FONT
-        self.db.player.castFont = _G.STANDARD_TEXT_FONT
+
+        for _, unitType in pairs({ "player", "target", "focus", "party", "arena", "nameplate" }) do
+            self.db[unitType].castFont = _G.STANDARD_TEXT_FONT
+        end
     end
 
     if self.db.player.enabled then
@@ -610,7 +605,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
 
             -- Check if cast is complete
             if (castbar.isChanneled and castbar.value <= 0) or (not castbar.isChanneled and castbar.value >= castbar.maxValue) then
-                if castbar.fade and not castbar.fade:IsPlaying() then
+                if not castbar.fade or not castbar.fade:IsPlaying() then
                     castbar.isCastComplete = true
                     self:HideCastbar(castbar, unit)
                 end
