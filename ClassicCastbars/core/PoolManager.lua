@@ -27,7 +27,7 @@ end
 
 -- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
 
-local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
+local framePool = CreateUnsecuredFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
 local framesCreated = 0
 local framesActive = 0
 

@@ -46,7 +46,7 @@ read_globals = {
     "C_Timer",
     "CopyTable",
     "CreateFrame",
-    "CreateFramePool",
+    "CreateUnsecuredFramePool",
     "floor",
     "format",
     "GameMenuFrame",
