@@ -571,7 +571,7 @@ function ClassicCastbars:COMBAT_LOG_EVENT_UNFILTERED()
         for unitID, castbar in next, activeFrames do
             if castbar:GetAlpha() > 0 then
                 if UnitGUID(unitID) == dstGUID then
-                    castbar.Text:SetText(string.format(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, GetSchoolString(extraSchool)))
+                    castbar.Text:SetText(string.format(LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL, C_Spell.GetSchoolString(extraSchool)))
                 end
             end
         end
