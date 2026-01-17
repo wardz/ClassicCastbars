@@ -16,7 +16,7 @@ local dummySpellData = {
     castID = nil,
 }
 
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+--local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local CastingBarFrame = _G.PlayerCastingBarFrame or _G.CastingBarFrame
 
 -- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
