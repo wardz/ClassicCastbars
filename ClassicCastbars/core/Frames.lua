@@ -9,7 +9,7 @@ local min = _G.math.min
 local max = _G.math.max
 local ceil = _G.math.ceil
 
-local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
+local CastingBarFrame = _G.PlayerCastingBarFrame or _G.CastingBarFrame
 
 local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
@@ -480,17 +480,23 @@ local function ColorPlayerCastbar()
         CastingBarFrame.iconWhenNoninterruptible = false
     end
 
-    CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
-    CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
-    CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
-    --if CastingBarFrame.isTesting then
+    if CastingBarFrame.SetStartCastColor then
+        CastingBarFrame:SetStartCastColor(unpack(db.statusColor))
+        CastingBarFrame:SetStartChannelColor(unpack(db.statusColorChannel))
+        CastingBarFrame:SetFailedCastColor(unpack(db.statusColorFailed))
+        CastingBarFrame:SetFinishedCastColor(unpack(db.statusColorSuccess))
+        CastingBarFrame:SetUseStartColorForFinished(false)
+        CastingBarFrame:SetUseStartColorForFlash(false)
+    else
+        CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
+        CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
+        CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
+        CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
+        CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
+        CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
+    end
+
     CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))
-    --end
-
-    CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
-    CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
-    CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
-
     CastingBarFrame.Background = CastingBarFrame.Background or GetStatusBarBackgroundTexture(CastingBarFrame)
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 end
@@ -619,7 +625,11 @@ function ClassicCastbars:SkinPlayerCastbar()
 
     if not isRetail then
         if not CastingBarFrame.CC_ColorIsHooked then
-            hooksecurefunc("CastingBarFrame_OnLoad", ColorPlayerCastbar)
+            if CastingBarFrame.OnLoad then
+                hooksecurefunc(CastingBarFrame, "OnLoad", ColorPlayerCastbar)
+            else
+                hooksecurefunc("CastingBarFrame_OnLoad", ColorPlayerCastbar)
+            end
             CastingBarFrame.CC_ColorIsHooked = true
         end
 
