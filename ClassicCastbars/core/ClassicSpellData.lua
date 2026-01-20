@@ -220,11 +220,12 @@ if CLIENT_IS_CLASSIC_ERA then
         [GetSpellInfo(13278)] = 1,      -- Gnomish Death Ray
         [GetSpellInfo(20589)] = 1,      -- Escape Artist
     }
+end
 
+if CLIENT_IS_CLASSIC_ERA or CLIENT_IS_TBC then
     -- NPC spells that can't be interrupted, tied to npcIDs unlike `uninterruptibleList` above.
     -- Atm this only accepts npcID + spellName, not spellIDs as idk the correct ones.
     namespace.npcID_uninterruptibleList = {
-        ["12459" .. GetSpellInfo(25417)] = true, -- Blackwing Warlock Shadowbolt
         ["12264" .. GetSpellInfo(1449)] = true, -- Shazzrah Arcane Explosion
         ["11983" .. GetSpellInfo(18500)] = true, -- Firemaw Wing Buffet
         ["12265" .. GetSpellInfo(133)] = true, -- Lava Spawn Fireball
@@ -266,18 +267,7 @@ if CLIENT_IS_CLASSIC_ERA then
         ["16146" .. GetSpellInfo(17473)] = true, -- Death Knight Raise Dead
         ["16368" .. GetSpellInfo(9081)] = true, -- Necropolis Acolyte Shadow Bolt Volley
         ["16022" .. GetSpellInfo(16568)] = true, -- Surgical Assistant Mind Flay
-        ["16021" .. GetSpellInfo(1397)] = true, -- Living Monstrosity Fear
-        ["16021" .. GetSpellInfo(1339)] = true, -- Living Monstrosity Chain Lightning
-        ["16021" .. GetSpellInfo(28294)] = true, -- Living Monstrosity Lightning Totem
-        ["16215" .. GetSpellInfo(1467)] = true, -- Unholy Staff Arcane Explosion
-        ["16452" .. GetSpellInfo(1467)] = true, -- Necro Knight Guardian Arcane Explosion
-        ["16452" .. GetSpellInfo(11829)] = true, -- Necro Knight Guardian Flamestrike
-        ["16165" .. GetSpellInfo(1467)] = true, -- Necro Knight Arcane Explosion
-        ["16165" .. GetSpellInfo(11829)] = true, -- Necro Knight Flamestrike
         ["8519" .. GetSpellInfo(16554)] = true, -- Blighted Surge Toxic Bolt
-        ["212969" .. GetSpellInfo(429825)] = true, -- Kazragore Chain Lightning
-        ["213334" .. GetSpellInfo(429168)] = true, -- Aku'mai Corrosive Blast
-        ["213334" .. GetSpellInfo(429356)] = true, -- Aku'mai Void Blast
         ["4543" .. GetSpellInfo(9613)] = true, -- Bloodmage Thalnos Shadow Bolt
         ["4543" .. GetSpellInfo(8814)] = true, -- Bloodmage Thalnos Flame Spike
         ["3977" .. GetSpellInfo(9481)] = true, -- High Inquisitor Whitemane Holy Smite
@@ -299,6 +289,23 @@ if CLIENT_IS_CLASSIC_ERA then
         ["15727" .. GetSpellInfo(26134)] = true, -- C'thun Eye Beam
     }
 
+    if CLIENT_IS_CLASSIC_ERA then
+        namespace.npcID_uninterruptibleList["12459" .. GetSpellInfo(25417)] = true -- Blackwing Warlock Shadowbolt
+        namespace.npcID_uninterruptibleList["16021" .. GetSpellInfo(1397)] = true -- Living Monstrosity Fear
+        namespace.npcID_uninterruptibleList["16021" .. GetSpellInfo(1339)] = true -- Living Monstrosity Chain Lightning
+        namespace.npcID_uninterruptibleList["16021" .. GetSpellInfo(28294)] = true -- Living Monstrosity Lightning Totem
+        namespace.npcID_uninterruptibleList["16215" .. GetSpellInfo(1467)] = true -- Unholy Staff Arcane Explosion
+        namespace.npcID_uninterruptibleList["16452" .. GetSpellInfo(1467)] = true -- Necro Knight Guardian Arcane Explosion
+        namespace.npcID_uninterruptibleList["16452" .. GetSpellInfo(11829)] = true -- Necro Knight Guardian Flamestrike
+        namespace.npcID_uninterruptibleList["16165" .. GetSpellInfo(1467)] = true -- Necro Knight Arcane Explosion
+        namespace.npcID_uninterruptibleList["16165" .. GetSpellInfo(11829)] = true -- Necro Knight Flamestrike
+        namespace.npcID_uninterruptibleList["212969" .. GetSpellInfo(429825)] = true -- Kazragore Chain Lightning
+        namespace.npcID_uninterruptibleList["213334" .. GetSpellInfo(429168)] = true -- Aku'mai Corrosive Blast
+        namespace.npcID_uninterruptibleList["213334" .. GetSpellInfo(429356)] = true -- Aku'mai Void Blast
+    end
+end
+
+if CLIENT_IS_CLASSIC_ERA then
     -- UnitChannelInfo() currently doesn't work in Classic Era 1.15.0, but the channel events still work for the current target.
     -- We use this table data to retrieve spell cast times inside the channel events.
     namespace.channeledSpells = {
