@@ -53,6 +53,10 @@ local function OnDragStop(self)
     self:ClearAllPoints()
     self:SetParent(self.parent)
     self:SetPoint("CENTER", self.parent, x, y)
+
+    if unit == "player" then
+        ClassicCastbars:SkinPlayerCastbar() --Ensure the logic for CastingBarFrame.ignoreFramePositionManager runs
+    end
 end
 
 function TestMode:ToggleArenaContainer(showFlag)
