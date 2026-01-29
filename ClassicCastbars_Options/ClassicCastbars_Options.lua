@@ -93,7 +93,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         type = "toggle",
                         hidden = isClassicEra and unitID == "focus",
                         confirm = function()
-                            return unitID == "player" and ClassicCastbars.db[unitID].enabled and L.REQUIRES_RESTART or false
+                            return unitID == "player" and ClassicCastbars.db[unitID].enabled and _G.OPTION_RESTART_REQUIREMENT or false
                         end,
                         set = function(_, value)
                             ClassicCastbars.db[unitID].enabled = value
