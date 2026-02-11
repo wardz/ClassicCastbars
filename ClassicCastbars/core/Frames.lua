@@ -573,6 +573,7 @@ function ClassicCastbars:SkinPlayerCastbar()
         hooksecurefunc("PlayerFrame_AdjustAttachments", function()
             if _G.PLAYER_FRAME_CASTBARS_SHOWN and not db.autoPosition then
                 CastingBarFrame:ClearAllPoints()
+                CastingBarFrame:SetParent(UIParent)
                 CastingBarFrame:SetPoint(db.position[1], UIParent, db.position[2], db.position[3])
             end
         end)
@@ -615,6 +616,7 @@ function ClassicCastbars:SkinPlayerCastbar()
         if _G.PLAYER_FRAME_CASTBARS_SHOWN then
             CastingBarFrame.ignoreFramePositionManager = true
             CastingBarFrame:ClearAllPoints()
+            CastingBarFrame:SetParent(nil)
             if PlayerFrame_AdjustAttachments then
                 PlayerFrame_AdjustAttachments()
             end
@@ -627,6 +629,7 @@ function ClassicCastbars:SkinPlayerCastbar()
                 CastingBarFrame:SetParent(UIParent)
             end
             CastingBarFrame:ClearAllPoints()
+            CastingBarFrame:SetParent(UIParent)
             CastingBarFrame:SetPoint("BOTTOM", UIParent, 0, 150)
         end
     end
