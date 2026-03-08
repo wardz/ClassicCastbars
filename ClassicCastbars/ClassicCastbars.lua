@@ -494,6 +494,8 @@ function ClassicCastbars:PLAYER_ENTERING_WORLD(isInitialLogin)
     if self.db.party.enabled then
         self:GROUP_ROSTER_UPDATE()
     end
+
+    self:SkinPlayerCastbar()
 end
 
 -- Copies table values from src to dst if they don't exist in dst
