@@ -487,8 +487,6 @@ local function ColorPlayerCastbar()
 
     if CastingBarFrame_SetNonInterruptibleCastColor then
         CastingBarFrame_SetNonInterruptibleCastColor(CastingBarFrame, unpack(db.statusColorUninterruptible))
-    else
-        CastingBarFrame.iconWhenNoninterruptible = false
     end
 
     if CastingBarFrame.SetStartCastColor then
@@ -498,6 +496,27 @@ local function ColorPlayerCastbar()
         CastingBarFrame:SetFinishedCastColor(unpack(db.statusColorSuccess))
         CastingBarFrame:SetUseStartColorForFinished(false)
         CastingBarFrame:SetUseStartColorForFlash(false)
+    elseif CastingBarFrame.UpdateBarFillTexture then
+        if not CastingBarFrame.UpdateBarFillTexture_CChooked then
+            hooksecurefunc(CastingBarFrame, "UpdateBarFillTexture", function(self, isFull)
+                local barType = self.barType or CastingBarType.Standard
+
+                local colorInfo
+                if barType == CastingBarType.Channel then
+                    colorInfo = db.statusColorChannel
+                elseif barType == CastingBarType.Uninterruptible then
+                    colorInfo = isFull and db.statusColorSuccess or db.statusColorUninterruptible
+                elseif barType == CastingBarType.Interrupted then
+                    colorInfo = db.statusColorFailed
+                else
+                    colorInfo = isFull and db.statusColorSuccess or db.statusColor
+                end
+
+                self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+                self:SetStatusBarColor(unpack(colorInfo))
+            end)
+            CastingBarFrame.UpdateBarFillTexture_CChooked = true
+        end
     else
         CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
         CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
@@ -560,6 +579,7 @@ function ClassicCastbars:SkinPlayerCastbar()
             if frame.Icon:GetTexture() == 136235 then
                 frame.Icon:SetTexture(136243)
             end
+            frame.Icon:SetShown(db.showIcon)
         end)
 
         hooksecurefunc("PlayerFrame_DetachCastBar", function()
@@ -602,6 +622,8 @@ function ClassicCastbars:SkinPlayerCastbar()
     CastingBarFrame.Text:SetJustifyH(db.textPoint)
     CastingBarFrame.Icon:ClearAllPoints()
     CastingBarFrame.Icon:SetShown(db.showIcon)
+    CastingBarFrame.showIcon = db.showIcon
+    CastingBarFrame.HideIconWhenNotInterruptible = false
     CastingBarFrame.Spark:ClearAllPoints()
 
     if not db.autoPosition then

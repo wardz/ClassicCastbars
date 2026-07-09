@@ -34,6 +34,7 @@ read_globals = {
     "AuraUtil",
     "UIParentBottomManagedFrameContainer",
     "CastingBarFrame",
+    "CastingBarType",
     "PlayerCastingBarFrame",
     "TargetFrameSpellBar",
     "FocusFrameSpellBar",
