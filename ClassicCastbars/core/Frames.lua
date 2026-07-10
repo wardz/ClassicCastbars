@@ -114,11 +114,7 @@ function ClassicCastbars:SetCastbarIconAndText(castbar, db)
 
     -- Move timer position depending on spellname length
     if db.showTimer then
-        local yOff = db.timerTextPositionY
-        if db.showBorderShield and castbar.isUninterruptible then
-            yOff = yOff + 2
-        end
-        castbar.Timer:SetPoint("RIGHT", castbar, db.timerTextPositionX, yOff)
+        castbar.Timer:SetPoint("RIGHT", castbar, db.timerTextPositionX, db.timerTextPositionY)
     end
 end
 
@@ -130,10 +126,10 @@ function ClassicCastbars:SetBorderShieldStyle(castbar, db, unitID)
         end
 
         -- Update border shield to match current castbar size
-        local width, height = castbar:GetWidth() * db.borderPaddingWidth + 0.3, castbar:GetHeight() * db.borderPaddingHeight + 0.3
+        local width, height = castbar:GetWidth() * (db.borderPaddingWidth - 0.3), castbar:GetHeight() * (db.borderPaddingHeight - 0.2)
         castbar.BorderShield:ClearAllPoints()
-        castbar.BorderShield:SetPoint("TOPLEFT", width-5, height+1) -- texture offsets, just doing "1" and "-1" doesnt work here
-        castbar.BorderShield:SetPoint("BOTTOMRIGHT", -width+(width*0.15), -height + 4)
+        castbar.BorderShield:SetPoint("TOPLEFT", -ceil(width / 6.25), height)
+        castbar.BorderShield:SetPoint("BOTTOMRIGHT", ceil(width / 6.25), -height)
 
         if not castbar.IconShield then
             castbar.BorderShield:SetTexCoord(0.16, 0, 0.118, 1, 1, 0, 1, 1) -- cut left side of texture away
@@ -247,8 +243,8 @@ function ClassicCastbars:SetCastbarStyle(castbar, db, unitID)
         -- Update border to match castbar size
         local width, height = castbar:GetWidth() * db.borderPaddingWidth, castbar:GetHeight() * db.borderPaddingHeight
         castbar.Border:ClearAllPoints()
-        castbar.Border:SetPoint("TOPLEFT", width, height)
-        castbar.Border:SetPoint("BOTTOMRIGHT", -width, -height)
+        castbar.Border:SetPoint("TOPLEFT", -ceil(width / 6.25), height + 1)
+        castbar.Border:SetPoint("BOTTOMRIGHT", ceil(width / 6.25), -height)
     else
         -- Using border sat by LibSharedMedia
         self:SetLSMBorders(castbar, db)
@@ -302,13 +298,9 @@ function ClassicCastbars:SetCastbarFonts(castbar, db)
     castbar.Text:SetTextColor(c[1], c[2], c[3], c[4])
     castbar.Timer:SetTextColor(c[1], c[2], c[3], c[4])
 
-    local yOff = db.textPositionY
-    if db.showBorderShield and castbar.isUninterruptible then
-        yOff = yOff + 2
-    end
     castbar.Text:SetJustifyH(db.textPoint)
     castbar.Text:ClearAllPoints()
-    castbar.Text:SetPoint(db.textPoint, db.textPositionX, yOff)
+    castbar.Text:SetPoint(db.textPoint, db.textPositionX, db.textPositionY)
 end
 
 local function OnFadeOutFinish(self)
@@ -434,7 +426,7 @@ function ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
 
     local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, castbar.BorderShield:IsShown() and 3 or 0)
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
     castbar:SetMinMaxValues(0, castbar.maxValue)
     castbar:SetValue(castbar.value)
     castbar:SetParent(parentFrame)
@@ -600,7 +592,7 @@ function ClassicCastbars:SkinPlayerCastbar()
 
         -- Temp fix for pixel perfect spark position
         hooksecurefunc(CastingBarFrame.Spark, "SetPoint", function(_, point, _, relativePoint, _, ofsY)
-            if point == "CENTER" and relativePoint == "LEFT" and ofsY == 2 then
+            if point == "CENTER" and relativePoint == "LEFT" and ceil(ofsY) == 2 then
                 local sparkPosition = (CastingBarFrame.value / CastingBarFrame.maxValue) * CastingBarFrame:GetWidth()
                 CastingBarFrame.Spark:SetPoint("CENTER", CastingBarFrame, "LEFT", sparkPosition, 0)
             end

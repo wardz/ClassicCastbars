@@ -294,7 +294,12 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
 
     local plate = GetNamePlateForUnit(namePlateUnitToken)
-    local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
+
+    local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar
+    if not plateCastbar and plate.UnitFrame.CastBarsContainer then
+        plateCastbar = plate.UnitFrame.CastBarsContainer.castBar
+    end
+
     if plateCastbar then
         -- This causes taint sadly;
         -- plateCastbar.showCastbar = not self.db.nameplate.enabled
@@ -524,7 +529,7 @@ function ClassicCastbars:PLAYER_LOGIN()
         self.db = CopyDefaults(namespace.defaultConfig, ClassicCastbarsDB)
     end
 
-    -- Remove old obsolete configs
+    -- Remove / update old obsolete configs
     if self.db.version then
         if tonumber(self.db.version) < 43 then
             if self.db.player.statusColorSuccess[2] == 0.7 then
@@ -533,6 +538,16 @@ function ClassicCastbars:PLAYER_LOGIN()
         end
         self.db.npcCastTimeCache = nil
         self.db.npcCastUninterruptibleCache = nil
+
+        if tonumber(self.db.version) <= 47 then
+            for _, unitType in pairs({ "player", "target", "focus", "party", "arena", "nameplate" }) do
+                self.db[unitType].borderPaddingWidth = 1.05
+            end
+            if self.db.target.textPositionY == 0 then
+                self.db.target.textPositionY = 1
+                self.db.focus.textPositionY = 1
+            end
+        end
     end
     self.db.version = namespace.defaultConfig.version
 
@@ -603,7 +618,7 @@ ClassicCastbars:SetScript("OnUpdate", function(self, elapsed)
             castbar.Timer:SetFormattedText("%.1f", castbar.isChanneled and castbar.value or not castbar.isChanneled and castbar.maxValue - castbar.value)
 
             local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
-            castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, castbar.BorderShield:IsShown() and 3 or 0)
+            castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
 
             -- Check if cast is complete
             if (castbar.isChanneled and castbar.value <= 0) or (not castbar.isChanneled and castbar.value >= castbar.maxValue) then

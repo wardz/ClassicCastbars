@@ -1,9 +1,4 @@
-## Interface: 11508
-## Interface-Classic: 11508
-## Interface-BCC: 20505
-## Interface-Wrath: 30403
-## Interface-Cata: 40402
-## Interface-Mists: 50503
+## Interface: 50504, 40402, 38001, 30405, 20505, 11508
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
 ## IconTexture: Interface\Icons\spell_holy_heal02
