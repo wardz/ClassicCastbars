@@ -601,7 +601,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.EDGE_SIZE_LSM,
                         type = "range",
                         width = "double",
-                        min = 3,
+                        min = 1,
                         max = 32,
                         bigStep = 1,
                         disabled = function()

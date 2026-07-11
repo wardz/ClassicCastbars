@@ -504,8 +504,20 @@ local function ColorPlayerCastbar()
                     colorInfo = isFull and db.statusColorSuccess or db.statusColor
                 end
 
-                self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+                self:SetStatusBarTexture(db.castStatusBar)
                 self:SetStatusBarColor(unpack(colorInfo))
+
+                if nonLSMBorders[db.castBorder] then
+                    if self.BorderFrameLSM then
+                        self.BorderFrameLSM:SetAlpha(0)
+                    end
+                    self.Border:SetAlpha(db.borderColor[4])
+                else
+                    if self.BorderFrameLSM then
+                        self.Border:SetAlpha(0)
+                        self.BorderFrameLSM:SetAlpha(db.borderColor[4])
+                    end
+                end
             end)
             CastingBarFrame.UpdateBarFillTexture_CChooked = true
         end
@@ -669,133 +681,4 @@ function ClassicCastbars:SkinPlayerCastbar()
             PlayerCastingBarFrame:SetValue(1)
         end
     end
-end
-
-if isRetail then
-    -- Modified code from Classic Frames, some parts might be redundant for us.
-    -- This is mostly just quick *hacks* to get the player castbar customizations working for retail after patch 10.0.0.
-    -- Once 'player-castbar-v2' branch is done this will all be removed.
-    hooksecurefunc(PlayerCastingBarFrame, 'UpdateShownState', function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        --if self.barType ~= "empowered" then
-            self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-            if self.barType == "empowered" then
-                self.Spark:SetAtlas(nil)
-            end
-            self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-            self.Spark:SetSize(32, 32)
-            self.Spark:ClearAllPoints()
-            self.Spark:SetPoint("CENTER", self, "LEFT", 0, 0)
-            self.Spark.offsetY = 0
-            self.Spark:SetBlendMode("ADD")
-            if self.channeling and self.barType ~= "empowered" then
-                self.Spark:Hide()
-            end
-            ClassicCastbars:SkinPlayerCastbar()
-        --end
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "FinishSpell", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        self:SetStatusBarColor(unpack(db.statusColorSuccess))
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "SetAndUpdateShowCastbar", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "PlayInterruptAnims", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-        self.Spark:Hide()
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "GetTypeInfo", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        if ( self.barType == "interrupted") then
-            self:SetValue(100)
-            self:SetStatusBarColor(unpack(db.statusColorFailed))
-        elseif (self.barType == "channel") then
-            self:SetStatusBarColor(unpack(db.statusColorChannel))
-        elseif (self.barType == "uninterruptable") then
-            self:SetStatusBarColor(unpack(db.statusColorUninterruptible))
-        else
-            self:SetStatusBarColor(unpack(db.statusColor))
-        end
-        self.Background:SetColorTexture(unpack(db.statusBackgroundColor))
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "PlayFinishAnim", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        if self.barType ~= "empowered" then
-            self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-            self:SetStatusBarColor(unpack(db.statusColorSuccess))
-        end
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame.Flash, "SetAtlas", function(self)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        local statusbar = self:GetParent()
-        if (statusbar.barType == "empowered") then
-            self:SetVertexColor(0, 0, 0, 0)
-        else
-            self:SetVertexColor(self:GetParent():GetStatusBarColor())
-        end
-        if (PlayerCastingBarFrame.attachedToPlayerFrame) then
-            self:SetSize(0,49)
-            self:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
-            self:ClearAllPoints()
-            self:SetPoint("TOPLEFT", -23, 20)
-            self:SetPoint("TOPRIGHT", 23, 20)
-            self:SetBlendMode("ADD")
-        else
-            self:ClearAllPoints();
-            self:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash");
-            self:SetWidth(256);
-            self:SetHeight(64);
-            self:SetPoint("TOP", 0, 28);
-            self:SetBlendMode("ADD")
-        end
-        ClassicCastbars:SkinPlayerCastbar()
-    end)
-
-    hooksecurefunc(PlayerCastingBarFrame, "SetLook", function(self, look)
-        local db = ClassicCastbars.db and ClassicCastbars.db.player
-        if not db or not db.enabled then return end
-
-        if (look == "CLASSIC") then
-            self:SetWidth(195);
-            self:SetHeight(13);
-            self.playCastFX = false
-            self.Background:SetColorTexture(0, 0, 0, 0.5)
-            self.Border:ClearAllPoints();
-            self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border");
-            self.Border:SetWidth(256);
-            self.Border:SetHeight(64);
-            self.Border:SetPoint("TOP", 0, 28);
-            self.TextBorder:Hide()
-            self.Text:ClearAllPoints()
-            self.Text:SetPoint("TOP", 0, 5)
-            self.Text:SetWidth(185)
-            self.Text:SetHeight(16)
-            self.Text:SetFontObject("GameFontHighlight")
-            self.Spark.offsetY = 2;
-            ClassicCastbars:SkinPlayerCastbar()
-        end
-    end)
 end
