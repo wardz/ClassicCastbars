@@ -579,12 +579,17 @@ function ClassicCastbars:SkinPlayerCastbar()
     CastingBarFrame.Timer:SetShown(db.showTimer)
 
     if not CastingBarFrame.CC_isHooked and not isRetail then
-        CastingBarFrame:HookScript("OnShow", function(frame)
+        local function UpdateIcon(frame)
             if frame.Icon:GetTexture() == 136235 then
                 frame.Icon:SetTexture(136243)
             end
             frame.Icon:SetShown(db.showIcon)
-        end)
+        end
+
+        CastingBarFrame:HookScript("OnShow", UpdateIcon)
+        if CastingBarFrame.UpdateIconShown then
+            hooksecurefunc(CastingBarFrame, "UpdateIconShown", UpdateIcon)
+        end
 
         hooksecurefunc("PlayerFrame_DetachCastBar", function()
             ClassicCastbars:SkinPlayerCastbar()
